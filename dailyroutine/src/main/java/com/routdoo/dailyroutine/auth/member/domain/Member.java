@@ -1,4 +1,4 @@
-package com.routdoo.dailyroutine.auth.user.domain;
+package com.routdoo.dailyroutine.auth.member.domain;
 
 import java.time.LocalDateTime;
 

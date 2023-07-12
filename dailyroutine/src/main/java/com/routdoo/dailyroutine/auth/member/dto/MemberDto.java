@@ -1,6 +1,8 @@
-package com.routdoo.dailyroutine.auth.user.dto;
+package com.routdoo.dailyroutine.auth.member.dto;
 
 import java.time.LocalDateTime;
+
+import com.routdoo.dailyroutine.auth.member.domain.Member;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,5 +44,20 @@ public class MemberDto {
 	private LocalDateTime createDate;
 	
 	private LocalDateTime modifyDate;
+	
+	
+	public MemberDto(Member entity) {
+		this.id = entity.getId();
+		this.pw = entity.getPw();
+		this.email = entity.getEmail();
+		this.nickname = entity.getNickname();
+		this.phonenumber = entity.getPhonenumber();
+		this.gender = entity.getGender();
+		this.age = entity.getAge();
+		this.birth = entity.getBirth();
+		this.mbti = entity.getMbti();
+		this.createDate = entity.getCreateDate();
+		this.modifyDate = entity.getModifyDate();
+	}
 	
 }

@@ -1,8 +1,8 @@
-package com.routdoo.dailyroutine.auth.user.repository;
+package com.routdoo.dailyroutine.auth.member.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.routdoo.dailyroutine.auth.user.domain.Member;
+import com.routdoo.dailyroutine.auth.member.domain.Member;
 
 /**
  * 
