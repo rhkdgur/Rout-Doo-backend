@@ -7,11 +7,14 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -78,4 +81,40 @@ public class Member {
 	@LastModifiedDate
 	private LocalDateTime modifyDate;
 	
+	/**
+	 * entity에 dto 정보 처리 생성자
+	 * @param dto
+	 */
+	@Builder
+	public Member(MemberDto dto) {
+		this.id = dto.getId();
+		this.pw = dto.getPw();
+		this.email = dto.getEmail();
+		this.nickname = dto.getNickname();
+		this.phonenumber = dto.getPhonenumber();
+		this.gender = dto.getGender();
+		this.age = dto.getAge();
+		this.birth = dto.getBirth();
+		this.mbti = dto.getMbti();
+		this.createDate = dto.getCreateDate();
+		this.modifyDate = dto.getModifyDate();
+	}
+
+	/**
+	 * 전체 정보 업데이트 처리 메소드
+	 * @param dto
+	 */
+	public void changeMember(MemberDto dto) {
+		this.id = dto.getId();
+		this.pw = dto.getPw();
+		this.email = dto.getEmail();
+		this.nickname = dto.getNickname();
+		this.phonenumber = dto.getPhonenumber();
+		this.gender = dto.getGender();
+		this.age = dto.getAge();
+		this.birth = dto.getBirth();
+		this.mbti = dto.getMbti();
+		this.createDate = dto.getCreateDate();
+		this.modifyDate = dto.getModifyDate();
+	}
 }

@@ -6,6 +6,7 @@ import com.routdoo.dailyroutine.auth.member.domain.Member;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 
@@ -20,6 +21,7 @@ import lombok.NoArgsConstructor;
 * 2023.07.11        ghgo       최초 생성
  */
 @Getter
+@Setter
 @NoArgsConstructor
 public class MemberDto {
 
@@ -45,7 +47,18 @@ public class MemberDto {
 	
 	private LocalDateTime modifyDate;
 	
+	/**
+	 * dto -> entity 
+	 * @return
+	 */
+	public Member toEntity() {
+		return Member.builder().dto(this).build();
+	}
 	
+	/**
+	 * entity 파라미터 생성자
+	 * @param entity
+	 */
 	public MemberDto(Member entity) {
 		this.id = entity.getId();
 		this.pw = entity.getPw();
