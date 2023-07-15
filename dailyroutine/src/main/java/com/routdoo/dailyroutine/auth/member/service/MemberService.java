@@ -69,6 +69,31 @@ public class MemberService {
 	
 	
 	/**
+	 * 로그인 처리
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public MemberServiceResult<MemberDto> loginMember(MemberDto dto) throws Exception {
+		
+		Member member = null;
+		try {
+			member = memberRepository.findByIdAndPw(dto.getId(), dto.getPw());
+			//이미 존재하는 경우 리턴 
+			if(member != null) {
+				return new MemberServiceResult<>(MemberResultCodeType.INFO_ALREADYID);
+			}	
+			member = memberRepository.save(dto.toEntity());
+		}catch (Exception e) {
+			return new MemberServiceResult<>(MemberResultCodeType.INFO_FAIL);
+		}
+		
+		return new MemberServiceResult<>(MemberResultCodeType.INFO_OK,new MemberDto(member));
+	}
+	
+	
+	/**
 	 * 회원 등록,수정 
 	 * @param dto
 	 * @return

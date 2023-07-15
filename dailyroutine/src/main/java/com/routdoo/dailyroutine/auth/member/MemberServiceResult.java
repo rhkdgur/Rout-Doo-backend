@@ -38,6 +38,7 @@ public class MemberServiceResult<T> {
 	public MemberServiceResult(MemberResultCodeType codeType, T element) {
 		this.codeType = codeType;
 		this.element = element;
+		this.message = codeType.getDisplay();
 	}
 	
 	public MemberServiceResult(MemberResultCodeType codeType) {

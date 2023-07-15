@@ -1,6 +1,8 @@
 package com.routdoo.dailyroutine.auth.member.dto;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.routdoo.dailyroutine.auth.member.domain.Member;
 
@@ -71,6 +73,20 @@ public class MemberDto {
 		this.mbti = entity.getMbti();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
+	}
+	
+	/**
+	 * 요약 정보 조회
+	 * @return
+	 */
+	public Map<String,Object> getSummaryInfo(){
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("id", this.id);
+		map.put("nickname", this.nickname);
+		map.put("gender", this.gender);
+		map.put("age", this.age);
+		map.put("mbti", this.mbti);
+		return map;
 	}
 	
 }

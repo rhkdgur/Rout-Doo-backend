@@ -18,4 +18,12 @@ import com.routdoo.dailyroutine.auth.member.domain.Member;
  */
 public interface MemberRepository extends JpaRepository<Member, String>,MemberCustomRepostiroy{
 
+	/***
+	 * 아이디와 비밀번호 입력 확인
+	 * @param id
+	 * @param pw
+	 * @return
+	 */
+	Member findByIdAndPw(String id, String pw);
+	
 }
