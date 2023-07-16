@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.routdoo.dailyroutine.auth.member.MemberResultCodeType;
-import com.routdoo.dailyroutine.auth.member.MemberServiceResult;
+import com.routdoo.dailyroutine.auth.AuthResultCodeType;
+import com.routdoo.dailyroutine.auth.AuthServiceResult;
 import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
@@ -71,9 +71,9 @@ public class MemberUserController extends BaseController{
 	@PostMapping("/member/login")
 	public ResponseEntity<?> loginMember(MemberDto dto,HttpSession session) throws Exception {
 		
-		MemberServiceResult<MemberDto> result = memberService.loginMember(dto);
-		if(!MemberResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
-			if(MemberResultCodeType.INFO_ALREADYID.name().equals(result.getCodeType().name())) {
+		AuthServiceResult<MemberDto> result = memberService.loginMember(dto);
+		if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
+			if(AuthResultCodeType.INFO_ALREADYID.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<>(result.getMessage(),HttpStatus.NOT_MODIFIED);
 			}else {
 				return new ResponseEntity<>("로그인시 이슈가 발생하였습니다.",HttpStatus.BAD_REQUEST);
@@ -111,8 +111,8 @@ public class MemberUserController extends BaseController{
 			if(checkDto != null) {
 				return new ResponseEntity<>("이미 존재하는 회원 아이디 입니다.",HttpStatus.ALREADY_REPORTED);
 			}
-			MemberServiceResult<?> result = memberService.saveMember(dto);
-			if(!MemberResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
+			AuthServiceResult<?> result = memberService.saveMember(dto);
+			if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<>("회원 가입이 진행되지 않았습니다.",HttpStatus.NOT_MODIFIED);
 			}
 		}catch (Exception e) {
@@ -132,8 +132,8 @@ public class MemberUserController extends BaseController{
 	@PostMapping("/member/act/upd")
 	public ResponseEntity<?> updateMember(MemberDto dto) throws Exception {
 		try {
-			MemberServiceResult<MemberDto> result =  memberService.saveMember(dto);
-			if(!MemberResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
+			AuthServiceResult<MemberDto> result =  memberService.saveMember(dto);
+			if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<>(result.getMessage(),HttpStatus.NOT_MODIFIED);
 			}
 		}catch (Exception e) {

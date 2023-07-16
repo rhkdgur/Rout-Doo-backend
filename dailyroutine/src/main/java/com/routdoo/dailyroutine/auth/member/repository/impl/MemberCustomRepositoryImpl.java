@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.routdoo.dailyroutine.auth.member.domain.Member;
+import com.routdoo.dailyroutine.auth.member.domain.QMember;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.repository.MemberCustomRepostiroy;
-import com.routdoo.dailyroutine.auth.user.domain.QMember;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 
 import lombok.NoArgsConstructor;

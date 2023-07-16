@@ -6,8 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.routdoo.dailyroutine.auth.member.MemberResultCodeType;
-import com.routdoo.dailyroutine.auth.member.MemberServiceResult;
+import com.routdoo.dailyroutine.auth.AuthResultCodeType;
+import com.routdoo.dailyroutine.auth.AuthServiceResult;
 import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
@@ -75,21 +75,21 @@ public class MemberService {
 	 * @throws Exception
 	 */
 	@Transactional
-	public MemberServiceResult<MemberDto> loginMember(MemberDto dto) throws Exception {
+	public AuthServiceResult<MemberDto> loginMember(MemberDto dto) throws Exception {
 		
 		Member member = null;
 		try {
 			member = memberRepository.findByIdAndPw(dto.getId(), dto.getPw());
 			//이미 존재하는 경우 리턴 
 			if(member != null) {
-				return new MemberServiceResult<>(MemberResultCodeType.INFO_ALREADYID);
+				return new AuthServiceResult<>(AuthResultCodeType.INFO_ALREADYID);
 			}	
 			member = memberRepository.save(dto.toEntity());
 		}catch (Exception e) {
-			return new MemberServiceResult<>(MemberResultCodeType.INFO_FAIL);
+			return new AuthServiceResult<>(AuthResultCodeType.INFO_FAIL);
 		}
 		
-		return new MemberServiceResult<>(MemberResultCodeType.INFO_OK,new MemberDto(member));
+		return new AuthServiceResult<>(AuthResultCodeType.INFO_OK,new MemberDto(member));
 	}
 	
 	
@@ -100,18 +100,18 @@ public class MemberService {
 	 * @throws Exception
 	 */
 	@Transactional
-	public MemberServiceResult<MemberDto> saveMember(MemberDto dto) throws Exception {
+	public AuthServiceResult<MemberDto> saveMember(MemberDto dto) throws Exception {
 		Member member = memberRepository.findById(dto.getId()).orElse(null);
 		if(member == null) {
 			member = memberRepository.save(dto.toEntity());
 			if(member != null) {
-				return new MemberServiceResult<>(MemberResultCodeType.INFO_OK,new MemberDto(member));
+				return new AuthServiceResult<>(AuthResultCodeType.INFO_OK,new MemberDto(member));
 			}else {
-				return new MemberServiceResult<>(MemberResultCodeType.INFO_FAIL,"등록에 실패하였습니다.");
+				return new AuthServiceResult<>(AuthResultCodeType.INFO_FAIL,"등록에 실패하였습니다.");
 			}
 		}else {
 			member.changeMember(dto);
-			return new MemberServiceResult<>(MemberResultCodeType.INFO_OK,"업데이트 되었습니다.",new MemberDto(member));
+			return new AuthServiceResult<>(AuthResultCodeType.INFO_OK,"업데이트 되었습니다.",new MemberDto(member));
 		}
 	}
 	
@@ -122,13 +122,13 @@ public class MemberService {
 	 * @throws Exception
 	 */
 	@Transactional
-	public MemberServiceResult<?> deleteMember(MemberDto dto) throws Exception {
+	public AuthServiceResult<?> deleteMember(MemberDto dto) throws Exception {
 		memberRepository.deleteById(dto.getId());
 		Member member = memberRepository.findById(dto.getId()).orElse(null);
 		if(member == null) {
-			return new MemberServiceResult<>(MemberResultCodeType.INFO_OK,"삭제 되었습니다.");
+			return new AuthServiceResult<>(AuthResultCodeType.INFO_OK,"삭제 되었습니다.");
 		}else {
-			return new MemberServiceResult<>(MemberResultCodeType.INFO_FAIL,"삭제 되지않았습니다.");
+			return new AuthServiceResult<>(AuthResultCodeType.INFO_FAIL,"삭제 되지않았습니다.");
 		}
 	}
 

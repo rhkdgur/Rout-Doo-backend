@@ -1,6 +1,6 @@
-package com.routdoo.dailyroutine.auth.member;
+package com.routdoo.dailyroutine.auth;
 
-public enum MemberResultCodeType {
+public enum AuthResultCodeType {
 
 	INFO_OK("정상입니다."),
 	INFO_FAIL("실패입니다."),
@@ -10,7 +10,7 @@ public enum MemberResultCodeType {
 	
 	private String display = "";
 
-	MemberResultCodeType(String display) {
+	AuthResultCodeType(String display) {
 		this.display = display;
 	}
 	

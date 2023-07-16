@@ -1,4 +1,4 @@
-package com.routdoo.dailyroutine.auth.user.domain;
+package com.routdoo.dailyroutine.auth.member.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -15,7 +15,7 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QMember extends EntityPathBase<Member> {
 
-    private static final long serialVersionUID = 2105771831L;
+    private static final long serialVersionUID = -1070454202L;
 
     public static final QMember member = new QMember("member1");
 

@@ -1,4 +1,4 @@
-package com.routdoo.dailyroutine.auth.member.web;
+package com.routdoo.dailyroutine.auth.admin.web;
 
 import java.util.Map;
 
@@ -13,124 +13,123 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import com.routdoo.dailyroutine.auth.AuthResultCodeType;
 import com.routdoo.dailyroutine.auth.AuthServiceResult;
-import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
-import com.routdoo.dailyroutine.auth.member.service.MemberService;
+import com.routdoo.dailyroutine.auth.admin.dto.AdminDefaultDto;
+import com.routdoo.dailyroutine.auth.admin.dto.AdminDto;
+import com.routdoo.dailyroutine.auth.admin.service.AdminService;
 import com.routdoo.dailyroutine.common.web.BaseController;
 
 import lombok.RequiredArgsConstructor;
 
 /**
-* @packageName   : com.routdoo.dailyroutine.auth.member.web
-* @fileName      : MemberController.java
+ * 
+* @packageName   : com.routdoo.dailyroutine.auth.admin.web
+* @fileName      : AdminController.java
 * @author        : Gwang hyeok Go
-* @date          : 2023.07.13
-* @description   : 관리자 회원 컨트롤러
+* @date          : 2023.07.16
+* @description   : 관리자 컨트롤러
 * ===========================================================
 * DATE              AUTHOR             NOTE
 * -----------------------------------------------------------
-* 2023.07.13        ghgo       최초 생성
+* 2023.07.16        ghgo       최초 생성
  */
 @RestController
 @RequiredArgsConstructor
-public class MemberController extends BaseController{
+public class AdminController extends BaseController{
 
-	private final MemberService memberService;
-	
+	private final AdminService adminService;
 	
 	/**
-	 * 회원 목록 조회 (페이징 포함)
+	 * 관리자 목록 조회(페이징 포함)
 	 * @param searchDto
 	 * @return
 	 * @throws Exception
 	 */
-	@GetMapping(MGN_URL+"/member/list")
-	public Map<String,Object> selectMemberList(MemberDefaultDto searchDto) throws Exception {
+	@GetMapping(MGN_URL+"/admin/list")
+	public Map<String,Object> selectAdminList(AdminDefaultDto searchDto) throws Exception {
+		
+		//목록 조회
+		Page<AdminDto> resultList = adminService.selectAdminList(searchDto);
+		modelMap.put("adminList", resultList);
+		
+		return modelMap;
+	}
 
-		//회원 목록 조회
-		Page<MemberDto> resultList = memberService.selectMemberPageList(searchDto);
-		modelMap.put("memberList", resultList);
-		
-		return modelMap;
-	}
-	
-	
 	/**
-	 * 회원 상세 조회
+	 * 관리자 상세 조회
 	 * @param dto
 	 * @return
 	 * @throws Exception
 	 */
-	@GetMapping(MGN_URL+"/member/view")
-	public Map<String,Object> selectMemberView(MemberDto dto) throws Exception {
+	@GetMapping(MGN_URL+"/admin/view")
+	public Map<String,Object> selectAdminView(AdminDto dto) throws Exception {
 		
-		dto = memberService.selectMember(dto);
-		modelMap.put("member", dto);
+		dto = adminService.selectAdminView(dto);
+		modelMap.put("admin", dto);
 		
 		return modelMap;
 	}
 	
-	
 	/**
-	 * 회원 등록
+	 * 관리자 등록
 	 * @param dto
+	 * @param status
 	 * @return
 	 * @throws Exception
 	 */
-	@PostMapping(MGN_URL+"/member/act/ins")
-	public ResponseEntity<?> createMember(MemberDto dto,SessionStatus status) throws Exception {
+	@PostMapping(MGN_URL+"/admin/act/ins")
+	public ResponseEntity<?> createAdmin(AdminDto dto, SessionStatus status) throws Exception {
 		
-		try{
-			MemberDto checkDto = memberService.selectMember(dto);
-			//아이디 존재 여부 확인
+		try {
+			AdminDto checkDto = adminService.selectAdminView(dto);
 			if(checkDto != null) {
 				return new ResponseEntity<>("이미 사용중인 아이디 입니다.",HttpStatus.ALREADY_REPORTED);
 			}
 			
-			AuthServiceResult<?> result = memberService.saveMember(dto);
+			AuthServiceResult<?> result = adminService.saveAdmin(checkDto);
 			if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<>(result.getMessage(),HttpStatus.NOT_MODIFIED);
 			}
 		}catch (Exception e) {
-			logger.error("### insert member error ");
-			return new ResponseEntity<>("회원 등록시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
+			logger.error("### insert admin error");
+			return new ResponseEntity<>("관리자 등록시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
 		}
 		
 		status.setComplete();
 		return new ResponseEntity<>("등록 되었습니다.",HttpStatus.OK);
 	}
 	
+	
 	/**
-	 * 회원 수정
+	 * 관리자 수정
 	 * @param dto
 	 * @param status
 	 * @return
 	 * @throws Exception
 	 */
-	@PostMapping(MGN_URL+"/member/act/upd")
-	public ResponseEntity<?> updateMember(MemberDto dto, SessionStatus status) throws Exception {
+	@PostMapping(MGN_URL+"/admin/act/upd")
+	public ResponseEntity<?> updateAdmin(AdminDto dto, SessionStatus status) throws Exception {
 		
-		AuthServiceResult<?> result = memberService.saveMember(dto);
+		AuthServiceResult<?> result = adminService.saveAdmin(dto);
 		
 		status.setComplete();
 		return new ResponseEntity<>("수정 되었습니다.",HttpStatus.OK);
 	}
 	
 	/**
-	 * 회원 삭제
+	 * 관리자 삭제
 	 * @param id
 	 * @return
 	 * @throws Exception
 	 */
-	@PostMapping(MGN_URL+"/member/act/del")
-	public ResponseEntity<?> deleteMember(@RequestParam("id") String id) throws Exception {
+	@PostMapping(MGN_URL+"/admin/act/del")
+	public ResponseEntity<?> deleteAdmin(@RequestParam("id") String id) throws Exception {
 		
-		MemberDto dto = new MemberDto();
+		AdminDto dto = new AdminDto();
 		dto.setId(id);
-		dto = memberService.selectMember(dto);
+		dto = adminService.selectAdminView(dto);
 		
 		try {
-			AuthServiceResult<?> result = memberService.deleteMember(dto);
+			AuthServiceResult<?> result = adminService.deleteAdmin(dto);
 			if(AuthResultCodeType.INFO_FAIL.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<>("삭제에 실패하였습니다.",HttpStatus.NOT_MODIFIED);
 			}
