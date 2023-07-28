@@ -3,14 +3,19 @@ package com.routdoo.dailyroutine.module.place.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.routdoo.dailyroutine.common.PostResultCodeType;
+import com.routdoo.dailyroutine.common.PostServiceResult;
 import com.routdoo.dailyroutine.module.place.domain.Place;
+import com.routdoo.dailyroutine.module.place.domain.PlaceComment;
+import com.routdoo.dailyroutine.module.place.domain.PlaceLike;
+import com.routdoo.dailyroutine.module.place.dto.PlaceCommentDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceDefaultDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceDto;
+import com.routdoo.dailyroutine.module.place.dto.PlaceLikeDto;
 import com.routdoo.dailyroutine.module.place.repository.PlaceCommentRepository;
 import com.routdoo.dailyroutine.module.place.repository.PlaceLikeRepository;
 import com.routdoo.dailyroutine.module.place.repository.PlaceRepository;
@@ -106,5 +111,59 @@ public class PlaceService {
 		}
 		
 		return list;
+	}
+	
+	/**
+	 * 좋아요 등록
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public PostServiceResult<?> savePlaceLike(PlaceLikeDto dto) throws Exception {
+		PlaceLike placeLike = placeLikeRepository.save(dto.toEntity());
+		if(placeLike == null) {
+			return new PostServiceResult<>(PostResultCodeType.FAIL);
+		}
+		return new PostServiceResult<>(PostResultCodeType.OK);
+	}
+	
+	/**
+	 * 좋아요 삭제
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public PostServiceResult<?> deletePlaceList(PlaceLikeDto dto) throws Exception {
+		placeLikeRepository.deleteById(dto.getIdx());
+		PlaceLike placeLike = placeLikeRepository.findById(dto.getIdx()).orElse(null);
+		if(placeLike != null) {
+			return new PostServiceResult<>(PostResultCodeType.FAIL);
+		}
+		return new PostServiceResult<>(PostResultCodeType.OK);
+	}
+	
+	/**
+	 * 댓글 목록
+	 * @return
+	 * @throws Exception
+	 */
+	public Page<PlaceCommentDto> selectPlaceCommentPageList(PlaceDefaultDto searchDto) throws Exception {
+		return placeRepository.selectPlaceCommentPageList(searchDto);
+	}
+	
+	/**
+	 * 댓글 상세 조회
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	public PlaceCommentDto selectPlaceCommentView(PlaceCommentDto dto) throws Exception {
+		
+		PlaceComment placeComment = placeCommentRepository.findById(dto.getIdx()).orElse(null);
+		if(placeComment == null) {
+			return null;
+		}
+		
+		return new PlaceCommentDto(placeComment);
 	}
 }

@@ -8,6 +8,9 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.routdoo.dailyroutine.auth.member.domain.Member;
+import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
+import com.routdoo.dailyroutine.module.place.dto.PlaceCommentDto;
+import com.routdoo.dailyroutine.module.place.dto.PlaceDto;
 
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
@@ -21,6 +24,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -49,7 +53,7 @@ public class PlaceComment {
 	
 	@Comment("회원 일련번호")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="ckey",nullable = false,foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name="id",nullable = false,foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Member member;
 	
 	@Comment("장소 일련번호")
@@ -68,4 +72,19 @@ public class PlaceComment {
 	@Comment("수정일자")
 	@LastModifiedDate
 	private LocalDateTime modifyDate;
+
+	@Builder
+	public PlaceComment(PlaceCommentDto dto) {
+		this.idx = dto.getIdx();
+		MemberDto m = new MemberDto();
+		m.setId(dto.getId());
+		this.member = Member.builder().dto(m).build();
+		PlaceDto p = new PlaceDto();
+		p.setPlaceNum(dto.getPlaceNum());
+		this.place = Place.builder().dto(p).build();
+		this.context = dto.getContext();
+		this.createDate = dto.getCreateDate();
+		this.modifyDate = dto.getModifyDate();
+	}
+
 }

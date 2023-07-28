@@ -2,6 +2,7 @@ package com.routdoo.dailyroutine.module.place.repository.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -10,10 +11,11 @@ import org.springframework.stereotype.Repository;
 import com.querydsl.core.BooleanBuilder;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 import com.routdoo.dailyroutine.module.place.domain.Place;
-import com.routdoo.dailyroutine.module.place.domain.PlaceLike;
+import com.routdoo.dailyroutine.module.place.domain.PlaceComment;
 import com.routdoo.dailyroutine.module.place.domain.QPlace;
 import com.routdoo.dailyroutine.module.place.domain.QPlaceComment;
 import com.routdoo.dailyroutine.module.place.domain.QPlaceLike;
+import com.routdoo.dailyroutine.module.place.dto.PlaceCommentDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceDefaultDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceDto;
 import com.routdoo.dailyroutine.module.place.repository.PlaceCustomRepository;
@@ -52,6 +54,9 @@ public class PlaceCustomRepositoryServiceImpl extends BaseAbstractRepositoryImpl
 		/**사용상태 조회*/
 		if(searchDto.getPstatus() != null && !searchDto.getPstatus().isEmpty()) {
 			sql.and(qPlace.pstatus.eq(PlaceStatusType.valueOf(searchDto.getPstatus())));
+		}
+		if(searchDto.getPlaceNum() != null && !searchDto.getPlaceNum().isEmpty()) {
+			sql.and(qPlaceComment.place.placeNum.eq(searchDto.getPlaceNum()));
 		}
 		
 		return sql;
@@ -127,4 +132,21 @@ public class PlaceCustomRepositoryServiceImpl extends BaseAbstractRepositoryImpl
 		return dto;
 	}
 
+	@Override
+	public Page<PlaceCommentDto> selectPlaceCommentPageList(PlaceDefaultDto searchDto) throws Exception {
+		
+		QPlaceComment qPlaceComment = QPlaceComment.placeComment;
+		
+		Long cnt = jpaQuery.select(qPlaceComment.count()).from(qPlaceComment)
+				.where(commonQuery(searchDto)).fetchOne();
+		
+		List<PlaceComment> placeComments = jpaQuery.selectFrom(qPlaceComment)
+							.where(commonQuery(searchDto))
+							.offset(searchDto.getPageable().getOffset())
+							.limit(searchDto.getPageable().getPageSize())
+							.fetch();
+		
+		return new PageImpl<>(placeComments.stream().map(PlaceCommentDto::new).collect(Collectors.toList()),searchDto.getPageable(),cnt);
+	}
+	
 }

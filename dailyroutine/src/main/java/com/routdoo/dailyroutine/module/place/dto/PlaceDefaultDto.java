@@ -25,5 +25,7 @@ public class PlaceDefaultDto extends BaseVo{
 	/**사용상태*/
 	private String pstatus = "";
 	
+	/**장소*/
+	private String placeNum = "";
 	
 }

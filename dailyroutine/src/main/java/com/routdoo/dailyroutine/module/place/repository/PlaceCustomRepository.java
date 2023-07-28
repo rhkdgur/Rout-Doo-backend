@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
+import com.routdoo.dailyroutine.module.place.dto.PlaceCommentDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceDefaultDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceDto;
 
@@ -44,4 +45,15 @@ public interface PlaceCustomRepository {
 	 * @throws Exception
 	 */
 	PlaceDto selectPlaceView(PlaceDto dto) throws Exception;
+	
+	
+	/***
+	 * 장소 댓글 목록 페이징
+	 * @param searchDto
+	 * @return
+	 * @throws Exception
+	 */
+	Page<PlaceCommentDto> selectPlaceCommentPageList(PlaceDefaultDto searchDto) throws Exception;
+	
+
 }

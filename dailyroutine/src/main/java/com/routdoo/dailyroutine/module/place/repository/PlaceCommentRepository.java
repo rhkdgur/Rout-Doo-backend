@@ -2,6 +2,8 @@ package com.routdoo.dailyroutine.module.place.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.routdoo.dailyroutine.module.place.domain.PlaceComment;
+
 /**
  * 
 * @packageName   : com.routdoo.dailyroutine.module.place.repository
@@ -14,6 +16,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 * -----------------------------------------------------------
 * 2023.07.27        ghgo       최초 생성
  */
-public interface PlaceCommentRepository extends JpaRepository<PlaceCommentRepository, Long>{
-
+public interface PlaceCommentRepository extends JpaRepository<PlaceComment, Long>{
+	
 }
