@@ -25,7 +25,22 @@ public class PlaceDefaultDto extends BaseVo{
 	/**사용상태*/
 	private String pstatus = "";
 	
-	/**장소*/
+	/**장소번호*/
 	private String placeNum = "";
+	
+	/**제목(장소)*/
+	private String title = "";
+	
+	/**해쉬태그*/
+	private String hashTag = "";
+	
+	/**주소*/
+	private String addr = "";
+	
+	/**경도*/
+	private String mapx = "";
+	
+	/**위도*/
+	private String mapy = "";
 	
 }
