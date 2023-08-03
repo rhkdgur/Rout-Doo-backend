@@ -38,10 +38,10 @@ public class PlaceDto {
 	private String addr;
 	
 	/**경도*/
-	private int mapx;
+	private String mapx;
 	
 	/**위도*/
-	private int mapy;
+	private String mapy;
 	
 	/**소개글*/
 	private String introText;

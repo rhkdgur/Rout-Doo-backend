@@ -34,7 +34,7 @@ import com.routdoo.dailyroutine.module.place.service.PlaceStatusType;
 * 2023.07.27        ghgo       최초 생성
  */
 @Repository
-public class PlaceCustomRepositoryServiceImpl extends BaseAbstractRepositoryImpl implements PlaceCustomRepository{
+public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implements PlaceCustomRepository{
 
 	/**
 	 * 공통 where 쿼리

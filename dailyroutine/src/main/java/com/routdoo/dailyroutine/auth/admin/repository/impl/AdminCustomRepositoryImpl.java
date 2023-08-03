@@ -15,7 +15,7 @@ import com.routdoo.dailyroutine.auth.admin.dto.AdminDto;
 import com.routdoo.dailyroutine.auth.admin.repository.AdminCustomRepository;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * 
@@ -30,8 +30,8 @@ import lombok.RequiredArgsConstructor;
 * 2023.07.16        ghgo       최초 생성
  */
 @Repository
-@RequiredArgsConstructor
-public class AdminCustomRepostiroyImpl extends BaseAbstractRepositoryImpl implements AdminCustomRepository{
+@NoArgsConstructor
+public class AdminCustomRepositoryImpl extends BaseAbstractRepositoryImpl implements AdminCustomRepository{
 	
 	
 	private BooleanBuilder commonQuery(AdminDefaultDto searchDto) throws Exception {
@@ -53,7 +53,6 @@ public class AdminCustomRepostiroyImpl extends BaseAbstractRepositoryImpl implem
 		QAdmin qAdmin = QAdmin.admin;
 		
 		List<Admin> list = jpaQuery.selectFrom(qAdmin).where(commonQuery(searchDto)).fetch();
-		
 		return list.stream().map(x->new AdminDto(x)).collect(Collectors.toList());
 	}
 

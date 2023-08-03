@@ -16,6 +16,7 @@ import com.routdoo.dailyroutine.module.place.dto.PlaceCommentDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceDefaultDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceLikeDto;
+import com.routdoo.dailyroutine.module.place.dto.PlaceSummaryInfo;
 import com.routdoo.dailyroutine.module.place.repository.PlaceCommentRepository;
 import com.routdoo.dailyroutine.module.place.repository.PlaceLikeRepository;
 import com.routdoo.dailyroutine.module.place.repository.PlaceRepository;
@@ -99,18 +100,11 @@ public class PlaceService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<PlaceDto> selectPlaceSelfLocationList(String mapx,String mapy) throws Exception {
+	public List<PlaceSummaryInfo> selectPlaceSelfLocationList(PlaceDefaultDto searchDto) throws Exception {
+
+		List<PlaceSummaryInfo> places = placeRepository.selectPlaceSelfLocationList(searchDto);
 		
-		List<PlaceDto> list = new ArrayList<PlaceDto>();
-		List<Place> places = placeRepository.selectPlaceSelfLocationList(mapx, mapy);
-		
-		for(Place p : places) {
-			PlaceDto dto = new PlaceDto();
-			dto.addPlaceSummaryInfo(p);
-			list.add(dto);
-		}
-		
-		return list;
+		return places;
 	}
 	
 	/**

@@ -12,14 +12,14 @@ import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.auth.member.domain.QMember;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
-import com.routdoo.dailyroutine.auth.member.repository.MemberCustomRepostiroy;
+import com.routdoo.dailyroutine.auth.member.repository.MemberCustomRepository;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 
 import lombok.NoArgsConstructor;
 
 @Repository
 @NoArgsConstructor
-public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl implements MemberCustomRepostiroy{
+public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl implements MemberCustomRepository{
 	
 	/**
 	 * 목록 조회

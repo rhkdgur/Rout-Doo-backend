@@ -47,7 +47,7 @@ public class DailyRoutineTimeLine {
 	
 	/**일정 메인 정보*/
 	@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-	@JoinColumn(name="idx")
+	@JoinColumn(name="dr_idx")
 	private DailyRoutine dailyRoutine = new DailyRoutine();
 	
 	@Column(length = 300)

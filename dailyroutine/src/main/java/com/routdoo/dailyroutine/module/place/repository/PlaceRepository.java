@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.routdoo.dailyroutine.module.place.domain.Place;
+import com.routdoo.dailyroutine.module.place.dto.PlaceDefaultDto;
+import com.routdoo.dailyroutine.module.place.dto.PlaceSummaryInfo;
 
 /**
  * 
@@ -23,22 +25,27 @@ import com.routdoo.dailyroutine.module.place.domain.Place;
 public interface PlaceRepository extends JpaRepository<Place, String>,PlaceCustomRepository{
 	
 	@Query(value="SELECT"
-			+ "	p.*,"
+			+ "	p.place_num placeNum, "
+			+ "	p.title title,"
+			+ " p.mapx mapx,"
+			+ " p.mapy mapy,"
+			+ " likeCnt,"
+			+ " commentCnt,"
 			+ "   ("
-			+ "       6371 * acos ( cos ( radians(:mapx) ) "
+			+ "       6371 * acos ( cos ( radians(:#{#place.mapx}) ) "
 			+ "          * cos( radians( p.mapx ) ) "
-			+ "          * cos( radians( p.mapy ) - radians(:mapy) ) "
-			+ "          + sin ( radians(:mapx) ) * sin( radians( p.mapx) ) "
+			+ "          * cos( radians( p.mapy ) - radians(:#{#place.mapy}) ) "
+			+ "          + sin ( radians(:#{#place.mapx}) ) * sin( radians( p.mapx) ) "
 			+ "       )"
 			+ "   ) AS distance "
 			+ "	FROM place p "
-			+ " left join place_like pl on pl.place_num = p.place_num "
-			+ " left join place_comment pc on pc.place_num = p.place_num "
+			+ " left join ( select count(*) likeCnt from place_like ) pl on pl.place_num = p.place_num "
+			+ " left join ( select count(*) commentCnt from place_comment ) pc on pc.place_num = p.place_num "
 			+ " WHERE p.pstatus = 'Y' "
 			+ " HAVING distance < 2 "
 			+ "	ORDER BY distance "
-			+ "	LIMIT 0 , 10 "
+			+ "	LIMIT :#{#place.pageable.offset}, :#{#place.pageable.pageSize}"
     ,nativeQuery = true)
-	List<Place> selectPlaceSelfLocationList(@Param("mapx") String mapx,@Param("mapy") String mapy) throws Exception;
+	List<PlaceSummaryInfo> selectPlaceSelfLocationList(@Param("place") PlaceDefaultDto searchDto) throws Exception;
 
 }

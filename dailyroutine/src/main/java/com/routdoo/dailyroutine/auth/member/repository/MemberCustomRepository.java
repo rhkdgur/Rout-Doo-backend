@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 
-public interface MemberCustomRepostiroy {
+public interface MemberCustomRepository {
 
 	/**
 	 * 회원 페이징 목록

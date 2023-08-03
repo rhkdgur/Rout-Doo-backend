@@ -12,6 +12,7 @@ import com.routdoo.dailyroutine.common.web.BaseController;
 import com.routdoo.dailyroutine.module.place.dto.PlaceCommentDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceDefaultDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceDto;
+import com.routdoo.dailyroutine.module.place.dto.PlaceSummaryInfo;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
 
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,7 @@ public class PlaceUserController extends BaseController{
 	public Map<String,Object> selectPlaceMyLocationList(PlaceDefaultDto searchDto) throws Exception {
 		
 		//목록 조회
-		List<PlaceDto> places = placeService.selectPlaceSelfLocationList(searchDto.getMapx(), searchDto.getMapy());
+		List<PlaceSummaryInfo> places = placeService.selectPlaceSelfLocationList(searchDto);
 		modelMap.put("placeList", places);
 		
 		return modelMap;

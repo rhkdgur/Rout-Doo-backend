@@ -60,10 +60,10 @@ public class Place {
 	private String addr;
 	
 	@Comment("경도")
-	private int mapx;
+	private String mapx;
 	
 	@Comment("위도")
-	private int mapy;
+	private String mapy;
 	
 	@Comment("소개글")
 	@Lob

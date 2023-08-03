@@ -29,18 +29,18 @@ public class BaseVo implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	/**공통 입력*/
-	private String sstring = "";
+	protected String sstring = "";
 	
 	/**공통 타입*/
-	private String stype = "";
+	protected String stype = "";
 	
-	private int page = 1;
+	protected int page = 1;
 	
-	private int size = 10;
+	protected int size = 10;
 	
-	private Sort sort = null;
+	protected Sort sort = null;
 	
-	private Map<String,String> params = new HashMap<>();
+	protected Map<String,String> params = new HashMap<>();
 	
 	public Pageable getPageable() {
 		if(sort != null) {

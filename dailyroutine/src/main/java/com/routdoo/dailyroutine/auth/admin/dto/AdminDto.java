@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import com.routdoo.dailyroutine.auth.admin.domain.Admin;
 
-import jakarta.validation.constraints.NegativeOrZero;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -48,12 +47,14 @@ public class AdminDto {
 	}
 
 	public AdminDto(Admin entity) {
-		this.id = entity.getId();
-		this.pw = entity.getPw();
-		this.name = entity.getName();
-		this.rating = entity.getRating();
-		this.createDate = entity.getCreateDate();
-		this.modifyDate = entity.getModifyDate();
+		if(entity != null) {
+			this.id = entity.getId();
+			this.pw = entity.getPw();
+			this.name = entity.getName();
+			this.rating = entity.getRating();
+			this.createDate = entity.getCreateDate();
+			this.modifyDate = entity.getModifyDate();
+		}
 	}
 	
 

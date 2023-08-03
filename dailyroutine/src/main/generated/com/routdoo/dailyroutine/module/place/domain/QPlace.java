@@ -30,9 +30,9 @@ public class QPlace extends EntityPathBase<Place> {
 
     public final StringPath introText = createString("introText");
 
-    public final NumberPath<Integer> mapx = createNumber("mapx", Integer.class);
+    public final StringPath mapx = createString("mapx");
 
-    public final NumberPath<Integer> mapy = createNumber("mapy", Integer.class);
+    public final StringPath mapy = createString("mapy");
 
     public final DateTimePath<java.time.LocalDateTime> modifyDate = createDateTime("modifyDate", java.time.LocalDateTime.class);
 
