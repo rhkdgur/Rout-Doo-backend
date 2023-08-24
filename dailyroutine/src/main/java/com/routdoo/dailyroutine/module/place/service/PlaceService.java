@@ -101,8 +101,7 @@ public class PlaceService {
 	 * @throws Exception
 	 */
 	public List<PlaceSummaryInfo> selectPlaceSelfLocationList(PlaceDefaultDto searchDto) throws Exception {
-
-		List<PlaceSummaryInfo> places = placeRepository.selectPlaceSelfLocationList(searchDto);
+		List<PlaceSummaryInfo> places = placeRepository.selectPlaceSelfLocationList(searchDto.getMapx(),searchDto.getMapy(),searchDto.getPageable());
 		
 		return places;
 	}

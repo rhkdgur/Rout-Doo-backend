@@ -127,4 +127,8 @@ public class Place {
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();
 	}
+	
+	public void addPlaceNum(String placeNum) {
+		this.placeNum = placeNum;
+	}
 }

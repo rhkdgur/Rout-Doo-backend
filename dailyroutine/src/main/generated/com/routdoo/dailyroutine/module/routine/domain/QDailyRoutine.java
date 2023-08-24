@@ -22,17 +22,17 @@ public class QDailyRoutine extends EntityPathBase<DailyRoutine> {
 
     public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);
 
-    public final StringPath dailyDate = createString("dailyDate");
-
     public final ListPath<DailyRoutineTimeLine, QDailyRoutineTimeLine> dailyRoutineTimeLine = this.<DailyRoutineTimeLine, QDailyRoutineTimeLine>createList("dailyRoutineTimeLine", DailyRoutineTimeLine.class, QDailyRoutineTimeLine.class, PathInits.DIRECT2);
 
-    public final StringPath favoritYn = createString("favoritYn");
+    public final EnumPath<com.routdoo.dailyroutine.module.routine.service.RoutineDayType> dayType = createEnum("dayType", com.routdoo.dailyroutine.module.routine.service.RoutineDayType.class);
+
+    public final StringPath endDate = createString("endDate");
 
     public final NumberPath<Long> idx = createNumber("idx", Long.class);
 
     public final DateTimePath<java.time.LocalDateTime> modifyDate = createDateTime("modifyDate", java.time.LocalDateTime.class);
 
-    public final NumberPath<Integer> view = createNumber("view", Integer.class);
+    public final StringPath startDate = createString("startDate");
 
     public QDailyRoutine(String variable) {
         super(DailyRoutine.class, forVariable(variable));

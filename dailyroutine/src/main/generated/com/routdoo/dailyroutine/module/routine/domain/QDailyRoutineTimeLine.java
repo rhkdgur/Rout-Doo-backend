@@ -22,23 +22,37 @@ public class QDailyRoutineTimeLine extends EntityPathBase<DailyRoutineTimeLine> 
 
     public static final QDailyRoutineTimeLine dailyRoutineTimeLine = new QDailyRoutineTimeLine("dailyRoutineTimeLine");
 
+    public final StringPath applyDate = createString("applyDate");
+
     public final StringPath context = createString("context");
+
+    public final NumberPath<Integer> cost = createNumber("cost", Integer.class);
 
     public final DateTimePath<java.time.LocalDateTime> creatDate = createDateTime("creatDate", java.time.LocalDateTime.class);
 
     public final QDailyRoutine dailyRoutine;
 
-    public final StringPath hour = createString("hour");
+    public final StringPath ehour = createString("ehour");
+
+    public final StringPath emin = createString("emin");
 
     public final NumberPath<Long> idx = createNumber("idx", Long.class);
-
-    public final StringPath minute = createString("minute");
 
     public final DateTimePath<java.time.LocalDateTime> modifyDate = createDateTime("modifyDate", java.time.LocalDateTime.class);
 
     public final NumberPath<Integer> ord = createNumber("ord", Integer.class);
 
+    public final com.routdoo.dailyroutine.module.place.domain.QPlace place;
+
+    public final StringPath placeName = createString("placeName");
+
+    public final StringPath shour = createString("shour");
+
+    public final StringPath smin = createString("smin");
+
     public final StringPath title = createString("title");
+
+    public final EnumPath<com.routdoo.dailyroutine.module.routine.service.RoutineWriteType> writeType = createEnum("writeType", com.routdoo.dailyroutine.module.routine.service.RoutineWriteType.class);
 
     public QDailyRoutineTimeLine(String variable) {
         this(DailyRoutineTimeLine.class, forVariable(variable), INITS);
@@ -59,6 +73,7 @@ public class QDailyRoutineTimeLine extends EntityPathBase<DailyRoutineTimeLine> 
     public QDailyRoutineTimeLine(Class<? extends DailyRoutineTimeLine> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.dailyRoutine = inits.isInitialized("dailyRoutine") ? new QDailyRoutine(forProperty("dailyRoutine")) : null;
+        this.place = inits.isInitialized("place") ? new com.routdoo.dailyroutine.module.place.domain.QPlace(forProperty("place")) : null;
     }
 
 }

@@ -2,12 +2,12 @@ package com.routdoo.dailyroutine.module.place.repository;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.routdoo.dailyroutine.module.place.domain.Place;
-import com.routdoo.dailyroutine.module.place.dto.PlaceDefaultDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceSummaryInfo;
 
 /**
@@ -29,23 +29,45 @@ public interface PlaceRepository extends JpaRepository<Place, String>,PlaceCusto
 			+ "	p.title title,"
 			+ " p.mapx mapx,"
 			+ " p.mapy mapy,"
-			+ " likeCnt,"
-			+ " commentCnt,"
+			+ " (select count(*) from place_like where place_num = p.place_num) likeCnt,"
+			+ " (select count(*) from place_comment where place_num = p.place_num) commentCnt,"
 			+ "   ("
-			+ "       6371 * acos ( cos ( radians(:#{#place.mapx}) ) "
+			+ "       6371 * acos ( cos ( radians(:mapx) ) "
 			+ "          * cos( radians( p.mapx ) ) "
-			+ "          * cos( radians( p.mapy ) - radians(:#{#place.mapy}) ) "
-			+ "          + sin ( radians(:#{#place.mapx}) ) * sin( radians( p.mapx) ) "
+			+ "          * cos( radians( p.mapy ) - radians(:mapy) ) "
+			+ "          + sin ( radians(:mapx) ) * sin( radians( p.mapx) ) "
 			+ "       )"
 			+ "   ) AS distance "
 			+ "	FROM place p "
-			+ " left join ( select count(*) likeCnt from place_like ) pl on pl.place_num = p.place_num "
-			+ " left join ( select count(*) commentCnt from place_comment ) pc on pc.place_num = p.place_num "
 			+ " WHERE p.pstatus = 'Y' "
 			+ " HAVING distance < 2 "
-			+ "	ORDER BY distance "
-			+ "	LIMIT :#{#place.pageable.offset}, :#{#place.pageable.pageSize}"
-    ,nativeQuery = true)
-	List<PlaceSummaryInfo> selectPlaceSelfLocationList(@Param("place") PlaceDefaultDto searchDto) throws Exception;
+			+ "	ORDER BY distance ",
+			countQuery = ""
+					+ "select count(*) from ("
+					+ "select "
+					+ "   ("
+					+ "       6371 * acos ( cos ( radians(:mapx) ) "
+					+ "          * cos( radians( p.mapx ) ) "
+					+ "          * cos( radians( p.mapy ) - radians(:mapy) ) "
+					+ "          + sin ( radians(:mapx) ) * sin( radians( p.mapx) ) "
+					+ "       )"
+					+ "   ) AS distance "
+					+ " from place p"
+					+ " WHERE p.pstatus = 'Y' "
+					+ " HAVING distance < 2 "
+					+ "	) T",
+			nativeQuery = true)
+	List<PlaceSummaryInfo> selectPlaceSelfLocationList(@Param("mapx") String mapx, @Param("mapy") String mapy , Pageable pageable) throws Exception;
+	
+	
+	
+	/**
+	 * 장소번호 별 조회
+	 * @param list
+	 * @return
+	 * @throws Exception
+	 */
+	@Query("SELECT p from Place p where p.placeNum IN (:placeNum)")
+	List<Place> selectPlaceNumListIn(@Param("placeNum") List<String> list) throws Exception;
 
 }

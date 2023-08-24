@@ -42,9 +42,9 @@ public class PlaceUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@GetMapping(value="/place/mylocation/list")
+	@GetMapping("/place/mylocation/list")
 	public Map<String,Object> selectPlaceMyLocationList(PlaceDefaultDto searchDto) throws Exception {
-		
+		System.out.println("##### mapx :"+searchDto.getMapx());
 		//목록 조회
 		List<PlaceSummaryInfo> places = placeService.selectPlaceSelfLocationList(searchDto);
 		modelMap.put("placeList", places);
@@ -58,7 +58,7 @@ public class PlaceUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@GetMapping(value="/place/list")
+	@GetMapping("/place/list")
 	public Map<String,Object> selectPlaceList(PlaceDefaultDto searchDto) throws Exception {
 		
 		Page<PlaceDto> places = placeService.selectPlacePageList(searchDto);
@@ -74,7 +74,7 @@ public class PlaceUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@GetMapping(value="/place/view")
+	@GetMapping("/place/view")
 	public Map<String,Object> selectPlaceView(@RequestParam("placeNum") String placeNum) throws Exception {
 		
 		PlaceDto dto = new PlaceDto();
