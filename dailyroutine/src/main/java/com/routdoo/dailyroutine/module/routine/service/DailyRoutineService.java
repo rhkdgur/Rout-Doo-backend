@@ -107,6 +107,17 @@ public class DailyRoutineService {
 	}
 	
 	/**
+	 * 일상 정보 상세 정보
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	public DailyRoutineTimeLineDto selectDailyRoutineTimeLineView(DailyRoutineTimeLineDto dto) throws Exception {
+		DailyRoutineTimeLine timeLine =  dailyRoutineTimeLineRepository.findById(dto.getIdx()).orElse(null);
+		return new DailyRoutineTimeLineDto(timeLine);
+	}
+	
+	/**
 	 * 일상 스케줄 등록
 	 * @param dto
 	 * @return
@@ -172,8 +183,8 @@ public class DailyRoutineService {
 	 * @throws Exception
 	 */
 	@Transactional
-	public void insertDailyRoutineTimeLine(DailyRoutineTimeLineDto dto) throws Exception {
-		dailyRoutineTimeLineRepository.save(dto.toEntity());
+	public boolean insertDailyRoutineTimeLine(DailyRoutineTimeLineDto dto) throws Exception {
+		return dailyRoutineTimeLineRepository.save(dto.toEntity()) != null ? true : false;
 	}
 	
 	/**

@@ -1,6 +1,6 @@
 package com.routdoo.dailyroutine.common.web;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class BaseController {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	/**결과 처리 Map*/
-	protected Map<String,Object> modelMap = new HashMap<>();
+	protected Map<String,Object> modelMap = new LinkedHashMap<>();
 
 	protected final String MGN_URL = "/mgn";
 }

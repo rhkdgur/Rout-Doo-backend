@@ -117,4 +117,8 @@ public class Member {
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();
 	}
+	
+	public void addId(String id) {
+		this.id = id;
+	}
 }

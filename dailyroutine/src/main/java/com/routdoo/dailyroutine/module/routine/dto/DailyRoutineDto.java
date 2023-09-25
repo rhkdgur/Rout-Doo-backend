@@ -30,6 +30,9 @@ public class DailyRoutineDto {
 	
 	private Long idx = 0L;
 	
+	/**제목*/
+	private String title ="";
+	
 	/**시작일자*/
 	private String startDate;
 	
@@ -53,6 +56,7 @@ public class DailyRoutineDto {
 
 	public DailyRoutineDto(DailyRoutine entity) {
 		this.idx = entity.getIdx();
+		this.title = entity.getTitle();
 		this.startDate = entity.getStartDate();
 		this.endDate = entity.getEndDate();
 		this.dayType = entity.getDayType().name();

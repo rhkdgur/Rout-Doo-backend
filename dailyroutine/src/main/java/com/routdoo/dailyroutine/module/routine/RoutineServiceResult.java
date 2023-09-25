@@ -1,7 +1,5 @@
 package com.routdoo.dailyroutine.module.routine;
 
-import com.routdoo.dailyroutine.auth.AuthResultCodeType;
-
 import lombok.Getter;
 import lombok.Setter;
 

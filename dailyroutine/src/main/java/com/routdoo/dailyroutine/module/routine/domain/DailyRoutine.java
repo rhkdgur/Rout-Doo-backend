@@ -53,6 +53,11 @@ public class DailyRoutine{
 	@Comment("일련번호")
 	private Long idx;
 	
+	@Column(length = 300)
+	@Comment("큰 제목")
+	/**큰 제목*/
+	private String title;
+	
 	/**
 	 * 일상 정보
 	 */
@@ -84,6 +89,7 @@ public class DailyRoutine{
 		if(dto.getIdx() != 0) {
 			this.idx = dto.getIdx();
 		}
+		this.title = dto.getTitle();
 		this.startDate = dto.getStartDate();
 		this.endDate = dto.getEndDate();
 		this.dayType = RoutineDayType.valueOf(dto.getDayType());
