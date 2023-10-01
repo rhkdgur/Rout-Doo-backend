@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.routdoo.dailyroutine.auth.member.dto.FriendListDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
+import com.routdoo.dailyroutine.auth.member.service.FriendListService;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
 import com.routdoo.dailyroutine.common.web.BaseController;
 import com.routdoo.dailyroutine.module.routine.RoutineResultCodeType;
@@ -46,6 +50,9 @@ public class DailyRoutinUserController extends BaseController{
 	
 	/**회원 서비스*/
 	private final MemberService memberService;
+	
+	/**친구목록 서비스  */
+	private final FriendListService friendListService;
 	
 	/**
 	 * 스케줄 목록 조회
@@ -237,8 +244,47 @@ public class DailyRoutinUserController extends BaseController{
 	 * @throws Exception
 	 */
 	@GetMapping(value="/daily/routine/invite/list")
-	public Map<String,Object> selectInviteList(@RequestParam("idx") Long dailyIdx) throws Exception {
+	public Map<String,Object> selectInviteList(
+												@RequestParam(value="name",required = false) String name,
+												@RequestParam("idx") Long dailyIdx,
+												@RequestParam(value="page",defaultValue = "1") int page) throws Exception {
+		modelMap = new LinkedHashMap<>();
 		
-		return null;
+		//회원목록  
+		MemberDefaultDto searchDto = new MemberDefaultDto();
+		searchDto.setStype("name");
+		searchDto.setSstring(name);
+		searchDto.setPage(page);
+		Page<MemberDto> memberList = memberService.selectMemberPageList(searchDto);
+		List<Map<String,String>> members = new ArrayList<>();
+		for(MemberDto dto : memberList) {
+			Map<String,String> map = new LinkedHashMap<>();
+			map.put("id", dto.getId());
+			map.put("name", dto.getNickname());
+			map.put("gender", dto.getGender());
+			map.put("age", dto.getAge()+"");
+			members.add(map);
+		}
+		modelMap.put("memberList", members);
+		modelMap.put("memberTotalPage", memberList.getTotalPages());
+		modelMap.put("memberPage", memberList.getPageable());
+		
+		//친구목록 
+		FriendListDto friendListDto = new FriendListDto();
+		friendListDto.setMemberId("");
+		friendListDto.setBlockYn("N");
+		List<FriendListDto> friendList = friendListService.selectFriendListResultList(friendListDto);
+		List<Map<String,String>> freinds = new ArrayList<>();
+		for(FriendListDto dto : friendList) {
+			Map<String,String> map = new LinkedHashMap<>();
+			map.put("idx", dto.getIdx()+"");
+			map.put("name",dto.getMemberDto().getNickname());
+			map.put("gender", dto.getMemberDto().getGender());
+			map.put("age",dto.getMemberDto().getAge()+"");
+			freinds.add(map);
+		}
+		modelMap.put("friendList", freinds);
+		
+		return modelMap;
 	}
 }

@@ -1,6 +1,7 @@
 package com.routdoo.dailyroutine.auth.member.dto;
 
 import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,4 +90,25 @@ public class MemberDto {
 		return map;
 	}
 	
+	/**
+	 * 만 나이로 계산 
+	 * @return
+	 */
+	public int getAge() {
+		if(!this.birth.isEmpty()) {
+			Calendar current = Calendar.getInstance();
+	        int currentYear  = current.get(Calendar.YEAR);
+	        int currentMonth = current.get(Calendar.MONTH) + 1;
+	        int currentDay   = current.get(Calendar.DAY_OF_MONTH);
+	        int birthYear = Integer.parseInt(birth.split("-")[0]);
+	        int birthMonth = Integer.parseInt(birth.split("-")[1]);
+	        int birthDay = Integer.parseInt(birth.split("-")[2]);
+	        int age = currentYear - birthYear;
+	        // 만약 생일이 지나지 않았으면 -1
+	        if (birthMonth * 100 + birthDay > currentMonth * 100 + currentDay) 
+	            age--;
+	        return age;
+		}
+		return 0;
+	}
 }
