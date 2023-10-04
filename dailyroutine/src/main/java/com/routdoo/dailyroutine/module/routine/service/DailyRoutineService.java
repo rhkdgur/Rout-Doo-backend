@@ -7,16 +7,22 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.routdoo.dailyroutine.auth.member.domain.Member;
+import com.routdoo.dailyroutine.auth.member.repository.MemberRepository;
+import com.routdoo.dailyroutine.auth.member.service.MemberService;
 import com.routdoo.dailyroutine.module.place.domain.Place;
 import com.routdoo.dailyroutine.module.place.repository.PlaceRepository;
 import com.routdoo.dailyroutine.module.routine.RoutineResultCodeType;
 import com.routdoo.dailyroutine.module.routine.RoutineServiceResult;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
+import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineInvite;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineTimeLine;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDefaultDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDto;
+import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineInviteDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineTimeLineDefaultDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineTimeLineDto;
+import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineInviteRepository;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineRepository;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineTimeLineRepository;
 
@@ -43,7 +49,11 @@ public class DailyRoutineService {
 	
 	private final DailyRoutineTimeLineRepository dailyRoutineTimeLineRepository;
 	
+	private final DailyRoutineInviteRepository dailyRoutineInviteRepository;
+	
 	private final PlaceRepository placeRepository;
+	
+	private final MemberRepository memberRepository;
 	
 	/**
 	 * 일상 정보 페이징(0)
@@ -211,5 +221,43 @@ public class DailyRoutineService {
 	@Transactional
 	public void deleteDailyRoutineTimeLine(DailyRoutineTimeLineDto dto) throws Exception {
 		dailyRoutineTimeLineRepository.deleteById(dto.getIdx());
+	}
+	
+	
+	/**
+	 * 친구 초대 처리
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public RoutineServiceResult<?> insertDailyRoutineInvite(DailyRoutineInviteDto dto) throws Exception {
+		
+		//촌재 유무 확인
+		DailyRoutine dailyRoutine = dailyRoutineRepository.findById(dto.getDailyIdx()).orElse(null);
+		Member member = memberRepository.findById(dto.getMemberId()).orElse(null);
+		
+		if(dailyRoutine == null || member == null) {
+			return new RoutineServiceResult<>(RoutineResultCodeType.FAIL,"잘못된 접근입니다.");
+		}
+		
+		DailyRoutineInvite invite = dto.toEntity();
+		invite.addDailyRoutineAndMember(dailyRoutine, member);
+		invite = dailyRoutineInviteRepository.save(invite);
+		if(invite == null) {
+			return new RoutineServiceResult<>(RoutineResultCodeType.FAIL,"등록 처리시 에러가 발생했습니다.");
+		}
+		return new RoutineServiceResult<>(RoutineResultCodeType.OK,"초대 되었습니다.");
+	}
+	
+	/**
+	 * 친구 초대 삭제
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public void deleteDailyRoutineInvite(DailyRoutineInviteDto dto) throws Exception {
+		dailyRoutineInviteRepository.deleteById(dto.getIdx());
 	}
 }

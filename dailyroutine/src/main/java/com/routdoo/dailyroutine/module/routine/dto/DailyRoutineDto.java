@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
-import com.routdoo.dailyroutine.module.routine.service.RoutineDayType;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

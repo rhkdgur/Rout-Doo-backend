@@ -23,6 +23,7 @@ import com.routdoo.dailyroutine.module.routine.RoutineResultCodeType;
 import com.routdoo.dailyroutine.module.routine.RoutineServiceResult;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDefaultDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDto;
+import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineInviteDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineTimeLineDefaultDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineTimeLineDto;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
@@ -286,5 +287,53 @@ public class DailyRoutinUserController extends BaseController{
 		modelMap.put("friendList", freinds);
 		
 		return modelMap;
+	}
+	
+	/**
+	 * 친구 초대
+	 * @param dailyIdx
+	 * @param memberId
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping(value="/daily/routine/invite/ins")
+	public ResponseEntity<String> insertDailyRoutineInvite(@RequestParam("dailyIdx") Long dailyIdx,
+														   @RequestParam("memberId") String memberId) throws Exception {
+		RoutineServiceResult<?> result = null;
+		try {
+			DailyRoutineInviteDto dto = new DailyRoutineInviteDto();
+			dto.setDailyIdx(dailyIdx);
+			dto.setMemberId(memberId);
+			result = dailyRoutineService.insertDailyRoutineInvite(dto);
+			if(!RoutineResultCodeType.OK.name().equals(result.getCodeType().name())) {
+				return new ResponseEntity<String>(result.getMessage(),HttpStatus.BAD_REQUEST);
+			}
+		}catch (Exception e) {
+			logger.error(" insert daily routine error : {}",e.getMessage());
+			return new ResponseEntity<String>("초대시 에러가 발생했습니다.",HttpStatus.BAD_REQUEST);
+		}
+		
+		return new ResponseEntity<String>(result.getMessage(),HttpStatus.OK);
+	}
+	
+	/**
+	 * 친구 초대 삭제
+	 * @param idx
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping(value="/daily/routine/invite/del")
+	public ResponseEntity<?> deleteDailyRoutineInvite(@RequestParam("idx") Long idx) throws Exception {
+		
+		try {
+			DailyRoutineInviteDto dto = new DailyRoutineInviteDto();
+			dto.setIdx(idx);
+			dailyRoutineService.deleteDailyRoutineInvite(dto);
+		}catch (Exception e) {
+			logger.error("delete daily routine invite error : {}",e.getMessage());
+			return new ResponseEntity<String>("초대 삭제시 에러가 발생했습니다.",HttpStatus.BAD_REQUEST);
+		}
+		
+		return new ResponseEntity<String>("삭제 되었습니다.",HttpStatus.OK);
 	}
 }

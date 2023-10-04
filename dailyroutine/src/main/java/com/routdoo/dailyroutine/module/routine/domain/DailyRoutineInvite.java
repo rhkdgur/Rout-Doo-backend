@@ -18,7 +18,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,7 +38,7 @@ public class DailyRoutineInvite {
 	@JoinColumn(name="daily_idx")
 	private DailyRoutine dailyRoutine = new DailyRoutine();
 	
-	@OneToOne()
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="member_id")
 	private Member member = new Member();
 	
@@ -62,4 +61,8 @@ public class DailyRoutineInvite {
 		this.modifyDate = dto.getModifyDate();
 	}
 	
+	public void addDailyRoutineAndMember(DailyRoutine dailyRoutine, Member member) {
+		this.dailyRoutine = dailyRoutine;
+		this.member = member;
+	}
 }

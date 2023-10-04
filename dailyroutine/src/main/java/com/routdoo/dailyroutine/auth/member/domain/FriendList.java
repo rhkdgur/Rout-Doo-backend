@@ -8,7 +8,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.routdoo.dailyroutine.auth.member.dto.FriendListDto;
-import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -52,10 +51,6 @@ public class FriendList {
 	@JoinColumn(name="member_id")
 	private Member member = new Member();
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="daily_idx")
-	private DailyRoutine dailyRoutine = new DailyRoutine();
-	
 	@Comment("차단여부")
 	@Column(length=1,columnDefinition = "char")
 	private String blockYn = "";
@@ -76,7 +71,6 @@ public class FriendList {
 			this.idx = dto.getIdx();
 		}
 		this.member.addId(dto.getMemberId());
-		this.dailyRoutine.addIdx(dto.getDailyIdx());
 		this.blockYn = dto.getBlockYn();
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();

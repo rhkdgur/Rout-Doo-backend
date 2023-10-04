@@ -42,7 +42,6 @@ public class FriendListDto implements Serializable{
 	public FriendListDto(FriendList entity) {
 		this.idx = entity.getIdx();
 		this.memberId = entity.getMember().getId();
-		this.dailyIdx = entity.getDailyRoutine().getIdx();
 		this.blockYn = entity.getBlockYn();
 		this.memberDto = new MemberDto(entity.getMember());
 		this.createDate = entity.getCreateDate();

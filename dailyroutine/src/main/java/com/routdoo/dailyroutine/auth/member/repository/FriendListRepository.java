@@ -17,7 +17,7 @@ import com.routdoo.dailyroutine.auth.member.domain.FriendList;
 public interface FriendListRepository extends JpaRepository<FriendList, Long> {
 
 	/**회원기준으로 친구 목록 조회 */
-	@EntityGraph(attributePaths = {"member","dailyRoutine"},type = EntityGraphType.LOAD)
+	@EntityGraph(attributePaths = {"member"},type = EntityGraphType.LOAD)
 	@Query("SELECT f FROM FriendList f where blockYn := blockYn and memberId := memberId")
 	List<FriendList> findByBlockYnWithMemberById(String blockYn,String memberId);
 }
