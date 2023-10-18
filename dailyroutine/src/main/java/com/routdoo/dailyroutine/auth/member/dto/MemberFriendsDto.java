@@ -3,7 +3,7 @@ package com.routdoo.dailyroutine.auth.member.dto;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import com.routdoo.dailyroutine.auth.member.domain.FriendList;
+import com.routdoo.dailyroutine.auth.member.domain.MemberFriends;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FriendListDto implements Serializable{
+public class MemberFriendsDto implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,11 +35,11 @@ public class FriendListDto implements Serializable{
 	
 	private MemberDto memberDto = new MemberDto();
 	
-	public FriendList toEntity() {
-		return FriendList.builder().dto(this).build();
+	public MemberFriends toEntity() {
+		return MemberFriends.builder().dto(this).build();
 	}
 	
-	public FriendListDto(FriendList entity) {
+	public MemberFriendsDto(MemberFriends entity) {
 		this.idx = entity.getIdx();
 		this.memberId = entity.getMember().getId();
 		this.blockYn = entity.getBlockYn();

@@ -34,6 +34,8 @@ public class QDailyRoutine extends EntityPathBase<DailyRoutine> {
 
     public final StringPath startDate = createString("startDate");
 
+    public final StringPath title = createString("title");
+
     public QDailyRoutine(String variable) {
         super(DailyRoutine.class, forVariable(variable));
     }

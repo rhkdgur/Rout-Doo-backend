@@ -9,8 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.routdoo.dailyroutine.auth.AuthResultCodeType;
 import com.routdoo.dailyroutine.auth.AuthServiceResult;
 import com.routdoo.dailyroutine.auth.member.domain.Member;
+import com.routdoo.dailyroutine.auth.member.domain.MemberMyspot;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberMyspotDefaultDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberMyspotDto;
+import com.routdoo.dailyroutine.auth.member.repository.MemberMyspotRepository;
 import com.routdoo.dailyroutine.auth.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -34,6 +38,8 @@ public class MemberService {
 
 	/**회원 리포지토리*/
 	private final MemberRepository memberRepository;
+	
+	private final MemberMyspotRepository memberMyspotRepository;
 	
 	
 	/**
@@ -130,6 +136,71 @@ public class MemberService {
 		}else {
 			return new AuthServiceResult<>(AuthResultCodeType.INFO_FAIL,"삭제 되지않았습니다.");
 		}
+	}
+	
+	/**
+	 * 나만의 장소
+	 * @param searchDto
+	 * @return
+	 * @throws Exception
+	 */
+	public Page<MemberMyspotDto> selectMemberMyspotList(MemberMyspotDefaultDto searchDto) throws Exception {		
+		return memberRepository.selectMemberMyspotList(searchDto);
+	}
+	
+	/**
+	 * 나만의 장소 no limit
+	 * @param searchDto
+	 * @return
+	 * @throws Exception
+	 */
+	public List<MemberMyspotDto> selectMemberMyspotNolimitList(MemberMyspotDefaultDto searchDto) throws Exception {
+		return memberRepository.selectMemberMyspotNolimitList(searchDto);
+	}
+	
+	/**
+	 * 나만의 장소 상세 조회
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	public MemberMyspotDto selectMemberMyspot(MemberMyspotDto dto) throws Exception {
+		return memberRepository.selectMemberMyspot(dto);
+	}
+	
+	
+	/**
+	 * 나만의 장소 등록
+	 * @param dto
+	 * @throws Exception
+	 */
+	@Transactional
+	public void saveMemberMyspot(MemberMyspotDto dto) throws Exception {
+		
+		MemberMyspot myspot = memberMyspotRepository.findById(dto.getIdx()).orElse(null);
+		if(myspot == null) {
+			memberMyspotRepository.save(dto.toEntity());
+		}else {
+			myspot.changeMemberMyspot(dto);
+		}
+		
+	}
+	
+	/**
+	 * 나만의 장소 삭제
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public boolean deleteMemberMyspot(MemberMyspotDto dto) throws Exception {	
+
+		MemberMyspot myspot = memberMyspotRepository.findById(dto.getIdx()).orElse(null); 
+		if(myspot == null) {
+			return false;
+		}
+		memberMyspotRepository.deleteById(dto.getIdx());
+		return true;
 	}
 
 }

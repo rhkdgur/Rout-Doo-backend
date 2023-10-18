@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.routdoo.dailyroutine.auth.member.dto.FriendListDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.service.FriendListService;
@@ -270,13 +270,13 @@ public class DailyRoutinUserController extends BaseController{
 		modelMap.put("memberTotalPage", memberList.getTotalPages());
 		modelMap.put("memberPage", memberList.getPageable());
 		
-		//친구목록 
-		FriendListDto friendListDto = new FriendListDto();
-		friendListDto.setMemberId("");
-		friendListDto.setBlockYn("N");
-		List<FriendListDto> friendList = friendListService.selectFriendListResultList(friendListDto);
+		//친구목록
+		MemberFriendsDto friendsDto = new MemberFriendsDto();
+		friendsDto.setMemberId("");
+		friendsDto.setBlockYn("N");
+		List<MemberFriendsDto> friendList = friendListService.selectFriendListResultList(friendsDto);
 		List<Map<String,String>> freinds = new ArrayList<>();
-		for(FriendListDto dto : friendList) {
+		for(MemberFriendsDto dto : friendList) {
 			Map<String,String> map = new LinkedHashMap<>();
 			map.put("idx", dto.getIdx()+"");
 			map.put("name",dto.getMemberDto().getNickname());

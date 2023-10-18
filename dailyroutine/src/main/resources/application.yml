@@ -24,3 +24,10 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type: trace  
+
+    
+jwt:
+  header: Authorization
+  secret:
+      key: daily-routine-rout-doo-kr
+  access-token-validity-in-seconds: 1800 # 30 min

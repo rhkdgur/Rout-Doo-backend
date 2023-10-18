@@ -1,6 +1,8 @@
 package com.routdoo.dailyroutine.auth.member.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,7 +14,10 @@ import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
@@ -81,6 +86,10 @@ public class Member {
 	@LastModifiedDate
 	private LocalDateTime modifyDate;
 	
+	/**친구목록*/
+	@OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
+	private List<MemberFriends> friendList = new ArrayList<MemberFriends>(); 
+	
 	/**
 	 * entity에 dto 정보 처리 생성자
 	 * @param dto
@@ -116,6 +125,14 @@ public class Member {
 		this.mbti = dto.getMbti();
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();
+	}
+	
+	public void addFriendList(List<MemberFriends> list) {
+		this.friendList = list;
+	}
+	
+	public void addFreind(MemberFriends friend) {
+		this.friendList.add(friend);
 	}
 	
 	public void addId(String id) {

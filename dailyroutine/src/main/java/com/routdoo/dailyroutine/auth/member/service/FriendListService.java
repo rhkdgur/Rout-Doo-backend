@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.routdoo.dailyroutine.auth.member.domain.FriendList;
-import com.routdoo.dailyroutine.auth.member.dto.FriendListDto;
+import com.routdoo.dailyroutine.auth.member.domain.MemberFriends;
+import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
 import com.routdoo.dailyroutine.auth.member.repository.FriendListRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -23,9 +23,9 @@ public class FriendListService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<FriendListDto> selectFriendListResultList(FriendListDto dto) throws Exception {
-		List<FriendList> list = friendListRepository.findByBlockYnWithMemberById(dto.getBlockYn(),dto.getMemberId());
-		return list.stream().map(x-> new FriendListDto(x)).collect(Collectors.toList());
+	public List<MemberFriendsDto> selectFriendListResultList(MemberFriendsDto dto) throws Exception {
+		List<MemberFriends> list = friendListRepository.findByBlockYnWithMemberById(dto.getBlockYn(),dto.getMemberId());
+		return list.stream().map(x-> new MemberFriendsDto(x)).collect(Collectors.toList());
 	}
 	
 	/***
@@ -34,8 +34,8 @@ public class FriendListService {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean insertFriendList(FriendListDto dto) throws Exception {
-		 FriendList entity = friendListRepository.save(dto.toEntity());
+	public boolean insertFriendList(MemberFriendsDto dto) throws Exception {
+		 MemberFriends entity = friendListRepository.save(dto.toEntity());
 		 return entity == null ? false : true;
 	}
 	
@@ -44,7 +44,7 @@ public class FriendListService {
 	 * @param dto
 	 * @throws Exception
 	 */
-	public void deleteFriendList(FriendListDto dto) throws Exception {
+	public void deleteFriendList(MemberFriendsDto dto) throws Exception {
 		friendListRepository.deleteById(dto.getIdx());
 	}
 }
