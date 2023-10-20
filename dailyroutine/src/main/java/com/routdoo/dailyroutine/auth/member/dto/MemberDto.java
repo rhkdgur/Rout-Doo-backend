@@ -95,7 +95,7 @@ public class MemberDto {
 	 * @return
 	 */
 	public int getAge() {
-		if(!this.birth.isEmpty()) {
+		if(this.birth != null && !this.birth.isEmpty()) {
 			Calendar current = Calendar.getInstance();
 	        int currentYear  = current.get(Calendar.YEAR);
 	        int currentMonth = current.get(Calendar.MONTH) + 1;

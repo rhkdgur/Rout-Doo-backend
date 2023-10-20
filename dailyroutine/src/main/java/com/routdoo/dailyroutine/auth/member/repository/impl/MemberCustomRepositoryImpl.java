@@ -9,22 +9,17 @@ import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
 import com.routdoo.dailyroutine.auth.member.domain.Member;
-import com.routdoo.dailyroutine.auth.member.domain.MemberMyspot;
 import com.routdoo.dailyroutine.auth.member.domain.QMember;
-import com.routdoo.dailyroutine.auth.member.domain.QMemberMyspot;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberMyspotDefaultDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberMyspotDto;
 import com.routdoo.dailyroutine.auth.member.repository.MemberCustomRepository;
-import com.routdoo.dailyroutine.auth.member.repository.MemberMyspotCustomRepository;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 
 import lombok.NoArgsConstructor;
 
 @Repository
 @NoArgsConstructor
-public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl implements MemberCustomRepository,MemberMyspotCustomRepository{
+public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl implements MemberCustomRepository{
 	
 	/**
 	 * 목록 조회
@@ -33,15 +28,6 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 	 */
 	private BooleanBuilder commonQuery(MemberDefaultDto searchDto) {
 		QMember qMember = QMember.member;
-		BooleanBuilder sql = new BooleanBuilder();
-		return sql;
-	}
-	
-	/**
-	 * 나만의 장소 
-	 * @return
-	 */
-	private BooleanBuilder commonMyspotQuery(MemberMyspotDefaultDto searchDto) {
 		BooleanBuilder sql = new BooleanBuilder();
 		return sql;
 	}
@@ -67,6 +53,9 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 		QMember qMember = QMember.member;
 		
 		Member member = jpaQuery.selectFrom(qMember).where(new BooleanBuilder().and(qMember.id.eq(dto.getId()))).fetchOne();
+		if(member == null) {
+			return null;
+		}
 		
 		return new MemberDto(member);
 	}
@@ -87,59 +76,5 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 		
 		return new PageImpl<>(list.stream().map(x->new MemberDto(x)).collect(Collectors.toList()),searchDto.getPageable(),cnt);
 	}
-
-	/**
-	 * 나만의 장소 목록
-	 */
-	@Override
-	public Page<MemberMyspotDto> selectMemberMyspotList(MemberMyspotDefaultDto searchDto) throws Exception {
-		
-		QMember qMember = QMember.member;
-		QMemberMyspot myspot = QMemberMyspot.memberMyspot;
-		
-		Long cnt = jpaQuery.select(myspot.count()).from(myspot)
-				.leftJoin(qMember).fetchJoin()
-				.where(commonMyspotQuery(searchDto))
-				.fetchFirst();
-		
-		List<MemberMyspot> list = jpaQuery.selectFrom(myspot)
-				.leftJoin(qMember).fetchJoin()
-				.where(commonMyspotQuery(searchDto))
-				.offset(searchDto.getPageable().getOffset())
-				.limit(searchDto.getPageable().getPageSize()).fetch();
-		
-		return new PageImpl<>(list.stream().map(x->new MemberMyspotDto(x)).collect(Collectors.toList()),searchDto.getPageable(),cnt);
-	}
-
-	/**
-	 * 나만의 장소 상세 조회
-	 */
-	@Override
-	public MemberMyspotDto selectMemberMyspot(MemberMyspotDto dto) throws Exception {
-		QMemberMyspot qMyspot = QMemberMyspot.memberMyspot;
-		QMember qMember = QMember.member;
-		
-		MemberMyspot myspot = jpaQuery.selectFrom(qMyspot).join(qMember)
-				.where(new BooleanBuilder().and(qMyspot.idx.eq(dto.getIdx()))).fetchFirst();
-		
-		return new MemberMyspotDto(myspot);
-	}
-
-	
-	/**
-	 * 나만의 장소 페이징 x
-	 */
-	@Override
-	public List<MemberMyspotDto> selectMemberMyspotNolimitList(MemberMyspotDefaultDto searchDto) throws Exception {
-		QMemberMyspot qMyspot = QMemberMyspot.memberMyspot;
-		QMember qMember = QMember.member;
-		
-		List<MemberMyspot> list = jpaQuery.selectFrom(qMyspot)
-				.leftJoin(qMember).fetchJoin()
-				.where(commonMyspotQuery(searchDto)).fetch();
-		
-		return list.stream().map(x -> new MemberMyspotDto(x)).collect(Collectors.toList());
-	}
-
 	
 }

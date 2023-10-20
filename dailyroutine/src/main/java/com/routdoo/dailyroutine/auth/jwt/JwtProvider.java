@@ -2,6 +2,7 @@ package com.routdoo.dailyroutine.auth.jwt;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -10,10 +11,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import com.routdoo.dailyroutine.auth.member.service.MemberService;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -39,9 +39,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtProvider {
 	
+	private final JwtProperties jwtProperties;
+	
 	protected final Logger logger = LoggerFactory.getLogger(JwtProvider.class);
 	
-	protected static final String AUTHORITIES_KEY = "routdoo-auth";
+	protected final String AUTHORITIES_KEY = "routdoo-auth";
 	
 	private String secret;
 	
@@ -49,12 +51,9 @@ public class JwtProvider {
 
 	private Key key;
 	
-	private final MemberService memberService;
-	
 	@PostConstruct
 	protected void init() {
-		JwtProperties jwtProperties = new JwtProperties();
-		this.secret = jwtProperties.getSecretKey();
+		this.secret = jwtProperties.getSecretkey();
 		this.tokenValidityInMilliseconds = jwtProperties.getAccessTokenValidityInSeconds() * 1000;
 		//시크릿 값을 decode해서 키 변수에 할당
         byte[] keyBytes = Decoders.BASE64.decode(secret);
@@ -63,49 +62,76 @@ public class JwtProvider {
 
 	
 	/**
-	 * 토큰 생성
+	 * 권한 토큰 생성
 	 * @param authentication
 	 * @return
 	 */
-	public String createToken(Authentication authentication) {
+	public String createAdminToken(Authentication authentication) {
 		
 		String authorities = authentication.getAuthorities().stream()
 				.map(GrantedAuthority::getAuthority)
 				.collect(Collectors.joining(","));
 		
-		long now = (new Date()).getTime();
-		Date validity = new Date(now + this.tokenValidityInMilliseconds);
+		Date now = new Date();
+		long time = now.getTime();
+		Date validity = new Date(time + this.tokenValidityInMilliseconds);
 		
 		return Jwts.builder()
+				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
 				.setSubject(authentication.getName())
 				.claim(AUTHORITIES_KEY, authorities)
 				.signWith(key,SignatureAlgorithm.HS512)
+				.setIssuedAt(now)
 				.setExpiration(validity)
 				.compact();
 	}
 	
+
 	// 권한정보 획득
     // Spring Security 인증과정에서 권한확인을 위한 기능
     public Authentication getAuthentication(String token) {
     	return null;
     }
 	
+	/**
+	 * 커스텀 토큰 생성
+	 * @param map
+	 * @return
+	 */
+	public String createCustomToken(Map<String,Object> map,String subject) {
+		Date now = new Date();
+		long time = now.getTime();
+		Date validity = new Date(time + this.tokenValidityInMilliseconds);		
+		return Jwts.builder()
+				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+				.setSubject(subject)
+				.setClaims(map)
+				.signWith(key,SignatureAlgorithm.HS512)
+				.setIssuedAt(now)
+				.setExpiration(validity)
+				.compact();
+	}
 	
-	// 토큰 유효성 검사
-    public boolean validateToken(String token) {
+	
+	// 토큰 유효성 검사 결과 데이터
+    public JwtServiceResult<Claims> getValidateToken(String token) {
+    	Claims claims  = null;
         try {
-            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-            return true;
+            claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             logger.info("잘못된 JWT 서명입니다.");
+            return new JwtServiceResult<>(JwtResultCodeType.TOKEN_FAIL);
         } catch (ExpiredJwtException e) {
             logger.info("만료된 JWT 토큰입니다.");
+            return new JwtServiceResult<>(JwtResultCodeType.TOKEN_EXPIRE);
         } catch (UnsupportedJwtException e) {
             logger.info("지원되지 않는 JWT 토큰입니다.");
+            return new JwtServiceResult<>(JwtResultCodeType.TOKEN_NOTSUPPORT);
         } catch (IllegalArgumentException e) {
             logger.info("JWT 토큰이 잘못되었습니다.");
+            return new JwtServiceResult<>(JwtResultCodeType.TOKEN_WRONG);
         }
-        return false;
+        return new JwtServiceResult<>(JwtResultCodeType.TOKEN_OK,claims);
     }
 	
 }

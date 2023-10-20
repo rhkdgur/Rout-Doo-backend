@@ -4,6 +4,10 @@ spring:
     username: routdoo
     password: routdoo
     driver-class-name: com.mysql.cj.jdbc.Driver
+   
+  redis:
+    host: localhost
+    port: 6379
  
   jpa:
     open-in-view: false # OSIV 성능 최적화를 위한 false 처리 영속성 컨텍스트 와 db 커넥션의 범위를 조정하여 리소스 낭비를 줄임
@@ -14,6 +18,7 @@ spring:
 #        show_sql: true
         format_sql: true
         default_batch_fetch_size : 500  ## 컬렉션 조회 최적화를 위한 설정
+  
         
 #  mvc:
 #    pathmatch:
@@ -28,6 +33,5 @@ logging:
     
 jwt:
   header: Authorization
-  secret:
-      key: daily-routine-rout-doo-kr
+  secretkey: dailyRoutineroutDooKRauthtokendfi1efj82wl5dkqqinm9q4nkeei31kd2i1p2lDakeif3k2ide2dielfidkjewli
   access-token-validity-in-seconds: 1800 # 30 min

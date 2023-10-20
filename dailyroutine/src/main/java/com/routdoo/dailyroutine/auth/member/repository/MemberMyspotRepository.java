@@ -16,6 +16,6 @@ import com.routdoo.dailyroutine.auth.member.domain.MemberMyspot;
 * -----------------------------------------------------------
 * 2023.10.18        ghgo       최초 생성
  */
-public interface MemberMyspotRepository extends JpaRepository<MemberMyspot, Long>{
+public interface MemberMyspotRepository extends JpaRepository<MemberMyspot, Long>,MemberMyspotCustomRepository{
 
 }

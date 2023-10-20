@@ -78,7 +78,6 @@ public class Place {
 	private String detailText;
 	
 	@Comment("사용여부")
-	@Column(length = 1,columnDefinition = "char")
 	@Enumerated(EnumType.STRING)
 	private PlaceStatusType pstatus;
 	

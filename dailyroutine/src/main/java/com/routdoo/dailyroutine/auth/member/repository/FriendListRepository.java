@@ -14,5 +14,5 @@ import com.routdoo.dailyroutine.auth.member.domain.MemberFriends;
 public interface FriendListRepository extends JpaRepository<MemberFriends, Long> {
 
 	/**친구 목록 차단 여부 및 회원 정보로 조회*/
-	List<MemberFriends> findByBlockYnWithMemberById(String blockYn,String memberId);
+	List<MemberFriends> findByBlockYnAndMember_Id(String blockYn,String memberId);
 }

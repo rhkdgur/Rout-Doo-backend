@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.routdoo.dailyroutine.auth.member.domain.Member;
+import com.routdoo.dailyroutine.auth.admin.domain.Admin;
 
 import lombok.Getter;
 
@@ -22,14 +22,14 @@ import lombok.Getter;
 * 2023.10.19        ghgo       최초 생성
  */
 @Getter
-public class AuthMemberDetails implements UserDetails{
+public class AuthAdminDetails implements UserDetails{
 
 	private static final long serialVersionUID = 1L;
 	
-	private final Member member;
+	private final Admin admin;
 	
-	public AuthMemberDetails(Member member) {
-		this.member = member;
+	public AuthAdminDetails(Admin admin) {
+		this.admin = admin;
 	}
 
 	@Override
@@ -39,12 +39,12 @@ public class AuthMemberDetails implements UserDetails{
 
 	@Override
 	public String getPassword() {
-		return member.getPw();
+		return admin.getPw();
 	}
 
 	@Override
 	public String getUsername() {
-		return member.getNickname();
+		return admin.getName();
 	}
 
 	@Override

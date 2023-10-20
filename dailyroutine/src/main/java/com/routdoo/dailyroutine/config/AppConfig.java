@@ -14,8 +14,13 @@ public class AppConfig {
 	@PersistenceContext
 	private EntityManager em;
 
+	/**
+	 *query dsl
+	 * @return
+	 */
     @Bean
     public JPAQueryFactory queryFactory() {
         return new JPAQueryFactory(em);
     }
+    
 }

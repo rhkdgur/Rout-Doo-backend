@@ -4,8 +4,11 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.routdoo.dailyroutine.auth.AuthResultCodeType;
@@ -31,10 +34,13 @@ import lombok.RequiredArgsConstructor;
 * 2023.07.14        ghgo       최초 생성
  */
 @RestController
+@CrossOrigin("*")
 @RequiredArgsConstructor
 public class MemberUserController extends BaseController{
 	
 	private final MemberService memberService;
+	
+	private final MemberSession memberSession;
 	
 	/**
 	 * 회원 정보 (요약정보)
@@ -69,11 +75,15 @@ public class MemberUserController extends BaseController{
 	 * @throws Exception
 	 */
 	@PostMapping("/member/login")
-	public ResponseEntity<?> loginMember(MemberDto dto,HttpSession session) throws Exception {
+	public ResponseEntity<?> loginMember(@RequestParam("id") String id,
+										 @RequestParam("pw") String pw) throws Exception {
 		
+		MemberDto dto = new MemberDto();
+		dto.setId(id);
+		dto.setPw(pw);
 		AuthServiceResult<MemberDto> result = memberService.loginMember(dto);
 		if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
-			if(AuthResultCodeType.INFO_ALREADYID.name().equals(result.getCodeType().name())) {
+			if(AuthResultCodeType.INFO_NOMATCH.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<>(result.getMessage(),HttpStatus.NOT_MODIFIED);
 			}else {
 				return new ResponseEntity<>("로그인시 이슈가 발생하였습니다.",HttpStatus.BAD_REQUEST);
@@ -81,8 +91,8 @@ public class MemberUserController extends BaseController{
 		}
 		
 		//세션 정보 등록
-		MemberSession.createMemberSession(session, (MemberDto)result.getElement());
-		return new ResponseEntity<>("로그인 되었습니다.",HttpStatus.OK);
+		String token = memberSession.createMemberSession((MemberDto)result.getElement());
+		return new ResponseEntity<>(token,HttpStatus.OK);
 	}
 	
 	/**
@@ -92,8 +102,10 @@ public class MemberUserController extends BaseController{
 	 * @throws Exception
 	 */
 	@PostMapping("/member/logout")
-	public ResponseEntity<?> logoutMember(HttpSession session) throws Exception {
-		MemberSession.clearMemberSession(session);
+	public ResponseEntity<?> logoutMember(String token) throws Exception {
+		if(!memberSession.clearMemberSession(token)) {
+			return new ResponseEntity<>("세션 만료된 정보 입니다.",HttpStatus.ALREADY_REPORTED);
+		};
 		return new ResponseEntity<>("로그아웃 되었습니다.",HttpStatus.OK);
 	}
 	
@@ -116,7 +128,8 @@ public class MemberUserController extends BaseController{
 				return new ResponseEntity<>("회원 가입이 진행되지 않았습니다.",HttpStatus.NOT_MODIFIED);
 			}
 		}catch (Exception e) {
-			logger.error("### member create error");
+			e.printStackTrace();
+			logger.error("### member create error {}",e.getMessage());
 			return new ResponseEntity<>("회원 가입시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
 		}
 		
@@ -130,7 +143,7 @@ public class MemberUserController extends BaseController{
 	 * @throws Exception
 	 */
 	@PostMapping("/member/act/upd")
-	public ResponseEntity<?> updateMember(MemberDto dto) throws Exception {
+	public ResponseEntity<?> updateMember(@RequestBody MemberDto dto) throws Exception {
 		try {
 			AuthServiceResult<MemberDto> result =  memberService.saveMember(dto);
 			if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {

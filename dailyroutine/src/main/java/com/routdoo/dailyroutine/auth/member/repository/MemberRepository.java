@@ -16,7 +16,7 @@ import com.routdoo.dailyroutine.auth.member.domain.Member;
 * -----------------------------------------------------------
 * 2023.07.11        ghgo       최초 생성
  */
-public interface MemberRepository extends JpaRepository<Member, String>,MemberCustomRepository,MemberMyspotCustomRepository{
+public interface MemberRepository extends JpaRepository<Member, String>,MemberCustomRepository{
 
 	/***
 	 * 아이디와 비밀번호 입력 확인
@@ -25,5 +25,4 @@ public interface MemberRepository extends JpaRepository<Member, String>,MemberCu
 	 * @return
 	 */
 	Member findByIdAndPw(String id, String pw);
-	
 }

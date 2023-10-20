@@ -70,14 +70,14 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 		List<PlaceDto> placesList = new ArrayList<PlaceDto>();
 		
 		Long cnt = jpaQuery.select(qPlace.count()).from(qPlace)
-				.leftJoin(qPlaceComment).fetchJoin()
-				.leftJoin(qPlaceLike).fetchJoin()
+				.leftJoin(qPlaceComment).on(qPlace.placeNum.eq(qPlaceComment.place.placeNum)).fetchJoin()
+				.leftJoin(qPlaceLike).on(qPlace.placeNum.eq(qPlaceLike.place.placeNum)).fetchJoin()
 				.where(commonQuery(searchDto))
 				.fetchOne();
 		
 		List<Place> places = jpaQuery.selectFrom(qPlace)
-					.leftJoin(qPlaceComment).fetchJoin()
-					.leftJoin(qPlaceLike).fetchJoin()
+					.leftJoin(qPlaceComment).on(qPlace.placeNum.eq(qPlaceComment.place.placeNum)).fetchJoin()
+					.leftJoin(qPlaceLike).on(qPlace.placeNum.eq(qPlaceLike.place.placeNum)).fetchJoin()
 					.where(commonQuery(searchDto))
 					.offset(searchDto.getPageable().getOffset())
 					.limit(searchDto.getPageable().getPageSize())

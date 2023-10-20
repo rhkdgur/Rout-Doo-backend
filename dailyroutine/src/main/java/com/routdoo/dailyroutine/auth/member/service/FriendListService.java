@@ -24,7 +24,7 @@ public class FriendListService {
 	 * @throws Exception
 	 */
 	public List<MemberFriendsDto> selectFriendListResultList(MemberFriendsDto dto) throws Exception {
-		List<MemberFriends> list = friendListRepository.findByBlockYnWithMemberById(dto.getBlockYn(),dto.getMemberId());
+		List<MemberFriends> list = friendListRepository.findByBlockYnAndMember_Id(dto.getBlockYn(),dto.getMemberId());
 		return list.stream().map(x-> new MemberFriendsDto(x)).collect(Collectors.toList());
 	}
 	

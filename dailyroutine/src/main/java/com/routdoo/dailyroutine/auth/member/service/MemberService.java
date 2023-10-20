@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.routdoo.dailyroutine.auth.AuthResultCodeType;
 import com.routdoo.dailyroutine.auth.AuthServiceResult;
+import com.routdoo.dailyroutine.auth.Typehandler.PasswordEncoderTypeHandler;
 import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.auth.member.domain.MemberMyspot;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
@@ -62,6 +63,14 @@ public class MemberService {
 		return memberRepository.selectMember(dto);
 	}
 	
+	public MemberDto selectMemberSession(String id){
+		Member member = memberRepository.findById(id).orElse(null);
+		if(member == null) {
+			return null;
+		}
+		return new MemberDto(member); 
+	}
+	
 	
 	/**
 	 * 회원 리스트(paging)
@@ -85,12 +94,15 @@ public class MemberService {
 		
 		Member member = null;
 		try {
-			member = memberRepository.findByIdAndPw(dto.getId(), dto.getPw());
-			//이미 존재하는 경우 리턴 
-			if(member != null) {
-				return new AuthServiceResult<>(AuthResultCodeType.INFO_ALREADYID);
+			member = memberRepository.findById(dto.getId()).orElse(null);
+			//존재하지않는 경우
+			if(member == null) {
+				return new AuthServiceResult<>(AuthResultCodeType.INFO_NOMATCH);
 			}	
-			member = memberRepository.save(dto.toEntity());
+			//비밀번호 동일하지 않을 경우
+			if(!PasswordEncoderTypeHandler.matches(dto.getPw(), member.getPw())) {
+				return new AuthServiceResult<>(AuthResultCodeType.INFO_NOMATCH);
+			}
 		}catch (Exception e) {
 			return new AuthServiceResult<>(AuthResultCodeType.INFO_FAIL);
 		}
@@ -109,6 +121,8 @@ public class MemberService {
 	public AuthServiceResult<MemberDto> saveMember(MemberDto dto) throws Exception {
 		Member member = memberRepository.findById(dto.getId()).orElse(null);
 		if(member == null) {
+			String pw = dto.getPw();
+			dto.setPw(PasswordEncoderTypeHandler.encode(pw));
 			member = memberRepository.save(dto.toEntity());
 			if(member != null) {
 				return new AuthServiceResult<>(AuthResultCodeType.INFO_OK,new MemberDto(member));
@@ -145,7 +159,7 @@ public class MemberService {
 	 * @throws Exception
 	 */
 	public Page<MemberMyspotDto> selectMemberMyspotList(MemberMyspotDefaultDto searchDto) throws Exception {		
-		return memberRepository.selectMemberMyspotList(searchDto);
+		return memberMyspotRepository.selectMemberMyspotList(searchDto);
 	}
 	
 	/**
@@ -155,7 +169,7 @@ public class MemberService {
 	 * @throws Exception
 	 */
 	public List<MemberMyspotDto> selectMemberMyspotNolimitList(MemberMyspotDefaultDto searchDto) throws Exception {
-		return memberRepository.selectMemberMyspotNolimitList(searchDto);
+		return memberMyspotRepository.selectMemberMyspotNolimitList(searchDto);
 	}
 	
 	/**
@@ -165,7 +179,7 @@ public class MemberService {
 	 * @throws Exception
 	 */
 	public MemberMyspotDto selectMemberMyspot(MemberMyspotDto dto) throws Exception {
-		return memberRepository.selectMemberMyspot(dto);
+		return memberMyspotRepository.selectMemberMyspot(dto);
 	}
 	
 	
