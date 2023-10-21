@@ -40,6 +40,9 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 		if(searchDto.getSstring() != null && !searchDto.getSstring().isEmpty()) {
 			
 		}
+		if(searchDto.getMemberId() != null && !searchDto.getMemberId().isEmpty()) {
+			sql.and(qDailyRoutine.member.id.eq(searchDto.getMemberId()));
+		}
 		if(searchDto.getIdx() != 0L) {
 			sql.and(qDailyRoutine.idx.eq(searchDto.getIdx()));
 		}		

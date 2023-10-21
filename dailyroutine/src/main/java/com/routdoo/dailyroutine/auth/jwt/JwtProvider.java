@@ -86,6 +86,22 @@ public class JwtProvider {
 				.compact();
 	}
 	
+	public String createAdminRefreshToken(Authentication authentication) {
+		Claims claims = Jwts.claims().setSubject(authentication.getName());
+		Date now = new Date();
+		long time = now.getTime();
+		Date validity = new Date(time + this.tokenValidityInMilliseconds);
+		
+		return Jwts.builder()
+				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+				.setSubject(authentication.getName())
+				.setClaims(claims)
+				.signWith(key,SignatureAlgorithm.HS512)
+				.setIssuedAt(now)
+				.setExpiration(validity)
+				.compact();
+	}
+	
 
 	// 권한정보 획득
     // Spring Security 인증과정에서 권한확인을 위한 기능
@@ -112,12 +128,30 @@ public class JwtProvider {
 				.compact();
 	}
 	
+	//
+	public String createCustomRefreshToken(Claims claims,String subject) {
+		
+		Date now = new Date();
+		long time = now.getTime();
+		Date validity = new Date(time + this.tokenValidityInMilliseconds);
+		
+		return Jwts.builder()
+				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+				.setSubject(subject)
+				.setClaims(claims)
+				.signWith(key,SignatureAlgorithm.HS512)
+				.setIssuedAt(now)
+				.setExpiration(validity)
+				.compact();
+	}
+	
 	
 	// 토큰 유효성 검사 결과 데이터
     public JwtServiceResult<Claims> getValidateToken(String token) {
     	Claims claims  = null;
         try {
             claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+            logger.debug("#### {} ",claims);
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             logger.info("잘못된 JWT 서명입니다.");
             return new JwtServiceResult<>(JwtResultCodeType.TOKEN_FAIL);

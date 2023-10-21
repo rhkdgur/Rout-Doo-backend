@@ -50,7 +50,7 @@ public class QDailyRoutineInvite extends EntityPathBase<DailyRoutineInvite> {
 
     public QDailyRoutineInvite(Class<? extends DailyRoutineInvite> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.dailyRoutine = inits.isInitialized("dailyRoutine") ? new QDailyRoutine(forProperty("dailyRoutine")) : null;
+        this.dailyRoutine = inits.isInitialized("dailyRoutine") ? new QDailyRoutine(forProperty("dailyRoutine"), inits.get("dailyRoutine")) : null;
         this.member = inits.isInitialized("member") ? new com.routdoo.dailyroutine.auth.member.domain.QMember(forProperty("member")) : null;
     }
 

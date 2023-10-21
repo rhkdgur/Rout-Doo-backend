@@ -24,19 +24,19 @@ import lombok.Getter;
 public class JwtToken {
 
 	@Id
-	/**일련번호*/
-	private String id;
-	
 	/**토큰*/
 	private String token;
+	
+	/**아이디*/
+	private String id;
 	
 	/**생성일자*/
 	private LocalDateTime createDate;
 	
 	
-	public void addJwtToken(String id, String token, LocalDateTime createDate) {
-		this.id = id;
+	public void addJwtToken(String token,String id, LocalDateTime createDate) {
 		this.token = token;
+		this.id = id;
 		this.createDate = createDate;
 	}
  

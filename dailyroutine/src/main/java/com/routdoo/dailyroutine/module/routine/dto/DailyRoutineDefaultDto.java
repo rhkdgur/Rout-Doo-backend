@@ -26,6 +26,8 @@ public class DailyRoutineDefaultDto extends BaseVo {
 	/**일상 일련번호*/
 	private Long idx = 0L;
 	
+	private String memberId= "";
+	
 	/**시작일자*/
 	private String startDate = "";
 	

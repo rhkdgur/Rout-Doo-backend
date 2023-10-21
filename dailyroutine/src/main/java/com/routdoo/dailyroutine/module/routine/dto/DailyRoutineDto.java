@@ -47,6 +47,9 @@ public class DailyRoutineDto {
 	/**수정일자*/
 	private LocalDateTime modifyDate;
 	
+	/**회원 아이디*/
+	private String memberId = "";
+	
 	List<DailyRoutineTimeLineDto> timeList = new ArrayList<DailyRoutineTimeLineDto>();
 	
 	public DailyRoutine toEntity() {
@@ -55,6 +58,7 @@ public class DailyRoutineDto {
 
 	public DailyRoutineDto(DailyRoutine entity) {
 		this.idx = entity.getIdx();
+		this.memberId = entity.getMember().getId();
 		this.title = entity.getTitle();
 		this.startDate = entity.getStartDate();
 		this.endDate = entity.getEndDate();

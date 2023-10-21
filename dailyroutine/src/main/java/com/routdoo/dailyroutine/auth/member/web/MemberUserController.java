@@ -128,7 +128,6 @@ public class MemberUserController extends BaseController{
 				return new ResponseEntity<>("회원 가입이 진행되지 않았습니다.",HttpStatus.NOT_MODIFIED);
 			}
 		}catch (Exception e) {
-			e.printStackTrace();
 			logger.error("### member create error {}",e.getMessage());
 			return new ResponseEntity<>("회원 가입시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
 		}

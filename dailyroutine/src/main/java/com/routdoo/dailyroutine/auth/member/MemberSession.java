@@ -53,7 +53,7 @@ public class MemberSession {
 		String token = jwtProvider.createCustomToken(map,"user");
 		LocalDateTime nowTime = LocalDateTime.now();
 		JwtToken jwtToken = new JwtToken();
-		jwtToken.addJwtToken(dto.getId(), token, nowTime);
+		jwtToken.addJwtToken(token,dto.getId(), nowTime);
 		jwtTokenRepository.save(jwtToken);
 		return token;
 	}
@@ -68,13 +68,33 @@ public class MemberSession {
 				.equals(JwtResultCodeType.TOKEN_OK.name()) ? true : false;
 	}
 	
+	public String refreshMemberSession(String token) {
+		if(isSessionKeepup(token)) {
+			Claims vo =  jwtProvider.getValidateToken(token).getElement();
+			token = jwtProvider.createCustomRefreshToken(vo, "user");
+			JwtToken jwtToken = new JwtToken();
+			jwtToken = jwtTokenRepository.findById(vo.get("token").toString()).orElse(null);
+			if(jwtToken != null) {	
+				jwtTokenRepository.delete(jwtToken);
+				LocalDateTime nowTime = LocalDateTime.now();
+				jwtToken.addJwtToken(token, jwtToken.getId(), nowTime);
+			}
+			jwtTokenRepository.save(jwtToken);
+			return token;
+		}
+		return null;
+	}
+	
 	/**
 	 * 회원 정보
 	 * @param session
 	 * @return
 	 */
-	public MemberDto getMemberSession(String id) {
-		return memberService.selectMemberSession(id);
+	public MemberDto getMemberSession(String token) {
+		Claims vo =  jwtProvider.getValidateToken(token).getElement();
+		JwtToken jwtToken = new JwtToken();
+		jwtToken = jwtTokenRepository.findById(vo.get("token").toString()).orElse(null);
+		return memberService.selectMemberSession(jwtToken.getId());
 	}
 	
 	/**
@@ -84,10 +104,8 @@ public class MemberSession {
 	public boolean clearMemberSession(String token) {
 		if(isSessionKeepup(token)) {
 			Claims vo =  jwtProvider.getValidateToken(token).getElement();
-			JwtToken jwtToken = new JwtToken();
-			jwtToken.addJwtToken(vo.get("id").toString(), token, null);
-			if(jwtTokenRepository.findById(jwtToken.getId()).orElse(null) != null) {
-				jwtTokenRepository.delete(jwtToken);
+			if(jwtTokenRepository.findById(vo.get("token").toString()).orElse(null) != null) {
+				jwtTokenRepository.deleteById(vo.get("token").toString());
 				return true;
 			}else {
 				return false;

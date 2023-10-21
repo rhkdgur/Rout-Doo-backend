@@ -7,15 +7,17 @@ import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
+import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
 import com.routdoo.dailyroutine.auth.member.service.FriendListService;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
 import com.routdoo.dailyroutine.common.web.BaseController;
@@ -55,6 +57,9 @@ public class DailyRoutinUserController extends BaseController{
 	/**친구목록 서비스  */
 	private final FriendListService friendListService;
 	
+	/**회원 로그인 세션*/
+	private final MemberSession memberSession;
+	
 	/**
 	 * 스케줄 목록 조회
 	 * @param date
@@ -62,11 +67,20 @@ public class DailyRoutinUserController extends BaseController{
 	 * @throws Exception
 	 */
 	@GetMapping("/daily/routine/list")
-	public Map<String,Object> selectDailyRoutineList(@RequestParam("date") String date) throws Exception {
+	public Map<String,Object> selectDailyRoutineList(
+													@RequestParam("date") String date,
+													@RequestParam("token") String token
+													) throws Exception {
 		
 		modelMap = new LinkedHashMap<String, Object>();
 		
+		if(!memberSession.isSessionKeepup(token)) {
+			modelMap.put("result","session-out");
+			return modelMap; 
+		}
+		
 		DailyRoutineDefaultDto searchDto = new DailyRoutineDefaultDto();
+		searchDto.setMemberId(memberSession.getMemberSession(token).getId());
 		searchDto.setToDate(date);
 		
 		Page<DailyRoutineDto> list = dailyRoutineService.selectDailyRoutinePageList(searchDto);
@@ -134,9 +148,16 @@ public class DailyRoutinUserController extends BaseController{
 	 * @throws Exception
 	 */
 	@PostMapping(value="/daily/routine/ins")
-	public ResponseEntity<String> insertDailyRoutineBatch(DailyRoutineDto dailyRoutineDto) throws Exception {
+	public ResponseEntity<String> insertDailyRoutineBatch(DailyRoutineDto dailyRoutineDto,
+														  @RequestParam("token") String token) throws Exception {
 		RoutineServiceResult<?> result = null;
 		try {
+			
+			if(!memberSession.isSessionKeepup(token)) {
+				return new ResponseEntity<String>("세션이 만료되었습니다.",HttpStatus.GONE); 
+			}
+			
+			dailyRoutineDto.setMemberId(memberSession.getMemberSession(token).getId());
 			result = dailyRoutineService.insertDailyRoutine(dailyRoutineDto);
 			if(!RoutineResultCodeType.OK.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<String>(result.getMessage(),HttpStatus.BAD_REQUEST);
@@ -156,10 +177,15 @@ public class DailyRoutinUserController extends BaseController{
 	 * @throws Exception
 	 */
 	@PostMapping(value="/daily/routine/del")
-	public ResponseEntity<String> deleteDailyRoutine(@RequestParam("idx") Long idx) throws Exception {
+	public ResponseEntity<String> deleteDailyRoutine(@RequestParam("idx") Long idx,
+													 @RequestParam("token") String token) throws Exception {
 		
 		RoutineServiceResult<?> result = null;
 		try {
+			if(!memberSession.isSessionKeepup(token)) {
+				return new ResponseEntity<String>("세션이 만료되었습니다.",HttpStatus.GONE); 
+			}
+			
 			DailyRoutineDto dto = new DailyRoutineDto();
 			dto.setIdx(idx);
 			result = dailyRoutineService.deleteDailyRoutine(dto);
@@ -180,9 +206,14 @@ public class DailyRoutinUserController extends BaseController{
 	 * @throws Exception
 	 */
 	@PostMapping(value="/daily/routine/time/line/act",params="amode=ins")
-	public ResponseEntity<String> insertDailyRoutineTimeLine(DailyRoutineTimeLineDto dailyRoutineTimeLineDto) throws Exception {
+	public ResponseEntity<String> insertDailyRoutineTimeLine(DailyRoutineTimeLineDto dailyRoutineTimeLineDto,
+															 @RequestParam("token") String token) throws Exception {
 		
 		try {
+			if(!memberSession.isSessionKeepup(token)) {
+				return new ResponseEntity<String>("세션이 만료되었습니다.",HttpStatus.GONE); 
+			}
+			
 			if(!dailyRoutineService.insertDailyRoutineTimeLine(dailyRoutineTimeLineDto)) {
 				return new ResponseEntity<String>("등록 되지 않았습니다. 다시 진행해주시기 바랍니다.",HttpStatus.BAD_REQUEST);
 			}
@@ -201,10 +232,15 @@ public class DailyRoutinUserController extends BaseController{
 	 * @throws Exception
 	 */
 	@PostMapping(value="/daily/routine/time/line/act",params="amode=upd")
-	public ResponseEntity<String> updateDailyRoutineTimeLine(DailyRoutineTimeLineDto dailyRoutineTimeLineDto) throws Exception {
+	public ResponseEntity<String> updateDailyRoutineTimeLine(DailyRoutineTimeLineDto dailyRoutineTimeLineDto,
+															@RequestParam("token") String token) throws Exception {
 		
 		RoutineServiceResult<?> result = null;
 		try {
+			if(!memberSession.isSessionKeepup(token)) {
+				return new ResponseEntity<String>("세션이 만료되었습니다.",HttpStatus.GONE); 
+			}
+			
 			result = dailyRoutineService.updateDailyRoutineTimeLine(dailyRoutineTimeLineDto);
 			if(!RoutineResultCodeType.OK.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<String>(result.getMessage(),HttpStatus.BAD_REQUEST);
@@ -224,9 +260,14 @@ public class DailyRoutinUserController extends BaseController{
 	 * @throws Exception
 	 */
 	@PostMapping(value="/daily/routine/time/line/act",params="amode=del")
-	public ResponseEntity<String> deleteDailyRoutineTimeLine(@RequestParam("idx") Long idx) throws Exception {
+	public ResponseEntity<String> deleteDailyRoutineTimeLine(@RequestParam("idx") Long idx,
+															@RequestParam("token") String token) throws Exception {
 		
 		try {
+			if(!memberSession.isSessionKeepup(token)) {
+				return new ResponseEntity<String>("세션이 만료되었습니다.",HttpStatus.GONE); 
+			}
+			
 			DailyRoutineTimeLineDto dto = new DailyRoutineTimeLineDto();
 			dto.setIdx(idx);
 			dailyRoutineService.deleteDailyRoutineTimeLine(dto);
