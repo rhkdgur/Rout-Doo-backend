@@ -7,9 +7,13 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import com.routdoo.dailyroutine.auth.admin.service.AdminService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -40,6 +44,8 @@ import lombok.RequiredArgsConstructor;
 public class JwtProvider {
 	
 	private final JwtProperties jwtProperties;
+	
+	private final AdminService adminService;
 	
 	protected final Logger logger = LoggerFactory.getLogger(JwtProvider.class);
 	
@@ -105,8 +111,10 @@ public class JwtProvider {
 
 	// 권한정보 획득
     // Spring Security 인증과정에서 권한확인을 위한 기능
-    public Authentication getAuthentication(String token) {
-    	return null;
+    public Authentication getAuthentication(String token) throws Exception {
+    	JwtServiceResult<Claims> result = getValidateToken(token);
+    	UserDetails principal = adminService.loadUserByUsername(result.getElement().getSubject());
+    	return new UsernamePasswordAuthenticationToken(principal,"",principal.getAuthorities());
     }
 	
 	/**

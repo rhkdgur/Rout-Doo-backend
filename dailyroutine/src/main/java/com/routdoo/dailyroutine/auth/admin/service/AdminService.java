@@ -1,6 +1,8 @@
 package com.routdoo.dailyroutine.auth.admin.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import com.routdoo.dailyroutine.auth.admin.domain.Admin;
 import com.routdoo.dailyroutine.auth.admin.dto.AdminDefaultDto;
 import com.routdoo.dailyroutine.auth.admin.dto.AdminDto;
 import com.routdoo.dailyroutine.auth.admin.repository.AdminRepository;
+import com.routdoo.dailyroutine.auth.jwt.dto.CustomeUserDetails;
 
 import lombok.RequiredArgsConstructor;
 
@@ -44,6 +47,24 @@ public class AdminService {
 			return new AdminDto(admin);
 		}
 		return null;
+	}
+	
+	/**
+	 * Jwt 권한 회원 정보 조
+	 * @param loginId
+	 * @return
+	 * @throws Exception
+	 */
+	public CustomeUserDetails loadUserByUsername(String loginId) throws Exception {
+		Admin admin = adminRepository.findById(loginId).orElse(null);
+		if(admin == null) {
+			throw new Exception();
+		}
+		Map<String,String> map = new HashMap<>();
+		map.put("username", admin.getName());
+		map.put("id", admin.getId());
+		map.put("password", admin.getPw());
+		return new CustomeUserDetails(map);
 	}
 	
 	/**
