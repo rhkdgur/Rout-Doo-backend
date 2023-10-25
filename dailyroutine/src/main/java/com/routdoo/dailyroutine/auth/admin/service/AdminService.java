@@ -64,7 +64,7 @@ public class AdminService {
 		map.put("username", admin.getName());
 		map.put("id", admin.getId());
 		map.put("password", admin.getPw());
-		return new CustomeUserDetails(map);
+		return new CustomeUserDetails(map,"ADMIN");
 	}
 	
 	/**

@@ -25,10 +25,10 @@ public class JwtToken {
 
 	@Id
 	/**토큰*/
-	private String token;
+	private String id;
 	
 	/**아이디*/
-	private String id;
+	private String token;
 	
 	/**생성일자*/
 	private LocalDateTime createDate;

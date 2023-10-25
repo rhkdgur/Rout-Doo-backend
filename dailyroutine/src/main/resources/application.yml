@@ -28,10 +28,10 @@ logging:
   config: classpath:log4j2.yml
   level:
     org.hibernate.SQL: debug
-    org.hibernate.type: trace  
+    org.hibernate.type: debug  
 
     
 jwt:
   header: Authorization
-  secretkey: dailyRoutineroutDooKRauthtokendfi1efj82wl5dkqqinm9q4nkeei31kd2i1p2lDakeif3k2ide2dielfidkjewli
+  secretkey: dailyRoutineroutDooKRauthtokendfi1efj82wl5dkqqinm9q4
   access-token-validity-in-seconds: 1800 # 30 min

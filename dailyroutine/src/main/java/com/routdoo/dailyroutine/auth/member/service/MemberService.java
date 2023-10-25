@@ -1,6 +1,8 @@
 package com.routdoo.dailyroutine.auth.member.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -9,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.routdoo.dailyroutine.auth.AuthResultCodeType;
 import com.routdoo.dailyroutine.auth.AuthServiceResult;
 import com.routdoo.dailyroutine.auth.Typehandler.PasswordEncoderTypeHandler;
+import com.routdoo.dailyroutine.auth.admin.domain.Admin;
+import com.routdoo.dailyroutine.auth.jwt.dto.CustomeUserDetails;
 import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.auth.member.domain.MemberMyspot;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
@@ -51,6 +55,23 @@ public class MemberService {
 	 */
 	public List<MemberDto> selectMemberList(MemberDefaultDto searchDto) throws Exception {
 		return memberRepository.selectMemberList(searchDto);
+	}
+	
+	/**
+	 * Jwt 권한 회원 정보 조
+	 * @param loginId
+	 * @return
+	 * @throws Exception
+	 */
+	public CustomeUserDetails loadUserByUsername(String loginId) throws Exception {
+		Member member = memberRepository.findById(loginId).orElse(null);
+		if(member == null) {
+			throw new Exception();
+		}
+		Map<String,String> map = new HashMap<>();
+		map.put("username", member.getId());
+		map.put("password", member.getPw());
+		return new CustomeUserDetails(map,"USER");
 	}
 	
 	/**

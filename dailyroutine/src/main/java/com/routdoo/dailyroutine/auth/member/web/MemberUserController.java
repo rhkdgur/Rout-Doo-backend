@@ -1,5 +1,6 @@
 package com.routdoo.dailyroutine.auth.member.web;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,8 +51,15 @@ public class MemberUserController extends BaseController{
 	 * @throws Exception
 	 */
 	@GetMapping("/member/view")
-	public Map<String,Object> selectMemberView(MemberDto dto) throws Exception {
+	public Map<String,Object> selectMemberView(@RequestHeader("Authorization") String token) throws Exception {
 		
+		modelMap = new LinkedHashMap<>();
+		
+		if(!memberSession.isSessionKeepup(token)) {
+			return modelMap;
+		}
+		
+		MemberDto dto = memberSession.getMemberSession(token);
 		dto = memberService.selectMember(dto);
 		modelMap.put("member", dto);
 		
@@ -61,11 +70,15 @@ public class MemberUserController extends BaseController{
 	 * 회원 요약 정보
 	 */
 	@GetMapping("/member/summary/view")
-	public Map<String,Object> summaryMemberView(MemberDto dto) throws Exception {
+	public Map<String,Object> summaryMemberView(@RequestHeader("Authorization") String token) throws Exception {
 		
+		modelMap = new LinkedHashMap<>();
+		
+		MemberDto dto = memberSession.getMemberSession(token);
 		dto = memberService.selectMember(dto);
 		modelMap.put("member", dto.getSummaryInfo());
 		return modelMap;
+		
 	}
 	
 	/**
@@ -102,7 +115,7 @@ public class MemberUserController extends BaseController{
 	 * @throws Exception
 	 */
 	@PostMapping("/member/logout")
-	public ResponseEntity<?> logoutMember(String token) throws Exception {
+	public ResponseEntity<?> logoutMember(@RequestHeader("Authorization") String token) throws Exception {
 		if(!memberSession.clearMemberSession(token)) {
 			return new ResponseEntity<>("세션 만료된 정보 입니다.",HttpStatus.ALREADY_REPORTED);
 		};

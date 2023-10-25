@@ -2,7 +2,6 @@ package com.routdoo.dailyroutine.auth.jwt;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -14,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.routdoo.dailyroutine.auth.admin.service.AdminService;
+import com.routdoo.dailyroutine.auth.member.service.MemberService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -47,9 +47,12 @@ public class JwtProvider {
 	
 	private final AdminService adminService;
 	
+	private final MemberService memberService;
+	
 	protected final Logger logger = LoggerFactory.getLogger(JwtProvider.class);
 	
-	protected final String AUTHORITIES_KEY = "routdoo-auth";
+	protected final String AUTHORITIES_A_KEY = "routdoo-admin-auth";
+	protected final String AUTHORITIES_U_KEY = "routdoo-user-auth";
 	
 	private String secret;
 	
@@ -72,7 +75,7 @@ public class JwtProvider {
 	 * @param authentication
 	 * @return
 	 */
-	public String createAdminToken(Authentication authentication) {
+	public String createToken(Authentication authentication,boolean isUser) {
 		
 		String authorities = authentication.getAuthorities().stream()
 				.map(GrantedAuthority::getAuthority)
@@ -81,28 +84,38 @@ public class JwtProvider {
 		Date now = new Date();
 		long time = now.getTime();
 		Date validity = new Date(time + this.tokenValidityInMilliseconds);
+		String AUTHORITIES_KEY = "";
+		String id = "";
+		if(isUser) {
+			id = "user";
+			AUTHORITIES_KEY = AUTHORITIES_U_KEY;
+		}else{
+			id = "admin";
+			AUTHORITIES_KEY = AUTHORITIES_A_KEY;
+		}
 		
 		return Jwts.builder()
 				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+				.setIssuer(id)
 				.setSubject(authentication.getName())
 				.claim(AUTHORITIES_KEY, authorities)
-				.signWith(key,SignatureAlgorithm.HS512)
+				.signWith(key,SignatureAlgorithm.HS256)
 				.setIssuedAt(now)
 				.setExpiration(validity)
 				.compact();
 	}
 	
-	public String createAdminRefreshToken(Authentication authentication) {
-		Claims claims = Jwts.claims().setSubject(authentication.getName());
+	public String createRefreshToken(String token) {
+		Claims claims = this.getValidateToken(token).getElement();
 		Date now = new Date();
 		long time = now.getTime();
 		Date validity = new Date(time + this.tokenValidityInMilliseconds);
 		
 		return Jwts.builder()
 				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-				.setSubject(authentication.getName())
+				.setSubject(claims.getSubject())
 				.setClaims(claims)
-				.signWith(key,SignatureAlgorithm.HS512)
+				.signWith(key,SignatureAlgorithm.HS256)
 				.setIssuedAt(now)
 				.setExpiration(validity)
 				.compact();
@@ -113,8 +126,13 @@ public class JwtProvider {
     // Spring Security 인증과정에서 권한확인을 위한 기능
     public Authentication getAuthentication(String token) throws Exception {
     	JwtServiceResult<Claims> result = getValidateToken(token);
-    	UserDetails principal = adminService.loadUserByUsername(result.getElement().getSubject());
-    	return new UsernamePasswordAuthenticationToken(principal,"",principal.getAuthorities());
+    	UserDetails principal = null;
+    	if(result.getElement().getIssuer().equals("admin")) {
+    		principal = adminService.loadUserByUsername(result.getElement().getSubject());
+    	}else {
+    		principal = memberService.loadUserByUsername(result.getElement().getSubject());
+    	}
+    	return new UsernamePasswordAuthenticationToken(principal,null,principal.getAuthorities());
     }
 	
 	/**
@@ -122,55 +140,55 @@ public class JwtProvider {
 	 * @param map
 	 * @return
 	 */
-	public String createCustomToken(Map<String,Object> map,String subject) {
-		Date now = new Date();
-		long time = now.getTime();
-		Date validity = new Date(time + this.tokenValidityInMilliseconds);		
-		return Jwts.builder()
-				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-				.setSubject(subject)
-				.setClaims(map)
-				.signWith(key,SignatureAlgorithm.HS512)
-				.setIssuedAt(now)
-				.setExpiration(validity)
-				.compact();
-	}
-	
-	//
-	public String createCustomRefreshToken(Claims claims,String subject) {
-		
-		Date now = new Date();
-		long time = now.getTime();
-		Date validity = new Date(time + this.tokenValidityInMilliseconds);
-		
-		return Jwts.builder()
-				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-				.setSubject(subject)
-				.setClaims(claims)
-				.signWith(key,SignatureAlgorithm.HS512)
-				.setIssuedAt(now)
-				.setExpiration(validity)
-				.compact();
-	}
-	
+//	public String createCustomToken(Map<String,Object> map,String subject) {
+//		Date now = new Date();
+//		long time = now.getTime();
+//		Date validity = new Date(time + this.tokenValidityInMilliseconds);		
+//		return Jwts.builder()
+//				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+//				.setSubject(subject)
+//				.setClaims(map)
+//				.signWith(key,SignatureAlgorithm.HS512)
+//				.setIssuedAt(now)
+//				.setExpiration(validity)
+//				.compact();
+//	}
+//	
+//	//
+//	public String createCustomRefreshToken(Claims claims,String subject) {
+//		
+//		Date now = new Date();
+//		long time = now.getTime();
+//		Date validity = new Date(time + this.tokenValidityInMilliseconds);
+//		
+//		return Jwts.builder()
+//				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
+//				.setSubject(subject)
+//				.setClaims(claims)
+//				.signWith(key,SignatureAlgorithm.HS512)
+//				.setIssuedAt(now)
+//				.setExpiration(validity)
+//				.compact();
+//	}
 	
 	// 토큰 유효성 검사 결과 데이터
     public JwtServiceResult<Claims> getValidateToken(String token) {
     	Claims claims  = null;
         try {
+        	logger.debug("### key : "+key+","+token);
             claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
             logger.debug("#### {} ",claims);
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            logger.info("잘못된 JWT 서명입니다.");
+            logger.error("잘못된 JWT 서명입니다.");
             return new JwtServiceResult<>(JwtResultCodeType.TOKEN_FAIL);
         } catch (ExpiredJwtException e) {
-            logger.info("만료된 JWT 토큰입니다.");
+            logger.error("만료된 JWT 토큰입니다.");
             return new JwtServiceResult<>(JwtResultCodeType.TOKEN_EXPIRE);
         } catch (UnsupportedJwtException e) {
-            logger.info("지원되지 않는 JWT 토큰입니다.");
+            logger.error("지원되지 않는 JWT 토큰입니다.");
             return new JwtServiceResult<>(JwtResultCodeType.TOKEN_NOTSUPPORT);
         } catch (IllegalArgumentException e) {
-            logger.info("JWT 토큰이 잘못되었습니다.");
+            logger.error("JWT 토큰이 잘못되었습니다.");
             return new JwtServiceResult<>(JwtResultCodeType.TOKEN_WRONG);
         }
         return new JwtServiceResult<>(JwtResultCodeType.TOKEN_OK,claims);

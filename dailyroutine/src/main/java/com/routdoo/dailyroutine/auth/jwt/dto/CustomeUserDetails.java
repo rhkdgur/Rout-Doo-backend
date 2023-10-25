@@ -1,9 +1,11 @@
 package com.routdoo.dailyroutine.auth.jwt.dto;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.Getter;
@@ -17,13 +19,16 @@ public class CustomeUserDetails implements UserDetails{
 	
 	private final Map<String,String> element;
 	
-	public CustomeUserDetails(Map<String,String> element){
+	private String auth = "";
+	
+	public CustomeUserDetails(Map<String,String> element,String auth){
 		this.element = element;
+		this.auth = auth;
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return null;
+		return List.of(new SimpleGrantedAuthority(this.auth));
 	}
 
 	@Override
