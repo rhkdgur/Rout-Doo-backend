@@ -3,6 +3,7 @@ package com.routdoo.dailyroutine.auth.member.web;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.routdoo.dailyroutine.auth.member.service.FriendListService;
+import com.routdoo.dailyroutine.common.web.BaseModuleController;
 
 import lombok.RequiredArgsConstructor;
 
@@ -13,7 +14,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RestController
 @RequiredArgsConstructor
-public class FriendListUserController {
+public class FriendListUserController extends BaseModuleController{
 
 	private final FriendListService friendListService;
 	

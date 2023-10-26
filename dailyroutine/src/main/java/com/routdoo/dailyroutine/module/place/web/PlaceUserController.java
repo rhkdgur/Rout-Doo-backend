@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.routdoo.dailyroutine.common.web.BaseController;
+import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.place.dto.PlaceCommentDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceDefaultDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceDto;
@@ -31,7 +32,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RestController
 @RequiredArgsConstructor
-public class PlaceUserController extends BaseController{
+public class PlaceUserController extends BaseModuleController{
 
 	private final PlaceService placeService;
 	
@@ -42,7 +43,7 @@ public class PlaceUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@GetMapping("/place/mylocation/list")
+	@GetMapping(API_URL+"/place/mylocation/list")
 	public Map<String,Object> selectPlaceMyLocationList(PlaceDefaultDto searchDto) throws Exception {
 		System.out.println("##### mapx :"+searchDto.getMapx());
 		//목록 조회
@@ -58,7 +59,7 @@ public class PlaceUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@GetMapping("/place/list")
+	@GetMapping(API_URL+"/place/list")
 	public Map<String,Object> selectPlaceList(PlaceDefaultDto searchDto) throws Exception {
 		
 		Page<PlaceDto> places = placeService.selectPlacePageList(searchDto);
@@ -74,7 +75,7 @@ public class PlaceUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@GetMapping("/place/view")
+	@GetMapping(API_URL+"/place/view")
 	public Map<String,Object> selectPlaceView(@RequestParam("placeNum") String placeNum) throws Exception {
 		
 		PlaceDto dto = new PlaceDto();

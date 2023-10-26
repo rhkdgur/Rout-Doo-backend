@@ -56,9 +56,8 @@ public class SecurityConfig{
 		).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 		.authorizeHttpRequests((authorize) -> authorize
 				.requestMatchers("/mgn/**").hasAuthority("ADMIN")
-				.requestMatchers(HttpMethod.GET,"/member/view").hasAuthority("USER")
-				.requestMatchers(HttpMethod.POST,"/member/login").permitAll()
-				.requestMatchers("/**").permitAll()
+				.requestMatchers(HttpMethod.POST,"/api/member/login","/api/member/signup").permitAll()
+				.requestMatchers("/api/**").hasAuthority("USER")
 		).addFilterBefore(new JwtAuthenticationFilter(jwtProvider,jwtTokenRepository), UsernamePasswordAuthenticationFilter.class)
 		.build();
 		

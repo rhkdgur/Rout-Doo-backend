@@ -18,9 +18,8 @@ import com.routdoo.dailyroutine.auth.AuthServiceResult;
 import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
-import com.routdoo.dailyroutine.common.web.BaseController;
+import com.routdoo.dailyroutine.common.web.BaseModuleController;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -38,7 +37,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @CrossOrigin("*")
 @RequiredArgsConstructor
-public class MemberUserController extends BaseController{
+public class MemberUserController extends BaseModuleController{
 	
 	private final MemberService memberService;
 	
@@ -50,7 +49,7 @@ public class MemberUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@GetMapping("/member/view")
+	@GetMapping(API_URL+"/member/view")
 	public Map<String,Object> selectMemberView(@RequestHeader("Authorization") String token) throws Exception {
 		
 		modelMap = new LinkedHashMap<>();
@@ -69,7 +68,7 @@ public class MemberUserController extends BaseController{
 	/**
 	 * 회원 요약 정보
 	 */
-	@GetMapping("/member/summary/view")
+	@GetMapping(API_URL+"/member/summary/view")
 	public Map<String,Object> summaryMemberView(@RequestHeader("Authorization") String token) throws Exception {
 		
 		modelMap = new LinkedHashMap<>();
@@ -87,7 +86,7 @@ public class MemberUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@PostMapping("/member/login")
+	@PostMapping(API_URL+"/member/login")
 	public ResponseEntity<?> loginMember(@RequestParam("id") String id,
 										 @RequestParam("pw") String pw) throws Exception {
 		
@@ -114,7 +113,7 @@ public class MemberUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@PostMapping("/member/logout")
+	@PostMapping(API_URL+"/member/logout")
 	public ResponseEntity<?> logoutMember(@RequestHeader("Authorization") String token) throws Exception {
 		if(!memberSession.clearMemberSession(token)) {
 			return new ResponseEntity<>("세션 만료된 정보 입니다.",HttpStatus.ALREADY_REPORTED);
@@ -128,7 +127,7 @@ public class MemberUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@PostMapping("/member/signup")
+	@PostMapping(API_URL+"/member/signup")
 	public ResponseEntity<?> createMember(MemberDto dto) throws Exception {
 		
 		try {
@@ -154,7 +153,7 @@ public class MemberUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@PostMapping("/member/act/upd")
+	@PostMapping(API_URL+"/member/act/upd")
 	public ResponseEntity<?> updateMember(@RequestBody MemberDto dto) throws Exception {
 		try {
 			AuthServiceResult<MemberDto> result =  memberService.saveMember(dto);

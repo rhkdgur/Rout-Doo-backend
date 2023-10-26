@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +19,7 @@ import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
 import com.routdoo.dailyroutine.auth.member.service.FriendListService;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
-import com.routdoo.dailyroutine.common.web.BaseController;
+import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.routine.RoutineResultCodeType;
 import com.routdoo.dailyroutine.module.routine.RoutineServiceResult;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDefaultDto;
@@ -46,7 +45,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RestController
 @RequiredArgsConstructor
-public class DailyRoutinUserController extends BaseController{
+public class DailyRoutinUserController extends BaseModuleController{
 
 	/**스케줄 서비스*/
 	private final DailyRoutineService dailyRoutineService;
@@ -66,7 +65,7 @@ public class DailyRoutinUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@GetMapping("/daily/routine/list")
+	@GetMapping(API_URL+"/daily/routine/list")
 	public Map<String,Object> selectDailyRoutineList(
 													@RequestParam("date") String date,
 													@RequestParam("token") String token
@@ -95,7 +94,7 @@ public class DailyRoutinUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@GetMapping("/daily/routine/view")
+	@GetMapping(API_URL+"/daily/routine/view")
 	public Map<String,Object> selectDailyRoutineList(@RequestParam("idx") Long dailyIdx) throws Exception {
 		
 		modelMap = new LinkedHashMap<String, Object>();
@@ -126,7 +125,7 @@ public class DailyRoutinUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@GetMapping("/daily/routine/time/line/view")
+	@GetMapping(API_URL+"/daily/routine/time/line/view")
 	public Map<String,Object> selectDailyRoutineTimelineView(@RequestParam("idx") Long idx) throws Exception {
 		
 		modelMap = new LinkedHashMap<String, Object>();
@@ -147,7 +146,7 @@ public class DailyRoutinUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@PostMapping(value="/daily/routine/ins")
+	@PostMapping(API_URL+"/daily/routine/ins")
 	public ResponseEntity<String> insertDailyRoutineBatch(DailyRoutineDto dailyRoutineDto,
 														  @RequestParam("token") String token) throws Exception {
 		RoutineServiceResult<?> result = null;
@@ -176,7 +175,7 @@ public class DailyRoutinUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@PostMapping(value="/daily/routine/del")
+	@PostMapping(API_URL+"/daily/routine/del")
 	public ResponseEntity<String> deleteDailyRoutine(@RequestParam("idx") Long idx,
 													 @RequestParam("token") String token) throws Exception {
 		
@@ -205,7 +204,7 @@ public class DailyRoutinUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@PostMapping(value="/daily/routine/time/line/act",params="amode=ins")
+	@PostMapping(value=API_URL+"/daily/routine/time/line/act",params="amode=ins")
 	public ResponseEntity<String> insertDailyRoutineTimeLine(DailyRoutineTimeLineDto dailyRoutineTimeLineDto,
 															 @RequestParam("token") String token) throws Exception {
 		
@@ -259,7 +258,7 @@ public class DailyRoutinUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@PostMapping(value="/daily/routine/time/line/act",params="amode=del")
+	@PostMapping(value=API_URL+"/daily/routine/time/line/act",params="amode=del")
 	public ResponseEntity<String> deleteDailyRoutineTimeLine(@RequestParam("idx") Long idx,
 															@RequestParam("token") String token) throws Exception {
 		
@@ -285,7 +284,7 @@ public class DailyRoutinUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@GetMapping(value="/daily/routine/invite/list")
+	@GetMapping(value=API_URL+"/daily/routine/invite/list")
 	public Map<String,Object> selectInviteList(
 												@RequestParam(value="name",required = false) String name,
 												@RequestParam("idx") Long dailyIdx,
@@ -337,7 +336,7 @@ public class DailyRoutinUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@PostMapping(value="/daily/routine/invite/ins")
+	@PostMapping(value=API_URL+"/daily/routine/invite/ins")
 	public ResponseEntity<String> insertDailyRoutineInvite(@RequestParam("dailyIdx") Long dailyIdx,
 														   @RequestParam("memberId") String memberId) throws Exception {
 		RoutineServiceResult<?> result = null;
@@ -363,7 +362,7 @@ public class DailyRoutinUserController extends BaseController{
 	 * @return
 	 * @throws Exception
 	 */
-	@PostMapping(value="/daily/routine/invite/del")
+	@PostMapping(value=API_URL+"/daily/routine/invite/del")
 	public ResponseEntity<?> deleteDailyRoutineInvite(@RequestParam("idx") Long idx) throws Exception {
 		
 		try {
