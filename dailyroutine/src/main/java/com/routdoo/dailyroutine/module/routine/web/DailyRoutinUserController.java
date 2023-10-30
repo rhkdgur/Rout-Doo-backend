@@ -67,19 +67,13 @@ public class DailyRoutinUserController extends BaseModuleController{
 	 */
 	@GetMapping(API_URL+"/daily/routine/list")
 	public Map<String,Object> selectDailyRoutineList(
-													@RequestParam("date") String date,
-													@RequestParam("token") String token
+													@RequestParam("date") String date
 													) throws Exception {
 		
 		modelMap = new LinkedHashMap<String, Object>();
 		
-		if(!memberSession.isSessionKeepup(token)) {
-			modelMap.put("result","session-out");
-			return modelMap; 
-		}
-		
 		DailyRoutineDefaultDto searchDto = new DailyRoutineDefaultDto();
-		searchDto.setMemberId(memberSession.getMemberSession(token).getId());
+		searchDto.setMemberId(memberSession.getMemberSession().getId());
 		searchDto.setToDate(date);
 		
 		Page<DailyRoutineDto> list = dailyRoutineService.selectDailyRoutinePageList(searchDto);
@@ -147,16 +141,10 @@ public class DailyRoutinUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@PostMapping(API_URL+"/daily/routine/ins")
-	public ResponseEntity<String> insertDailyRoutineBatch(DailyRoutineDto dailyRoutineDto,
-														  @RequestParam("token") String token) throws Exception {
+	public ResponseEntity<String> insertDailyRoutineBatch(DailyRoutineDto dailyRoutineDto) throws Exception {
 		RoutineServiceResult<?> result = null;
-		try {
-			
-			if(!memberSession.isSessionKeepup(token)) {
-				return new ResponseEntity<String>("세션이 만료되었습니다.",HttpStatus.GONE); 
-			}
-			
-			dailyRoutineDto.setMemberId(memberSession.getMemberSession(token).getId());
+		try {		
+			dailyRoutineDto.setMemberId(memberSession.getMemberSession().getId());
 			result = dailyRoutineService.insertDailyRoutine(dailyRoutineDto);
 			if(!RoutineResultCodeType.OK.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<String>(result.getMessage(),HttpStatus.BAD_REQUEST);
@@ -176,14 +164,10 @@ public class DailyRoutinUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@PostMapping(API_URL+"/daily/routine/del")
-	public ResponseEntity<String> deleteDailyRoutine(@RequestParam("idx") Long idx,
-													 @RequestParam("token") String token) throws Exception {
+	public ResponseEntity<String> deleteDailyRoutine(@RequestParam("idx") Long idx) throws Exception {
 		
 		RoutineServiceResult<?> result = null;
 		try {
-			if(!memberSession.isSessionKeepup(token)) {
-				return new ResponseEntity<String>("세션이 만료되었습니다.",HttpStatus.GONE); 
-			}
 			
 			DailyRoutineDto dto = new DailyRoutineDto();
 			dto.setIdx(idx);
@@ -205,13 +189,9 @@ public class DailyRoutinUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@PostMapping(value=API_URL+"/daily/routine/time/line/act",params="amode=ins")
-	public ResponseEntity<String> insertDailyRoutineTimeLine(DailyRoutineTimeLineDto dailyRoutineTimeLineDto,
-															 @RequestParam("token") String token) throws Exception {
+	public ResponseEntity<String> insertDailyRoutineTimeLine(DailyRoutineTimeLineDto dailyRoutineTimeLineDto) throws Exception {
 		
 		try {
-			if(!memberSession.isSessionKeepup(token)) {
-				return new ResponseEntity<String>("세션이 만료되었습니다.",HttpStatus.GONE); 
-			}
 			
 			if(!dailyRoutineService.insertDailyRoutineTimeLine(dailyRoutineTimeLineDto)) {
 				return new ResponseEntity<String>("등록 되지 않았습니다. 다시 진행해주시기 바랍니다.",HttpStatus.BAD_REQUEST);
@@ -231,15 +211,11 @@ public class DailyRoutinUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@PostMapping(value="/daily/routine/time/line/act",params="amode=upd")
-	public ResponseEntity<String> updateDailyRoutineTimeLine(DailyRoutineTimeLineDto dailyRoutineTimeLineDto,
-															@RequestParam("token") String token) throws Exception {
+	public ResponseEntity<String> updateDailyRoutineTimeLine(DailyRoutineTimeLineDto dailyRoutineTimeLineDto) throws Exception {
 		
 		RoutineServiceResult<?> result = null;
 		try {
-			if(!memberSession.isSessionKeepup(token)) {
-				return new ResponseEntity<String>("세션이 만료되었습니다.",HttpStatus.GONE); 
-			}
-			
+
 			result = dailyRoutineService.updateDailyRoutineTimeLine(dailyRoutineTimeLineDto);
 			if(!RoutineResultCodeType.OK.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<String>(result.getMessage(),HttpStatus.BAD_REQUEST);
@@ -259,14 +235,9 @@ public class DailyRoutinUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@PostMapping(value=API_URL+"/daily/routine/time/line/act",params="amode=del")
-	public ResponseEntity<String> deleteDailyRoutineTimeLine(@RequestParam("idx") Long idx,
-															@RequestParam("token") String token) throws Exception {
+	public ResponseEntity<String> deleteDailyRoutineTimeLine(@RequestParam("idx") Long idx) throws Exception {
 		
-		try {
-			if(!memberSession.isSessionKeepup(token)) {
-				return new ResponseEntity<String>("세션이 만료되었습니다.",HttpStatus.GONE); 
-			}
-			
+		try {		
 			DailyRoutineTimeLineDto dto = new DailyRoutineTimeLineDto();
 			dto.setIdx(idx);
 			dailyRoutineService.deleteDailyRoutineTimeLine(dto);

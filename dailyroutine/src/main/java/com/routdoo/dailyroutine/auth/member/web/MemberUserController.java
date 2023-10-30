@@ -54,11 +54,7 @@ public class MemberUserController extends BaseModuleController{
 		
 		modelMap = new LinkedHashMap<>();
 		
-		if(!memberSession.isSessionKeepup(token)) {
-			return modelMap;
-		}
-		
-		MemberDto dto = memberSession.getMemberSession(token);
+		MemberDto dto = memberSession.getMemberSession();
 		dto = memberService.selectMember(dto);
 		modelMap.put("member", dto);
 		
@@ -69,11 +65,11 @@ public class MemberUserController extends BaseModuleController{
 	 * 회원 요약 정보
 	 */
 	@GetMapping(API_URL+"/member/summary/view")
-	public Map<String,Object> summaryMemberView(@RequestHeader("Authorization") String token) throws Exception {
+	public Map<String,Object> summaryMemberView() throws Exception {
 		
 		modelMap = new LinkedHashMap<>();
 		
-		MemberDto dto = memberSession.getMemberSession(token);
+		MemberDto dto = memberSession.getMemberSession();
 		dto = memberService.selectMember(dto);
 		modelMap.put("member", dto.getSummaryInfo());
 		return modelMap;
@@ -114,10 +110,8 @@ public class MemberUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@PostMapping(API_URL+"/member/logout")
-	public ResponseEntity<?> logoutMember(@RequestHeader("Authorization") String token) throws Exception {
-		if(!memberSession.clearMemberSession(token)) {
-			return new ResponseEntity<>("세션 만료된 정보 입니다.",HttpStatus.ALREADY_REPORTED);
-		};
+	public ResponseEntity<?> logoutMember() throws Exception {
+		memberSession.clearMemberSession();
 		return new ResponseEntity<>("로그아웃 되었습니다.",HttpStatus.OK);
 	}
 	

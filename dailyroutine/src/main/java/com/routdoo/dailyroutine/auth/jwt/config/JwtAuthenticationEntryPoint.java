@@ -30,7 +30,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint{
 		
 	        ObjectMapper objectMapper = new ObjectMapper();
 
-	        response.setStatus(HttpStatus.FORBIDDEN.value());
+	        response.setStatus(HttpStatus.UNAUTHORIZED.value());
 	        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 	        response.setCharacterEncoding("utf-8");
 	        Map<String,String> map = new LinkedHashMap<>();

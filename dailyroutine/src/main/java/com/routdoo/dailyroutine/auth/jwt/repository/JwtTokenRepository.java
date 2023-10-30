@@ -1,9 +1,5 @@
 package com.routdoo.dailyroutine.auth.jwt.repository;
 
-import org.springframework.data.repository.CrudRepository;
-
-import com.routdoo.dailyroutine.auth.jwt.domain.JwtToken;
-
 /**
  * 
 * @packageName   : com.routdoo.dailyroutine.auth.jwt.repository
@@ -16,6 +12,7 @@ import com.routdoo.dailyroutine.auth.jwt.domain.JwtToken;
 * -----------------------------------------------------------
 * 2023.10.20        ghgo       최초 생성
  */
-public interface JwtTokenRepository extends CrudRepository<JwtToken, String>{
+public interface JwtTokenRepository{
+//public interface JwtTokenRepository extends CrudRepository<JwtToken, String>{
 
 }

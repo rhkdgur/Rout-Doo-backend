@@ -1,6 +1,6 @@
 Configutation:
   name: Default
-  status: warn
+  status: debug
 
   Properties:
     Property:

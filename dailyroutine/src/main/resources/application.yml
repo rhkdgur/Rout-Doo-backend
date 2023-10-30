@@ -5,9 +5,11 @@ spring:
     password: routdoo
     driver-class-name: com.mysql.cj.jdbc.Driver
    
-  redis:
-    host: localhost
-    port: 6379
+   
+#  redis:
+#    host: localhost
+#    port: 6379
+ 
  
   jpa:
     open-in-view: false # OSIV 성능 최적화를 위한 false 처리 영속성 컨텍스트 와 db 커넥션의 범위를 조정하여 리소스 낭비를 줄임

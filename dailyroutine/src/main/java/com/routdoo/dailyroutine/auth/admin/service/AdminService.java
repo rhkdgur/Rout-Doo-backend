@@ -50,24 +50,6 @@ public class AdminService {
 	}
 	
 	/**
-	 * Jwt 권한 회원 정보 조
-	 * @param loginId
-	 * @return
-	 * @throws Exception
-	 */
-	public CustomeUserDetails loadUserByUsername(String loginId) throws Exception {
-		Admin admin = adminRepository.findById(loginId).orElse(null);
-		if(admin == null) {
-			throw new Exception();
-		}
-		Map<String,String> map = new HashMap<>();
-		map.put("username", admin.getName());
-		map.put("id", admin.getId());
-		map.put("password", admin.getPw());
-		return new CustomeUserDetails(map,"ADMIN");
-	}
-	
-	/**
 	 * 목록 (paging)
 	 * @param searchDto
 	 * @return

@@ -12,8 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.routdoo.dailyroutine.auth.admin.service.AdminService;
-import com.routdoo.dailyroutine.auth.member.service.MemberService;
+import com.routdoo.dailyroutine.auth.jwt.service.JwtTokenService;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -45,9 +44,7 @@ public class JwtProvider {
 	
 	private final JwtProperties jwtProperties;
 	
-	private final AdminService adminService;
-	
-	private final MemberService memberService;
+	private final JwtTokenService jwtTokenService;
 	
 	protected final Logger logger = LoggerFactory.getLogger(JwtProvider.class);
 	
@@ -105,16 +102,30 @@ public class JwtProvider {
 				.compact();
 	}
 	
-	public String createRefreshToken(String token) {
-		Claims claims = this.getValidateToken(token).getElement();
+	public String createRefreshToken(Authentication authentication,boolean isUser) {
+		
+		String authorities = authentication.getAuthorities().stream()
+				.map(GrantedAuthority::getAuthority)
+				.collect(Collectors.joining(","));
+		
 		Date now = new Date();
 		long time = now.getTime();
-		Date validity = new Date(time + this.tokenValidityInMilliseconds);
+		Date validity = new Date(time + 480 * this.tokenValidityInMilliseconds);
+		String AUTHORITIES_KEY = "";
+		String id = "";
+		if(isUser) {
+			id = "user";
+			AUTHORITIES_KEY = AUTHORITIES_U_KEY;
+		}else{
+			id = "admin";
+			AUTHORITIES_KEY = AUTHORITIES_A_KEY;
+		}
 		
-		return Jwts.builder()
+		return  Jwts.builder()
 				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-				.setSubject(claims.getSubject())
-				.setClaims(claims)
+				.setIssuer(id)
+				.setSubject(authentication.getName())
+				.claim(AUTHORITIES_KEY, authorities)
 				.signWith(key,SignatureAlgorithm.HS256)
 				.setIssuedAt(now)
 				.setExpiration(validity)
@@ -128,48 +139,13 @@ public class JwtProvider {
     	JwtServiceResult<Claims> result = getValidateToken(token);
     	UserDetails principal = null;
     	if(result.getElement().getIssuer().equals("admin")) {
-    		principal = adminService.loadUserByUsername(result.getElement().getSubject());
+    		principal = jwtTokenService.loadAdminByUsername(result.getElement().getSubject());
     	}else {
-    		principal = memberService.loadUserByUsername(result.getElement().getSubject());
+    		principal = jwtTokenService.loadUserByUsername(result.getElement().getSubject());
     	}
     	return new UsernamePasswordAuthenticationToken(principal,null,principal.getAuthorities());
     }
-	
-	/**
-	 * 커스텀 토큰 생성
-	 * @param map
-	 * @return
-	 */
-//	public String createCustomToken(Map<String,Object> map,String subject) {
-//		Date now = new Date();
-//		long time = now.getTime();
-//		Date validity = new Date(time + this.tokenValidityInMilliseconds);		
-//		return Jwts.builder()
-//				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-//				.setSubject(subject)
-//				.setClaims(map)
-//				.signWith(key,SignatureAlgorithm.HS512)
-//				.setIssuedAt(now)
-//				.setExpiration(validity)
-//				.compact();
-//	}
-//	
-//	//
-//	public String createCustomRefreshToken(Claims claims,String subject) {
-//		
-//		Date now = new Date();
-//		long time = now.getTime();
-//		Date validity = new Date(time + this.tokenValidityInMilliseconds);
-//		
-//		return Jwts.builder()
-//				.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
-//				.setSubject(subject)
-//				.setClaims(claims)
-//				.signWith(key,SignatureAlgorithm.HS512)
-//				.setIssuedAt(now)
-//				.setExpiration(validity)
-//				.compact();
-//	}
+
 	
 	// 토큰 유효성 검사 결과 데이터
     public JwtServiceResult<Claims> getValidateToken(String token) {

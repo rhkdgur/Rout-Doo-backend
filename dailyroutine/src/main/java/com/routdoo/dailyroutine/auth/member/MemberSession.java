@@ -1,19 +1,16 @@
 package com.routdoo.dailyroutine.auth.member;
 
-import java.time.LocalDateTime;
-
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.routdoo.dailyroutine.auth.jwt.JwtProvider;
-import com.routdoo.dailyroutine.auth.jwt.JwtResultCodeType;
-import com.routdoo.dailyroutine.auth.jwt.domain.JwtToken;
-import com.routdoo.dailyroutine.auth.jwt.repository.JwtTokenRepository;
+import com.routdoo.dailyroutine.auth.jwt.domain.JwtTokenEntity;
+import com.routdoo.dailyroutine.auth.jwt.service.JwtTokenService;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
 
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -36,88 +33,54 @@ public class MemberSession {
 	
 	private final JwtProvider jwtProvider;
 
-	private final JwtTokenRepository jwtTokenRepository;
+	private final JwtTokenService jwtTokenService;
 	
 	public static final String member_key = "_routdoo_member_key";
+	
+	private Authentication authentication = null;
 	
 	/**
 	 * 회원 세션 등록
 	 * @param session
 	 * @param dto
+	 * @throws Exception 
 	 */
-	public String createMemberSession(MemberDto dto) {
-//		Map<String,Object> map = new HashMap<>();
-//		map.put("id", dto.getId());
-//		map.put("key", member_key);
-		UsernamePasswordAuthenticationToken authentication = 
-				new UsernamePasswordAuthenticationToken(dto.getId(), dto.getPw());		
+	public String createMemberSession(MemberDto dto) throws Exception {
+		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(dto.getId(), dto.getPw());		
 		
 		String token = jwtProvider.createToken(authentication,true);
-		LocalDateTime nowTime = LocalDateTime.now();
-		JwtToken jwtToken = new JwtToken();
-		jwtToken.addJwtToken(token,dto.getId(), nowTime);
-		jwtTokenRepository.save(jwtToken);
+		String refreshToken = jwtProvider.createRefreshToken(authentication, true);
+		
+		JwtTokenEntity jwtToken = new JwtTokenEntity(dto.getId(),token,refreshToken);
+		jwtTokenService.save(jwtToken);
 		return token;
 	}
 	
+	public boolean isAuthenticated() {
+		authentication = SecurityContextHolder.getContext().getAuthentication();
+		return authentication.isAuthenticated();
+	}
+	
 	/**
-	 * 회원 세션 유지 여부
+	 * jwt 인증 정보 redis에서 삭제
+	 * @throws Exception 
+	 */
+	public void clearMemberSession() throws Exception {
+		authentication = SecurityContextHolder.getContext().getAuthentication();
+		jwtTokenService.delete(authentication.getName());
+	}
+
+	/**
+	 * 정보 조회
 	 * @param session
 	 * @return
+	 * @throws Exception
 	 */
-	public boolean isSessionKeepup(String token) {
-		token = token != null ? token.replaceAll("Bearer ", "") : token;
-		return jwtProvider.getValidateToken(token).getCodeType().name()
-				.equals(JwtResultCodeType.TOKEN_OK.name()) ? true : false;
-	}
-	
-	public String refreshMemberSession(String token) {
-		token = token != null ? token.replaceAll("Bearer ", "") : token;
-		if(isSessionKeepup(token)) {
-			Claims vo = (Claims) jwtProvider.getValidateToken(token);
-			String refreshToken = jwtProvider.createRefreshToken(token);
-			JwtToken jwtToken = new JwtToken();
-			jwtToken = jwtTokenRepository.findById(vo.getSubject()).orElse(null);
-			if(jwtToken != null) {	
-				jwtTokenRepository.delete(jwtToken);
-				LocalDateTime nowTime = LocalDateTime.now();
-				jwtToken.addJwtToken(refreshToken, jwtToken.getId(), nowTime);
-			}
-			jwtTokenRepository.save(jwtToken);
-			return token;
-		}
-		return null;
-	}
-	
-	/**
-	 * 회원 정보
-	 * @param session
-	 * @return
-	 */
-	public MemberDto getMemberSession(String token) {
-		token = token != null ? token.replaceAll("Bearer ", "") : token;
-		Claims vo =  jwtProvider.getValidateToken(token).getElement();
-		JwtToken jwtToken = new JwtToken();
-		jwtToken = jwtTokenRepository.findById(vo.getSubject()).orElse(null);
-		return memberService.selectMemberSession(jwtToken.getId());
-	}
-	
-	/**
-	 * 회원 세션 삭제
-	 * @param session
-	 */
-	public boolean clearMemberSession(String token) {
-		token = token != null ? token.replaceAll("Bearer ", "") : token;
-		if(isSessionKeepup(token)) {
-			Claims vo =  jwtProvider.getValidateToken(token).getElement();
-			if(jwtTokenRepository.findById(vo.getSubject()).orElse(null) != null) {
-				jwtTokenRepository.deleteById(vo.getSubject());
-				return true;
-			}else {
-				return false;
-			}
-		}
-		return false;
+	public MemberDto getMemberSession() throws Exception {
+		authentication = SecurityContextHolder.getContext().getAuthentication();
+		MemberDto dto = new MemberDto();
+		dto.setId(authentication.getName());
+		return memberService.selectMember(dto);
 	}
 
 }
