@@ -20,6 +20,10 @@ import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -34,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 * -----------------------------------------------------------
 * 2023.07.14        ghgo       최초 생성
  */
+@Api(tags="회원 사용자 컨트롤")
 @RestController
 @CrossOrigin("*")
 @RequiredArgsConstructor
@@ -49,8 +54,9 @@ public class MemberUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
+	@ApiOperation(value="사용자 상세 정보")
 	@GetMapping(API_URL+"/member/view")
-	public Map<String,Object> selectMemberView(@RequestHeader("Authorization") String token) throws Exception {
+	public Map<String,Object> selectMemberView() throws Exception {
 		
 		modelMap = new LinkedHashMap<>();
 		
@@ -64,6 +70,7 @@ public class MemberUserController extends BaseModuleController{
 	/**
 	 * 회원 요약 정보
 	 */
+	@ApiOperation(value="사용자 상세 정보(요약정보)")
 	@GetMapping(API_URL+"/member/summary/view")
 	public Map<String,Object> summaryMemberView() throws Exception {
 		
@@ -82,6 +89,11 @@ public class MemberUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
+	@ApiOperation(value="사용자 로그")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "id", value="아이디 "),
+		@ApiImplicitParam(name = "pw", value="비밀번호 ")
+	})
 	@PostMapping(API_URL+"/member/login")
 	public ResponseEntity<?> loginMember(@RequestParam("id") String id,
 										 @RequestParam("pw") String pw) throws Exception {
@@ -109,6 +121,7 @@ public class MemberUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
+	@ApiOperation(value="사용자 로그아웃 ")
 	@PostMapping(API_URL+"/member/logout")
 	public ResponseEntity<?> logoutMember() throws Exception {
 		memberSession.clearMemberSession();
@@ -121,6 +134,7 @@ public class MemberUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
+	@ApiOperation(value="사용자 회원가입 ")
 	@PostMapping(API_URL+"/member/signup")
 	public ResponseEntity<?> createMember(MemberDto dto) throws Exception {
 		
@@ -147,6 +161,7 @@ public class MemberUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
+	@ApiOperation(value="사용자 회원 정보 업데이트 ")
 	@PostMapping(API_URL+"/member/act/upd")
 	public ResponseEntity<?> updateMember(@RequestBody MemberDto dto) throws Exception {
 		try {
