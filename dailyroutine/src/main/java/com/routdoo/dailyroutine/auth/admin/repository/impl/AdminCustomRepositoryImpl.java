@@ -52,7 +52,7 @@ public class AdminCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 	public List<AdminDto> selectAdminNoLimitList(AdminDefaultDto searchDto) throws Exception {
 		QAdmin qAdmin = QAdmin.admin;
 		
-		List<Admin> list = jpaQuery.selectFrom(qAdmin).where(commonQuery(searchDto)).fetch();
+		List<Admin> list = jpaQueryFactory.selectFrom(qAdmin).where(commonQuery(searchDto)).fetch();
 		return list.stream().map(x->new AdminDto(x)).collect(Collectors.toList());
 	}
 
@@ -63,13 +63,13 @@ public class AdminCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 	public Page<AdminDto> selectAdminList(AdminDefaultDto searchDto) throws Exception{
 		QAdmin qAdmin = QAdmin.admin;
 		
-		List<Admin> list = jpaQuery.selectFrom(qAdmin)
+		List<Admin> list = jpaQueryFactory.selectFrom(qAdmin)
 								.where(commonQuery(searchDto))
 								.offset(searchDto.getPageable().getOffset())
 								.limit(searchDto.getPageable().getPageSize())
 								.fetch();
 		
-		Long cnt = jpaQuery.select(qAdmin.count()).from(qAdmin)
+		Long cnt = jpaQueryFactory.select(qAdmin.count()).from(qAdmin)
 							.where(commonQuery(searchDto)).fetchFirst();
 		
 		

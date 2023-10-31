@@ -3,6 +3,13 @@ spring:
     url: jdbc:mysql://localhost:3306/routdoo?serverTimezone=UTC&characterEncoding=UTF-8
     username: routdoo
     password: routdoo
+#    url : jdbc:mysql://routidoo.cafe24.com:3306/routidoo?serverTimezone=UTC&characterEncoding=UTF-8
+#    username: routidoo
+#    password: rout!doo0629
+    tomcat : 
+      initial-size : 20
+      max-idle : 15
+      min-idle : 8
     driver-class-name: com.mysql.cj.jdbc.Driver
    
    

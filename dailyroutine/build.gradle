@@ -7,6 +7,11 @@ plugins {
 
 group = 'com.routdoo'
 version = '0.0.1-SNAPSHOT'
+apply plugin: 'war'
+
+//외장톰켓을 이용하기 위한 bootWar가 아닌 war로 생성방법
+bootWar.enabled = false
+war.enabled = true
 
 java {
 	sourceCompatibility = '17'
@@ -75,9 +80,13 @@ tasks.named('test') {
 }
 
 def querydslSrcDir = 'src/main/generated'
+tasks.withType(JavaCompile) {
+    options.getGeneratedSourceOutputDirectory().set(file(querydslSrcDir))
+}
+///// java source set 에 querydsl QClass 위치 추가
+sourceSets {
+    main.java.srcDirs += [ querydslSrcDir ]
+}
 clean {
     delete file(querydslSrcDir)
-}
-tasks.withType(JavaCompile) {
-    options.generatedSourceOutputDirectory = file(querydslSrcDir)
 }

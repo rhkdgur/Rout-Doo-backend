@@ -69,13 +69,13 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 		QPlaceLike qPlaceLike = QPlaceLike.placeLike;
 		List<PlaceDto> placesList = new ArrayList<PlaceDto>();
 		
-		Long cnt = jpaQuery.select(qPlace.count()).from(qPlace)
+		Long cnt = jpaQueryFactory.select(qPlace.count()).from(qPlace)
 				.leftJoin(qPlaceComment).on(qPlace.placeNum.eq(qPlaceComment.place.placeNum)).fetchJoin()
 				.leftJoin(qPlaceLike).on(qPlace.placeNum.eq(qPlaceLike.place.placeNum)).fetchJoin()
 				.where(commonQuery(searchDto))
 				.fetchOne();
 		
-		List<Place> places = jpaQuery.selectFrom(qPlace)
+		List<Place> places = jpaQueryFactory.selectFrom(qPlace)
 					.leftJoin(qPlaceComment).on(qPlace.placeNum.eq(qPlaceComment.place.placeNum)).fetchJoin()
 					.leftJoin(qPlaceLike).on(qPlace.placeNum.eq(qPlaceLike.place.placeNum)).fetchJoin()
 					.where(commonQuery(searchDto))
@@ -100,7 +100,7 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 		QPlaceLike qPlaceLike = QPlaceLike.placeLike;
 		List<PlaceDto> placesList = new ArrayList<PlaceDto>();
 		
-		List<Place> places = jpaQuery.selectFrom(qPlace)
+		List<Place> places = jpaQueryFactory.selectFrom(qPlace)
 				.leftJoin(qPlaceComment).fetchJoin()
 				.leftJoin(qPlaceLike).fetchJoin()
 				.where(commonQuery(searchDto))
@@ -122,7 +122,7 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 		QPlaceComment qPlaceComment = QPlaceComment.placeComment;
 		QPlaceLike qPlaceLike = QPlaceLike.placeLike;
 		
-		Place place = jpaQuery.selectFrom(qPlace)
+		Place place = jpaQueryFactory.selectFrom(qPlace)
 				.leftJoin(qPlaceComment).fetchJoin()
 				.leftJoin(qPlaceLike).fetchJoin()
 				.where(new BooleanBuilder().and(qPlace.placeNum.eq(dto.getPlaceNum()))).fetchOne();
@@ -137,10 +137,10 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 		
 		QPlaceComment qPlaceComment = QPlaceComment.placeComment;
 		
-		Long cnt = jpaQuery.select(qPlaceComment.count()).from(qPlaceComment)
+		Long cnt = jpaQueryFactory.select(qPlaceComment.count()).from(qPlaceComment)
 				.where(commonQuery(searchDto)).fetchOne();
 		
-		List<PlaceComment> placeComments = jpaQuery.selectFrom(qPlaceComment)
+		List<PlaceComment> placeComments = jpaQueryFactory.selectFrom(qPlaceComment)
 							.where(commonQuery(searchDto))
 							.offset(searchDto.getPageable().getOffset())
 							.limit(searchDto.getPageable().getPageSize())

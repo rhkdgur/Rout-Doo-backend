@@ -1,10 +1,8 @@
 package com.routdoo.dailyroutine;
 
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.routdoo.dailyroutine.module.routine.RoutineServiceResult;
@@ -14,7 +12,7 @@ import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
 import com.routdoo.dailyroutine.module.routine.service.RoutineDayType;
 import com.routdoo.dailyroutine.module.routine.service.RoutineWriteType;
 
-@RunWith(SpringRunner.class)
+//@RunWith(SpringRunner.class)
 @SpringBootTest
 //@Rollback(true)
 class DailyroutineApplicationTests {

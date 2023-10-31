@@ -37,12 +37,12 @@ public class MemberMyspotCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 		QMember qMember = QMember.member;
 		QMemberMyspot myspot = QMemberMyspot.memberMyspot;
 		
-		Long cnt = jpaQuery.select(myspot.count()).from(myspot)
+		Long cnt = jpaQueryFactory.select(myspot.count()).from(myspot)
 				.leftJoin(qMember).fetchJoin()
 				.where(commonQuery(searchDto))
 				.fetchFirst();
 		
-		List<MemberMyspot> list = jpaQuery.selectFrom(myspot)
+		List<MemberMyspot> list = jpaQueryFactory.selectFrom(myspot)
 				.leftJoin(qMember).fetchJoin()
 				.where(commonQuery(searchDto))
 				.offset(searchDto.getPageable().getOffset())
@@ -59,7 +59,7 @@ public class MemberMyspotCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 		QMemberMyspot qMyspot = QMemberMyspot.memberMyspot;
 		QMember qMember = QMember.member;
 		
-		MemberMyspot myspot = jpaQuery.selectFrom(qMyspot).join(qMember)
+		MemberMyspot myspot = jpaQueryFactory.selectFrom(qMyspot).join(qMember)
 				.where(new BooleanBuilder().and(qMyspot.idx.eq(dto.getIdx()))).fetchFirst();
 		
 		return new MemberMyspotDto(myspot);
@@ -74,7 +74,7 @@ public class MemberMyspotCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 		QMemberMyspot qMyspot = QMemberMyspot.memberMyspot;
 		QMember qMember = QMember.member;
 		
-		List<MemberMyspot> list = jpaQuery.selectFrom(qMyspot)
+		List<MemberMyspot> list = jpaQueryFactory.selectFrom(qMyspot)
 				.leftJoin(qMember).fetchJoin()
 				.where(commonQuery(searchDto)).fetch();
 		

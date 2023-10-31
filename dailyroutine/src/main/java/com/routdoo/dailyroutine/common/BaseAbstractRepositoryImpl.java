@@ -17,6 +17,6 @@ public abstract class BaseAbstractRepositoryImpl {
     protected EntityManager entityManager;
 	
 	@Autowired
-	protected JPAQueryFactory jpaQuery;
+	protected JPAQueryFactory jpaQueryFactory;
 	
 }

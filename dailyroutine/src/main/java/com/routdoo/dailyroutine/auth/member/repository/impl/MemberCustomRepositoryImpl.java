@@ -40,7 +40,7 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 	public List<MemberDto> selectMemberList(MemberDefaultDto searchDto) throws Exception {
 		QMember qMember = QMember.member;
 		
-		List<Member> list = jpaQuery.selectFrom(qMember).where(commonQuery(searchDto)).fetch();
+		List<Member> list = jpaQueryFactory.selectFrom(qMember).where(commonQuery(searchDto)).fetch();
 		
 		return list.stream().map(x-> new MemberDto(x)).collect(Collectors.toList());
 	}
@@ -52,7 +52,7 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 	public MemberDto selectMember(MemberDto dto) throws Exception {
 		QMember qMember = QMember.member;
 		
-		Member member = jpaQuery.selectFrom(qMember).where(new BooleanBuilder().and(qMember.id.eq(dto.getId()))).fetchOne();
+		Member member = jpaQueryFactory.selectFrom(qMember).where(new BooleanBuilder().and(qMember.id.eq(dto.getId()))).fetchOne();
 		if(member == null) {
 			return null;
 		}
@@ -67,12 +67,12 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 	public Page<MemberDto> selectMemberPageList(MemberDefaultDto searchDto) throws Exception {
 		QMember qMember = QMember.member;
 		//회원 목록 
-		List<Member> list = jpaQuery.selectFrom(qMember)
+		List<Member> list = jpaQueryFactory.selectFrom(qMember)
 							.where(commonQuery(searchDto))
 							.offset(searchDto.getPageable().getOffset())
 							.limit(searchDto.getPageable().getPageSize()).fetch();
 		//회원 개수
-		Long cnt = jpaQuery.select(qMember.count()).from(qMember).where(commonQuery(searchDto)).fetchFirst();
+		Long cnt = jpaQueryFactory.select(qMember.count()).from(qMember).where(commonQuery(searchDto)).fetchFirst();
 		
 		return new PageImpl<>(list.stream().map(x->new MemberDto(x)).collect(Collectors.toList()),searchDto.getPageable(),cnt);
 	}
