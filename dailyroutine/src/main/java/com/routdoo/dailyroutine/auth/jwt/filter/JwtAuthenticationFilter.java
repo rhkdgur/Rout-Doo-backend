@@ -68,17 +68,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 						SecurityContextHolder.getContext().setAuthentication(userAuth);
 						System.out.println("#### auth : "+userAuth.getName()+","+requestURI+","+userAuth.getAuthorities());
 					} catch (Exception e) {
-						logger.error("### 인증 정보 조회시 이슈 발생 ### {}",e.getMessage());
+						logger.error("### 인증 정보 조회시 이슈 발생 ### "+e.getMessage());
 					}
-					logger.debug("인증 정보를 저장했습니다. uri :{}",requestURI);
+					logger.debug("인증 정보를 저장했습니다. uri : "+requestURI);
 				}else {
-					logger.debug("유효한 토큰이 없습니다. uri : {}",requestURI);
+					logger.debug("유효한 토큰이 없습니다. uri : "+requestURI);
 				}
 			}else {
-				logger.debug("인증 만료된 토큰입니다. uri :{}",requestURI);
+				logger.debug("인증 만료된 토큰입니다. uri : "+requestURI);
 			}
 		}else {
-			logger.debug("유효한 토큰이 없습니다. uri : {}",requestURI);
+			logger.debug("유효한 토큰이 없습니다. uri : "+requestURI);
 		}
 		
 		filterChain.doFilter(request, response);

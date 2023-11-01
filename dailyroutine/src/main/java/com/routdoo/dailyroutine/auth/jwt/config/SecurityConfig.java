@@ -36,6 +36,20 @@ public class SecurityConfig{
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	
 	private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+	
+	private static final String[] PERMIT_URL_ARRAY = {
+            /* swagger v2 */
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            /* swagger v3 */
+            "/v3/api-docs/**",
+            "/swagger-ui/**"
+    };
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -56,6 +70,7 @@ public class SecurityConfig{
            	.accessDeniedHandler(jwtAccessDeniedHandler)
 		).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 		.authorizeHttpRequests((authorize) -> authorize
+				.requestMatchers(PERMIT_URL_ARRAY).permitAll()
 				.requestMatchers("/mgn/**").hasAuthority("ADMIN")
 				.requestMatchers(HttpMethod.POST,"/api/member/login","/api/member/signup","/api/jwt/token/refresh").permitAll()
 				.requestMatchers("/api/**").hasAuthority("USER")

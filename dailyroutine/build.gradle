@@ -56,8 +56,7 @@ dependencies {
 	
 	// 스웨거
 	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
-	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
-	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
 	
 	//jwt 로그인 라이브러리
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'

@@ -29,6 +29,10 @@ import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineTimeLineDefaultDt
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineTimeLineDto;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -43,6 +47,7 @@ import lombok.RequiredArgsConstructor;
 * -----------------------------------------------------------
 * 2023.09.24        ghgo       최초 생성
  */
+@Tag(name="사용자 스케줄 관리 컨트롤러")
 @RestController
 @RequiredArgsConstructor
 public class DailyRoutinUserController extends BaseModuleController{
@@ -65,6 +70,8 @@ public class DailyRoutinUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
+	@Operation(summary="사용자 스케줄 목록 조회")
+	@Parameter(name = "date", description = "날짜")
 	@GetMapping(API_URL+"/daily/routine/list")
 	public Map<String,Object> selectDailyRoutineList(
 													@RequestParam("date") String date
@@ -88,6 +95,8 @@ public class DailyRoutinUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
+	@Operation(summary="사용자 스케줄 상세 목록 조회")
+	@Parameter(name = "idx", description = "스케줄 부모 idx")
 	@GetMapping(API_URL+"/daily/routine/view")
 	public Map<String,Object> selectDailyRoutineList(@RequestParam("idx") Long dailyIdx) throws Exception {
 		
@@ -119,6 +128,8 @@ public class DailyRoutinUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
+	@Operation(summary="사용자 스케줄 상세 목록 조회")
+	@Parameter(name = "idx", description = "스케줄 자식 idx")
 	@GetMapping(API_URL+"/daily/routine/time/line/view")
 	public Map<String,Object> selectDailyRoutineTimelineView(@RequestParam("idx") Long idx) throws Exception {
 		
@@ -140,6 +151,13 @@ public class DailyRoutinUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
+	@Operation(summary="스케줄명 및 타임라인 일괄 등록" ,description = "스케줄 타임라인도 같이 전달해주어야함 (리스트로 해서 전달 줘야함) 타임라인 등록 정보 참고")
+	@Parameters( value = {
+		@Parameter(name = "title", description ="제목"),
+		@Parameter(name = "startdate", description ="시작일자"),
+		@Parameter(name = "endDate", description ="제목(장소)"),
+		@Parameter(name = "dayType", description ="해쉬태그")
+	})
 	@PostMapping(API_URL+"/daily/routine/ins")
 	public ResponseEntity<String> insertDailyRoutineBatch(DailyRoutineDto dailyRoutineDto) throws Exception {
 		RoutineServiceResult<?> result = null;
@@ -163,6 +181,8 @@ public class DailyRoutinUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
+	@Operation(summary="스케줄명 및 타임라인 일괄 삭제")
+	@Parameter(name = "idx", description = "일련번호")
 	@PostMapping(API_URL+"/daily/routine/del")
 	public ResponseEntity<String> deleteDailyRoutine(@RequestParam("idx") Long idx) throws Exception {
 		
@@ -188,6 +208,21 @@ public class DailyRoutinUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
+	@Operation(summary="타임라인별 등록")
+	@Parameters( value = {
+		@Parameter(name = "dailyIdx", description ="부모 일련번호"),
+		@Parameter(name = "writeType", description ="작성타입"),
+		@Parameter(name = "applyDate", description ="적용일자"),
+		@Parameter(name = "title", description ="제목"),
+		@Parameter(name = "placeName", description ="장소명"),
+		@Parameter(name = "ord", description ="순서"),
+		@Parameter(name = "context", description ="내용"),
+		@Parameter(name = "shour", description ="시작시간"),
+		@Parameter(name = "smin", description ="시작분"),
+		@Parameter(name = "ehour", description ="마지막시간"),
+		@Parameter(name = "emin", description ="마지막분"),
+		@Parameter(name = "cost", description ="비용")
+	})
 	@PostMapping(value=API_URL+"/daily/routine/time/line/act",params="amode=ins")
 	public ResponseEntity<String> insertDailyRoutineTimeLine(DailyRoutineTimeLineDto dailyRoutineTimeLineDto) throws Exception {
 		
@@ -210,6 +245,22 @@ public class DailyRoutinUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
+	@Operation(summary="타임라인별 수정")
+	@Parameters(value={
+		@Parameter(name = "idx", description = "일련번호"),
+		@Parameter(name = "dailyIdx", description="부모 일련번호"),
+		@Parameter(name = "writeType", description="작성타입"),
+		@Parameter(name = "applyDate", description="적용일자"),
+		@Parameter(name = "title", description="제목"),
+		@Parameter(name = "placeName", description="장소명"),
+		@Parameter(name = "ord", description="순서"),
+		@Parameter(name = "context", description="내용"),
+		@Parameter(name = "shour", description="시작시간"),
+		@Parameter(name = "smin", description="시작분"),
+		@Parameter(name = "ehour", description="마지막시간"),
+		@Parameter(name = "emin", description="마지막분"),
+		@Parameter(name = "cost", description="비용")
+	})
 	@PostMapping(value="/daily/routine/time/line/act",params="amode=upd")
 	public ResponseEntity<String> updateDailyRoutineTimeLine(DailyRoutineTimeLineDto dailyRoutineTimeLineDto) throws Exception {
 		
@@ -234,6 +285,8 @@ public class DailyRoutinUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
+	@Operation(summary="타임라인별 삭제")
+	@Parameter(name = "idx", description="일련번호")
 	@PostMapping(value=API_URL+"/daily/routine/time/line/act",params="amode=del")
 	public ResponseEntity<String> deleteDailyRoutineTimeLine(@RequestParam("idx") Long idx) throws Exception {
 		
@@ -255,6 +308,12 @@ public class DailyRoutinUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
+	@Operation(summary="멤버 리스트")
+	@Parameters( value = {
+		@Parameter(name = "name", description="이름"),
+		@Parameter(name = "dailyIdx", description="부모 일련번호"),
+		@Parameter(name = "page", description="페이지")
+	})
 	@GetMapping(value=API_URL+"/daily/routine/invite/list")
 	public Map<String,Object> selectInviteList(
 												@RequestParam(value="name",required = false) String name,
@@ -307,6 +366,11 @@ public class DailyRoutinUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
+	@Operation(summary="친구 초대")
+	@Parameters(value={
+		@Parameter(name = "dailyIdx", description="부모 일련번호"),
+		@Parameter(name = "memberId", description="회웡아이디")
+	})
 	@PostMapping(value=API_URL+"/daily/routine/invite/ins")
 	public ResponseEntity<String> insertDailyRoutineInvite(@RequestParam("dailyIdx") Long dailyIdx,
 														   @RequestParam("memberId") String memberId) throws Exception {
@@ -333,6 +397,8 @@ public class DailyRoutinUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
+	@Operation(summary="친구 초대 삭제")
+	@Parameter(name = "idx", description="일련번호")
 	@PostMapping(value=API_URL+"/daily/routine/invite/del")
 	public ResponseEntity<?> deleteDailyRoutineInvite(@RequestParam("idx") Long idx) throws Exception {
 		

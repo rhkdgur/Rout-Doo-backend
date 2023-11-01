@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,10 +19,10 @@ import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -38,7 +37,7 @@ import lombok.RequiredArgsConstructor;
 * -----------------------------------------------------------
 * 2023.07.14        ghgo       최초 생성
  */
-@Api(tags="회원 사용자 컨트롤")
+@Tag(name="회원 사용자 컨트롤")
 @RestController
 @CrossOrigin("*")
 @RequiredArgsConstructor
@@ -54,7 +53,7 @@ public class MemberUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
-	@ApiOperation(value="사용자 상세 정보")
+	@Operation(summary="사용자 상세 정보")
 	@GetMapping(API_URL+"/member/view")
 	public Map<String,Object> selectMemberView() throws Exception {
 		
@@ -70,7 +69,7 @@ public class MemberUserController extends BaseModuleController{
 	/**
 	 * 회원 요약 정보
 	 */
-	@ApiOperation(value="사용자 상세 정보(요약정보)")
+	@Operation(summary="사용자 상세 정보(요약정보)")
 	@GetMapping(API_URL+"/member/summary/view")
 	public Map<String,Object> summaryMemberView() throws Exception {
 		
@@ -89,10 +88,10 @@ public class MemberUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
-	@ApiOperation(value="사용자 로그")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "id", value="아이디 "),
-		@ApiImplicitParam(name = "pw", value="비밀번호 ")
+	@Operation(summary="사용자 로그")
+	@Parameters(value={
+		@Parameter(name = "id", description ="아이디 "),
+		@Parameter(name = "pw", description="비밀번호 ")
 	})
 	@PostMapping(API_URL+"/member/login")
 	public ResponseEntity<?> loginMember(@RequestParam("id") String id,
@@ -121,7 +120,7 @@ public class MemberUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
-	@ApiOperation(value="사용자 로그아웃 ")
+	@Operation(summary="사용자 로그아웃 ")
 	@PostMapping(API_URL+"/member/logout")
 	public ResponseEntity<?> logoutMember() throws Exception {
 		memberSession.clearMemberSession();
@@ -134,9 +133,20 @@ public class MemberUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
-	@ApiOperation(value="사용자 회원가입 ")
+	@Operation(summary="사용자 회원가입 ")
+	@Parameters({
+		@Parameter(name = "id", description ="아이디 "),
+		@Parameter(name = "pw", description ="비밀번호 "),
+		@Parameter(name = "email", description ="이메일"),
+		@Parameter(name = "nickname", description ="닉네임"),
+		@Parameter(name = "phonenumber", description ="휴대전화번호"),
+		@Parameter(name = "gender", description ="성별"),
+		@Parameter(name = "age", description ="나이"),
+		@Parameter(name = "birth", description ="생년월일"),
+		@Parameter(name = "mbti", description ="MBTI")
+	})
 	@PostMapping(API_URL+"/member/signup")
-	public ResponseEntity<?> createMember(MemberDto dto) throws Exception {
+	public ResponseEntity<?> createMember(@RequestBody MemberDto dto) throws Exception {
 		
 		try {
 			MemberDto checkDto = memberService.selectMember(dto);
@@ -161,7 +171,18 @@ public class MemberUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
-	@ApiOperation(value="사용자 회원 정보 업데이트 ")
+	@Operation(summary="사용자 회원 정보 업데이트 ")
+	@Parameters(value={
+		@Parameter(name = "id", description="아이디 "),
+		@Parameter(name = "pw", description="비밀번호 "),
+		@Parameter(name = "email", description="이메일"),
+		@Parameter(name = "nickname", description="닉네임"),
+		@Parameter(name = "phonenumber", description="휴대전화번호"),
+		@Parameter(name = "gender", description="성별"),
+		@Parameter(name = "age", description="나이"),
+		@Parameter(name = "birth", description="생년월일"),
+		@Parameter(name = "mbti", description = "MBTI")
+	})
 	@PostMapping(API_URL+"/member/act/upd")
 	public ResponseEntity<?> updateMember(@RequestBody MemberDto dto) throws Exception {
 		try {
