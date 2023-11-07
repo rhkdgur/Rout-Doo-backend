@@ -261,7 +261,7 @@ public class DailyRoutinUserController extends BaseModuleController{
 		@Parameter(name = "emin", description="마지막분"),
 		@Parameter(name = "cost", description="비용")
 	})
-	@PostMapping(value="/daily/routine/time/line/act",params="amode=upd")
+	@PostMapping(value=API_URL+"/daily/routine/time/line/act",params="amode=upd")
 	public ResponseEntity<String> updateDailyRoutineTimeLine(DailyRoutineTimeLineDto dailyRoutineTimeLineDto) throws Exception {
 		
 		RoutineServiceResult<?> result = null;

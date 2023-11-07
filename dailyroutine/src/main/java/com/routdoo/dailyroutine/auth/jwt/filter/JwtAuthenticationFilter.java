@@ -50,6 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		
 		JwtServiceResult<Claims> result = jwtProvider.getValidateToken(token);
 		System.out.println("auth : "+result.getCodeType().name());
+		System.out.println("urI : "+requestURI);
 		
 		if(StringUtils.hasText(token) && JwtResultCodeType.TOKEN_OK.name().equals(result.getCodeType().name())) {
 			String key = result.getElement().getSubject();
