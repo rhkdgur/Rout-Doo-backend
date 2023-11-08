@@ -47,3 +47,7 @@ jwt:
   header: Authorization
   secretkey: dailyRoutineroutDooKRauthtokendfi1efj82wl5dkqqinm9q4
   access-token-validity-in-seconds: 1800 # 30 min
+  
+# 채팅 경로
+chat:
+  path: http://localhost:8080 
