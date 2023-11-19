@@ -10,7 +10,7 @@ version = '0.0.1-SNAPSHOT'
 apply plugin: 'war'
 
 //외장톰켓을 이용하기 위한 bootWar가 아닌 war로 생성방법
-bootWar.enabled = false
+bootWar.enabled = true
 war.enabled = true
 
 java {

@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class StompChatController {
 
-	private final SimpMessagingTemplate template;
+//	private final SimpMessagingTemplate template;
 	
 	/**
 	 * 방에 접속
@@ -21,7 +21,7 @@ public class StompChatController {
 	@MessageMapping(value="/chat/enter")
 	public void enter(ChatMessageDto message) {
 		message.setMessage(message.getWriter()+"님이 채팅방에 참여하였습니다.");
-		template.convertAndSend("/sub/chat/room/"+message.getRoomId(),message);
+//		template.convertAndSend("/sub/chat/room/"+message.getRoomId(),message);
 	}
 	
 	/**
@@ -30,6 +30,6 @@ public class StompChatController {
 	 */
 	@MessageMapping(value="/chat/message")
 	public void message(ChatMessageDto message) {
-		template.convertAndSend("/sub/chat/room/"+message.getRoomId(),message);
+//		template.convertAndSend("/sub/chat/room/"+message.getRoomId(),message);
 	}
 }
