@@ -22,6 +22,8 @@ public class PlaceDefaultDto extends BaseVo{
 
 	private static final long serialVersionUID = 1L;
 
+	private long commentIdx = 0;
+
 	/**사용상태*/
 	private String pstatus = "";
 	

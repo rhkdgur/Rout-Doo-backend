@@ -32,14 +32,20 @@ public class DailyRoutineDto {
 	/**제목*/
 	private String title ="";
 	
+	/**태그*/
+	private String tag = "";
+	
 	/**시작일자*/
-	private String startDate;
+	private String startDate = "";
 	
 	/**마지막일자*/
-	private String endDate;
+	private String endDate = "";
 	
 	/**일정타입*/
-	private String dayType;
+	private String dayType = "";
+	
+	/**공개여부*/
+	private String publicYn = "";
 	
 	/**등록일자*/
 	private LocalDateTime createDate;
@@ -59,10 +65,12 @@ public class DailyRoutineDto {
 	public DailyRoutineDto(DailyRoutine entity) {
 		this.idx = entity.getIdx();
 		this.memberId = entity.getMember().getId();
+		this.tag = entity.getTag();
 		this.title = entity.getTitle();
 		this.startDate = entity.getStartDate();
 		this.endDate = entity.getEndDate();
 		this.dayType = entity.getDayType().name();
+		this.publicYn = entity.getPublicYn();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
 	}  

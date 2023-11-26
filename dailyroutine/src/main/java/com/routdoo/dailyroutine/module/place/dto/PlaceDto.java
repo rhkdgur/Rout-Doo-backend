@@ -63,6 +63,9 @@ public class PlaceDto {
 	
 	/**수정일자*/
 	private LocalDateTime modifyDate;
+
+	/**회원 아이디*/
+	private String memberId = "";
 	
 	public Place toEntity() {
 		return Place.builder().dto(this).build();
@@ -71,6 +74,7 @@ public class PlaceDto {
 	public void addPlaceSummaryInfo(Place entity) {
 		this.placeNum = entity.getPlaceNum();
 		this.title = entity.getTitle();
+		this.memberId = entity.getMember().getId();
 		this.hashtag = entity.getHashtag();
 		this.addr = entity.getAddr();
 		this.mapx = entity.getMapx();

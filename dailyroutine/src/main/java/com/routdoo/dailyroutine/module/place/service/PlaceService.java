@@ -1,27 +1,20 @@
 package com.routdoo.dailyroutine.module.place.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.routdoo.dailyroutine.common.PostResultCodeType;
 import com.routdoo.dailyroutine.common.PostServiceResult;
 import com.routdoo.dailyroutine.module.place.domain.Place;
 import com.routdoo.dailyroutine.module.place.domain.PlaceComment;
 import com.routdoo.dailyroutine.module.place.domain.PlaceLike;
-import com.routdoo.dailyroutine.module.place.dto.PlaceCommentDto;
-import com.routdoo.dailyroutine.module.place.dto.PlaceDefaultDto;
-import com.routdoo.dailyroutine.module.place.dto.PlaceDto;
-import com.routdoo.dailyroutine.module.place.dto.PlaceLikeDto;
-import com.routdoo.dailyroutine.module.place.dto.PlaceSummaryInfo;
+import com.routdoo.dailyroutine.module.place.dto.*;
 import com.routdoo.dailyroutine.module.place.repository.PlaceCommentRepository;
 import com.routdoo.dailyroutine.module.place.repository.PlaceLikeRepository;
 import com.routdoo.dailyroutine.module.place.repository.PlaceRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 
@@ -159,4 +152,127 @@ public class PlaceService {
 		
 		return new PlaceCommentDto(placeComment);
 	}
+
+	/**
+	 * 댓글 등록
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public boolean insertPlaceComment(PlaceCommentDto dto) throws Exception {
+		Long result = placeRepository.insertPlaceComment(dto);
+		return result > 0;
+	}
+
+	/**
+	 * 댓글 수정
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public boolean updatePlaceComment(PlaceCommentDto dto) throws Exception {
+		Long result = placeRepository.updatePlaceComment(dto);
+		return result > 0;
+	}
+
+	/**
+	 * 댓글 삭제
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public boolean deletePlaceComment(PlaceCommentDto dto) throws Exception {
+		Long result = placeRepository.deletePlaceComment(dto);
+		return result > 0;
+	}
+			
+
+	/**
+	 * 답글 목록 조회
+	 * @param searchDto
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PlaceReplyCommentDto> selectPlaceReplyCommentList(PlaceDefaultDto searchDto) throws Exception {
+		return placeRepository.selectPlaceReplyCommentList(searchDto);
+	}
+
+	/**
+	 * 답글 단일 조회
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	public PlaceReplyCommentDto selectPlaceReplyComment(PlaceReplyCommentDto dto) throws Exception {
+		return placeRepository.selectPlaceReplyComment(dto);
+	}
+
+	/**
+	 * 답글 등록
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public boolean insertPlaceReplyComment(PlaceReplyCommentDto dto) throws Exception {
+		return placeRepository.insertPlaceReplyComment(dto) > 0;
+	}
+
+	/**
+	 * 답글 수정
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public boolean updatePlaceReplyComment(PlaceReplyCommentDto dto) throws Exception {
+		return placeRepository.updatePlaceReplyComment(dto) > 0;
+	}
+
+	/**
+	 * 답글 삭제
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public boolean deletePlaceReplyComment(PlaceReplyCommentDto dto) throws Exception {
+		return placeRepository.deletePlaceReplyComment(dto) > 0;
+	}
+
+	/**
+	 * 좋아요 조회
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	public PlaceLikeDto selectPlaceLike(PlaceLikeDto dto) throws Exception {
+		return placeRepository.selectPlaceLike(dto);
+	}
+
+	/**
+	 * 좋아요 등록
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public boolean insertPlaceLike(PlaceLikeDto dto) throws Exception {
+		return placeRepository.insertPlaceLike(dto) > 0;
+	}
+
+	/**
+	 * 좋아요 삭제
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public boolean deletePlaceLike(PlaceLikeDto dto) throws Exception {
+		return placeRepository.deletePlaceLike(dto) > 0;
+	}
+
 }

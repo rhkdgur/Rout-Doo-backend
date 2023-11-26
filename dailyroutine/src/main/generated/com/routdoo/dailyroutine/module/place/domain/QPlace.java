@@ -18,6 +18,8 @@ public class QPlace extends EntityPathBase<Place> {
 
     private static final long serialVersionUID = 1615271542L;
 
+    private static final PathInits INITS = PathInits.DIRECT2;
+
     public static final QPlace place = new QPlace("place");
 
     public final StringPath addr = createString("addr");
@@ -34,6 +36,8 @@ public class QPlace extends EntityPathBase<Place> {
 
     public final StringPath mapy = createString("mapy");
 
+    public final com.routdoo.dailyroutine.auth.member.domain.QMember member;
+
     public final DateTimePath<java.time.LocalDateTime> modifyDate = createDateTime("modifyDate", java.time.LocalDateTime.class);
 
     public final ListPath<PlaceComment, QPlaceComment> placeComments = this.<PlaceComment, QPlaceComment>createList("placeComments", PlaceComment.class, QPlaceComment.class, PathInits.DIRECT2);
@@ -49,15 +53,24 @@ public class QPlace extends EntityPathBase<Place> {
     public final StringPath useInfo = createString("useInfo");
 
     public QPlace(String variable) {
-        super(Place.class, forVariable(variable));
+        this(Place.class, forVariable(variable), INITS);
     }
 
     public QPlace(Path<? extends Place> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QPlace(PathMetadata metadata) {
-        super(Place.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QPlace(PathMetadata metadata, PathInits inits) {
+        this(Place.class, metadata, inits);
+    }
+
+    public QPlace(Class<? extends Place> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.member = inits.isInitialized("member") ? new com.routdoo.dailyroutine.auth.member.domain.QMember(forProperty("member")) : null;
     }
 
 }

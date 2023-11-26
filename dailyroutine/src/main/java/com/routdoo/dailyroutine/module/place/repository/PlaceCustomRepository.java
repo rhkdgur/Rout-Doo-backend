@@ -1,12 +1,9 @@
 package com.routdoo.dailyroutine.module.place.repository;
 
-import java.util.List;
-
+import com.routdoo.dailyroutine.module.place.dto.*;
 import org.springframework.data.domain.Page;
 
-import com.routdoo.dailyroutine.module.place.dto.PlaceCommentDto;
-import com.routdoo.dailyroutine.module.place.dto.PlaceDefaultDto;
-import com.routdoo.dailyroutine.module.place.dto.PlaceDto;
+import java.util.List;
 
 /**
  * 
@@ -45,6 +42,33 @@ public interface PlaceCustomRepository {
 	 * @throws Exception
 	 */
 	PlaceDto selectPlaceView(PlaceDto dto) throws Exception;
+
+
+	/**
+	 * 좋아요 조회
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	PlaceLikeDto selectPlaceLike(PlaceLikeDto dto) throws Exception;
+
+
+	/**
+	 * 좋아요 등록
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	Long insertPlaceLike(PlaceLikeDto dto) throws Exception;
+
+
+	/**
+	 * 좋아요 삭제
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	Long deletePlaceLike(PlaceLikeDto dto) throws Exception;
 	
 	
 	/***
@@ -54,6 +78,69 @@ public interface PlaceCustomRepository {
 	 * @throws Exception
 	 */
 	Page<PlaceCommentDto> selectPlaceCommentPageList(PlaceDefaultDto searchDto) throws Exception;
+
+	/**
+	 * 댓글 등록
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	Long insertPlaceComment(PlaceCommentDto dto) throws Exception;
+
+	/**
+	 * 댓글 수정
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	Long updatePlaceComment(PlaceCommentDto dto) throws Exception;
+
+	/**
+	 * 댓글 삭제
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	Long deletePlaceComment(PlaceCommentDto dto) throws Exception;
 	
 
+	/**
+	 * 댓글에 대한 답글 목록
+	 * @param searchDto
+	 * @return
+	 * @throws Exception
+	 */
+	List<PlaceReplyCommentDto> selectPlaceReplyCommentList(PlaceDefaultDto searchDto) throws Exception;
+
+	/**
+	 * 댓글에 대한 답글 상세 정보
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	PlaceReplyCommentDto selectPlaceReplyComment(PlaceReplyCommentDto dto) throws Exception;
+
+	/**
+	 * 답글 등록
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	Long insertPlaceReplyComment(PlaceReplyCommentDto dto) throws Exception;
+
+	/**
+	 * 답글 수정
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	Long updatePlaceReplyComment(PlaceReplyCommentDto dto) throws Exception;
+
+	/**
+	 * 답글 삭제
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	Long deletePlaceReplyComment(PlaceReplyCommentDto dto) throws Exception;
 }

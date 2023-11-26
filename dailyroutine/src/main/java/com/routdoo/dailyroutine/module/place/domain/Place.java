@@ -4,24 +4,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.routdoo.dailyroutine.auth.member.domain.Member;
+import jakarta.persistence.*;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.routdoo.dailyroutine.module.place.dto.PlaceDto;
 import com.routdoo.dailyroutine.module.place.service.PlaceStatusType;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,11 +36,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Place {
+public class Place implements Persistable<String> {
 	
 	@Id
 	@Comment("장소번호")
 	private String placeNum;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="member_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	private Member member;
 
 	@Comment("제목")
 	private String title;
@@ -98,6 +95,8 @@ public class Place {
 	@Builder
 	public Place(PlaceDto dto) {
 		this.placeNum = dto.getPlaceNum();
+		this.member = new Member();
+		member.addId(dto.getMemberId());
 		this.title = dto.getTitle();
 		this.hashtag = dto.getHashtag();
 		this.addr = dto.getAddr();
@@ -129,5 +128,15 @@ public class Place {
 	
 	public void addPlaceNum(String placeNum) {
 		this.placeNum = placeNum;
+	}
+
+	@Override
+	public String getId() {
+		return this.placeNum;
+	}
+
+	@Override
+	public boolean isNew() {
+		return this.createDate == null;
 	}
 }

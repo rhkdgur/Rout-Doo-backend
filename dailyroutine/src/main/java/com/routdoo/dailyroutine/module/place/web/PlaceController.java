@@ -82,7 +82,7 @@ public class PlaceController extends BaseController{
 		try {
 			placeService.savePlace(dto);
 		}catch (Exception e) {
-			return new ResponseEntity<String>("장소 등록시 오류가 발생하였습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("장소 등록시 오류가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		
 		return new ResponseEntity<String>("등록 되었습니다.",HttpStatus.OK);
@@ -101,7 +101,7 @@ public class PlaceController extends BaseController{
 		try {
 			placeService.savePlace(dto);
 		}catch (Exception e) {
-			return new ResponseEntity<String>("장소 수정시 오류가 발생하였습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("장소 수정시 오류가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		
 		return new ResponseEntity<String>("수정 되었습니다.",HttpStatus.OK);

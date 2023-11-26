@@ -1,29 +1,25 @@
 package com.routdoo.dailyroutine.auth.member.web;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.routdoo.dailyroutine.auth.AuthResultCodeType;
 import com.routdoo.dailyroutine.auth.AuthServiceResult;
 import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
+import com.routdoo.dailyroutine.auth.member.service.FriendListService;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
-
+import com.routdoo.dailyroutine.module.place.service.PlaceService;
+import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * 
@@ -46,10 +42,11 @@ public class MemberUserController extends BaseModuleController{
 	private final MemberService memberService;
 	
 	private final MemberSession memberSession;
+
+
 	
 	/**
 	 * 회원 정보 (요약정보)
-	 * @param dto
 	 * @return
 	 * @throws Exception
 	 */
@@ -105,7 +102,7 @@ public class MemberUserController extends BaseModuleController{
 			if(AuthResultCodeType.INFO_NOMATCH.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<>(result.getMessage(),HttpStatus.NOT_MODIFIED);
 			}else {
-				return new ResponseEntity<>("로그인시 이슈가 발생하였습니다.",HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<>("로그인시 이슈가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}
 		
@@ -159,7 +156,7 @@ public class MemberUserController extends BaseModuleController{
 			}
 		}catch (Exception e) {
 			logger.error("### member create error {}",e.getMessage());
-			return new ResponseEntity<>("회원 가입시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("회원 가입시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		
 		return new ResponseEntity<>("가입 되었습니다.",HttpStatus.OK);
@@ -192,10 +189,10 @@ public class MemberUserController extends BaseModuleController{
 			}
 		}catch (Exception e) {
  			logger.error("### update member info error ");
- 			return new ResponseEntity<>("회원 정보 업데이트시 이슈가 발생하였습니다.",HttpStatus.BAD_REQUEST);
+ 			return new ResponseEntity<>("회원 정보 업데이트시 이슈가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		
 		return new ResponseEntity<>("수정 되었습니다.",HttpStatus.OK);
 	}
-	
+
 }

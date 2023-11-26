@@ -73,7 +73,7 @@ public class QDailyRoutineTimeLine extends EntityPathBase<DailyRoutineTimeLine> 
     public QDailyRoutineTimeLine(Class<? extends DailyRoutineTimeLine> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.dailyRoutine = inits.isInitialized("dailyRoutine") ? new QDailyRoutine(forProperty("dailyRoutine"), inits.get("dailyRoutine")) : null;
-        this.place = inits.isInitialized("place") ? new com.routdoo.dailyroutine.module.place.domain.QPlace(forProperty("place")) : null;
+        this.place = inits.isInitialized("place") ? new com.routdoo.dailyroutine.module.place.domain.QPlace(forProperty("place"), inits.get("place")) : null;
     }
 
 }

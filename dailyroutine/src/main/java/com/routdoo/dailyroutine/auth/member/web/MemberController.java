@@ -93,7 +93,7 @@ public class MemberController extends BaseController{
 			}
 		}catch (Exception e) {
 			logger.error("### insert member error ");
-			return new ResponseEntity<>("회원 등록시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("회원 등록시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		
 		status.setComplete();
@@ -136,7 +136,7 @@ public class MemberController extends BaseController{
 			}
 		}catch (Exception e) {
 			logger.error("### delete member error");
-			return new ResponseEntity<>("삭제시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("삭제시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		
 		return new ResponseEntity<>("삭제 되었습니다.",HttpStatus.OK);

@@ -36,7 +36,11 @@ public class QDailyRoutine extends EntityPathBase<DailyRoutine> {
 
     public final DateTimePath<java.time.LocalDateTime> modifyDate = createDateTime("modifyDate", java.time.LocalDateTime.class);
 
+    public final StringPath publicYn = createString("publicYn");
+
     public final StringPath startDate = createString("startDate");
+
+    public final StringPath tag = createString("tag");
 
     public final StringPath title = createString("title");
 

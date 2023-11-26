@@ -1,23 +1,19 @@
 package com.routdoo.dailyroutine.module.routine.repository.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.querydsl.core.BooleanBuilder;
+import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
+import com.routdoo.dailyroutine.module.routine.domain.*;
+import com.routdoo.dailyroutine.module.routine.dto.*;
+import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCustomRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Repository;
 
-import com.querydsl.core.BooleanBuilder;
-import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
-import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
-import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineTimeLine;
-import com.routdoo.dailyroutine.module.routine.domain.QDailyRoutine;
-import com.routdoo.dailyroutine.module.routine.domain.QDailyRoutineTimeLine;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDefaultDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineTimeLineDefaultDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineTimeLineDto;
-import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCustomRepository;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -48,6 +44,9 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 		}		
 		if(searchDto.getToDate() != null && !searchDto.getToDate().isEmpty()) {
 			sql.and(qDailyRoutine.startDate.goe(searchDto.getToDate()));
+		}
+		if(searchDto.getPublicYn() != null && !searchDto.getPublicYn().isEmpty()){
+			sql.and(qDailyRoutine.publicYn.eq(searchDto.getPublicYn()));
 		}
 		return sql;
 	}
@@ -112,6 +111,18 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 	}
 
 	@Override
+	public DailyRoutineLikeDto selectDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception {
+		QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
+		DailyRoutineLike dailyRoutineLike = jpaQueryFactory.selectFrom(qDailyRoutineLike)
+				.where(new BooleanBuilder().and(qDailyRoutineLike.idx.eq(dto.getIdx()))).fetchFirst();
+
+		if(dailyRoutineLike == null){
+			return null;
+		}
+		return new DailyRoutineLikeDto(dailyRoutineLike);
+	}
+
+	@Override
 	public Page<DailyRoutineTimeLineDto> selectDailyRoutineTimePageList(DailyRoutineTimeLineDefaultDto searchDto) {
 		QDailyRoutineTimeLine qDailyRoutineTimeLine = QDailyRoutineTimeLine.dailyRoutineTimeLine;
 		
@@ -126,6 +137,34 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 		
 		return new PageImpl<>(list.stream().map(x-> new DailyRoutineTimeLineDto(x)).collect(Collectors.toList()),
 				searchDto.getPageable(),cnt);
+	}
+
+
+	@Override
+	public Long insertDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception {
+		QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
+		return jpaQueryFactory.insert(qDailyRoutineLike)
+				.columns(
+						qDailyRoutineLike.dailyRoutine.idx,
+						qDailyRoutineLike.member.id,
+						qDailyRoutineLike.createDate,
+						qDailyRoutineLike.modifyDate
+				)
+				.values(
+						dto.getDailyRoutineDto().getIdx(),
+						dto.getMemberId(),
+						LocalDateTime.now(),
+						LocalDateTime.now()
+				)
+				.execute();
+	}
+
+	@Override
+	public Long deleteDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception {
+		QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
+		return jpaQueryFactory.delete(qDailyRoutineLike)
+				.where(qDailyRoutineLike.idx.eq(dto.getIdx()))
+				.execute();
 	}
 
 }

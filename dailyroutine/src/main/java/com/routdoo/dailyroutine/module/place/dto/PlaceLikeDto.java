@@ -28,10 +28,10 @@ public class PlaceLikeDto {
 	private Long idx;
 	
 
-	private String placeNum;
+	private PlaceDto placeDto = new PlaceDto();
 	
 
-	private String id;
+	private String memberId;
 	
 
 	private LocalDateTime createDate;
@@ -45,8 +45,9 @@ public class PlaceLikeDto {
 
 	public PlaceLikeDto(PlaceLike entity) {
 		this.idx = entity.getIdx();
-		this.placeNum = entity.getPlace().getPlaceNum();
-		this.id = entity.getMember().getId();
+		this.placeDto = new PlaceDto();
+		placeDto.addPlaceSummaryInfo(entity.getPlace());
+		this.memberId = entity.getMember().getId();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
 	}

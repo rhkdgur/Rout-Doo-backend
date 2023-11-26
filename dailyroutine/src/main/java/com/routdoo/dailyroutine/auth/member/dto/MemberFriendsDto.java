@@ -2,6 +2,7 @@ package com.routdoo.dailyroutine.auth.member.dto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import com.routdoo.dailyroutine.auth.member.domain.MemberFriends;
 
@@ -47,4 +48,5 @@ public class MemberFriendsDto implements Serializable{
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
 	}
+
 }

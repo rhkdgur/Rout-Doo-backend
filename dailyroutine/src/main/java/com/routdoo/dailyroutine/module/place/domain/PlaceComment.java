@@ -53,7 +53,7 @@ public class PlaceComment {
 	
 	@Comment("회원 일련번호")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="id",nullable = false,foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name="member_id",nullable = false,foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Member member;
 	
 	@Comment("장소 일련번호")
@@ -77,7 +77,7 @@ public class PlaceComment {
 	public PlaceComment(PlaceCommentDto dto) {
 		this.idx = dto.getIdx();
 		MemberDto m = new MemberDto();
-		m.setId(dto.getId());
+		m.setId(dto.getMemberDto().getId());
 		this.member = Member.builder().dto(m).build();
 		PlaceDto p = new PlaceDto();
 		p.setPlaceNum(dto.getPlaceNum());
@@ -85,6 +85,10 @@ public class PlaceComment {
 		this.context = dto.getContext();
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();
+	}
+
+	public void addIdx(Long idx){
+		this.idx = idx;
 	}
 
 }

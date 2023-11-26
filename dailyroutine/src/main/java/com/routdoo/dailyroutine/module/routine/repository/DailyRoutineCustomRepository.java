@@ -2,12 +2,9 @@ package com.routdoo.dailyroutine.module.routine.repository;
 
 import java.util.List;
 
+import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineLike;
+import com.routdoo.dailyroutine.module.routine.dto.*;
 import org.springframework.data.domain.Page;
-
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDefaultDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineTimeLineDefaultDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineTimeLineDto;
 
 /**
  * 
@@ -57,5 +54,31 @@ public interface DailyRoutineCustomRepository {
 	 * @return
 	 */
 	List<DailyRoutineTimeLineDto> selectDailyRoutineTimeLineList(DailyRoutineTimeLineDefaultDto searchDto);
+
+
+	/**
+	 * 좋아요 정보 조회
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	DailyRoutineLikeDto selectDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception;
+
+
+	/**
+	 * 일정 좋아요 등록
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	Long insertDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception;
+
+	/**
+	 * 일정 좋아요 삭제
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	Long deleteDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception;
 	
 }

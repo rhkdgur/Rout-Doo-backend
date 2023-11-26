@@ -1,8 +1,11 @@
 package com.routdoo.dailyroutine.module.place.web;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.routdoo.dailyroutine.auth.member.MemberSession;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,6 +42,8 @@ import lombok.RequiredArgsConstructor;
 public class PlaceUserController extends BaseModuleController{
 
 	private final PlaceService placeService;
+
+	private final MemberSession memberSession;
 	
 	
 	/**
@@ -111,11 +116,26 @@ public class PlaceUserController extends BaseModuleController{
 		//장소 상세 정보
 		modelMap.put("place", dto);
 		
+		//댓글 목록
 		PlaceDefaultDto searchDto = new PlaceDefaultDto();
 		searchDto.setPlaceNum(dto.getPlaceNum());
 		Page<PlaceCommentDto>  comments = placeService.selectPlaceCommentPageList(searchDto);
+
+		String memberId = memberSession.isAuthenticated() ? memberSession.getMemberSession().getId() : "";
+
+		Map<String,Object> commentsMap = new LinkedHashMap<>();
+		List<Map<String,Object>> commentsList = new ArrayList<>();
+		for(PlaceCommentDto commentDto : comments){
+			commentsList.add(commentDto.toSummaryMap(memberId));
+		}
+
+		commentsMap.put("content",commentsList);
+		commentsMap.put("totalPages",comments.getTotalPages());
+		commentsMap.put("totalElements",comments.getTotalElements());
+		commentsMap.put("pageable",comments.getPageable());
+
 		//댓글 목록
-		modelMap.put("commentList", comments);
+		modelMap.put("commentList", commentsMap);
 		
 		return modelMap;
 	}

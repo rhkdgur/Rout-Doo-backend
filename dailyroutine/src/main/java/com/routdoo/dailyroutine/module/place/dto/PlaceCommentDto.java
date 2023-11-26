@@ -1,12 +1,14 @@
 package com.routdoo.dailyroutine.module.place.dto;
 
-import java.time.LocalDateTime;
-
+import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.module.place.domain.PlaceComment;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * 
@@ -29,7 +31,7 @@ public class PlaceCommentDto {
 	private Long idx;
 	
 	/**아이디*/
-	private String id;
+	private MemberDto memberDto = new MemberDto();
 	
 	/**장소 일련번호*/
 	private String placeNum;
@@ -49,11 +51,33 @@ public class PlaceCommentDto {
 
 	public PlaceCommentDto(PlaceComment entity) {
 		this.idx = entity.getIdx();
-		this.id = entity.getMember().getId();
+		this.memberDto = new MemberDto(entity.getMember());
 		this.placeNum = entity.getPlace().getPlaceNum();
 		this.context = entity.getContext();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
 	}
-	
+
+	/**
+	 * dto -> summary map
+	 * isUser : 해당 댓글이 로그인사람과 작성자가 동일한지 체크
+	 * @param id
+	 * @return
+	 */
+	public Map<String,Object> toSummaryMap(String id){
+
+		boolean isCorrect = id.equals(this.memberDto.getId());
+
+		Map<String,Object> map = new LinkedHashMap<>();
+		map.put("idx",this.idx);
+		map.put("placeNum",this.placeNum);
+		map.put("context",context);
+		map.put("nickname",this.memberDto.getNickname());
+		map.put("isUser",isCorrect);
+		map.put("createDate", this.createDate);
+		map.put("modifyDate", this.modifyDate);
+
+		return map;
+	}
+
 }

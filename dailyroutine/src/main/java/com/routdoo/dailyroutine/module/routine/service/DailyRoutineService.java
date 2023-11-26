@@ -1,15 +1,7 @@
 package com.routdoo.dailyroutine.module.routine.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.auth.member.repository.MemberRepository;
-import com.routdoo.dailyroutine.auth.member.service.MemberService;
 import com.routdoo.dailyroutine.module.place.domain.Place;
 import com.routdoo.dailyroutine.module.place.repository.PlaceRepository;
 import com.routdoo.dailyroutine.module.routine.RoutineResultCodeType;
@@ -17,16 +9,17 @@ import com.routdoo.dailyroutine.module.routine.RoutineServiceResult;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineInvite;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineTimeLine;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDefaultDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineInviteDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineTimeLineDefaultDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineTimeLineDto;
+import com.routdoo.dailyroutine.module.routine.dto.*;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineInviteRepository;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineRepository;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineTimeLineRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -146,9 +139,13 @@ public class DailyRoutineService {
 				}
 			}
 		}
-		
-		List<Place> placeList = placeRepository.selectPlaceNumListIn(placeNumList);
-		
+
+		List<Place> placeList = new ArrayList<>();
+		//장소 목록이 존재 할 경우
+		if(placeNumList.size() > 0) {
+			placeList = placeRepository.selectPlaceNumListIn(placeNumList);
+		}
+
 		for(DailyRoutineTimeLineDto line : dto.getTimeList()) {
 			Place place = new Place();
 			if(RoutineWriteType.SEARCH.name().equals(line.getWriteType())) {
@@ -165,7 +162,7 @@ public class DailyRoutineService {
 		if(dailyRoutineRepository.save(dailyRoutine) == null) {
 			return new RoutineServiceResult<>(RoutineResultCodeType.FAIL,"일정 등록에 실패하였습니다.");
 		}
-		
+
 		return new RoutineServiceResult<>(RoutineResultCodeType.OK);
 	}
 	
@@ -259,5 +256,40 @@ public class DailyRoutineService {
 	@Transactional
 	public void deleteDailyRoutineInvite(DailyRoutineInviteDto dto) throws Exception {
 		dailyRoutineInviteRepository.deleteById(dto.getIdx());
+	}
+
+
+	/**
+	 * 좋아요 정보 조회
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	public DailyRoutineLikeDto selectDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception {
+		return dailyRoutineRepository.selectDailyRoutineLike(dto);
+	}
+
+
+	/**
+	 * 좋아요 등록
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public boolean insertDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception {
+		Long result = dailyRoutineRepository.insertDailyRoutineLike(dto);
+		return result > 0;
+	}
+
+	/**
+	 * 좋아요 삭제
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public boolean deleteDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception {
+		return dailyRoutineRepository.deleteDailyRoutineLike(dto) > 0;
 	}
 }

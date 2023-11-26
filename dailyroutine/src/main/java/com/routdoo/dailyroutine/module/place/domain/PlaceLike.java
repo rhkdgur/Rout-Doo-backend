@@ -58,7 +58,7 @@ public class PlaceLike {
 	
 	@Comment("회원일련번호")
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id",nullable = false,foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name = "member_id",nullable = false,foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Member member;
 	
 	@Comment("등록일자")
@@ -73,10 +73,10 @@ public class PlaceLike {
 	public PlaceLike(PlaceLikeDto dto) {
 		this.idx = dto.getIdx();
 		PlaceDto placeDto = new PlaceDto();
-		placeDto.setPlaceNum(dto.getPlaceNum());
+		placeDto.setPlaceNum(dto.getPlaceDto().getPlaceNum());
 		this.place = Place.builder().dto(placeDto).build();
 		MemberDto memberDto = new MemberDto();
-		memberDto.setId(dto.getId());
+		memberDto.setId(dto.getMemberId());
 		this.member = Member.builder().dto(memberDto).build();
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();

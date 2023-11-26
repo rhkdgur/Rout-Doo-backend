@@ -50,7 +50,7 @@ import lombok.RequiredArgsConstructor;
 @Tag(name="사용자 스케줄 관리 컨트롤러")
 @RestController
 @RequiredArgsConstructor
-public class DailyRoutinUserController extends BaseModuleController{
+public class DailyRoutineUserController extends BaseModuleController{
 
 	/**스케줄 서비스*/
 	private final DailyRoutineService dailyRoutineService;
@@ -144,7 +144,8 @@ public class DailyRoutinUserController extends BaseModuleController{
 		
 		return modelMap;
 	}
-	
+
+
 	/**
 	 * 스케줄 명 및 타임라인 일괄 등록
 	 * @param dailyRoutineDto
@@ -158,18 +159,18 @@ public class DailyRoutinUserController extends BaseModuleController{
 		@Parameter(name = "endDate", description ="제목(장소)"),
 		@Parameter(name = "dayType", description ="해쉬태그")
 	})
-	@PostMapping(API_URL+"/daily/routine/ins")
+	@PostMapping(API_URL+"/daily/routine/ins/all")
 	public ResponseEntity<String> insertDailyRoutineBatch(DailyRoutineDto dailyRoutineDto) throws Exception {
 		RoutineServiceResult<?> result = null;
 		try {		
 			dailyRoutineDto.setMemberId(memberSession.getMemberSession().getId());
 			result = dailyRoutineService.insertDailyRoutine(dailyRoutineDto);
 			if(!RoutineResultCodeType.OK.name().equals(result.getCodeType().name())) {
-				return new ResponseEntity<String>(result.getMessage(),HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<String>(result.getMessage(),HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}catch (Exception e) {
 			logger.error("insert daily routine info and timeline error : {}",e.getMessage());
-			return new ResponseEntity<String>("등록시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("등록시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		
 		return new ResponseEntity<String>(result.getMessage(),HttpStatus.OK);
@@ -193,11 +194,11 @@ public class DailyRoutinUserController extends BaseModuleController{
 			dto.setIdx(idx);
 			result = dailyRoutineService.deleteDailyRoutine(dto);
 			if(!RoutineResultCodeType.OK.name().equals(result.getCodeType().name())) {
-				return new ResponseEntity<String>(result.getMessage(),HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<String>(result.getMessage(),HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}catch (Exception e) {
 			logger.error("delete daily routine error : {}",e.getMessage());
-			return new ResponseEntity<String>("삭제시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("삭제시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		
 		return new ResponseEntity<String>(result.getMessage(),HttpStatus.OK);
@@ -229,11 +230,11 @@ public class DailyRoutinUserController extends BaseModuleController{
 		try {
 			
 			if(!dailyRoutineService.insertDailyRoutineTimeLine(dailyRoutineTimeLineDto)) {
-				return new ResponseEntity<String>("등록 되지 않았습니다. 다시 진행해주시기 바랍니다.",HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<String>("등록 되지 않았습니다. 다시 진행해주시기 바랍니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}catch (Exception e) {
 			logger.error("insert daily routine time line error : {}",e.getMessage());
-			return new ResponseEntity<String>("등록시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("등록시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		
 		return new ResponseEntity<String>("등록 되었습니다.",HttpStatus.OK);
@@ -269,11 +270,11 @@ public class DailyRoutinUserController extends BaseModuleController{
 
 			result = dailyRoutineService.updateDailyRoutineTimeLine(dailyRoutineTimeLineDto);
 			if(!RoutineResultCodeType.OK.name().equals(result.getCodeType().name())) {
-				return new ResponseEntity<String>(result.getMessage(),HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<String>(result.getMessage(),HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}catch (Exception e) {
 			logger.error("update daily routine timeline error : {}",e.getMessage());
-			return new ResponseEntity<String>("수정시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("수정시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		
 		return new ResponseEntity<String>(result.getMessage(),HttpStatus.OK);
@@ -296,7 +297,7 @@ public class DailyRoutinUserController extends BaseModuleController{
 			dailyRoutineService.deleteDailyRoutineTimeLine(dto);
 		}catch (Exception e) {
 			logger.error("delete daily timeline error : {}",e.getMessage());
-			return new ResponseEntity<String>("삭제시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("삭제시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		
 		return new ResponseEntity<String>("삭제 되었습니다.",HttpStatus.OK);
@@ -308,7 +309,7 @@ public class DailyRoutinUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
-	@Operation(summary="멤버 리스트")
+	@Operation(summary="회원목록 및 친구목록")
 	@Parameters( value = {
 		@Parameter(name = "name", description="이름"),
 		@Parameter(name = "dailyIdx", description="부모 일련번호"),
@@ -327,18 +328,12 @@ public class DailyRoutinUserController extends BaseModuleController{
 		searchDto.setSstring(name);
 		searchDto.setPage(page);
 		Page<MemberDto> memberList = memberService.selectMemberPageList(searchDto);
-		List<Map<String,String>> members = new ArrayList<>();
-		for(MemberDto dto : memberList) {
-			Map<String,String> map = new LinkedHashMap<>();
-			map.put("id", dto.getId());
-			map.put("name", dto.getNickname());
-			map.put("gender", dto.getGender());
-			map.put("age", dto.getAge()+"");
-			members.add(map);
-		}
+		List<Map<String,Object>> members = memberList.stream().map(MemberDto :: getSummaryInfo).toList();
+;
 		modelMap.put("memberList", members);
-		modelMap.put("memberTotalPage", memberList.getTotalPages());
-		modelMap.put("memberPage", memberList.getPageable());
+		modelMap.put("pageable", memberList.getPageable());
+		modelMap.put("totalPages", memberList.getTotalPages());
+		modelMap.put("totalElements",memberList.getTotalElements());
 		
 		//친구목록
 		MemberFriendsDto friendsDto = new MemberFriendsDto();
@@ -349,9 +344,10 @@ public class DailyRoutinUserController extends BaseModuleController{
 		for(MemberFriendsDto dto : friendList) {
 			Map<String,String> map = new LinkedHashMap<>();
 			map.put("idx", dto.getIdx()+"");
-			map.put("name",dto.getMemberDto().getNickname());
+			map.put("nickname",dto.getMemberDto().getNickname());
 			map.put("gender", dto.getMemberDto().getGender());
 			map.put("age",dto.getMemberDto().getAge()+"");
+			map.put("mbti",dto.getMemberDto().getMbti()+"");
 			freinds.add(map);
 		}
 		modelMap.put("friendList", freinds);
@@ -381,11 +377,11 @@ public class DailyRoutinUserController extends BaseModuleController{
 			dto.setMemberId(memberId);
 			result = dailyRoutineService.insertDailyRoutineInvite(dto);
 			if(!RoutineResultCodeType.OK.name().equals(result.getCodeType().name())) {
-				return new ResponseEntity<String>(result.getMessage(),HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<String>(result.getMessage(),HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}catch (Exception e) {
 			logger.error(" insert daily routine error : {}",e.getMessage());
-			return new ResponseEntity<String>("초대시 에러가 발생했습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("초대시 에러가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		
 		return new ResponseEntity<String>(result.getMessage(),HttpStatus.OK);
@@ -408,7 +404,7 @@ public class DailyRoutinUserController extends BaseModuleController{
 			dailyRoutineService.deleteDailyRoutineInvite(dto);
 		}catch (Exception e) {
 			logger.error("delete daily routine invite error : {}",e.getMessage());
-			return new ResponseEntity<String>("초대 삭제시 에러가 발생했습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("초대 삭제시 에러가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		
 		return new ResponseEntity<String>("삭제 되었습니다.",HttpStatus.OK);

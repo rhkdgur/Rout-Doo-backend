@@ -59,6 +59,9 @@ public class DailyRoutine{
 	@Comment("큰 제목")
 	/**큰 제목*/
 	private String title;
+
+	@Comment("태그")
+	private String tag;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id",nullable = false)
@@ -81,6 +84,10 @@ public class DailyRoutine{
 	@Comment("일정타입")
 	@Enumerated(EnumType.STRING)
 	private RoutineDayType dayType;
+
+	@Comment("공개여부")
+	@Column(columnDefinition = "char",length = 1)
+	private String publicYn;
 	
 	@Comment("등록일자")
 	@CreatedDate
@@ -97,9 +104,11 @@ public class DailyRoutine{
 		}
 		this.member.addId(dto.getMemberId());
 		this.title = dto.getTitle();
+		this.tag = dto.getTag();
 		this.startDate = dto.getStartDate();
 		this.endDate = dto.getEndDate();
 		this.dayType = RoutineDayType.valueOf(dto.getDayType());
+		this.publicYn = dto.getPublicYn();
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();
 	}
