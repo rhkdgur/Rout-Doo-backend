@@ -1,6 +1,8 @@
 package com.routdoo.dailyroutine.auth.member.web;
 
 import com.routdoo.dailyroutine.auth.member.MemberSession;
+import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
 import com.routdoo.dailyroutine.auth.member.service.FriendListService;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
@@ -9,12 +11,17 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * packageName    : com.routdoo.dailyroutine.auth.member.web
@@ -36,6 +43,29 @@ public class MemberFriendsUserController extends BaseModuleController {
 
     private final MemberSession memberSession;
 
+    /**
+     * 친구 리스트
+     * @param sstring
+     * @return
+     * @throws Exception
+     */
+    @Operation(summary = "친구 리스트 (친구 목록)")
+    @Parameter(name="sstring", description = "검색어")
+    @GetMapping(API_URL+"/member/nickname/friends/list")
+    public Map<String,Object> selectMemberFriendsList(@RequestParam("sstring") String sstring) throws Exception {
+
+        modelMap = new LinkedHashMap<>();
+
+        MemberDefaultDto searchDto = new MemberDefaultDto();
+        searchDto.setSstring(sstring);
+        searchDto.setStype("nickname");
+        searchDto.setSize(20);
+
+        Page<Map<String,Object>> friendsList  = friendListService.selectMemberFriendsPageList(searchDto);
+        modelMap.put("friendsList",friendsList);
+
+        return modelMap;
+    }
 
     /**
      * 친구 추가

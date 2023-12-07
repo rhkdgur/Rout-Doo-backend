@@ -54,4 +54,12 @@ public interface MemberCustomRepository {
 	 */
 	Page<Map<String,Object>> selectMemberFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception;
 
+	/**
+	 *  친구목록 조회
+	 * @param searchDto
+	 * @return
+	 * @throws Exception
+	 */
+	Page<Map<String,Object>> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception;
+
 }

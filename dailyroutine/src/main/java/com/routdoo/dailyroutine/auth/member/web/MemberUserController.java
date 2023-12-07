@@ -3,17 +3,16 @@ package com.routdoo.dailyroutine.auth.member.web;
 import com.routdoo.dailyroutine.auth.AuthResultCodeType;
 import com.routdoo.dailyroutine.auth.AuthServiceResult;
 import com.routdoo.dailyroutine.auth.member.MemberSession;
+import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
-import com.routdoo.dailyroutine.auth.member.service.FriendListService;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
-import com.routdoo.dailyroutine.module.place.service.PlaceService;
-import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -193,6 +192,31 @@ public class MemberUserController extends BaseModuleController{
 		}
 		
 		return new ResponseEntity<>("수정 되었습니다.",HttpStatus.OK);
+	}
+
+
+	/**
+	 * 회원 조회
+	 * @param sstring
+	 * @return
+	 * @throws Exception
+	 */
+	@Operation(summary = "회원 목록 조회(친구리스트 닉네임 조회)")
+	@Parameter(name="sstring", description="검색어")
+	@GetMapping(API_URL+"/member/nickname/list")
+	public Map<String,Object> selectMemberList(@RequestParam("sstring") String sstring) throws Exception {
+
+		modelMap = new LinkedHashMap<>();
+
+		MemberDefaultDto searchDto = new MemberDefaultDto();
+		searchDto.setStype("nickname");
+		searchDto.setSstring(sstring);
+		searchDto.setSize(20);
+
+		Page<MemberDto> resultList = memberService.selectMemberPageList(searchDto);
+		modelMap.put("memberList",resultList);
+
+		return modelMap;
 	}
 
 }

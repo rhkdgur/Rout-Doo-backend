@@ -14,4 +14,6 @@ public class MemberDefaultDto extends BaseVo{
 
 	private String memberId = "";
 
+	private String nickname = "";
+
 }

@@ -98,6 +98,17 @@ public class PlaceService {
 	}
 
 	/**
+	 * 상태 업데이트
+	 * @param placeDto
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public boolean updatePlaceStatus(PlaceDto placeDto) throws Exception {
+		return placeRepository.updatePlaceStatus(placeDto);
+	}
+
+	/**
 	 * 위치 기반 장소 조회
 	 * @param searchDto
 	 * @return

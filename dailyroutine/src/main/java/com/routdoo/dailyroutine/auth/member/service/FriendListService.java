@@ -77,4 +77,14 @@ public class FriendListService {
 	public Page<Map<String,Object>> selectMypageFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception {
 		return memberRepository.selectMemberFriendsBlockPageList(searchDto);
 	}
+
+	/**
+	 * 친구 목록
+	 * @param searchDto
+	 * @return
+	 * @throws Exception
+	 */
+	public Page<Map<String,Object>> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception {
+		return memberRepository.selectMemberFriendsPageList(searchDto);
+	}
 }

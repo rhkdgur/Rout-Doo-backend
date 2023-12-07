@@ -122,15 +122,27 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 		QPlace qPlace = QPlace.place;
 		QPlaceComment qPlaceComment = QPlaceComment.placeComment;
 		QPlaceLike qPlaceLike = QPlaceLike.placeLike;
+		QPlaceScore qPlaceScore = QPlaceScore.placeScore;
 		
 		Place place = jpaQueryFactory.selectFrom(qPlace)
-				.leftJoin(qPlaceComment).fetchJoin()
-				.leftJoin(qPlaceLike).fetchJoin()
+				.leftJoin(qPlace.placeComments,qPlaceComment).fetchJoin()
+				.leftJoin(qPlace.placeLikes,qPlaceLike).fetchJoin()
+				.leftJoin(qPlace.placeScores,qPlaceScore).fetchJoin()
 				.where(new BooleanBuilder().and(qPlace.placeNum.eq(dto.getPlaceNum()))).fetchOne();
-		
-		dto.addPlaceSummaryInfo(place);
+
+		if(place != null) {
+			dto.addPlaceSummaryInfo(place);
+		}
 		
 		return dto;
+	}
+
+	@Override
+	public boolean updatePlaceStatus(PlaceDto dto) throws Exception {
+		QPlace qPlace = QPlace.place;
+		return jpaQueryFactory.update(qPlace)
+				.set(qPlace.pstatus,PlaceStatusType.valueOf(dto.getPstatus()))
+				.where(qPlace.placeNum.eq(dto.getPlaceNum())).execute() > 0;
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.routdoo.dailyroutine.module.place.domain.Place;
 
+import com.routdoo.dailyroutine.module.place.domain.PlaceScore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -56,6 +57,9 @@ public class PlaceDto {
 	
 	/**상세정보*/
 	private String detailText;
+
+	/**사용여부*/
+	private String pstatus;
 	
 	/**댓글수*/
 	private int likeCnt = 0;
@@ -75,6 +79,9 @@ public class PlaceDto {
 	/**삭제 사유*/
 	private String deleteReason = "";
 	
+	/**별점*/
+	private int placeScore = 0;
+	
 	public Place toEntity() {
 		return Place.builder().dto(this).build();
 	}
@@ -91,9 +98,18 @@ public class PlaceDto {
 		this.introText = entity.getIntroText();
 		this.useInfo = entity.getUseInfo();
 		this.detailText = entity.getDetailText();
+		this.pstatus = entity.getPstatus().name();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
 		this.deleteReason = entity.getDeleteReason();
+		if(!entity.getPlaceScores().isEmpty()){
+			int value = 0;
+			int len = entity.getPlaceScores().size();
+			for(PlaceScore score : entity.getPlaceScores()){
+				value += score.getScore();
+			}
+			this.placeScore = (value / len);
+		}
 	}
 
 	public void addPlaceSummaryInfo(Place entity) {
@@ -108,11 +124,20 @@ public class PlaceDto {
 		this.introText = entity.getIntroText();
 		this.useInfo = entity.getUseInfo();
 		this.detailText = entity.getDetailText();
+		this.pstatus = entity.getPstatus().name();
 		this.likeCnt = entity.getPlaceLikes().size();
 		this.commentCnt = entity.getPlaceComments().size();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
 		this.deleteReason = entity.getDeleteReason();
+		if(!entity.getPlaceScores().isEmpty()){
+			int value = 0;
+			int len = entity.getPlaceScores().size();
+			for(PlaceScore score : entity.getPlaceScores()){
+				value += score.getScore();
+			}
+			this.placeScore = (value / len);
+		}
 	}
 
 	public Map<String,Object> toSummaryMap(){
@@ -124,6 +149,7 @@ public class PlaceDto {
 		map.put("mapx",this.mapx);
 		map.put("mapy",this.mapy);
 		map.put("hashtag",this.hashtag);
+		map.put("placeScore",this.placeScore);
 		return map;
 	}
 	

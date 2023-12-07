@@ -48,6 +48,8 @@ public class QPlace extends EntityPathBase<Place> {
 
     public final StringPath placeNum = createString("placeNum");
 
+    public final ListPath<PlaceScore, QPlaceScore> placeScores = this.<PlaceScore, QPlaceScore>createList("placeScores", PlaceScore.class, QPlaceScore.class, PathInits.DIRECT2);
+
     public final EnumPath<com.routdoo.dailyroutine.module.place.service.PlaceStatusType> pstatus = createEnum("pstatus", com.routdoo.dailyroutine.module.place.service.PlaceStatusType.class);
 
     public final StringPath tel = createString("tel");

@@ -36,6 +36,11 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 	private BooleanBuilder commonQuery(MemberDefaultDto searchDto) {
 		QMember qMember = QMember.member;
 		BooleanBuilder sql = new BooleanBuilder();
+		if(searchDto.getSstring() != null && !searchDto.getSstring().isEmpty()){
+			if(searchDto.getStype().equals("nickname")){
+				sql.and(qMember.nickname.like("%"+searchDto.getSstring()+"%"));
+			}
+		}
 		return sql;
 	}
 	
@@ -49,7 +54,7 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 		
 		List<Member> list = jpaQueryFactory.selectFrom(qMember).where(commonQuery(searchDto)).fetch();
 		
-		return list.stream().map(x-> new MemberDto(x)).collect(Collectors.toList());
+		return list.stream().map(MemberDto::new).collect(Collectors.toList());
 	}
 
 	/**
@@ -100,6 +105,39 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 				.from(qMember)
 				.join(qMemberFriends).fetchJoin()
 				.where(new BooleanBuilder().and(qMember.id.eq(searchDto.getMemberId())).and(qMemberFriends.blockYn.eq(searchDto.getBlockYn())))
+				.offset(searchDto.getPageable().getOffset())
+				.limit(searchDto.getPageable().getPageSize())
+				.fetch();
+
+		//Map 변환
+		List<Map<String,Object>> resultList = list.stream().map(MemberDto::getSummaryInfo).toList();
+
+		return new PageImpl<>(resultList,searchDto.getPageable(),cnt);
+	}
+
+	@Override
+	public Page<Map<String, Object>> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception {
+		QMember qMember = QMember.member;
+		QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
+
+		long cnt = jpaQueryFactory.select(qMember.count()).from(qMember)
+				.join(qMemberFriends).fetchJoin()
+				.where(commonQuery(searchDto))
+				.fetchFirst();
+
+		List<MemberDto> list = jpaQueryFactory.select(
+						Projections.bean(
+								MemberDto.class,
+								qMember.id,
+								qMember.nickname,
+								qMember.gender,
+								qMember.age,
+								qMember.mbti
+						)
+				)
+				.from(qMember)
+				.join(qMemberFriends).fetchJoin()
+				.where(commonQuery(searchDto))
 				.offset(searchDto.getPageable().getOffset())
 				.limit(searchDto.getPageable().getPageSize())
 				.fetch();

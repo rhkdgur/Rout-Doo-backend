@@ -1,25 +1,23 @@
 package com.routdoo.dailyroutine.module.place.domain;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.routdoo.dailyroutine.auth.member.domain.Member;
+import com.routdoo.dailyroutine.module.place.dto.PlaceDto;
+import com.routdoo.dailyroutine.module.place.service.PlaceStatusType;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.routdoo.dailyroutine.module.place.dto.PlaceDto;
-import com.routdoo.dailyroutine.module.place.service.PlaceStatusType;
-
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -101,6 +99,9 @@ public class Place implements Persistable<String> {
 	
 	@OneToMany(mappedBy = "place",fetch = FetchType.LAZY)
 	private List<PlaceLike> placeLikes = new ArrayList<PlaceLike>();
+
+	@OneToMany(mappedBy = "place", fetch = FetchType.LAZY)
+	private List<PlaceScore> placeScores = new ArrayList<>();
 	
 	@Builder
 	public Place(PlaceDto dto) {

@@ -44,6 +44,20 @@ public interface PlaceCustomRepository {
 	 */
 	PlaceDto selectPlaceView(PlaceDto dto) throws Exception;
 
+	/**
+	 * 장소 활성,비활성 업데이트
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	boolean updatePlaceStatus(PlaceDto dto) throws Exception;
+
+	/**
+	 * 마이페이지 장소 보관
+	 * @param searchDto
+	 * @return
+	 * @throws Exception
+	 */
 	Page<Map<String,Object>> selectMyPlaceLikePageList(PlaceLikeDefaultDto searchDto) throws Exception;
 
 
