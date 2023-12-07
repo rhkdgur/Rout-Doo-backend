@@ -1,6 +1,8 @@
 package com.routdoo.dailyroutine.module.routine.dto;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.routdoo.dailyroutine.module.place.dto.PlaceDto;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineTimeLine;
@@ -44,6 +46,15 @@ public class DailyRoutineTimeLineDto {
 	/**장소명*/
 	private String placeName;
 
+	/**주소*/
+	private String addr;
+	
+	/**경도*/
+	private String mapx;
+	
+	/**위도*/
+	private String mapy;
+
 	/**순서*/
 	private int ord = 0;
 	
@@ -72,7 +83,7 @@ public class DailyRoutineTimeLineDto {
 	private LocalDateTime modifyDate;
 	
 	/**place 정보*/
-	private PlaceDto placeDto = new PlaceDto();
+//	private PlaceDto placeDto = new PlaceDto();
 	
 	public DailyRoutineTimeLine toEntity() {
 		return DailyRoutineTimeLine.builder().dto(this).build();
@@ -93,8 +104,23 @@ public class DailyRoutineTimeLineDto {
 		this.creatDate = entity.getCreatDate();
 		this.modifyDate = entity.getModifyDate();
 		this.dailyIdx = entity.getDailyRoutine().getIdx();
-		this.placeDto = new PlaceDto();
-		placeDto.addPlaceSummaryInfo(entity.getPlace());
+//		this.placeDto = new PlaceDto();
+//		placeDto.addPlaceSummaryInfo(entity.getPlace());
+	}
+
+	/**
+	 * dto -> summary map
+	 * @return
+	 */
+	public Map<String,Object> toSummaryMap(){
+		Map<String,Object> map = new LinkedHashMap<String,Object>();
+		map.put("idx", this.idx);
+		map.put("dailyIdx", this.dailyIdx);
+		map.put("title", this.title);
+		map.put("startTime", this.shour+":"+this.smin);
+		map.put("endTime", this.ehour+":"+this.emin);
+		map.put("ord", this.ord);
+		return map;
 	}
 	
 }

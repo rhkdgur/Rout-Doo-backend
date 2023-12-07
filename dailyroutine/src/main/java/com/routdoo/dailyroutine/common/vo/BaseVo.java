@@ -26,7 +26,7 @@ import lombok.Setter;
 @Getter @Setter
 public class BaseVo implements Serializable{
 
-	private static final long serialVersionUID = 1L;
+	protected static final long serialVersionUID = 1L;
 	
 	/**공통 입력*/
 	protected String sstring = "";

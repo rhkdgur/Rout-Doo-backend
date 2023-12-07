@@ -2,7 +2,9 @@ package com.routdoo.dailyroutine.module.place.domain;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.routdoo.dailyroutine.auth.member.domain.Member;
 import jakarta.persistence.*;
@@ -52,6 +54,10 @@ public class Place implements Persistable<String> {
 	@Comment("해쉬태그")
 	@Column(length = 100)
 	private String hashtag;
+
+	@Comment("연락처")
+	@Column(length= 50)
+	private String tel;
 	
 	@Comment("주소")
 	private String addr;
@@ -77,6 +83,10 @@ public class Place implements Persistable<String> {
 	@Comment("사용여부")
 	@Enumerated(EnumType.STRING)
 	private PlaceStatusType pstatus;
+
+	@Comment("삭제요청사유")
+	@Lob
+	private String deleteReason;
 	
 	@CreatedDate
 	@Comment("등록일자")
@@ -98,6 +108,7 @@ public class Place implements Persistable<String> {
 		this.member = new Member();
 		member.addId(dto.getMemberId());
 		this.title = dto.getTitle();
+		this.tel = dto.getTel();
 		this.hashtag = dto.getHashtag();
 		this.addr = dto.getAddr();
 		this.mapx = dto.getMapx();
@@ -105,6 +116,7 @@ public class Place implements Persistable<String> {
 		this.introText = dto.getIntroText();
 		this.useInfo = dto.getUseInfo();
 		this.detailText = dto.getDetailText();
+		this.deleteReason = dto.getDeleteReason();
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();
 	}
@@ -122,8 +134,21 @@ public class Place implements Persistable<String> {
 		this.introText = dto.getIntroText();
 		this.useInfo = dto.getUseInfo();
 		this.detailText = dto.getDetailText();
+		this.deleteReason = dto.getDeleteReason();
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();
+	}
+
+	public Map<String,Object> toSummaryMap(){
+		Map<String,Object> map = new LinkedHashMap<>();
+		map.put("placeNum",this.placeNum);
+		map.put("title",this.title);
+		map.put("addr",this.addr);
+		map.put("tel",this.tel);
+		map.put("mapx",this.mapx);
+		map.put("mapy",this.mapy);
+		map.put("hashtag",this.hashtag);
+		return map;
 	}
 	
 	public void addPlaceNum(String placeNum) {

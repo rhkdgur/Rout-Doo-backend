@@ -1,13 +1,12 @@
 package com.routdoo.dailyroutine.module.routine.dto;
 
+import com.routdoo.dailyroutine.common.vo.BaseVo;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineLike;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * packageName    : com.routdoo.dailyroutine.module.routine.dto
@@ -23,7 +22,7 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DailyRoutineLikeDto{
+public class DailyRoutineLikeDto {
     
     /**일련번호*/
     private Long idx = 0L;

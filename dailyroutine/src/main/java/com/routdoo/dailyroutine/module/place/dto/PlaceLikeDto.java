@@ -2,6 +2,7 @@ package com.routdoo.dailyroutine.module.place.dto;
 
 import java.time.LocalDateTime;
 
+import com.routdoo.dailyroutine.common.vo.BaseVo;
 import com.routdoo.dailyroutine.module.place.domain.PlaceLike;
 
 import lombok.Getter;

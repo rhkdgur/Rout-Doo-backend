@@ -1,6 +1,8 @@
 package com.routdoo.dailyroutine.module.place.dto;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.routdoo.dailyroutine.module.place.domain.Place;
 
@@ -30,6 +32,9 @@ public class PlaceDto {
 
 	/**제목*/
 	private String title;
+	
+	/**연락처*/
+	private String tel;
 	
 	/**해쉬태그*/
 	private String hashtag;
@@ -67,8 +72,28 @@ public class PlaceDto {
 	/**회원 아이디*/
 	private String memberId = "";
 	
+	/**삭제 사유*/
+	private String deleteReason = "";
+	
 	public Place toEntity() {
 		return Place.builder().dto(this).build();
+	}
+
+	public PlaceDto(Place entity){
+		this.placeNum = entity.getPlaceNum();
+		this.title = entity.getTitle();
+		this.memberId = entity.getMember().getId();
+		this.hashtag = entity.getHashtag();
+		this.tel = entity.getTel();
+		this.addr = entity.getAddr();
+		this.mapx = entity.getMapx();
+		this.mapy = entity.getMapy();
+		this.introText = entity.getIntroText();
+		this.useInfo = entity.getUseInfo();
+		this.detailText = entity.getDetailText();
+		this.createDate = entity.getCreateDate();
+		this.modifyDate = entity.getModifyDate();
+		this.deleteReason = entity.getDeleteReason();
 	}
 
 	public void addPlaceSummaryInfo(Place entity) {
@@ -76,6 +101,7 @@ public class PlaceDto {
 		this.title = entity.getTitle();
 		this.memberId = entity.getMember().getId();
 		this.hashtag = entity.getHashtag();
+		this.tel = entity.getTel();
 		this.addr = entity.getAddr();
 		this.mapx = entity.getMapx();
 		this.mapy = entity.getMapy();
@@ -86,6 +112,19 @@ public class PlaceDto {
 		this.commentCnt = entity.getPlaceComments().size();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
+		this.deleteReason = entity.getDeleteReason();
+	}
+
+	public Map<String,Object> toSummaryMap(){
+		Map<String,Object> map = new LinkedHashMap<>();
+		map.put("placeNum",this.placeNum);
+		map.put("title",this.title);
+		map.put("addr",this.addr);
+		map.put("tel",this.tel);
+		map.put("mapx",this.mapx);
+		map.put("mapy",this.mapy);
+		map.put("hashtag",this.hashtag);
+		return map;
 	}
 	
 }

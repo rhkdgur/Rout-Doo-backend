@@ -1,10 +1,8 @@
 package com.routdoo.dailyroutine.module.routine.web;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -91,7 +89,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 	
 	/**
 	 * 스케줄 상세 목록 조회
-	 * @param idx
+	 * @param dailyIdx
 	 * @return
 	 * @throws Exception
 	 */
@@ -101,23 +99,22 @@ public class DailyRoutineUserController extends BaseModuleController{
 	public Map<String,Object> selectDailyRoutineList(@RequestParam("idx") Long dailyIdx) throws Exception {
 		
 		modelMap = new LinkedHashMap<String, Object>();
-		
-		DailyRoutineTimeLineDefaultDto searchDto = new DailyRoutineTimeLineDefaultDto();
-		searchDto.setDailyIdx(dailyIdx);
-		
-		List<DailyRoutineTimeLineDto> list = dailyRoutineService.selectDailyRoutineTimeLineList(searchDto);
-		List<Map<String,String>> resultMap = new ArrayList<Map<String,String>>();
-		for(DailyRoutineTimeLineDto dto : list) {
-			Map<String,String> map = new LinkedHashMap<String, String>();
-			map.put("idx", dto.getIdx()+"");
-			map.put("dailyIdx", dto.getDailyIdx()+"");
-			map.put("title", dto.getTitle());
-			map.put("startTime", dto.getShour()+":"+dto.getSmin());
-			map.put("endTime", dto.getEhour()+":"+dto.getEmin());
-			map.put("ord", dto.getOrd()+"");
-			resultMap.add(map);
-		}
-		modelMap.put("resultList", resultMap);
+
+		//초대인원
+		DailyRoutineInviteDto inviteDto = new DailyRoutineInviteDto();
+		inviteDto.setDailyIdx(dailyIdx);
+		List<DailyRoutineInviteDto> invites = dailyRoutineService.selectDailyRoutineInviteList(inviteDto);
+		modelMap.put("inviteList",invites);
+
+		//일정 정보
+		DailyRoutineDto dailyRoutineDto = new DailyRoutineDto();
+		dailyRoutineDto.setIdx(dailyIdx);
+		dailyRoutineDto = dailyRoutineService.selectDailyRoutineView(dailyRoutineDto);
+
+		//일정 대표 정보
+		modelMap.put("dailyRoutineDto", dailyRoutineDto.toSummaryMap());
+		//일정 타임라인 정보
+		modelMap.put("resultList", dailyRoutineDto.getTimeList().stream().map(DailyRoutineTimeLineDto::toSummaryMap).toList());
 		
 		return modelMap;
 	}
@@ -147,19 +144,19 @@ public class DailyRoutineUserController extends BaseModuleController{
 
 
 	/**
-	 * 스케줄 명 및 타임라인 일괄 등록
+	 * 스케줄 명 
 	 * @param dailyRoutineDto
 	 * @return
 	 * @throws Exception
 	 */
-	@Operation(summary="스케줄명 및 타임라인 일괄 등록" ,description = "스케줄 타임라인도 같이 전달해주어야함 (리스트로 해서 전달 줘야함) 타임라인 등록 정보 참고")
+	@Operation(summary="일정 등록" ,description = "타임라인 등록전 대표일정 등록")
 	@Parameters( value = {
 		@Parameter(name = "title", description ="제목"),
 		@Parameter(name = "startdate", description ="시작일자"),
 		@Parameter(name = "endDate", description ="제목(장소)"),
 		@Parameter(name = "dayType", description ="해쉬태그")
 	})
-	@PostMapping(API_URL+"/daily/routine/ins/all")
+	@PostMapping(API_URL+"/daily/routine/ins")
 	public ResponseEntity<String> insertDailyRoutineBatch(DailyRoutineDto dailyRoutineDto) throws Exception {
 		RoutineServiceResult<?> result = null;
 		try {		
@@ -408,5 +405,25 @@ public class DailyRoutineUserController extends BaseModuleController{
 		}
 		
 		return new ResponseEntity<String>("삭제 되었습니다.",HttpStatus.OK);
+	}
+
+	/**
+	 * 일정 지도
+	 * @param idx
+	 * @return
+	 * @throws Exception
+	 */
+	@Operation(summary = "일정 지도")
+	@Parameter(name="dailyIdx", description = "일정 일련번호")
+	@GetMapping(API_URL+"/daily/routine/plan/map")
+	public Map<String, Object> selectDailyRoutinePlanMap(@RequestParam("dailyIdx") Long idx) throws Exception {
+
+		DailyRoutineTimeLineDefaultDto searchDto = new DailyRoutineTimeLineDefaultDto();
+
+		List<DailyRoutineTimeLineDto> resultList = dailyRoutineService.selectDailyRoutineTimeLineList(searchDto);
+
+		modelMap.put("mapList", resultList);
+
+		return modelMap;
 	}
 }

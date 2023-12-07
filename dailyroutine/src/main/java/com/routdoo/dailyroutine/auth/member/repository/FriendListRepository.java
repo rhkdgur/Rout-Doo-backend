@@ -1,7 +1,9 @@
 package com.routdoo.dailyroutine.auth.member.repository;
 
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.routdoo.dailyroutine.auth.member.domain.MemberFriends;

@@ -70,9 +70,9 @@ public class DailyRoutineTimeLine {
 	private DailyRoutine dailyRoutine = new DailyRoutine();
 	
 	/**place 정보*/
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="place_num",foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private Place place = new Place();
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name="place_num",foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+//	private Place place = new Place();
 	
 	@Column(length = 300)
 	@Comment("제목")
@@ -81,6 +81,16 @@ public class DailyRoutineTimeLine {
 	@Column(length = 300)
 	@Comment("장소")
 	private String placeName;
+	
+	@Column(length = 300)
+	@Comment("주소")
+	private String addr;
+
+	@Comment("경도")
+	private String mapx;
+	
+	@Comment("위도")
+	private String mapy;
 	
 	@Comment("순서")
 	private int ord;
@@ -125,10 +135,13 @@ public class DailyRoutineTimeLine {
 		this.applyDate = dto.getApplyDate();
 		this.dailyRoutine = new DailyRoutine();
 		dailyRoutine.addIdx(dto.getDailyIdx());
-		this.place = new Place();
-		place.addPlaceNum(dto.getPlaceDto().getPlaceNum());
+//		this.place = new Place();
+//		place.addPlaceNum(dto.getPlaceDto().getPlaceNum());
 		this.title = dto.getTitle();
 		this.placeName = dto.getPlaceName();
+		this.addr = dto.getAddr();
+		this.mapx = dto.getMapx();
+		this.mapy = dto.getMapy();
 		this.ord = dto.getOrd();
 		this.context = dto.getContext();
 		this.shour = dto.getShour();
@@ -140,25 +153,25 @@ public class DailyRoutineTimeLine {
 		this.modifyDate = dto.getModifyDate();
 	}
 	
-	public DailyRoutineTimeLine(DailyRoutineTimeLineDto dto, Place place) {
-		if(dto.getIdx() != 0) {
-			this.idx = dto.getIdx();
-		}
-		this.writeType = RoutineWriteType.valueOf(dto.getWriteType());
-		this.applyDate = dto.getApplyDate();
-		this.title = dto.getTitle();
-		this.placeName = dto.getPlaceName();
-		this.ord = dto.getOrd();
-		this.context = dto.getContext();
-		this.shour = dto.getShour();
-		this.smin = dto.getSmin();
-		this.ehour = dto.getEhour();
-		this.emin = dto.getEmin();
-		this.cost = dto.getCost();
-		this.creatDate = dto.getCreatDate();
-		this.modifyDate = dto.getModifyDate();
-		this.place = place;
-	}
+//	public DailyRoutineTimeLine(DailyRoutineTimeLineDto dto, Place place) {
+//		if(dto.getIdx() != 0) {
+//			this.idx = dto.getIdx();
+//		}
+//		this.writeType = RoutineWriteType.valueOf(dto.getWriteType());
+//		this.applyDate = dto.getApplyDate();
+//		this.title = dto.getTitle();
+//		this.placeName = dto.getPlaceName();
+//		this.ord = dto.getOrd();
+//		this.context = dto.getContext();
+//		this.shour = dto.getShour();
+//		this.smin = dto.getSmin();
+//		this.ehour = dto.getEhour();
+//		this.emin = dto.getEmin();
+//		this.cost = dto.getCost();
+//		this.creatDate = dto.getCreatDate();
+//		this.modifyDate = dto.getModifyDate();
+////		this.place = place;
+//	}
 	
 	public void addDailRoutineTimeLine(DailyRoutineTimeLineDto dto) {
 		if(dto.getIdx() != 0) {
@@ -166,9 +179,12 @@ public class DailyRoutineTimeLine {
 		}
 		this.writeType = RoutineWriteType.valueOf(dto.getWriteType());
 		this.applyDate = dto.getApplyDate();	
-		this.place.addPlaceNum(dto.getPlaceDto().getPlaceNum());
+//		this.place.addPlaceNum(dto.getPlaceDto().getPlaceNum());
 		this.title = dto.getTitle();
 		this.placeName = dto.getPlaceName();
+		this.addr = dto.getAddr();
+		this.mapx = dto.getMapx();
+		this.mapy = dto.getMapy();
 		this.ord = dto.getOrd();
 		this.context = dto.getContext();
 		this.shour = dto.getShour();

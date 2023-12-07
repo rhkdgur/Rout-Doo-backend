@@ -47,5 +47,13 @@ public class DailyRoutineInviteDto {
 	public DailyRoutineInvite toEntity() {
 		return DailyRoutineInvite.builder().dto(this).build();
 	}
+
+	public DailyRoutineInviteDto(DailyRoutineInvite entity){
+		this.idx = entity.getIdx();
+		this.dailyIdx = entity.getDailyRoutine().getIdx();
+		this.memberId = entity.getMember().getId();
+		this.createDate = entity.getCreateDate();
+		this.modifyDate = entity.getModifyDate();
+	}
 	
 }

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -85,11 +86,20 @@ public class PlaceService {
 			place.chagnePlace(dto);
 		}
 	}
-	
+
+	/**
+	 * 삭제
+	 * @param dto
+	 * @throws Exception
+	 */
+	@Transactional
+	public void deletePlace(PlaceDto dto) throws Exception {
+		placeRepository.deleteById(dto.getPlaceNum());
+	}
+
 	/**
 	 * 위치 기반 장소 조회
-	 * @param mapx
-	 * @param mapy
+	 * @param searchDto
 	 * @return
 	 * @throws Exception
 	 */
@@ -98,34 +108,15 @@ public class PlaceService {
 		
 		return places;
 	}
-	
+
 	/**
-	 * 좋아요 등록
+	 * 마이페이지 장소 보관 목록 페이징 o
+	 * @param searchDto
 	 * @return
 	 * @throws Exception
 	 */
-	@Transactional
-	public PostServiceResult<?> savePlaceLike(PlaceLikeDto dto) throws Exception {
-		PlaceLike placeLike = placeLikeRepository.save(dto.toEntity());
-		if(placeLike == null) {
-			return new PostServiceResult<>(PostResultCodeType.FAIL);
-		}
-		return new PostServiceResult<>(PostResultCodeType.OK);
-	}
-	
-	/**
-	 * 좋아요 삭제
-	 * @return
-	 * @throws Exception
-	 */
-	@Transactional
-	public PostServiceResult<?> deletePlaceList(PlaceLikeDto dto) throws Exception {
-		placeLikeRepository.deleteById(dto.getIdx());
-		PlaceLike placeLike = placeLikeRepository.findById(dto.getIdx()).orElse(null);
-		if(placeLike != null) {
-			return new PostServiceResult<>(PostResultCodeType.FAIL);
-		}
-		return new PostServiceResult<>(PostResultCodeType.OK);
+	public Page<Map<String,Object>> selectMypagePlaceLikePageList(PlaceLikeDefaultDto searchDto) throws  Exception {
+		return placeRepository.selectMyPlaceLikePageList(searchDto);
 	}
 	
 	/**

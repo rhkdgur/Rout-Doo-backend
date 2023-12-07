@@ -2,7 +2,9 @@ package com.routdoo.dailyroutine.module.routine.dto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
 
@@ -73,6 +75,22 @@ public class DailyRoutineDto {
 		this.publicYn = entity.getPublicYn();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
-	}  
+	}
+
+	/**
+	 * dto -> summary map
+	 * @return
+	 */
+	public Map<String,Object> toSummaryMap (){
+		Map<String,Object> map = new LinkedHashMap<>();
+		map.put("idx",this.idx);
+		map.put("memberId", this.memberId);
+		map.put("tag",this.tag);
+		map.put("title",this.title);
+		map.put("startDate",this.startDate);
+		map.put("endDate",this.endDate);
+		map.put("publicYn",this.publicYn);
+		return map;
+	}
 
 }

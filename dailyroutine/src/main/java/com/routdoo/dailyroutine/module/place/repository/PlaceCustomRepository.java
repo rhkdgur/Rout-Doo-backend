@@ -4,6 +4,7 @@ import com.routdoo.dailyroutine.module.place.dto.*;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -42,6 +43,8 @@ public interface PlaceCustomRepository {
 	 * @throws Exception
 	 */
 	PlaceDto selectPlaceView(PlaceDto dto) throws Exception;
+
+	Page<Map<String,Object>> selectMyPlaceLikePageList(PlaceLikeDefaultDto searchDto) throws Exception;
 
 
 	/**

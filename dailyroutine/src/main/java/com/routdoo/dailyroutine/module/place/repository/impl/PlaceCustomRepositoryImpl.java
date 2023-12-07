@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -130,6 +131,29 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 		dto.addPlaceSummaryInfo(place);
 		
 		return dto;
+	}
+
+	@Override
+	public Page<Map<String, Object>> selectMyPlaceLikePageList(PlaceLikeDefaultDto searchDto) throws Exception {
+
+		QPlace qPlace = QPlace.place;
+		QPlaceLike qPlaceLike = QPlaceLike.placeLike;
+
+		long cnt = jpaQueryFactory.select(qPlace.count()).from(qPlace)
+				.join(qPlaceLike).fetchJoin()
+				.where(qPlaceLike.member.id.eq(searchDto.getMemberId()))
+				.fetchFirst();
+
+		List<Place> list = jpaQueryFactory.selectFrom(qPlace)
+				.join(qPlaceLike).fetchJoin()
+				.where(qPlaceLike.member.id.eq(searchDto.getMemberId()))
+				.offset(searchDto.getPageable().getOffset())
+				.limit(searchDto.getPageable().getPageSize())
+				.fetch();
+
+		List<Map<String,Object>> placeList = list.stream().map(Place::toSummaryMap).toList();
+
+		return new PageImpl<>(placeList,searchDto.getPageable(),cnt);
 	}
 
 	@Override

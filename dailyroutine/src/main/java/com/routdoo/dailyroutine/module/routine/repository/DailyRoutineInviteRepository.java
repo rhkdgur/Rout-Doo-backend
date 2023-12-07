@@ -16,6 +16,6 @@ import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineInvite;
 * -----------------------------------------------------------
 * 2023.10.05        ghgo       최초 생성
  */
-public interface DailyRoutineInviteRepository extends JpaRepository<DailyRoutineInvite, Long>{
+public interface DailyRoutineInviteRepository extends JpaRepository<DailyRoutineInvite, Long>, DailyRoutineInviteCustomRepository{
 
 }

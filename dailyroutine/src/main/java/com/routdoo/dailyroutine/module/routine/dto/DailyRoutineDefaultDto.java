@@ -39,4 +39,6 @@ public class DailyRoutineDefaultDto extends BaseVo {
 	
 	/**스케줄 목록 날짜*/
 	private String toDate = "";
+
+	private boolean isCummunity = false;
 }

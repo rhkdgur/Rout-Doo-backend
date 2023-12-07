@@ -57,6 +57,15 @@ public interface DailyRoutineCustomRepository {
 
 
 	/**
+	 * 좋아요 정보 목록 페이징
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	Page<DailyRoutineDto> selectDailyRoutineLikePageList(DailyRoutineLikeDefaultDto searchDto) throws Exception;
+
+
+	/**
 	 * 좋아요 정보 조회
 	 * @param dto
 	 * @return
@@ -80,5 +89,6 @@ public interface DailyRoutineCustomRepository {
 	 * @throws Exception
 	 */
 	Long deleteDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception;
+
 	
 }

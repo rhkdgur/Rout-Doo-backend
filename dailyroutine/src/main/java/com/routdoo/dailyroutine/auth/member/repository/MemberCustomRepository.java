@@ -1,7 +1,10 @@
 package com.routdoo.dailyroutine.auth.member.repository;
 
 import java.util.List;
+import java.util.Map;
 
+import com.routdoo.dailyroutine.auth.member.domain.MemberFriends;
+import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
 import org.springframework.data.domain.Page;
 
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
@@ -32,5 +35,23 @@ public interface MemberCustomRepository {
 	 * @throws Exception
 	 */
 	MemberDto selectMember(MemberDto dto) throws Exception;
+
+
+	/**
+	 * 차단 여부 업데이트
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	boolean updateMemberFriendsBlockYn(MemberFriendsDto dto) throws Exception;
+
+
+	/**
+	 * 차단 목록 조회
+	 * @param searchDto
+	 * @return
+	 * @throws Exception
+	 */
+	Page<Map<String,Object>> selectMemberFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception;
 
 }

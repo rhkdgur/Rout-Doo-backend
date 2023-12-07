@@ -1,10 +1,17 @@
 package com.routdoo.dailyroutine.auth.member.repository.impl;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
+import com.routdoo.dailyroutine.auth.member.domain.MemberFriends;
+import com.routdoo.dailyroutine.auth.member.domain.QMemberFriends;
+import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.expression.spel.ast.Projection;
 import org.springframework.stereotype.Repository;
 
 import com.querydsl.core.BooleanBuilder;
@@ -59,7 +66,50 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 		
 		return new MemberDto(member);
 	}
-	
+
+	@Override
+	public boolean updateMemberFriendsBlockYn(MemberFriendsDto dto) throws Exception {
+		QMember qMember = QMember.member;
+		QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
+		return jpaQueryFactory.update(qMemberFriends)
+				.set(qMemberFriends.blockYn,dto.getBlockYn())
+				.where(new BooleanBuilder().and(qMember.id.eq(dto.getMemberId())).and(qMemberFriends.idx.eq(dto.getIdx())))
+				.execute() > 0;
+	}
+
+	@Override
+	public Page<Map<String, Object>> selectMemberFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception {
+		QMember qMember = QMember.member;
+		QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
+
+		long cnt = jpaQueryFactory.select(qMember.count()).from(qMember)
+				.join(qMemberFriends).fetchJoin()
+				.where(new BooleanBuilder().and(qMember.id.eq(searchDto.getMemberId())).and(qMemberFriends.blockYn.eq(searchDto.getBlockYn())))
+				.fetchFirst();
+
+		List<MemberDto> list = jpaQueryFactory.select(
+						Projections.bean(
+								MemberDto.class,
+								qMember.id,
+								qMember.nickname,
+								qMember.gender,
+								qMember.age,
+								qMember.mbti
+						)
+				)
+				.from(qMember)
+				.join(qMemberFriends).fetchJoin()
+				.where(new BooleanBuilder().and(qMember.id.eq(searchDto.getMemberId())).and(qMemberFriends.blockYn.eq(searchDto.getBlockYn())))
+				.offset(searchDto.getPageable().getOffset())
+				.limit(searchDto.getPageable().getPageSize())
+				.fetch();
+
+		//Map 변환
+		List<Map<String,Object>> resultList = list.stream().map(MemberDto::getSummaryInfo).toList();
+
+		return new PageImpl<>(resultList,searchDto.getPageable(),cnt);
+	}
+
 	/**
 	 * 회원 페이징 목록
 	 */

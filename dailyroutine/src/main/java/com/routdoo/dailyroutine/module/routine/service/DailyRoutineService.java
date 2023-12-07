@@ -15,11 +15,13 @@ import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineRepository
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineTimeLineRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -119,7 +121,16 @@ public class DailyRoutineService {
 		DailyRoutineTimeLine timeLine =  dailyRoutineTimeLineRepository.findById(dto.getIdx()).orElse(null);
 		return new DailyRoutineTimeLineDto(timeLine);
 	}
-	
+
+	/**
+	 * 태그 조회 (가장 많이 태그된 정보 10개만 가져옴)
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Map<String,String>> selectDailyRoutineTagMostList() throws Exception {
+		return dailyRoutineRepository.selectDailyRoutineTagMostList();
+	}
+
 	/**
 	 * 일상 스케줄 등록
 	 * @param dto
@@ -128,43 +139,65 @@ public class DailyRoutineService {
 	 */
 	@Transactional
 	public RoutineServiceResult<?> insertDailyRoutine(DailyRoutineDto dto) throws Exception {
-		
+
 		DailyRoutine dailyRoutine = new DailyRoutine(dto);
-		
-		List<String> placeNumList = new ArrayList<String>(); 
-		for(DailyRoutineTimeLineDto line : dto.getTimeList()) {
-			if(line.getPlaceDto() != null) {
-				if(line.getPlaceDto().getPlaceNum() != null && !line.getPlaceDto().getPlaceNum().isEmpty()) {
-					placeNumList.add(line.getPlaceDto().getPlaceNum());
-				}
-			}
-		}
 
-		List<Place> placeList = new ArrayList<>();
-		//장소 목록이 존재 할 경우
-		if(placeNumList.size() > 0) {
-			placeList = placeRepository.selectPlaceNumListIn(placeNumList);
-		}
-
-		for(DailyRoutineTimeLineDto line : dto.getTimeList()) {
-			Place place = new Place();
-			if(RoutineWriteType.SEARCH.name().equals(line.getWriteType())) {
-				place = placeList.stream().filter(x-> x.getPlaceNum().equals(line.getPlaceDto().getPlaceNum())).findFirst().orElse(null);
-				if(place == null) {
-					return new RoutineServiceResult<>(RoutineResultCodeType.FAIL,"잘못된 접근입니다.");
-				}
-			}
-			DailyRoutineTimeLine timeLine = new DailyRoutineTimeLine(line,place);
-			dailyRoutine.addDailyRoutineTimeLine(timeLine);
-		}
-		
 		//등록
-		if(dailyRoutineRepository.save(dailyRoutine) == null) {
+		DailyRoutine result = dailyRoutineRepository.save(dailyRoutine);
+		if(!result.equals(dailyRoutine)){
 			return new RoutineServiceResult<>(RoutineResultCodeType.FAIL,"일정 등록에 실패하였습니다.");
 		}
 
 		return new RoutineServiceResult<>(RoutineResultCodeType.OK);
 	}
+
+	
+	/**
+	 * 일상 스케줄 등록( 타임라인까지 한번에 처리)
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+//	@Transactional
+//	public RoutineServiceResult<?> insertDailyRoutine2(DailyRoutineDto dto) throws Exception {
+//
+//		DailyRoutine dailyRoutine = new DailyRoutine(dto);
+//
+//		//해당 장소 검색
+//		List<String> placeNumList = new ArrayList<String>();
+//		for(DailyRoutineTimeLineDto line : dto.getTimeList()) {
+//			if(line.getPlaceDto() != null) {
+//				if(line.getPlaceDto().getPlaceNum() != null && !line.getPlaceDto().getPlaceNum().isEmpty()) {
+//					placeNumList.add(line.getPlaceDto().getPlaceNum());
+//				}
+//			}
+//		}
+//
+//		List<Place> placeList = new ArrayList<>();
+//		//장소 목록이 존재 할 경우
+//		if(placeNumList.size() > 0) {
+//			placeList = placeRepository.selectPlaceNumListIn(placeNumList);
+//		}
+//
+//		for(DailyRoutineTimeLineDto line : dto.getTimeList()) {
+//			Place place = new Place();
+//			if(RoutineWriteType.SEARCH.name().equals(line.getWriteType())) {
+//				place = placeList.stream().filter(x-> x.getPlaceNum().equals(line.getPlaceDto().getPlaceNum())).findFirst().orElse(null);
+//				if(place == null) {
+//					return new RoutineServiceResult<>(RoutineResultCodeType.FAIL,"잘못된 접근입니다.");
+//				}
+//			}
+//			DailyRoutineTimeLine timeLine = new DailyRoutineTimeLine(line,place);
+//			dailyRoutine.addDailyRoutineTimeLine(timeLine);
+//		}
+//
+//		//등록
+//		if(dailyRoutineRepository.save(dailyRoutine) == null) {
+//			return new RoutineServiceResult<>(RoutineResultCodeType.FAIL,"일정 등록에 실패하였습니다.");
+//		}
+//
+//		return new RoutineServiceResult<>(RoutineResultCodeType.OK);
+//	}
 	
 	/**
 	 * 일상 삭제
@@ -219,7 +252,15 @@ public class DailyRoutineService {
 	public void deleteDailyRoutineTimeLine(DailyRoutineTimeLineDto dto) throws Exception {
 		dailyRoutineTimeLineRepository.deleteById(dto.getIdx());
 	}
-	
+
+	/**
+	 * 초대회원 목록
+	 * @param dto
+	 * @return
+	 */
+	public List<DailyRoutineInviteDto> selectDailyRoutineInviteList(DailyRoutineInviteDto dto) throws Exception {
+		return dailyRoutineInviteRepository.selectDailyRoutineInviteDtoList(dto);
+	}
 	
 	/**
 	 * 친구 초대 처리
@@ -256,6 +297,22 @@ public class DailyRoutineService {
 	@Transactional
 	public void deleteDailyRoutineInvite(DailyRoutineInviteDto dto) throws Exception {
 		dailyRoutineInviteRepository.deleteById(dto.getIdx());
+	}
+
+
+	/**
+	 * 좋아요 일정 보관 목록 (페이징)
+	 * @param dailyRoutineLikeDto
+	 * @return
+	 * @throws Exception
+	 */
+	public Page<Map<String,Object>> selectDailyRoutineLikePageList(DailyRoutineLikeDefaultDto searchDto) throws Exception {
+
+		Page<DailyRoutineDto> list = dailyRoutineRepository.selectDailyRoutineLikePageList(searchDto);
+
+		List<Map<String,Object>> resultList = list.getContent().stream().map(DailyRoutineDto::toSummaryMap).toList();
+
+		return new PageImpl<>(resultList,searchDto.getPageable(),list.getTotalElements());
 	}
 
 

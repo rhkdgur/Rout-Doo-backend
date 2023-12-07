@@ -6,8 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import com.routdoo.dailyroutine.auth.member.MemberSession;
+import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,7 +40,7 @@ import lombok.RequiredArgsConstructor;
 * -----------------------------------------------------------
 * 2023.08.03        ghgo       최초 생성
  */
-@Tag(name="장소 사용자 컨트롤러")
+@Tag(name="장소 사용자 컨트롤러",description = "장소에 대한 데이터 처리를 합니다.")
 @RestController
 @RequiredArgsConstructor
 public class PlaceUserController extends BaseModuleController{
@@ -138,5 +142,62 @@ public class PlaceUserController extends BaseModuleController{
 		modelMap.put("commentList", commentsMap);
 		
 		return modelMap;
+	}
+
+	/**
+	 * 장소 등록
+	 * @param placeDto
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping(API_URL+"/place/act/ins")
+	public ResponseEntity<String> insertPlace(PlaceDto placeDto) throws Exception {
+		try{
+			placeDto.setMemberId(memberSession.getMemberSession().getId());
+			placeService.savePlace(placeDto);
+		}catch (Exception e){
+			logger.error("### insert place error : {}",e.getMessage());
+			return new ResponseEntity<>("장소 등록시 오류가 발생하였습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
+		}
+		return new ResponseEntity<>("등록 되었습니다.",HttpStatus.OK);
+	}
+
+	/**
+	 * 장소 수정
+	 * @param placeDto
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping(API_URL+"/place/act/upd")
+	public ResponseEntity<String> updatePlace(PlaceDto placeDto) throws Exception {
+		try{
+			placeDto.setMemberId(memberSession.getMemberSession().getId());
+			placeService.savePlace(placeDto);
+		}catch (Exception e){
+			logger.error("### update place error : {}",e.getMessage());
+			return new ResponseEntity<>("장소 수정시 오류가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+		}
+		return new ResponseEntity<>("수정 되었습니다.",HttpStatus.OK);
+	}
+
+	/**
+	 * 장소 삭제
+	 * @param placeNum
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping(API_URL+"/place/act/del")
+	public ResponseEntity<String> deletePlace(@RequestParam("placeNum") String placeNum) throws Exception {
+
+		try{
+			PlaceDto placeDto = new PlaceDto();
+			placeDto.setPlaceNum(placeNum);
+			placeService.deletePlace(placeDto);
+		}catch (Exception e){
+			logger.error("### delete place error : {}",e.getMessage());
+			return new ResponseEntity<>("장소 삭제시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+		}
+
+		return new ResponseEntity<>("삭제 되었습니다.",HttpStatus.OK);
 	}
 }

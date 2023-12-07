@@ -1,6 +1,7 @@
 package com.routdoo.dailyroutine.module.routine.repository.impl;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 import com.routdoo.dailyroutine.module.routine.domain.*;
 import com.routdoo.dailyroutine.module.routine.dto.*;
@@ -33,8 +34,17 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 	private BooleanBuilder commonQuery(DailyRoutineDefaultDto searchDto) {
 		BooleanBuilder sql = new BooleanBuilder();
 		QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
+		QDailyRoutineTimeLine qDailyRoutineTimeLine = QDailyRoutineTimeLine.dailyRoutineTimeLine;
+
 		if(searchDto.getSstring() != null && !searchDto.getSstring().isEmpty()) {
-			
+			//커뮤니티 검색
+			if(searchDto.isCummunity()){
+				sql.and(
+						qDailyRoutineTimeLine.addr.like("%"+searchDto.getSstring()+"%")
+								.or(qDailyRoutineTimeLine.placeName.like("%"+searchDto.getSstring()+"%"))
+										.or(qDailyRoutine.tag.like("%"+searchDto.getSstring()+"%"))
+				);
+			}
 		}
 		if(searchDto.getMemberId() != null && !searchDto.getMemberId().isEmpty()) {
 			sql.and(qDailyRoutine.member.id.eq(searchDto.getMemberId()));
@@ -111,18 +121,6 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 	}
 
 	@Override
-	public DailyRoutineLikeDto selectDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception {
-		QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
-		DailyRoutineLike dailyRoutineLike = jpaQueryFactory.selectFrom(qDailyRoutineLike)
-				.where(new BooleanBuilder().and(qDailyRoutineLike.idx.eq(dto.getIdx()))).fetchFirst();
-
-		if(dailyRoutineLike == null){
-			return null;
-		}
-		return new DailyRoutineLikeDto(dailyRoutineLike);
-	}
-
-	@Override
 	public Page<DailyRoutineTimeLineDto> selectDailyRoutineTimePageList(DailyRoutineTimeLineDefaultDto searchDto) {
 		QDailyRoutineTimeLine qDailyRoutineTimeLine = QDailyRoutineTimeLine.dailyRoutineTimeLine;
 		
@@ -137,6 +135,40 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 		
 		return new PageImpl<>(list.stream().map(x-> new DailyRoutineTimeLineDto(x)).collect(Collectors.toList()),
 				searchDto.getPageable(),cnt);
+	}
+
+
+	@Override
+	public Page<DailyRoutineDto> selectDailyRoutineLikePageList(DailyRoutineLikeDefaultDto searchDto) throws Exception {
+		QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
+		QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
+
+		List<DailyRoutine> list = jpaQueryFactory.selectFrom(qDailyRoutine)
+				.join(qDailyRoutineLike).fetchJoin()
+				.where(qDailyRoutineLike.member.id.eq(searchDto.getMemberId()))
+				.offset(searchDto.getPageable().getOffset())
+				.limit(searchDto.getPageable().getPageSize())
+				.fetch();
+
+		long cnt = jpaQueryFactory.select(qDailyRoutine.count())
+				.from(qDailyRoutine)
+				.join(qDailyRoutineLike)
+				.where(qDailyRoutineLike.member.id.eq(searchDto.getMemberId()))
+				.fetchFirst();
+
+		return new PageImpl<>(list.stream().map(DailyRoutineDto::new).toList(),searchDto.getPageable(),cnt);
+	}
+
+	@Override
+	public DailyRoutineLikeDto selectDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception {
+		QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
+		DailyRoutineLike dailyRoutineLike = jpaQueryFactory.selectFrom(qDailyRoutineLike)
+				.where(new BooleanBuilder().and(qDailyRoutineLike.idx.eq(dto.getIdx()))).fetchFirst();
+
+		if(dailyRoutineLike == null){
+			return null;
+		}
+		return new DailyRoutineLikeDto(dailyRoutineLike);
 	}
 
 
