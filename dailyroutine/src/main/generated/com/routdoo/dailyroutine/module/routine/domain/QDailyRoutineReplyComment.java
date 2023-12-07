@@ -26,8 +26,6 @@ public class QDailyRoutineReplyComment extends EntityPathBase<DailyRoutineReplyC
 
     public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);
 
-    public final QDailyRoutine dailyRoutine;
-
     public final QDailyRoutineComment dailyRoutineComment;
 
     public final NumberPath<Long> idx = createNumber("idx", Long.class);
@@ -54,7 +52,6 @@ public class QDailyRoutineReplyComment extends EntityPathBase<DailyRoutineReplyC
 
     public QDailyRoutineReplyComment(Class<? extends DailyRoutineReplyComment> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.dailyRoutine = inits.isInitialized("dailyRoutine") ? new QDailyRoutine(forProperty("dailyRoutine"), inits.get("dailyRoutine")) : null;
         this.dailyRoutineComment = inits.isInitialized("dailyRoutineComment") ? new QDailyRoutineComment(forProperty("dailyRoutineComment"), inits.get("dailyRoutineComment")) : null;
         this.member = inits.isInitialized("member") ? new com.routdoo.dailyroutine.auth.member.domain.QMember(forProperty("member")) : null;
     }

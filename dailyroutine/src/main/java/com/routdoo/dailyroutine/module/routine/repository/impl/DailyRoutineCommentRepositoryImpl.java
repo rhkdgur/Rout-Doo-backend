@@ -8,6 +8,7 @@ import com.routdoo.dailyroutine.module.routine.domain.*;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCommentRepository;
+import org.qlrm.mapper.JpaResultMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Repository;
@@ -36,7 +37,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
         StringBuffer sql = new StringBuffer();
 
         sql.append("SELECT  " +
-                " drc.idx," +
+                " drc.idx as idx," +
                 " m.id as memberId," +
                 " drc.daily_idx as dailyIdx," +
                 " m.nickname as nickname," +
@@ -48,31 +49,15 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
         sql.append(" JOIN ( SELECT id,nickname,mbti FROM member ) m on m.id = drc.member_id ");
         sql.append(" JOIN ( SELECT idx daily_idx  FROM daily_routine ) dr on dr.daily_idx = drc.daily_idx ");
         sql.append(" LEFT JOIN ( SELECT comment_idx , count(*) replyCnt  FROM daily_routine_comment_reply group by comment_idx ) drcr on drc.idx = drcr.comment_idx ");
-        sql.append(" ) T where daily_idx = ? LIMIT ?,?");
+        sql.append(" ) T where daily_idx = ").append(dto.getDailyIdx())
+                .append(" LIMIT ").append(dto.getPageable().getOffset()).append(",").append(dto.getPageable().getPageSize());
 
-        List<Map<String,String>> list = (List<Map<String,String>>)entityManager.createNamedQuery(sql.toString())
-                .setParameter(1,dto.getDailyIdx())
-                .setParameter(2,dto.getPageable().getOffset())
-                .setParameter(3,dto.getPageable().getPageSize())
-                .getResultList();
+        JpaResultMapper jpaResultMapper = new JpaResultMapper();
+        List<DailyRoutineCommentDto> resultList = jpaResultMapper.list(entityManager.createNativeQuery(sql.toString()),DailyRoutineCommentDto.class);
 
-        List<DailyRoutineCommentDto> resultList = new ArrayList<>();
-
-        for(Map<String,String> map : list){
-            DailyRoutineCommentDto commentDto = new DailyRoutineCommentDto();
-            commentDto.setIdx(Long.valueOf(map.get("idx")));
-            commentDto.setMemberId(map.get("memberId"));
-            commentDto.setDailyIdx(Long.valueOf(map.get("dailyIdx")));
-            commentDto.getMemberDto().setNickname(map.get("nickname"));
-            commentDto.setContext(map.get("context"));
-            commentDto.getMemberDto().setMbti(map.get("mbti"));
-            commentDto.setReplyCnt(Integer.parseInt(map.get("replyCnt")));
-            resultList.add(commentDto);
-        }
-
-        QDailyRoutineComment qDailyRoutineComment = QDailyRoutineComment.dailyRoutineComment;
         QMember qMember = QMember.member;
         QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
+        QDailyRoutineComment qDailyRoutineComment = QDailyRoutineComment.dailyRoutineComment;
 
         //개수
         Long cnt = jpaQueryFactory.select(qDailyRoutineComment.count())
@@ -91,7 +76,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
         StringBuffer sql = new StringBuffer();
 
         sql.append("SELECT  " +
-                " drc.idx," +
+                " drc.idx as idx," +
                 " m.id as memberId," +
                 " drc.daily_idx as dailyIdx," +
                 " m.nickname as nickname," +
@@ -103,29 +88,10 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
         sql.append(" JOIN ( SELECT id,nickname,mbti FROM member ) m on m.id = drc.member_id ");
         sql.append(" JOIN ( SELECT idx daily_idx  FROM daily_routine ) dr on dr.daily_idx = drc.daily_idx ");
         sql.append(" LEFT JOIN ( SELECT comment_idx , count(*) replyCnt  FROM daily_routine_comment_reply group by comment_idx ) drcr on drc.idx = drcr.comment_idx ");
-        sql.append(" ) T where daily_idx = ?");
+        sql.append(" ) T where daily_idx = ").append(dto.getDailyIdx());
 
-        List<Map<String,String>> list = (List<Map<String,String>>)entityManager.createNamedQuery(sql.toString())
-                .setParameter(1,dto.getDailyIdx())
-                .setParameter(2,dto.getPageable().getOffset())
-                .setParameter(3,dto.getPageable().getPageSize())
-                .getResultList();
-
-        List<DailyRoutineCommentDto> resultList = new ArrayList<>();
-
-        for(Map<String,String> map : list){
-            DailyRoutineCommentDto commentDto = new DailyRoutineCommentDto();
-            commentDto.setIdx(Long.valueOf(map.get("idx")));
-            commentDto.setMemberId(map.get("memberId"));
-            commentDto.setDailyIdx(Long.valueOf(map.get("dailyIdx")));
-            commentDto.getMemberDto().setNickname(map.get("nickname"));
-            commentDto.setContext(map.get("context"));
-            commentDto.getMemberDto().setMbti(map.get("mbti"));
-            commentDto.setReplyCnt(Integer.parseInt(map.get("replyCnt")));
-            resultList.add(commentDto);
-        }
-
-        return resultList;
+        JpaResultMapper jpaResultMapper = new JpaResultMapper();
+        return jpaResultMapper.list(entityManager.createNamedQuery(sql.toString()),DailyRoutineCommentDto.class);
     }
 
     @Override

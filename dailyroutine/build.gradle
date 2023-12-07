@@ -57,13 +57,16 @@ dependencies {
 	// 스웨거
 	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-	
+
+	// https://mvnrepository.com/artifact/org.qlrm/qlrm
+	implementation group: 'org.qlrm', name: 'qlrm', version: '4.0.1'
+
 	//jwt 로그인 라이브러리
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
    	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
   	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-  	
-  	//websocket 웹소켓
+
+	//websocket 웹소켓
   	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	implementation 'org.webjars:sockjs-client:1.5.1'
 	implementation 'org.webjars:stomp-websocket:2.3.4'

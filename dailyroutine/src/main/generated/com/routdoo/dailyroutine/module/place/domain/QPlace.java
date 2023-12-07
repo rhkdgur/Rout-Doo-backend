@@ -26,6 +26,8 @@ public class QPlace extends EntityPathBase<Place> {
 
     public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);
 
+    public final StringPath deleteReason = createString("deleteReason");
+
     public final StringPath detailText = createString("detailText");
 
     public final StringPath hashtag = createString("hashtag");
@@ -47,6 +49,8 @@ public class QPlace extends EntityPathBase<Place> {
     public final StringPath placeNum = createString("placeNum");
 
     public final EnumPath<com.routdoo.dailyroutine.module.place.service.PlaceStatusType> pstatus = createEnum("pstatus", com.routdoo.dailyroutine.module.place.service.PlaceStatusType.class);
+
+    public final StringPath tel = createString("tel");
 
     public final StringPath title = createString("title");
 
