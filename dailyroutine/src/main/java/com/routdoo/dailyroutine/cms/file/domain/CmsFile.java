@@ -77,10 +77,11 @@ public class CmsFile {
 	private LocalDateTime modifyDate;
 
 	@Builder
-	public CmsFile(CmsFileDto dto) {
-		if(dto.getIdx() > 0) {
+	public CmsFile(CmsFileDto dto, String parentIdx) {
+        if(dto.getIdx() > 0) {
 			this.idx = dto.getIdx();
 		}
+		this.parentIdx = parentIdx;
 		this.uploadCode = dto.getUploadCode();
 		this.originalFileName = dto.getOriginalFileName();
 		this.saveFileName = dto.getSaveFileName();

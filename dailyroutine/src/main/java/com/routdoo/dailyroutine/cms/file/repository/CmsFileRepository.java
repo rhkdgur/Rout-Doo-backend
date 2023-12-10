@@ -16,6 +16,6 @@ import com.routdoo.dailyroutine.cms.file.domain.CmsFile;
 * -----------------------------------------------------------
 * 2023.10.18        ghgo       최초 생성
  */
-public interface CmsFileRepository extends JpaRepository<CmsFile, Long>{
+public interface CmsFileRepository extends JpaRepository<CmsFile, Long>,CmsFileCustomRepository{
 
 }

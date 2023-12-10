@@ -3,8 +3,10 @@ package com.routdoo.dailyroutine.cms.file.dto;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import com.routdoo.dailyroutine.cms.file.domain.CmsFile;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 
@@ -53,5 +55,24 @@ public class CmsFileDto implements Serializable{
 	
 	/**수정일자*/
 	private LocalDateTime modifyDate;
+
+	/**
+	 * 파일
+	 */
+	private MultipartFile multiPartFile;
+
+
+	public CmsFileDto(CmsFile entity){
+		this.idx = entity.getIdx();
+		this.parentIdx = entity.getParentIdx();
+		this.uploadCode = entity.getUploadCode();
+		this.originalFileName = entity.getOriginalFileName();
+		this.saveFileName = entity.getSaveFileName();
+		this.fileSize = entity.getFileSize();
+		this.extension = entity.getExtension();
+		this.tagName = entity.getTagName();
+		this.createDate = entity.getCreateDate();
+		this.modifyDate = entity.getModifyDate();
+	}
 	
 }
