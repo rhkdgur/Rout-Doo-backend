@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 /**
  * packageName    : com.routdoo.dailyroutine.util
@@ -182,6 +183,14 @@ public class FileUploadUtil {
         File deleteFile = new File(path,fileName);
         if(deleteFile.exists()) {
             deleteFile.deleteOnExit();
+        }
+    }
+
+    public void deleteFile(List<File> fileList){
+        for(File file : fileList){
+            if(file.exists()){
+                file.deleteOnExit();
+            }
         }
     }
 

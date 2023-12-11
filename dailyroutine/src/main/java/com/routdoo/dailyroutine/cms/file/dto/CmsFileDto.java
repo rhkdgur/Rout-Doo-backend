@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import com.routdoo.dailyroutine.cms.file.domain.CmsFile;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class CmsFileDto implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
@@ -55,11 +57,6 @@ public class CmsFileDto implements Serializable{
 	
 	/**수정일자*/
 	private LocalDateTime modifyDate;
-
-	/**
-	 * 파일
-	 */
-	private MultipartFile multiPartFile;
 
 
 	public CmsFileDto(CmsFile entity){
