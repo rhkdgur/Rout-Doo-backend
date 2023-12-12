@@ -122,12 +122,12 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 		QPlace qPlace = QPlace.place;
 		QPlaceComment qPlaceComment = QPlaceComment.placeComment;
 		QPlaceLike qPlaceLike = QPlaceLike.placeLike;
-		QPlaceScore qPlaceScore = QPlaceScore.placeScore;
+		QPlaceIntro qPlaceIntro = QPlaceIntro.placeIntro;
 		
 		Place place = jpaQueryFactory.selectFrom(qPlace)
 				.leftJoin(qPlace.placeComments,qPlaceComment).fetchJoin()
 				.leftJoin(qPlace.placeLikes,qPlaceLike).fetchJoin()
-				.leftJoin(qPlace.placeScores,qPlaceScore).fetchJoin()
+				.leftJoin(qPlace.placeIntros,qPlaceIntro).fetchJoin()
 				.where(new BooleanBuilder().and(qPlace.placeNum.eq(dto.getPlaceNum()))).fetchOne();
 
 		if(place != null) {
@@ -135,6 +135,23 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 		}
 		
 		return dto;
+	}
+
+	@Override
+	public boolean updatePlaceIntro(PlaceIntroDto dto) throws Exception {
+		QPlaceIntro qPlaceIntro = QPlaceIntro.placeIntro;
+		return jpaQueryFactory.update(qPlaceIntro)
+				.set(qPlaceIntro.introText,dto.getIntroText())
+				.set(qPlaceIntro.visitDate,dto.getVisitDate())
+				.set(qPlaceIntro.score,dto.getScore())
+				.where(qPlaceIntro.idx.eq(dto.getIdx())).execute() > 0;
+	}
+
+	@Override
+	public boolean deletePlaceIntro(PlaceIntroDto dto) throws Exception {
+		QPlaceIntro qPlaceIntro = QPlaceIntro.placeIntro;
+		return jpaQueryFactory.delete(qPlaceIntro)
+				.where(qPlaceIntro.idx.eq(dto.getIdx())).execute() > 0;
 	}
 
 	@Override

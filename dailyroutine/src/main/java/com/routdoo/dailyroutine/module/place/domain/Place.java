@@ -48,10 +48,13 @@ public class Place implements Persistable<String> {
 
 	@Comment("제목")
 	private String title;
-	
-	@Comment("해쉬태그")
-	@Column(length = 100)
-	private String hashtag;
+
+	@Comment("카테고리 코드")
+	private String categCd;
+
+//	@Comment("해쉬태그")
+//	@Column(length = 100)
+//	private String hashtag;
 
 	@Comment("연락처")
 	@Column(length= 50)
@@ -65,10 +68,7 @@ public class Place implements Persistable<String> {
 	
 	@Comment("위도")
 	private String mapy;
-	
-	@Comment("소개글")
-	@Lob
-	private String introText;
+
 	
 	@Comment("이용안내")
 	@Lob
@@ -101,7 +101,7 @@ public class Place implements Persistable<String> {
 	private List<PlaceLike> placeLikes = new ArrayList<PlaceLike>();
 
 	@OneToMany(mappedBy = "place", fetch = FetchType.LAZY)
-	private List<PlaceScore> placeScores = new ArrayList<>();
+	private List<PlaceIntro> placeIntros = new ArrayList<>();
 	
 	@Builder
 	public Place(PlaceDto dto) {
@@ -110,11 +110,10 @@ public class Place implements Persistable<String> {
 		member.addId(dto.getMemberId());
 		this.title = dto.getTitle();
 		this.tel = dto.getTel();
-		this.hashtag = dto.getHashtag();
+		this.categCd = dto.getCategCd();
 		this.addr = dto.getAddr();
 		this.mapx = dto.getMapx();
 		this.mapy = dto.getMapy();
-		this.introText = dto.getIntroText();
 		this.useInfo = dto.getUseInfo();
 		this.detailText = dto.getDetailText();
 		this.deleteReason = dto.getDeleteReason();
@@ -128,11 +127,10 @@ public class Place implements Persistable<String> {
 	 */
 	public void chagnePlace(PlaceDto dto) {
 		this.title = dto.getTitle();
-		this.hashtag = dto.getHashtag();
+		this.categCd = dto.getCategCd();
 		this.addr = dto.getAddr();
 		this.mapx = dto.getMapx();
 		this.mapy = dto.getMapy();
-		this.introText = dto.getIntroText();
 		this.useInfo = dto.getUseInfo();
 		this.detailText = dto.getDetailText();
 		this.deleteReason = dto.getDeleteReason();
@@ -148,7 +146,7 @@ public class Place implements Persistable<String> {
 		map.put("tel",this.tel);
 		map.put("mapx",this.mapx);
 		map.put("mapy",this.mapy);
-		map.put("hashtag",this.hashtag);
+		map.put("categCd",this.categCd);
 		return map;
 	}
 	

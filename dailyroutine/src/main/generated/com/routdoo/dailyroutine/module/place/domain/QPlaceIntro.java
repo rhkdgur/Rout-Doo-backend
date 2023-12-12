@@ -11,20 +11,22 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QPlaceScore is a Querydsl query type for PlaceScore
+ * QPlaceIntro is a Querydsl query type for PlaceIntro
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QPlaceScore extends EntityPathBase<PlaceScore> {
+public class QPlaceIntro extends EntityPathBase<PlaceIntro> {
 
-    private static final long serialVersionUID = 215142844L;
+    private static final long serialVersionUID = 206240150L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QPlaceScore placeScore = new QPlaceScore("placeScore");
+    public static final QPlaceIntro placeIntro = new QPlaceIntro("placeIntro");
 
     public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);
 
     public final NumberPath<Long> idx = createNumber("idx", Long.class);
+
+    public final StringPath introText = createString("introText");
 
     public final com.routdoo.dailyroutine.auth.member.domain.QMember member;
 
@@ -34,23 +36,25 @@ public class QPlaceScore extends EntityPathBase<PlaceScore> {
 
     public final NumberPath<Integer> score = createNumber("score", Integer.class);
 
-    public QPlaceScore(String variable) {
-        this(PlaceScore.class, forVariable(variable), INITS);
+    public final StringPath visitDate = createString("visitDate");
+
+    public QPlaceIntro(String variable) {
+        this(PlaceIntro.class, forVariable(variable), INITS);
     }
 
-    public QPlaceScore(Path<? extends PlaceScore> path) {
+    public QPlaceIntro(Path<? extends PlaceIntro> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QPlaceScore(PathMetadata metadata) {
+    public QPlaceIntro(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QPlaceScore(PathMetadata metadata, PathInits inits) {
-        this(PlaceScore.class, metadata, inits);
+    public QPlaceIntro(PathMetadata metadata, PathInits inits) {
+        this(PlaceIntro.class, metadata, inits);
     }
 
-    public QPlaceScore(Class<? extends PlaceScore> type, PathMetadata metadata, PathInits inits) {
+    public QPlaceIntro(Class<? extends PlaceIntro> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new com.routdoo.dailyroutine.auth.member.domain.QMember(forProperty("member")) : null;
         this.place = inits.isInitialized("place") ? new QPlace(forProperty("place"), inits.get("place")) : null;

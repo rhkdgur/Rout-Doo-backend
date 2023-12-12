@@ -3,6 +3,7 @@ package com.routdoo.dailyroutine.module.place.repository;
 import com.routdoo.dailyroutine.module.place.dto.*;
 import org.springframework.data.domain.Page;
 
+import java.beans.ExceptionListener;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +44,23 @@ public interface PlaceCustomRepository {
 	 * @throws Exception
 	 */
 	PlaceDto selectPlaceView(PlaceDto dto) throws Exception;
+
+
+	/**
+	 * 장소 소개글 수정
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	boolean updatePlaceIntro(PlaceIntroDto dto) throws Exception;
+
+	/**
+	 * 장소 소개글 삭제
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	boolean deletePlaceIntro(PlaceIntroDto dto) throws Exception;
 
 	/**
 	 * 장소 활성,비활성 업데이트

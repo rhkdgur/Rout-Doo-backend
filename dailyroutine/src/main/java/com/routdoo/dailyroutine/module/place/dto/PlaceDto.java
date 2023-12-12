@@ -1,12 +1,14 @@
 package com.routdoo.dailyroutine.module.place.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.routdoo.dailyroutine.module.place.domain.Place;
 
-import com.routdoo.dailyroutine.module.place.domain.PlaceScore;
+import com.routdoo.dailyroutine.module.place.domain.PlaceIntro;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,8 +39,11 @@ public class PlaceDto {
 	/**연락처*/
 	private String tel;
 	
-	/**해쉬태그*/
-	private String hashtag;
+	/**카테고리 코드*/
+	private String categCd;
+
+	/***카테고리 명*/
+	private String categNm;
 	
 	/**주소*/
 	private String addr;
@@ -48,9 +53,6 @@ public class PlaceDto {
 	
 	/**위도*/
 	private String mapy;
-	
-	/**소개글*/
-	private String introText;
 	
 	/**이용안내*/
 	private String useInfo;
@@ -81,6 +83,9 @@ public class PlaceDto {
 	
 	/**별점*/
 	private int placeScore = 0;
+
+	/**장소 회원별 인트로 글*/
+	private List<PlaceIntroDto> introList = new ArrayList<>();
 	
 	public Place toEntity() {
 		return Place.builder().dto(this).build();
@@ -90,22 +95,21 @@ public class PlaceDto {
 		this.placeNum = entity.getPlaceNum();
 		this.title = entity.getTitle();
 		this.memberId = entity.getMember().getId();
-		this.hashtag = entity.getHashtag();
+		this.categCd = entity.getCategCd();
 		this.tel = entity.getTel();
 		this.addr = entity.getAddr();
 		this.mapx = entity.getMapx();
 		this.mapy = entity.getMapy();
-		this.introText = entity.getIntroText();
 		this.useInfo = entity.getUseInfo();
 		this.detailText = entity.getDetailText();
 		this.pstatus = entity.getPstatus().name();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
 		this.deleteReason = entity.getDeleteReason();
-		if(!entity.getPlaceScores().isEmpty()){
+		if(!entity.getPlaceIntros().isEmpty()){
 			int value = 0;
-			int len = entity.getPlaceScores().size();
-			for(PlaceScore score : entity.getPlaceScores()){
+			int len = entity.getPlaceIntros().size();
+			for(PlaceIntro score : entity.getPlaceIntros()){
 				value += score.getScore();
 			}
 			this.placeScore = (value / len);
@@ -116,12 +120,11 @@ public class PlaceDto {
 		this.placeNum = entity.getPlaceNum();
 		this.title = entity.getTitle();
 		this.memberId = entity.getMember().getId();
-		this.hashtag = entity.getHashtag();
+		this.categCd = entity.getCategCd();
 		this.tel = entity.getTel();
 		this.addr = entity.getAddr();
 		this.mapx = entity.getMapx();
 		this.mapy = entity.getMapy();
-		this.introText = entity.getIntroText();
 		this.useInfo = entity.getUseInfo();
 		this.detailText = entity.getDetailText();
 		this.pstatus = entity.getPstatus().name();
@@ -130,10 +133,10 @@ public class PlaceDto {
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
 		this.deleteReason = entity.getDeleteReason();
-		if(!entity.getPlaceScores().isEmpty()){
+		if(!entity.getPlaceIntros().isEmpty()){
 			int value = 0;
-			int len = entity.getPlaceScores().size();
-			for(PlaceScore score : entity.getPlaceScores()){
+			int len = entity.getPlaceIntros().size();
+			for(PlaceIntro score : entity.getPlaceIntros()){
 				value += score.getScore();
 			}
 			this.placeScore = (value / len);
@@ -148,7 +151,8 @@ public class PlaceDto {
 		map.put("tel",this.tel);
 		map.put("mapx",this.mapx);
 		map.put("mapy",this.mapy);
-		map.put("hashtag",this.hashtag);
+		map.put("categCd",this.categCd);
+		map.put("categNm",this.categNm);
 		map.put("placeScore",this.placeScore);
 		return map;
 	}

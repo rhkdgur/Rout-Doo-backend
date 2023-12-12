@@ -24,15 +24,13 @@ public class QPlace extends EntityPathBase<Place> {
 
     public final StringPath addr = createString("addr");
 
+    public final StringPath categCd = createString("categCd");
+
     public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);
 
     public final StringPath deleteReason = createString("deleteReason");
 
     public final StringPath detailText = createString("detailText");
-
-    public final StringPath hashtag = createString("hashtag");
-
-    public final StringPath introText = createString("introText");
 
     public final StringPath mapx = createString("mapx");
 
@@ -44,11 +42,11 @@ public class QPlace extends EntityPathBase<Place> {
 
     public final ListPath<PlaceComment, QPlaceComment> placeComments = this.<PlaceComment, QPlaceComment>createList("placeComments", PlaceComment.class, QPlaceComment.class, PathInits.DIRECT2);
 
+    public final ListPath<PlaceIntro, QPlaceIntro> placeIntros = this.<PlaceIntro, QPlaceIntro>createList("placeIntros", PlaceIntro.class, QPlaceIntro.class, PathInits.DIRECT2);
+
     public final ListPath<PlaceLike, QPlaceLike> placeLikes = this.<PlaceLike, QPlaceLike>createList("placeLikes", PlaceLike.class, QPlaceLike.class, PathInits.DIRECT2);
 
     public final StringPath placeNum = createString("placeNum");
-
-    public final ListPath<PlaceScore, QPlaceScore> placeScores = this.<PlaceScore, QPlaceScore>createList("placeScores", PlaceScore.class, QPlaceScore.class, PathInits.DIRECT2);
 
     public final EnumPath<com.routdoo.dailyroutine.module.place.service.PlaceStatusType> pstatus = createEnum("pstatus", com.routdoo.dailyroutine.module.place.service.PlaceStatusType.class);
 
