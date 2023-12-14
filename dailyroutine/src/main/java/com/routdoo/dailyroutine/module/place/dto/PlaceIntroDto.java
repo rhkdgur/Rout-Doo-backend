@@ -33,11 +33,11 @@ public class PlaceIntroDto {
     /**일련번호*/
     private Long idx;
 
-    /**장소*/
-    private PlaceDto place;
-
-    /**회원*/
-    private MemberDto member;
+    /**회원 아이디*/
+    private String memberId;
+    
+    /**장소번호*/
+    private String placeNum;
 
     /**소개글*/
     private String introText;
@@ -54,12 +54,20 @@ public class PlaceIntroDto {
     /**수정일자*/
     private LocalDateTime modifyDate;
 
+    /**장소*/
+    private PlaceDto place = new PlaceDto();
+
+    /**회원*/
+    private MemberDto member = new MemberDto();
+
     public PlaceIntro toEntity(){
         return PlaceIntro.builder().dto(this).build();
     }
 
     public PlaceIntroDto(PlaceIntro entity){
         this.idx = entity.getIdx();
+        this.placeNum = entity.getPlace().getPlaceNum();
+        this.memberId = entity.getMember().getId();
         this.place = new PlaceDto(entity.getPlace());
         this.member = new MemberDto(entity.getMember());
         this.introText = entity.getIntroText();

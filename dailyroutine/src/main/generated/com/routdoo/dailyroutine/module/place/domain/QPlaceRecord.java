@@ -11,22 +11,28 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QPlaceComment is a Querydsl query type for PlaceComment
+ * QPlaceRecord is a Querydsl query type for PlaceRecord
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QPlaceComment extends EntityPathBase<PlaceComment> {
+public class QPlaceRecord extends EntityPathBase<PlaceRecord> {
 
-    private static final long serialVersionUID = -379756791L;
+    private static final long serialVersionUID = -1947648409L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QPlaceComment placeComment = new QPlaceComment("placeComment");
+    public static final QPlaceRecord placeRecord = new QPlaceRecord("placeRecord");
 
-    public final StringPath context = createString("context");
+    public final StringPath addr = createString("addr");
 
     public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);
 
+    public final StringPath detailText = createString("detailText");
+
     public final NumberPath<Long> idx = createNumber("idx", Long.class);
+
+    public final StringPath mapx = createString("mapx");
+
+    public final StringPath mapy = createString("mapy");
 
     public final com.routdoo.dailyroutine.auth.member.domain.QMember member;
 
@@ -34,23 +40,29 @@ public class QPlaceComment extends EntityPathBase<PlaceComment> {
 
     public final QPlace place;
 
-    public QPlaceComment(String variable) {
-        this(PlaceComment.class, forVariable(variable), INITS);
+    public final StringPath tel = createString("tel");
+
+    public final StringPath useInfo = createString("useInfo");
+
+    public final EnumPath<com.routdoo.dailyroutine.module.place.service.PlaceStatusType> useType = createEnum("useType", com.routdoo.dailyroutine.module.place.service.PlaceStatusType.class);
+
+    public QPlaceRecord(String variable) {
+        this(PlaceRecord.class, forVariable(variable), INITS);
     }
 
-    public QPlaceComment(Path<? extends PlaceComment> path) {
+    public QPlaceRecord(Path<? extends PlaceRecord> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QPlaceComment(PathMetadata metadata) {
+    public QPlaceRecord(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QPlaceComment(PathMetadata metadata, PathInits inits) {
-        this(PlaceComment.class, metadata, inits);
+    public QPlaceRecord(PathMetadata metadata, PathInits inits) {
+        this(PlaceRecord.class, metadata, inits);
     }
 
-    public QPlaceComment(Class<? extends PlaceComment> type, PathMetadata metadata, PathInits inits) {
+    public QPlaceRecord(Class<? extends PlaceRecord> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new com.routdoo.dailyroutine.auth.member.domain.QMember(forProperty("member")) : null;
         this.place = inits.isInitialized("place") ? new QPlace(forProperty("place")) : null;

@@ -51,7 +51,7 @@ public class QPlaceLike extends EntityPathBase<PlaceLike> {
     public QPlaceLike(Class<? extends PlaceLike> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new com.routdoo.dailyroutine.auth.member.domain.QMember(forProperty("member")) : null;
-        this.place = inits.isInitialized("place") ? new QPlace(forProperty("place"), inits.get("place")) : null;
+        this.place = inits.isInitialized("place") ? new QPlace(forProperty("place")) : null;
     }
 
 }

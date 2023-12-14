@@ -42,19 +42,11 @@ public class Place implements Persistable<String> {
 	@Comment("장소번호")
 	private String placeNum;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="member_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-	private Member member;
-
 	@Comment("제목")
 	private String title;
 
 	@Comment("카테고리 코드")
 	private String categCd;
-
-//	@Comment("해쉬태그")
-//	@Column(length = 100)
-//	private String hashtag;
 
 	@Comment("연락처")
 	@Column(length= 50)
@@ -69,7 +61,6 @@ public class Place implements Persistable<String> {
 	@Comment("위도")
 	private String mapy;
 
-	
 	@Comment("이용안내")
 	@Lob
 	private String useInfo;
@@ -100,14 +91,12 @@ public class Place implements Persistable<String> {
 	@OneToMany(mappedBy = "place",fetch = FetchType.LAZY)
 	private List<PlaceLike> placeLikes = new ArrayList<PlaceLike>();
 
-	@OneToMany(mappedBy = "place", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "place",orphanRemoval=true ,cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REMOVE}, fetch = FetchType.LAZY)
 	private List<PlaceIntro> placeIntros = new ArrayList<>();
 	
 	@Builder
 	public Place(PlaceDto dto) {
 		this.placeNum = dto.getPlaceNum();
-		this.member = new Member();
-		member.addId(dto.getMemberId());
 		this.title = dto.getTitle();
 		this.tel = dto.getTel();
 		this.categCd = dto.getCategCd();
@@ -115,6 +104,7 @@ public class Place implements Persistable<String> {
 		this.mapx = dto.getMapx();
 		this.mapy = dto.getMapy();
 		this.useInfo = dto.getUseInfo();
+		this.pstatus = PlaceStatusType.valueOf(dto.getPstatus());
 		this.detailText = dto.getDetailText();
 		this.deleteReason = dto.getDeleteReason();
 		this.createDate = dto.getCreateDate();
@@ -132,6 +122,7 @@ public class Place implements Persistable<String> {
 		this.mapx = dto.getMapx();
 		this.mapy = dto.getMapy();
 		this.useInfo = dto.getUseInfo();
+		this.pstatus = PlaceStatusType.valueOf(dto.getPstatus());
 		this.detailText = dto.getDetailText();
 		this.deleteReason = dto.getDeleteReason();
 		this.createDate = dto.getCreateDate();
@@ -152,6 +143,11 @@ public class Place implements Persistable<String> {
 	
 	public void addPlaceNum(String placeNum) {
 		this.placeNum = placeNum;
+	}
+
+	public void addPlaceIntro(PlaceIntro placeIntro) {
+		this.getPlaceIntros().add(placeIntro);
+		placeIntro.addPlace(this);
 	}
 
 	@Override

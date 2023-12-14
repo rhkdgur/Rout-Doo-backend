@@ -1,7 +1,8 @@
 package com.routdoo.dailyroutine.module.place.domain;
 
 import com.routdoo.dailyroutine.auth.member.domain.Member;
-import com.routdoo.dailyroutine.module.place.dto.PlaceIntroDto;
+import com.routdoo.dailyroutine.module.place.dto.PlaceRemoveDto;
+import com.routdoo.dailyroutine.module.place.service.PlaceRemoveType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,73 +16,68 @@ import java.time.LocalDateTime;
 
 /**
  * packageName    : com.routdoo.dailyroutine.module.place.domain
- * fileName       : PlaceReview
- * author         : GAMJA
- * date           : 2023/12/13
- * description    : 장소 인트로 정보 Entity
+ * fileName       : PlaceRemove
+ * author         : rhkdg
+ * date           : 2023-12-14
+ * description    : 장소 삭제 요청 내역 entity
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
- * 2023/12/13        GAMJA       최초 생성
+ * 2023-12-14        rhkdg       최초 생성
  */
 @Entity
-@Table(name="place_intro_info")
+@Table(name="place_remove")
 @Getter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class PlaceIntro {
+public class PlaceRemove {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="place_num")
-    private Place place;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id")
     private Member member;
 
-    @Comment("소개글")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="place_num")
+    private Place place;
+
+    @Comment("삭제 요청 사유")
     @Lob
-    private String introText;
+    private String deleteReason;
 
-    @Comment("방문일자")
-    @Column(length = 20)
-    private String visitDate;
+    @Comment("거절 사유")
+    @Lob
+    private String rejectReason;
 
-    @Comment("별점")
-    private int score;
+    @Comment("승인여부")
+    @Enumerated(EnumType.STRING)
+    private PlaceRemoveType approveType;
 
-    @CreatedDate
     @Comment("등록일자")
+    @CreatedDate
     private LocalDateTime createDate;
 
-    @LastModifiedDate
     @Comment("수정일자")
+    @LastModifiedDate
     private LocalDateTime modifyDate;
 
+
     @Builder
-    public PlaceIntro(PlaceIntroDto dto) {
-        this.idx = dto.getIdx();
-        this.place = new Place(dto.getPlace());
-        this.member = new Member(dto.getMember());
-        this.introText = dto.getIntroText();
-        this.visitDate = dto.getVisitDate();
-        this.score = dto.getScore();
+    public PlaceRemove(PlaceRemoveDto dto) {
+        if(dto.getIdx() > 0){
+            this.idx = dto.getIdx();
+        }
+        this.member = new Member();
+        member.addId(dto.getMemberId());
+        this.place = new Place();
+        place.addPlaceNum(dto.getPlaceNum());
+        this.deleteReason = dto.getDeleteReason();
+        this.rejectReason = dto.getRejectReason();
+        this.approveType = PlaceRemoveType.valueOf(dto.getApproveType());
         this.createDate = dto.getCreateDate();
         this.modifyDate = dto.getModifyDate();
     }
 
-    public void addIdx(Long idx) {
-        this.idx = idx;
-    }
-
-    public void addPlace(Place place) {
-        this.place = place;
-    }
-
-    public void addMember(Member member){
-        this.member = member;
-    }
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
@@ -40,7 +41,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Member {
+public class Member implements Persistable<String> {
 
 	@Id
 	@Column(length = 30)
@@ -137,5 +138,10 @@ public class Member {
 	
 	public void addId(String id) {
 		this.id = id;
+	}
+
+	@Override
+	public boolean isNew() {
+		return this.id.isEmpty();
 	}
 }

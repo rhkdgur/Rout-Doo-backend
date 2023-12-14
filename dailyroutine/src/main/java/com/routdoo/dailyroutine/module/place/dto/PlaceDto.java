@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.module.place.domain.Place;
 
 import com.routdoo.dailyroutine.module.place.domain.PlaceIntro;
@@ -74,9 +75,6 @@ public class PlaceDto {
 	
 	/**수정일자*/
 	private LocalDateTime modifyDate;
-
-	/**회원 아이디*/
-	private String memberId = "";
 	
 	/**삭제 사유*/
 	private String deleteReason = "";
@@ -86,6 +84,9 @@ public class PlaceDto {
 
 	/**장소 회원별 인트로 글*/
 	private List<PlaceIntroDto> introList = new ArrayList<>();
+
+	/**회원아이디*/
+	private String memberId = "";
 	
 	public Place toEntity() {
 		return Place.builder().dto(this).build();
@@ -94,7 +95,6 @@ public class PlaceDto {
 	public PlaceDto(Place entity){
 		this.placeNum = entity.getPlaceNum();
 		this.title = entity.getTitle();
-		this.memberId = entity.getMember().getId();
 		this.categCd = entity.getCategCd();
 		this.tel = entity.getTel();
 		this.addr = entity.getAddr();
@@ -119,7 +119,6 @@ public class PlaceDto {
 	public void addPlaceSummaryInfo(Place entity) {
 		this.placeNum = entity.getPlaceNum();
 		this.title = entity.getTitle();
-		this.memberId = entity.getMember().getId();
 		this.categCd = entity.getCategCd();
 		this.tel = entity.getTel();
 		this.addr = entity.getAddr();

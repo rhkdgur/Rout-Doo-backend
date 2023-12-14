@@ -138,6 +138,21 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 	}
 
 	@Override
+	public List<PlaceIntroDto> selectPlaceIntroList(PlaceIntroDto dto) throws Exception {
+		QPlaceIntro qPlaceIntro = QPlaceIntro.placeIntro;
+
+		BooleanBuilder sql = new BooleanBuilder();
+		if(dto.getPlaceNum() != null && !dto.getPlaceNum().isEmpty()){
+			sql.and(qPlaceIntro.place.placeNum.eq(dto.getPlaceNum()));
+		}
+
+		List<PlaceIntro> list = jpaQueryFactory.selectFrom(qPlaceIntro)
+				.where(sql).fetch();
+
+		return list.stream().map(PlaceIntroDto::new).toList();
+	}
+
+	@Override
 	public boolean updatePlaceIntro(PlaceIntroDto dto) throws Exception {
 		QPlaceIntro qPlaceIntro = QPlaceIntro.placeIntro;
 		return jpaQueryFactory.update(qPlaceIntro)

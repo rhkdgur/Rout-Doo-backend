@@ -33,8 +33,8 @@ public class PlaceDefaultDto extends BaseVo{
 	/**제목(장소)*/
 	private String title = "";
 	
-	/**해쉬태그*/
-	private String hashTag = "";
+	/**카테고리*/
+	private String categCd = "";
 	
 	/**주소*/
 	private String addr = "";
@@ -44,5 +44,8 @@ public class PlaceDefaultDto extends BaseVo{
 	
 	/**위도*/
 	private String mapy = "";
+	
+	/**거리*/
+	private int distance = 2;
 	
 }

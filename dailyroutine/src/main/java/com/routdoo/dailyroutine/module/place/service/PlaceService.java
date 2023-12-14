@@ -1,9 +1,11 @@
 package com.routdoo.dailyroutine.module.place.service;
 
+import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.common.PostResultCodeType;
 import com.routdoo.dailyroutine.common.PostServiceResult;
 import com.routdoo.dailyroutine.module.place.domain.Place;
 import com.routdoo.dailyroutine.module.place.domain.PlaceComment;
+import com.routdoo.dailyroutine.module.place.domain.PlaceIntro;
 import com.routdoo.dailyroutine.module.place.domain.PlaceLike;
 import com.routdoo.dailyroutine.module.place.dto.*;
 import com.routdoo.dailyroutine.module.place.repository.PlaceCommentRepository;
@@ -11,6 +13,7 @@ import com.routdoo.dailyroutine.module.place.repository.PlaceLikeRepository;
 import com.routdoo.dailyroutine.module.place.repository.PlaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,15 +80,30 @@ public class PlaceService {
 	 */
 	@Transactional
 	public void savePlace(PlaceDto dto) throws Exception {
-		Place place = placeRepository.findById(dto.getPlaceNum()).orElse(null);
-		//등록
-		if(place == null) {
-			placeRepository.save(dto.toEntity());
-		//수정
-		}else {
-			place.chagnePlace(dto);
-		}
+
+		 //장소 대표 정보 존재 여부 확인
+		 Place place = placeRepository.findById(dto.getPlaceNum()).orElse(null);
+		 if(place == null){
+			 place = new Place(dto);
+		 }
+
+		 //회원 정보 확인
+		 Member member = new Member();
+		 member.addId(dto.getMemberId());
+		 
+		 //장소 소개글 정보
+		 if(!dto.getIntroList().isEmpty()) {
+			 for(PlaceIntroDto introDto : dto.getIntroList()) {
+				 PlaceIntro intro = new PlaceIntro(introDto);
+				 intro.addMember(member);
+				 place.addPlaceIntro(intro);
+			 }
+		 }
+		 
+		 placeRepository.save(place);
 	}
+
+
 
 	/**
 	 * 삭제
@@ -94,7 +112,16 @@ public class PlaceService {
 	 */
 	@Transactional
 	public void deletePlace(PlaceDto dto) throws Exception {
+
+		PlaceIntroDto introDto = new PlaceIntroDto();
+		introDto.setPlaceNum(dto.getPlaceNum());
+		List<PlaceIntroDto> introDtoList = placeRepository.selectPlaceIntroList(introDto);
+		//먼저 존재하는 소개글들 부터 삭제
+		for(PlaceIntroDto intro : introDtoList){
+			placeRepository.deletePlaceIntro(intro);
+		}
 		placeRepository.deleteById(dto.getPlaceNum());
+
 	}
 
 	/**
@@ -109,13 +136,35 @@ public class PlaceService {
 	}
 
 	/**
+	 * 장소 소개글 업데이트
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public boolean updatePlaceIntro(PlaceIntroDto dto) throws Exception {
+		return placeRepository.updatePlaceIntro(dto);
+	}
+
+	/**
+	 * 장소 소개글 삭제
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean deletePlaceIntro(PlaceIntroDto dto) throws Exception {
+		return placeRepository.deletePlaceIntro(dto);
+	}
+
+
+	/**
 	 * 위치 기반 장소 조회
 	 * @param searchDto
 	 * @return
 	 * @throws Exception
 	 */
 	public List<PlaceSummaryInfo> selectPlaceSelfLocationList(PlaceDefaultDto searchDto) throws Exception {
-		List<PlaceSummaryInfo> places = placeRepository.selectPlaceSelfLocationList(searchDto.getMapx(),searchDto.getMapy(),searchDto.getPageable());
+		List<PlaceSummaryInfo> places = placeRepository.selectPlaceSelfLocationList(searchDto.getMapx(),searchDto.getMapy(),searchDto.getDistance());
 		
 		return places;
 	}

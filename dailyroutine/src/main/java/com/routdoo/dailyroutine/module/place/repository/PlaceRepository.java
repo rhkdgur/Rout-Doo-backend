@@ -40,7 +40,7 @@ public interface PlaceRepository extends JpaRepository<Place, String>,PlaceCusto
 			+ "   ) AS distance "
 			+ "	FROM place p "
 			+ " WHERE p.pstatus = 'Y' "
-			+ " HAVING distance < 2 "
+			+ " HAVING distance < :distance "
 			+ "	ORDER BY distance ",
 			countQuery = ""
 					+ "select count(*) from ("
@@ -54,10 +54,10 @@ public interface PlaceRepository extends JpaRepository<Place, String>,PlaceCusto
 					+ "   ) AS distance "
 					+ " from place p"
 					+ " WHERE p.pstatus = 'Y' "
-					+ " HAVING distance < 2 "
+					+ " HAVING distance < :distance "
 					+ "	) T",
 			nativeQuery = true)
-	List<PlaceSummaryInfo> selectPlaceSelfLocationList(@Param("mapx") String mapx, @Param("mapy") String mapy , Pageable pageable) throws Exception;
+	List<PlaceSummaryInfo> selectPlaceSelfLocationList(@Param("mapx") String mapx, @Param("mapy") String mapy , @Param("distance") int distance) throws Exception;
 	
 	
 	

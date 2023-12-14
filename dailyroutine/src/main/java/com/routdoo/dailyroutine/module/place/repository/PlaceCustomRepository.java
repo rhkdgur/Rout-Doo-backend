@@ -45,6 +45,13 @@ public interface PlaceCustomRepository {
 	 */
 	PlaceDto selectPlaceView(PlaceDto dto) throws Exception;
 
+	/**
+	 * 장소 소개글 목록
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	List<PlaceIntroDto> selectPlaceIntroList(PlaceIntroDto dto) throws Exception;
 
 	/**
 	 * 장소 소개글 수정

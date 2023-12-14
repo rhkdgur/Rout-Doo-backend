@@ -61,14 +61,16 @@ public class PlaceUserController extends BaseModuleController{
 		@Parameter(name = "pstatus", description ="사용상태"),
 		@Parameter(name = "placeNum", description ="장소번호"),
 		@Parameter(name = "title", description ="제목(장소)"),
-		@Parameter(name = "hashTag", description ="해쉬태그"),
+			@Parameter(name = "categCd" , description = "카테고리 코드"),
 		@Parameter(name = "addr", description ="주소"),
 		@Parameter(name = "mapx", description ="경도"),
-		@Parameter(name = "mapy", description ="위도")
+		@Parameter(name = "mapy", description ="위도"),
+			@Parameter(name = "distance", description = "주변 사정거리 ( ex: default 값은 2km 이내 입니다)")
 	})
 	@GetMapping(API_URL+"/place/mylocation/list")
 	public Map<String,Object> selectPlaceMyLocationList(PlaceDefaultDto searchDto) throws Exception {
-		System.out.println("##### mapx :"+searchDto.getMapx());
+
+		modelMap = new LinkedHashMap<>();
 		//목록 조회
 		List<PlaceSummaryInfo> places = placeService.selectPlaceSelfLocationList(searchDto);
 		modelMap.put("placeList", places);
@@ -88,12 +90,15 @@ public class PlaceUserController extends BaseModuleController{
 		@Parameter(name = "pstatus", description="사용상태"),
 		@Parameter(name = "placeNum", description="장소번호"),
 		@Parameter(name = "title", description="제목(장소)"),
-		@Parameter(name = "hashTag", description="해쉬태그"),
+			@Parameter(name = "categCd" , description = "카테고리 코드"),
 		@Parameter(name = "addr", description="주소"),
 		@Parameter(name = "mapx", description="경도"),
-		@Parameter(name = "mapy", description="위도")
+		@Parameter(name = "mapy", description="위도"),
+			@Parameter(name="cpage", description = "페이지 번호")
 	})
 	public Map<String,Object> selectPlaceList(PlaceDefaultDto searchDto) throws Exception {
+
+		modelMap = new LinkedHashMap<>();
 		
 		Page<PlaceDto> places = placeService.selectPlacePageList(searchDto);
 		modelMap.put("placeList", places);
@@ -112,6 +117,8 @@ public class PlaceUserController extends BaseModuleController{
 	@Parameter(name = "placeNum", description="장소번호")
 	@GetMapping(API_URL+"/place/view")
 	public Map<String,Object> selectPlaceView(@RequestParam("placeNum") String placeNum) throws Exception {
+
+		modelMap = new LinkedHashMap<>();
 		
 		PlaceDto dto = new PlaceDto();
 		dto.setPlaceNum(placeNum);
