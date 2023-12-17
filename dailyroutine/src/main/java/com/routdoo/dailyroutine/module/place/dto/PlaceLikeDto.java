@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import com.routdoo.dailyroutine.common.vo.BaseVo;
 import com.routdoo.dailyroutine.module.place.domain.PlaceLike;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,23 +22,25 @@ import lombok.Setter;
 * -----------------------------------------------------------
 * 2023.07.28        ghgo       최초 생성
  */
+@Schema(description = "장소 좋아요 DTO")
 @Getter
 @Setter
 @NoArgsConstructor
 public class PlaceLikeDto {
 
+	@Schema(description = "장소 좋아요 일련번호", defaultValue = "0" , example = "1")
 	private Long idx;
 	
-
+	@Schema(description = "장소 정보")
 	private PlaceDto placeDto = new PlaceDto();
 	
-
+	@Schema(description = "회원 아이디", defaultValue = "", example = "test")
 	private String memberId;
 	
-
+	@Schema(description = "등록일자")
 	private LocalDateTime createDate;
 	
-
+	@Schema(description = "수정일자")
 	private LocalDateTime modifyDate;
 
 	public PlaceLike toEntity() {

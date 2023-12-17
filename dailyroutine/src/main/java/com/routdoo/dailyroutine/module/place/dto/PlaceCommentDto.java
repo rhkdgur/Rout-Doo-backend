@@ -23,6 +23,7 @@ import java.util.Map;
 * -----------------------------------------------------------
 * 2023.07.28        ghgo       최초 생성
  */
+@Schema(description = "장소 댓글 DTO")
 @Getter
 @Setter
 @NoArgsConstructor

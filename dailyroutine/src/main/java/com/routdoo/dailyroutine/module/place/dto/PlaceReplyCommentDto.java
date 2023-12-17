@@ -3,6 +3,7 @@ package com.routdoo.dailyroutine.module.place.dto;
 
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.module.place.domain.PlaceReplyComment;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,30 +12,38 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Schema(description = "장소 댓글에 대한 답글 DTO")
 @Getter
 @Setter
 @NoArgsConstructor
 public class PlaceReplyCommentDto {
 
     /**일련번호*/
+    @Schema(description = "일련번호")
     private Long idx = 0L;
     
     /**코멘트 일련번호*/
+    @Schema(description = "댓글 일련번호")
     private Long commentIdx = 0L;
     
     /**장소번호*/
+    @Schema(description = "장소 번호")
     private String placeNum = "";
     
     /***회원 정보*/
+    @Schema(description = "회원 정보")
     private MemberDto memberDto = new MemberDto();
     
     /**내용*/
+    @Schema(description = "내용")
     private String context = "";
     
     /**등록일자*/
+    @Schema(description = "등록일자")
     private LocalDateTime createDate;
     
     /**수정일자*/
+    @Schema(description = "수정일자")
     private LocalDateTime modifyDate;
 
 

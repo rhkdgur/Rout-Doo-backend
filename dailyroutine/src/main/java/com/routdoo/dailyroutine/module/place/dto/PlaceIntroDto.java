@@ -4,6 +4,7 @@ import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.module.place.domain.Place;
 import com.routdoo.dailyroutine.module.place.domain.PlaceIntro;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,39 +26,50 @@ import java.time.LocalDateTime;
  * -----------------------------------------------------------
  * 2023/12/13        GAMJA       최초 생성
  */
+@Schema(description = "장소 소개글 DTO")
 @Getter
 @Setter
 @NoArgsConstructor
 public class PlaceIntroDto {
 
     /**일련번호*/
+    @Schema(description = "놀거리 소개글 일련번호", example = "1", defaultValue = "0")
     private Long idx;
 
     /**회원 아이디*/
+    @Schema(description = "회원 아이디", defaultValue = "", example = "test")
     private String memberId;
     
     /**장소번호*/
+    @Schema(description = "장소 일련번호", defaultValue = "", example = "P202000001")
     private String placeNum;
 
     /**소개글*/
+    @Schema(description = "소개글", defaultValue = "", example = "안녕하세요...")
     private String introText;
 
     /**방문일자*/
+    @Schema(description = "방문일자", defaultValue = "", example = "2020-00-00")
     private String visitDate;
 
     /**별점*/
+    @Schema(description = "별점", defaultValue = "0", example = "4")
     private int score = 0;
 
     /**등록일자*/
+    @Schema(description = "등록일자", defaultValue = "null",example = "2020-00-00 00:00:00")
     private LocalDateTime createDate;
 
     /**수정일자*/
+    @Schema(description = "수정일자", defaultValue = "null", example = "2020-00-00 00:00:00 ")
     private LocalDateTime modifyDate;
 
     /**장소*/
+    @Schema(description = "장소 정보")
     private PlaceDto place = new PlaceDto();
 
     /**회원*/
+    @Schema(description = "회원 정보")
     private MemberDto member = new MemberDto();
 
     public PlaceIntro toEntity(){

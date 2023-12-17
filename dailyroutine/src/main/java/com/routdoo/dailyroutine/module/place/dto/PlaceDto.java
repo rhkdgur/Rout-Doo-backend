@@ -27,6 +27,7 @@ import lombok.Setter;
 * -----------------------------------------------------------
 * 2023.07.27        ghgo       최초 생성
  */
+@Schema(description = "장소 DTO")
 @Getter
 @Setter
 @NoArgsConstructor

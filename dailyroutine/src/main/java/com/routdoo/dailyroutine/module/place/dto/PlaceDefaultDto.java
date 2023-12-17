@@ -18,6 +18,7 @@ import lombok.Setter;
 * -----------------------------------------------------------
 * 2023.07.27        ghgo       최초 생성
  */
+@Schema(description = "장소 검색 DTO")
 @Getter @Setter
 public class PlaceDefaultDto extends BaseVo{
 
