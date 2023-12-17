@@ -36,7 +36,7 @@ public class QDailyRoutine extends EntityPathBase<DailyRoutine> {
 
     public final DateTimePath<java.time.LocalDateTime> modifyDate = createDateTime("modifyDate", java.time.LocalDateTime.class);
 
-    public final StringPath publicYn = createString("publicYn");
+    public final EnumPath<com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType> rangeType = createEnum("rangeType", com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType.class);
 
     public final StringPath startDate = createString("startDate");
 

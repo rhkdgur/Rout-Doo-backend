@@ -3,6 +3,7 @@ package com.routdoo.dailyroutine.module.routine.domain;
 import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDto;
 import com.routdoo.dailyroutine.module.routine.service.RoutineDayType;
+import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -73,8 +74,8 @@ public class DailyRoutine{
 	private RoutineDayType dayType;
 
 	@Comment("공개여부")
-	@Column(columnDefinition = "char",length = 1)
-	private String publicYn;
+	@Enumerated(EnumType.STRING)
+	private RoutineRangeConfigType rangeType;
 	
 	@Comment("등록일자")
 	@CreatedDate
@@ -100,7 +101,7 @@ public class DailyRoutine{
 			this.endDate = dto.getEndDate();
 		}
 		this.dayType = RoutineDayType.valueOf(dto.getDayType());
-		this.publicYn = dto.getPublicYn();
+		this.rangeType = RoutineRangeConfigType.valueOf(dto.getRangeType());
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();
 	}

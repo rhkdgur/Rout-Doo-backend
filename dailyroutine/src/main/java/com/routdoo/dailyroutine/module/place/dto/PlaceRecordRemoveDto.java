@@ -1,9 +1,6 @@
 package com.routdoo.dailyroutine.module.place.dto;
 
-import com.routdoo.dailyroutine.module.place.domain.Place;
-import com.routdoo.dailyroutine.module.place.domain.PlaceRemove;
-import com.routdoo.dailyroutine.module.place.service.PlaceRemoveType;
-import com.routdoo.dailyroutine.module.place.service.PlaceStatusType;
+import com.routdoo.dailyroutine.module.place.domain.PlaceRecordRemove;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +21,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PlaceRemoveDto {
+public class PlaceRecordRemoveDto {
 
     /**일련번호*/
     private Long idx;
@@ -50,11 +47,11 @@ public class PlaceRemoveDto {
     /**수정일자*/
     private LocalDateTime modifyDate;
 
-    public PlaceRemove toEntity(){
-        return PlaceRemove.builder().dto(this).build();
+    public PlaceRecordRemove toEntity(){
+        return PlaceRecordRemove.builder().dto(this).build();
     }
 
-    public PlaceRemoveDto(PlaceRemove entity){
+    public PlaceRecordRemoveDto(PlaceRecordRemove entity){
         this.idx = entity.getIdx();
         this.memberId = entity.getMember().getId();
         this.placeNum = entity.getPlace().getPlaceNum();

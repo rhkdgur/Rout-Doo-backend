@@ -14,5 +14,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * -----------------------------------------------------------
  * 2023-12-14        rhkdg       최초 생성
  */
-public interface PlaceRecordRepository extends JpaRepository<PlaceRecord,Long> , PlaceRecordCustomRepository {
+public interface PlaceRecordRepository extends JpaRepository<PlaceRecord,Long> , PlaceRecordCustomRepository, PlaceRecordRemoveCustomRepository {
 }

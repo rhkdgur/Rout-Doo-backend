@@ -56,7 +56,7 @@ public class PlaceUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
-	@Operation(summary="사용자 위치 주변 목록 조회")
+	@Operation(summary="사용자 위치 주변 목록 조회 (놀거리 ,일정 지도 검색 찾기 사용, 페이징 x)")
 	@Parameters( value = {
 		@Parameter(name = "pstatus", description ="사용상태"),
 		@Parameter(name = "placeNum", description ="장소번호"),
@@ -65,7 +65,8 @@ public class PlaceUserController extends BaseModuleController{
 		@Parameter(name = "addr", description ="주소"),
 		@Parameter(name = "mapx", description ="경도"),
 		@Parameter(name = "mapy", description ="위도"),
-			@Parameter(name = "distance", description = "주변 사정거리 ( ex: default 값은 2km 이내 입니다)")
+			@Parameter(name = "distance", description = "주변 사정거리 ( ex: default 값은 2km 이내 입니다)"),
+			@Parameter(name = "populFlag", description = "인기 정렬 일 경우 true, 아닐경우 false")
 	})
 	@GetMapping(API_URL+"/place/mylocation/list")
 	public Map<String,Object> selectPlaceMyLocationList(PlaceDefaultDto searchDto) throws Exception {
@@ -79,13 +80,13 @@ public class PlaceUserController extends BaseModuleController{
 	}
 	
 	/**
-	 * 장소 목록
+	 * 장소 목록 (지도 검색)
 	 * @param searchDto
 	 * @return
 	 * @throws Exception
 	 */
 	@GetMapping(API_URL+"/place/list")
-	@Operation(summary="장소 목록")
+	@Operation(summary="일반 장소 목록(페이징 o)")
 	@Parameters(value = {
 		@Parameter(name = "pstatus", description="사용상태"),
 		@Parameter(name = "placeNum", description="장소번호"),

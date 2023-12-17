@@ -2,6 +2,7 @@ package com.routdoo.dailyroutine.module.place.dto;
 
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.module.place.domain.PlaceComment;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,21 +28,27 @@ import java.util.Map;
 @NoArgsConstructor
 public class PlaceCommentDto {
 
+	@Schema(description = "댓글 일련번호", example = "1")
 	/**일련번호*/
 	private Long idx;
-	
+
+	@Schema(description = "유저 아이디", example = "rout@naver.com")
 	/**아이디*/
 	private MemberDto memberDto = new MemberDto();
-	
+
+	@Schema(description = "장소번호" , example = "P20231212001")
 	/**장소 일련번호*/
 	private String placeNum;
 	
+	@Schema(description = "내용", example = "라라라라")
 	/**내용*/
 	private String context;
-	
+
+	@Schema(description = "등록일자", example = "2023-01-01 00:00:00 ")
 	/**등록일자*/
 	private LocalDateTime createDate;
-	
+
+	@Schema(description = "수정일자", example = "2023-01-01 00:00:00 ")
 	/**수정일자*/
 	private LocalDateTime modifyDate;
 	

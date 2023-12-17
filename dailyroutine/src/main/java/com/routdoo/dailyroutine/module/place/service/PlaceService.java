@@ -17,6 +17,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -84,6 +85,9 @@ public class PlaceService {
 		 //장소 대표 정보 존재 여부 확인
 		 Place place = placeRepository.findById(dto.getPlaceNum()).orElse(null);
 		 if(place == null){
+			 //장소번호 생성
+			 String placeNum = placeRepository.selectPlaceNumMax();
+			 dto.setPlaceNum(placeNum);
 			 place = new Place(dto);
 		 }
 
@@ -164,7 +168,15 @@ public class PlaceService {
 	 * @throws Exception
 	 */
 	public List<PlaceSummaryInfo> selectPlaceSelfLocationList(PlaceDefaultDto searchDto) throws Exception {
-		List<PlaceSummaryInfo> places = placeRepository.selectPlaceSelfLocationList(searchDto.getMapx(),searchDto.getMapy(),searchDto.getDistance());
+		
+		List<PlaceSummaryInfo> places = new ArrayList<>();
+	
+		//인기 정렬일 경우
+		if(!searchDto.isPopulFlag()) {
+			places = placeRepository.selectPlaceSelfLocationList(searchDto.getMapx(), searchDto.getMapy(), searchDto.getDistance());
+		}else{
+			places = placeRepository.selectPlaceSelfLocationPopulList(searchDto.getMapx(), searchDto.getMapy(), searchDto.getDistance());
+		}
 		
 		return places;
 	}

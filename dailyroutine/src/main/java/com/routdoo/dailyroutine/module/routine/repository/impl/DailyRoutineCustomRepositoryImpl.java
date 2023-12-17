@@ -6,6 +6,7 @@ import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 import com.routdoo.dailyroutine.module.routine.domain.*;
 import com.routdoo.dailyroutine.module.routine.dto.*;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCustomRepository;
+import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Repository;
@@ -55,8 +56,8 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 		if(searchDto.getToDate() != null && !searchDto.getToDate().isEmpty()) {
 			sql.and(qDailyRoutine.startDate.goe(searchDto.getToDate()));
 		}
-		if(searchDto.getPublicYn() != null && !searchDto.getPublicYn().isEmpty()){
-			sql.and(qDailyRoutine.publicYn.eq(searchDto.getPublicYn()));
+		if(searchDto.getRangeType() != null && !searchDto.getRangeType().isEmpty()){
+			sql.and(qDailyRoutine.rangeType.eq(RoutineRangeConfigType.valueOf(searchDto.getRangeType())));
 		}
 		return sql;
 	}
@@ -117,7 +118,15 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 		QDailyRoutineTimeLine qDailyRoutineTimeLine = QDailyRoutineTimeLine.dailyRoutineTimeLine;
 		List<DailyRoutineTimeLine> list = jpaQueryFactory.selectFrom(qDailyRoutineTimeLine).
 				where(commonTimeQuery(searchDto)).fetch();
-		return list.stream().map(x-> new DailyRoutineTimeLineDto(x)).collect(Collectors.toList());
+		return list.stream().map(DailyRoutineTimeLineDto::new).collect(Collectors.toList());
+	}
+
+	@Override
+	public boolean updateDailyRoutineRangeChange(DailyRoutineDto dailyRoutineDto) throws Exception {
+		QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
+		return jpaQueryFactory.update(qDailyRoutine)
+				.set(qDailyRoutine.rangeType, RoutineRangeConfigType.valueOf(dailyRoutineDto.getRangeType()))
+				.where(new BooleanBuilder().and(qDailyRoutine.idx.eq(dailyRoutineDto.getIdx()))).execute() > 0;
 	}
 
 	@Override
@@ -133,7 +142,7 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 		.limit(searchDto.getPageable().getPageSize())
 		.fetch();
 		
-		return new PageImpl<>(list.stream().map(x-> new DailyRoutineTimeLineDto(x)).collect(Collectors.toList()),
+		return new PageImpl<>(list.stream().map(DailyRoutineTimeLineDto::new).collect(Collectors.toList()),
 				searchDto.getPageable(),cnt);
 	}
 

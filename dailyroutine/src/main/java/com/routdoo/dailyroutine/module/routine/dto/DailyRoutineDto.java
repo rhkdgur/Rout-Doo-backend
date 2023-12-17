@@ -47,7 +47,7 @@ public class DailyRoutineDto {
 	private String dayType = "";
 	
 	/**공개여부*/
-	private String publicYn = "";
+	private String rangeType = "";
 	
 	/**등록일자*/
 	private LocalDateTime createDate;
@@ -72,7 +72,7 @@ public class DailyRoutineDto {
 		this.startDate = entity.getStartDate();
 		this.endDate = entity.getEndDate();
 		this.dayType = entity.getDayType().name();
-		this.publicYn = entity.getPublicYn();
+		this.rangeType = entity.getRangeType().name();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
 	}
@@ -89,7 +89,7 @@ public class DailyRoutineDto {
 		map.put("title",this.title);
 		map.put("startDate",this.startDate);
 		map.put("endDate",this.endDate);
-		map.put("publicYn",this.publicYn);
+		map.put("rangeType",this.rangeType);
 		return map;
 	}
 

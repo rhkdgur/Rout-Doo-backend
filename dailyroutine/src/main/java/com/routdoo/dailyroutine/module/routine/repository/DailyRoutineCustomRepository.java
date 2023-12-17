@@ -55,10 +55,18 @@ public interface DailyRoutineCustomRepository {
 	 */
 	List<DailyRoutineTimeLineDto> selectDailyRoutineTimeLineList(DailyRoutineTimeLineDefaultDto searchDto);
 
+	/**
+	 * 공개 범위 지정 상태 변경
+	 * @param dailyRoutineDto
+	 * @return
+	 * @throws Exception
+	 */
+	boolean updateDailyRoutineRangeChange(DailyRoutineDto dailyRoutineDto) throws Exception;
+
 
 	/**
 	 * 좋아요 정보 목록 페이징
-	 * @param dto
+	 * @param searchDto
 	 * @return
 	 * @throws Exception
 	 */

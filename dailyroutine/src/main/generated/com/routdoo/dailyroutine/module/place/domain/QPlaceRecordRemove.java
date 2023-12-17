@@ -11,16 +11,16 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QPlaceRemove is a Querydsl query type for PlaceRemove
+ * QPlaceRecordRemove is a Querydsl query type for PlaceRecordRemove
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QPlaceRemove extends EntityPathBase<PlaceRemove> {
+public class QPlaceRecordRemove extends EntityPathBase<PlaceRecordRemove> {
 
-    private static final long serialVersionUID = -1947350374L;
+    private static final long serialVersionUID = -707495477L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QPlaceRemove placeRemove = new QPlaceRemove("placeRemove");
+    public static final QPlaceRecordRemove placeRecordRemove = new QPlaceRecordRemove("placeRecordRemove");
 
     public final EnumPath<com.routdoo.dailyroutine.module.place.service.PlaceRemoveType> approveType = createEnum("approveType", com.routdoo.dailyroutine.module.place.service.PlaceRemoveType.class);
 
@@ -38,23 +38,23 @@ public class QPlaceRemove extends EntityPathBase<PlaceRemove> {
 
     public final StringPath rejectReason = createString("rejectReason");
 
-    public QPlaceRemove(String variable) {
-        this(PlaceRemove.class, forVariable(variable), INITS);
+    public QPlaceRecordRemove(String variable) {
+        this(PlaceRecordRemove.class, forVariable(variable), INITS);
     }
 
-    public QPlaceRemove(Path<? extends PlaceRemove> path) {
+    public QPlaceRecordRemove(Path<? extends PlaceRecordRemove> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QPlaceRemove(PathMetadata metadata) {
+    public QPlaceRecordRemove(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QPlaceRemove(PathMetadata metadata, PathInits inits) {
-        this(PlaceRemove.class, metadata, inits);
+    public QPlaceRecordRemove(PathMetadata metadata, PathInits inits) {
+        this(PlaceRecordRemove.class, metadata, inits);
     }
 
-    public QPlaceRemove(Class<? extends PlaceRemove> type, PathMetadata metadata, PathInits inits) {
+    public QPlaceRecordRemove(Class<? extends PlaceRecordRemove> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new com.routdoo.dailyroutine.auth.member.domain.QMember(forProperty("member")) : null;
         this.place = inits.isInitialized("place") ? new QPlace(forProperty("place")) : null;

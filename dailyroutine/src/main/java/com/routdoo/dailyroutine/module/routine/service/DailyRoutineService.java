@@ -123,6 +123,17 @@ public class DailyRoutineService {
 	}
 
 	/**
+	 * 공개 범위 변경
+	 * @param dailyRoutineDto
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public boolean dailyRoutineRangeTypeChange(DailyRoutineDto dailyRoutineDto ) throws Exception {
+		return dailyRoutineRepository.updateDailyRoutineRangeChange(dailyRoutineDto);
+	}
+
+	/**
 	 * 태그 조회 (가장 많이 태그된 정보 10개만 가져옴)
 	 * @return
 	 * @throws Exception
@@ -302,7 +313,7 @@ public class DailyRoutineService {
 
 	/**
 	 * 좋아요 일정 보관 목록 (페이징)
-	 * @param dailyRoutineLikeDto
+	 * @param
 	 * @return
 	 * @throws Exception
 	 */

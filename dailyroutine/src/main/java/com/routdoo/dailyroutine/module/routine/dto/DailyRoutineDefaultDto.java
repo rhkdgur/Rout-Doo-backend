@@ -29,7 +29,7 @@ public class DailyRoutineDefaultDto extends BaseVo {
 	private String memberId= "";
 	
 	/**공개여부*/
-	private String publicYn = "";
+	private String rangeType = "";
 	
 	/**시작일자*/
 	private String startDate = "";

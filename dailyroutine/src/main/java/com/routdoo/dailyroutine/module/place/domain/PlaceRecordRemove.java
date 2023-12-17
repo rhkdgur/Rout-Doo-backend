@@ -1,7 +1,7 @@
 package com.routdoo.dailyroutine.module.place.domain;
 
 import com.routdoo.dailyroutine.auth.member.domain.Member;
-import com.routdoo.dailyroutine.module.place.dto.PlaceRemoveDto;
+import com.routdoo.dailyroutine.module.place.dto.PlaceRecordRemoveDto;
 import com.routdoo.dailyroutine.module.place.service.PlaceRemoveType;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -30,7 +30,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class PlaceRemove {
+public class PlaceRecordRemove {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idx;
@@ -65,7 +65,7 @@ public class PlaceRemove {
 
 
     @Builder
-    public PlaceRemove(PlaceRemoveDto dto) {
+    public PlaceRecordRemove(PlaceRecordRemoveDto dto) {
         if(dto.getIdx() > 0){
             this.idx = dto.getIdx();
         }

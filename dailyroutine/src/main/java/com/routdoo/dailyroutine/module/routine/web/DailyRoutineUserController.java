@@ -3,9 +3,12 @@ package com.routdoo.dailyroutine.module.routine.web;
 import java.util.*;
 
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
+import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
+import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -298,6 +301,38 @@ public class DailyRoutineUserController extends BaseModuleController{
 		}
 		
 		return new ResponseEntity<String>("삭제 되었습니다.",HttpStatus.OK);
+	}
+
+	/**
+	 * 공개 범위 설정
+	 * @param idx
+	 * @return
+	 * @throws Exception
+	 */
+	@Operation(summary = "공개 범위 설정")
+	@Parameters({
+			@Parameter(name = "idx", description = "일정 일련번호"),
+			@Parameter(name = "rangeType", description = "범위 설정 ex) PUBLIC : 공개, PRIVATE : 비공개 ")
+	})
+	@PostMapping(API_URL+"/daily/routine/config/range/change")
+	public ResponseEntity<String> updateDailyRoutineConfigRangeChange(
+											@RequestParam("idx") Long idx,
+											@RequestParam("rangeType") String rangeType) throws Exception {
+
+		try{
+			DailyRoutineDto dailyRoutineDto = new DailyRoutineDto();
+			dailyRoutineDto.setIdx(idx);
+			dailyRoutineDto.setRangeType(rangeType);
+			boolean result = dailyRoutineService.dailyRoutineRangeTypeChange(dailyRoutineDto);
+			if(!result){
+				return new ResponseEntity<>("공개 범위 설정에 실패하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+			}
+		}catch (Exception e) {
+			logger.error("### daily routine config range change error : {}",e.getMessage());
+			return new ResponseEntity<>("공개 범위 설정시 오류가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+		}
+
+		return new ResponseEntity<>(RoutineRangeConfigType.valueOf(rangeType).getDisplay()+" 설정되었습니다.",HttpStatus.OK);
 	}
 	
 	/**

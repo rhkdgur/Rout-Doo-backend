@@ -10,6 +10,7 @@ import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.module.place.domain.Place;
 
 import com.routdoo.dailyroutine.module.place.domain.PlaceIntro;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,62 +32,73 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PlaceDto {
 
+	@Schema(description = "장소번호", example = "P20230202001")
 	/**일련번호*/
 	private String placeNum;
 
+	@Schema(description = "제목", example = "장충동왕족발보쌈")
 	/**제목*/
 	private String title;
-	
+
+	@Schema(description = "연락처", example = "051-000-0000")
 	/**연락처*/
 	private String tel;
-	
+
+	@Schema(description = "카테고리 코드", example = "TEST")
 	/**카테고리 코드*/
 	private String categCd;
 
+	@Schema(description = "카테고리 명칭", example = "테스트")
 	/***카테고리 명*/
 	private String categNm;
-	
+
+	@Schema(description = "주소", example = "부산 해운대구 ...")
 	/**주소*/
 	private String addr;
-	
+
+	@Schema(description = "경도", example = "31.2321231")
 	/**경도*/
 	private String mapx;
-	
+
+	@Schema(description = "위도", example = "127.1241231")
 	/**위도*/
 	private String mapy;
-	
+
+	@Schema(description = "이용안내", example = "이용안내")
 	/**이용안내*/
 	private String useInfo;
-	
+
+	@Schema(description = "상세정보", example = "상세정보")
 	/**상세정보*/
 	private String detailText;
 
+	@Schema(description = "사용여부", example = "사용 : Y, 미사용 : N")
 	/**사용여부*/
 	private String pstatus;
-	
-	/**댓글수*/
-	private int likeCnt = 0;
-	
+
+	@Schema(description = "좋아요수", example = "1")
 	/**좋아요 수*/
+	private int likeCnt = 0;
+
+	@Schema(description = "댓글수", example = "1")
+	/**댓글수*/
 	private int commentCnt = 0;
-	
+
+	@Schema(description = "등록일자", example = "2023-01-01 00:00:00 ")
 	/**등록일자*/
 	private LocalDateTime createDate;
-	
+
+	@Schema(description = "수정일자", example = "2023-01-01 00:00:00 ")
 	/**수정일자*/
 	private LocalDateTime modifyDate;
-	
-	/**삭제 사유*/
-	private String deleteReason = "";
-	
+
+	@Schema(description = "별점", example = "4 ")
 	/**별점*/
 	private int placeScore = 0;
 
+	@Schema(description = "회원별 리뷰 정보", example = "")
 	/**장소 회원별 인트로 글*/
 	private List<PlaceIntroDto> introList = new ArrayList<>();
-
-	/**회원아이디*/
-	private String memberId = "";
 	
 	public Place toEntity() {
 		return Place.builder().dto(this).build();
@@ -105,7 +117,6 @@ public class PlaceDto {
 		this.pstatus = entity.getPstatus().name();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
-		this.deleteReason = entity.getDeleteReason();
 		if(!entity.getPlaceIntros().isEmpty()){
 			int value = 0;
 			int len = entity.getPlaceIntros().size();
@@ -131,7 +142,6 @@ public class PlaceDto {
 		this.commentCnt = entity.getPlaceComments().size();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
-		this.deleteReason = entity.getDeleteReason();
 		if(!entity.getPlaceIntros().isEmpty()){
 			int value = 0;
 			int len = entity.getPlaceIntros().size();
