@@ -95,6 +95,9 @@ public class PlaceDto {
 	@Schema(description = "별점", example = "4 ")
 	/**별점*/
 	private int placeScore = 0;
+	
+	/**회원 아이디*/
+	private String memberId = "";
 
 	@Schema(description = "회원별 리뷰 정보", example = "")
 	/**장소 회원별 인트로 글*/
