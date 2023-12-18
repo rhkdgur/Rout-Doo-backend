@@ -15,7 +15,7 @@ import java.util.List;
  * -----------------------------------------------------------
  * 2023-12-15        rhkdg       최초 생성
  */
-public interface PlaceRecordRemoveCustomRepository {
+public interface PlaceRecordRemoveRepository {
 
     /**
      * 장소 삭제 요청 목록 조회
@@ -55,7 +55,7 @@ public interface PlaceRecordRemoveCustomRepository {
      * @return
      * @throws Exception
      */
-    boolean updatePlaceRemoveApproveType(PlaceRecordRemoveDto dto) throws Exception;
+    boolean updatePlaceRemoveApproveChange(PlaceRecordRemoveDto dto) throws Exception;
 
 
     /**

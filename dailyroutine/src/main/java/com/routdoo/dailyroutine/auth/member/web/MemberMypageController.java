@@ -13,6 +13,7 @@ import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineLikeDefaultDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineLikeDto;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
+import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -66,7 +67,7 @@ public class MemberMypageController extends BaseModuleController {
 
         //공개설정 되어있는 일정 조회
         DailyRoutineDefaultDto drDto = new DailyRoutineDefaultDto();
-        drDto.setPublicYn("Y");
+        drDto.setRangeType(RoutineRangeConfigType.PUBLIC.name());
         drDto.setMemberId(memberSession.getMemberSession().getId());
         List<DailyRoutineDto> drList = dailyRoutineService.selectDailyRoutineList(drDto);
 

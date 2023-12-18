@@ -72,10 +72,6 @@ public class Place implements Persistable<String> {
 	@Comment("사용여부")
 	@Enumerated(EnumType.STRING)
 	private PlaceStatusType pstatus;
-
-	@Comment("삭제요청사유")
-	@Lob
-	private String deleteReason;
 	
 	@CreatedDate
 	@Comment("등록일자")
@@ -106,7 +102,6 @@ public class Place implements Persistable<String> {
 		this.useInfo = dto.getUseInfo();
 		this.pstatus = PlaceStatusType.valueOf(dto.getPstatus());
 		this.detailText = dto.getDetailText();
-		this.deleteReason = dto.getDeleteReason();
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();
 	}
@@ -124,7 +119,6 @@ public class Place implements Persistable<String> {
 		this.useInfo = dto.getUseInfo();
 		this.pstatus = PlaceStatusType.valueOf(dto.getPstatus());
 		this.detailText = dto.getDetailText();
-		this.deleteReason = dto.getDeleteReason();
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();
 	}

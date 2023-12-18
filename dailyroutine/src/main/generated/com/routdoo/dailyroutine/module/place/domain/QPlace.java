@@ -26,8 +26,6 @@ public class QPlace extends EntityPathBase<Place> {
 
     public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);
 
-    public final StringPath deleteReason = createString("deleteReason");
-
     public final StringPath detailText = createString("detailText");
 
     public final StringPath mapx = createString("mapx");

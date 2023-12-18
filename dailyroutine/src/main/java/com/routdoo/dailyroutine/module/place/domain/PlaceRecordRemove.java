@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
  * 2023-12-14        rhkdg       최초 생성
  */
 @Entity
-@Table(name="place_remove")
+@Table(name="place_record_remove")
 @Getter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)

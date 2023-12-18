@@ -5,8 +5,7 @@ import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 import com.routdoo.dailyroutine.module.place.domain.PlaceRecordRemove;
 import com.routdoo.dailyroutine.module.place.domain.QPlaceRecordRemove;
 import com.routdoo.dailyroutine.module.place.dto.PlaceRecordRemoveDto;
-import com.routdoo.dailyroutine.module.place.repository.PlaceRecordRemoveCustomRepository;
-import com.routdoo.dailyroutine.module.place.service.PlaceRemoveType;
+import com.routdoo.dailyroutine.module.place.repository.PlaceRecordRemoveRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -24,7 +23,7 @@ import java.util.List;
  * 2023-12-15        rhkdg       최초 생성
  */
 @Repository
-public class PlaceRemoveCustomRepositoryImpl extends BaseAbstractRepositoryImpl implements PlaceRecordRemoveCustomRepository {
+public class PlaceRecordRemoveRepositoryImpl extends BaseAbstractRepositoryImpl implements PlaceRecordRemoveRepository {
 
     private BooleanBuilder commonQuery(PlaceRecordRemoveDto dto) {
         QPlaceRecordRemove qPlaceRemove = QPlaceRecordRemove.placeRecordRemove;
@@ -93,20 +92,21 @@ public class PlaceRemoveCustomRepositoryImpl extends BaseAbstractRepositoryImpl 
     }
 
     @Override
-    public boolean updatePlaceRemoveApproveType(PlaceRecordRemoveDto dto) throws Exception {
-        QPlaceRecordRemove qPlaceRemove = QPlaceRecordRemove.placeRecordRemove;
-        return jpaQueryFactory.update(qPlaceRemove)
-                .set(qPlaceRemove.rejectReason,dto.getRejectReason())
-                .set(qPlaceRemove.approveType, PlaceRemoveType.valueOf(dto.getApproveType()))
-                .where(qPlaceRemove.idx.eq(dto.getIdx()))
-                .execute() > 0;
+    public boolean updatePlaceRemoveApproveChange(PlaceRecordRemoveDto dto) throws Exception {
+//        QPlaceRecordRemove qPlaceRecordRemove = QPlaceRecordRemove.placeRecordRemove;
+//        return jpaQueryFactory.update(qPlaceRecordRemove)
+//                .set(qPlaceRecordRemove.rejectReason,dto.getRejectReason())
+//                .set(qPlaceRecordRemove.approveType, PlaceRemoveType.valueOf(dto.getApproveType()))
+//                .where(new BooleanBuilder().and(qPlaceRecordRemove.idx.eq(dto.getIdx())))
+//                .execute() > 0;
+        return false;
     }
 
     @Override
     public boolean deletePlaceRemove(PlaceRecordRemoveDto dto) throws Exception {
         QPlaceRecordRemove qPlaceRecordRemove = QPlaceRecordRemove.placeRecordRemove;
         return jpaQueryFactory.delete(qPlaceRecordRemove)
-                .where(qPlaceRecordRemove.idx.eq(dto.getIdx()).and(qPlaceRecordRemove.member.id
+                .where(new BooleanBuilder().and(qPlaceRecordRemove.idx.eq(dto.getIdx())).and(qPlaceRecordRemove.member.id
                         .eq(dto.getMemberId()))).execute() > 0;
     }
 }

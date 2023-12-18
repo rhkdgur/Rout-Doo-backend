@@ -1,8 +1,8 @@
 package com.routdoo.dailyroutine.module.place.service;
 
-import com.routdoo.dailyroutine.module.place.domain.PlaceRecordRemove;
 import com.routdoo.dailyroutine.module.place.dto.PlaceRecordDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceRecordRemoveDto;
+import com.routdoo.dailyroutine.module.place.repository.PlaceRecordRemoveRepository;
 import com.routdoo.dailyroutine.module.place.repository.PlaceRecordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class PlaceRecordService {
 
     private final PlaceRecordRepository placeRecordRepository;
+
+    private final PlaceRecordRemoveRepository placeRecordRemoveCustomRepository;
 
     /**
      * 상세조회
@@ -78,7 +80,7 @@ public class PlaceRecordService {
      */
     @Transactional
     public boolean insertPlaceRecordRemove(PlaceRecordRemoveDto dto) throws Exception {
-        return placeRecordRepository.insertPlaceRemove(dto);
+        return placeRecordRemoveCustomRepository.insertPlaceRemove(dto);
     }
 
     /**
@@ -89,7 +91,7 @@ public class PlaceRecordService {
      */
     @Transactional
     public boolean updatePlaceRecordRemove(PlaceRecordRemoveDto dto) throws Exception {
-        return placeRecordRepository.updatePlaceRemove(dto);
+        return placeRecordRemoveCustomRepository.updatePlaceRemove(dto);
     }
 
     /**
@@ -100,7 +102,7 @@ public class PlaceRecordService {
      */
     @Transactional
     public boolean deletePlaceRecordRemove(PlaceRecordRemoveDto dto) throws Exception {
-        return placeRecordRepository.deletePlaceRemove(dto);
+        return placeRecordRemoveCustomRepository.deletePlaceRemove(dto);
     }
 
     /**
@@ -110,8 +112,8 @@ public class PlaceRecordService {
      * @throws Exception
      */
     @Transactional
-    public boolean updatePlaceRemoveApproveType(PlaceRecordRemoveDto dto) throws Exception {
-        return placeRecordRepository.updatePlaceRemoveApproveType(dto);
+    public boolean updatePlaceRemoveApproveChange(PlaceRecordRemoveDto dto) throws Exception {
+        return placeRecordRemoveCustomRepository.updatePlaceRemoveApproveChange(dto);
     }
 
 }

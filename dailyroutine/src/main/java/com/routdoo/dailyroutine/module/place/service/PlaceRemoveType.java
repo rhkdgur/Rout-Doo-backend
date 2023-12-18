@@ -1,9 +1,11 @@
 package com.routdoo.dailyroutine.module.place.service;
 
+import lombok.Getter;
+
+@Getter
 public enum PlaceRemoveType {
 
 	NONE("요청"),
-
 	OK("승인"),
 	REJECT("거절");
 	
@@ -12,8 +14,5 @@ public enum PlaceRemoveType {
 	PlaceRemoveType(String display) {
 		this.display = display;
 	}
-	
-	public String getDisplay() {
-		return this.display;
-	}
+
 }
