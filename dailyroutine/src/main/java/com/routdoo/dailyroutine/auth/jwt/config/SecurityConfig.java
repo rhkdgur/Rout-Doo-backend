@@ -50,7 +50,10 @@ public class SecurityConfig{
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/stomp/**",
-            "/chat/**"
+            "/chat/**",
+			/*sslcheck*/
+			"/well-known/**",
+			"/.well-known/**",
     };
 
 	@Bean
