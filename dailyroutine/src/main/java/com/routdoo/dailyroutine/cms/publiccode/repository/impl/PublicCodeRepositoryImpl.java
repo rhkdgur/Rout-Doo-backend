@@ -77,6 +77,19 @@ public class PublicCodeRepositoryImpl extends BaseAbstractRepositoryImpl impleme
     }
 
     @Override
+    public PublicCodeDto selectPublicCode(PublicCodeDto publicCodeDto) throws Exception {
+        QPublicCode qPublicCode = QPublicCode.publicCode;
+        PublicCode publicCode = jpaQueryFactory.selectFrom(qPublicCode)
+                .where(new BooleanBuilder().and(qPublicCode.pubCd.eq(publicCodeDto.getPubCd())))
+                .fetchFirst();
+
+        if(publicCode == null){
+            return null;
+        }
+        return new PublicCodeDto(publicCode);
+    }
+
+    @Override
     public Long selectPublicCodeTotalCount(PublicCodeDefaultDto searchDto) throws Exception {
         QPublicCode qPublicCode = QPublicCode.publicCode;
 

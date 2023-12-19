@@ -36,6 +36,14 @@ public interface PublicCodeRepository {
     List<PublicCodeDto> selectPublicCodeList(PublicCodeDefaultDto searchDto) throws Exception;
 
     /**
+     * 공통 코드 상세 조회
+     * @param publicCodeDto
+     * @return
+     * @throws Exception
+     */
+    PublicCodeDto selectPublicCode(PublicCodeDto publicCodeDto) throws Exception;
+
+    /**
      * 공통 코드 개수
      * @param searchDto
      * @return
