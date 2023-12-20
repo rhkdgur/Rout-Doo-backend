@@ -59,7 +59,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     @GetMapping(API_URL+"/daily/routine/most/tag/list")
     public Map<String,Object> selectDailyRoutineTagMostList() throws Exception {
         modelMap = new LinkedHashMap<>();
-        List<Map<String,String>> resultList = dailyRoutineService.selectDailyRoutineTagMostList();
+        List<Map<String,Object>> resultList = dailyRoutineService.selectDailyRoutineTagMostList();
         modelMap.put("tagList",resultList);
         return modelMap;
     }

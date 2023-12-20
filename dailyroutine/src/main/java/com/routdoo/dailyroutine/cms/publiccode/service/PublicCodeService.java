@@ -26,7 +26,6 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-@CacheConfig(cacheNames = "public_code")
 public class PublicCodeService {
 
     private final PublicCodeRepository publicCodeRepository;
@@ -111,7 +110,7 @@ public class PublicCodeService {
      * @return
      * @throws Exception
      */
-    @Cacheable(value="publicCodeCacheList" , key = "#searchDto.parentCd")
+    @Cacheable(value="public_code" , key = "#searchDto.parentCd")
     public List<PublicCodeDto> selectPublicCodeCacheList(PublicCodeDefaultDto searchDto) throws Exception {
         searchDto.setUseYn("Y");
         return publicCodeRepository.selectPublicCodeList(searchDto);

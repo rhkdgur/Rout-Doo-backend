@@ -2,7 +2,6 @@ package com.routdoo.dailyroutine.module.routine.service;
 
 import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.auth.member.repository.MemberRepository;
-import com.routdoo.dailyroutine.module.place.domain.Place;
 import com.routdoo.dailyroutine.module.place.repository.PlaceRepository;
 import com.routdoo.dailyroutine.module.routine.RoutineResultCodeType;
 import com.routdoo.dailyroutine.module.routine.RoutineServiceResult;
@@ -14,14 +13,21 @@ import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineInviteRepo
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineRepository;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineTimeLineRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * 
@@ -57,6 +63,7 @@ public class DailyRoutineService {
 	 * @throws Exception
 	 */
 	public Page<DailyRoutineDto> selectDailyRoutinePageList(DailyRoutineDefaultDto searchDto) throws Exception {
+		System.out.println("########");
 		return dailyRoutineRepository.selectDailyRoutinePageList(searchDto);
 	}
 	
@@ -123,6 +130,54 @@ public class DailyRoutineService {
 	}
 
 	/**
+	 * 해당 월 달력에 일정 존재 유무 표시 용
+	 * @param searchDto
+	 * @return
+	 * @throws Exception
+	 */
+	@Cacheable(value="daily_routine" , key = "#searchDto.startDate")
+	public List<Map<String,Object>> selectDailyRoutineCalendarDataExistList(DailyRoutineDefaultDto searchDto) throws Exception {
+		List<Map<String,Object>> resultList = new ArrayList<>();
+		String date = searchDto.getToDate();
+		if(date.length() > 7){
+			date = date.substring(0,7);
+		}
+		List<Map<String,Object>> list = dailyRoutineRepository.selectDailyRoutineExistList(date,searchDto.getMemberId());
+		System.out.println("@@@@@@@");
+		String month = LocalDate.now().toString().substring(0,7);
+		LocalDate startDt = LocalDate.parse(month+"-01");
+		LocalDate endDt = startDt.withDayOfMonth(startDt.lengthOfMonth());
+
+		int dayCnt = (int) ChronoUnit.DAYS.between(startDt,endDt) + 1;
+
+		//월 달력 리스트 생성
+		List<LocalDate> dtList = IntStream.iterate(0, i->i+1).limit(dayCnt)
+				.mapToObj(startDt::plusDays).toList();
+
+		//달력 생성
+		for(LocalDate dt : dtList){
+			Map<String,Object> map = list.stream().filter(x->x.get("startDate").equals(dt.toString())).findFirst().orElse(null);
+			if(map == null){
+				map = getCalendarDefaultMap(dt.toString());
+			}
+			resultList.add(map);
+		}
+		
+		return resultList;
+	}
+
+	/**
+	 * 캘린더 날짜별 데이터 개수 초기값 세팅
+	 * @param date
+	 * @return
+	 */
+	public Map<String,Object> getCalendarDefaultMap(String date) {
+		Map<String,Object> map = new LinkedHashMap<>();
+		map.put(date,"0");
+		return map;
+	}
+
+	/**
 	 * 공개 범위 변경
 	 * @param dailyRoutineDto
 	 * @return
@@ -138,7 +193,7 @@ public class DailyRoutineService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Map<String,String>> selectDailyRoutineTagMostList() throws Exception {
+	public List<Map<String,Object>> selectDailyRoutineTagMostList() throws Exception {
 		return dailyRoutineRepository.selectDailyRoutineTagMostList();
 	}
 

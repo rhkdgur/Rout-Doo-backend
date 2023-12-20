@@ -27,8 +27,8 @@ spring:
       ddl-auto: update
     properties:
       hibernate:
-        show_sql: true
-        format_sql: true
+       # show_sql: true
+       # format_sql: true
         default_batch_fetch_size : 500  ## 컬렉션 조회 최적화를 위한 설정
   
         

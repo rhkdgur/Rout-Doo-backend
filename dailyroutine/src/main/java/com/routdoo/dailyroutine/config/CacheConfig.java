@@ -28,7 +28,7 @@ public class CacheConfig {
     public CacheManager cacheManager() {
         ConcurrentMapCacheManager cacheManager = new ConcurrentMapCacheManager();
         cacheManager.setAllowNullValues(false);
-        cacheManager.setCacheNames(List.of("public_code"));
+        cacheManager.setCacheNames(List.of("public_code","daily_routine"));
         return cacheManager;
     }
 

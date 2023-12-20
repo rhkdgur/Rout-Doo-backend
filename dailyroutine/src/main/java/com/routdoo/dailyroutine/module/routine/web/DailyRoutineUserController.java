@@ -1,5 +1,6 @@
 package com.routdoo.dailyroutine.module.routine.web;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
@@ -72,17 +73,26 @@ public class DailyRoutineUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@Operation(summary="사용자 스케줄 목록 조회")
-	@Parameter(name = "date", description = "날짜")
+	@Parameter(name = "date", description = "날짜 ex) yyyy-MM-dd, 만약 date에 빈값일 경우 오늘 날짜 기준으로 조회해옴")
 	@GetMapping(API_URL+"/daily/routine/list")
 	public Map<String,Object> selectDailyRoutineList(
-													@RequestParam("date") String date
+													@RequestParam(value="date",defaultValue = "") String date
 													) throws Exception {
 		
 		modelMap = new LinkedHashMap<String, Object>();
 		
 		DailyRoutineDefaultDto searchDto = new DailyRoutineDefaultDto();
 		searchDto.setMemberId(memberSession.getMemberSession().getId());
-		searchDto.setToDate(date);
+		//초기값 세팅 date가 0일경우
+		if(date.isEmpty()){
+			searchDto.setToDate(LocalDate.now().toString());
+		}else {
+			searchDto.setToDate(date);
+		}
+		
+		//캘린더에 일정 정보가 존재하는지 표시할 데이터
+		List<Map<String,Object>> calendarList = dailyRoutineService.selectDailyRoutineCalendarDataExistList(searchDto);
+		modelMap.put("calendarList",calendarList);
 		
 		Page<DailyRoutineDto> list = dailyRoutineService.selectDailyRoutinePageList(searchDto);
 		modelMap.put("resultList", list);
