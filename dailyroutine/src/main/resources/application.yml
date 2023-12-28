@@ -30,8 +30,22 @@ spring:
        # show_sql: true
        # format_sql: true
         default_batch_fetch_size : 500  ## 컬렉션 조회 최적화를 위한 설정
-  
-        
+
+--- #profile dev 설정
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:mysql://host.docker.internal:3306/routdoo?serverTimezone=UTC&characterEncoding=UTF-8
+    username: routdoo
+    password: routdoo
+    tomcat:
+       initial-size: 20
+       max-idle: 15
+       min-idle: 8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
 #  mvc:
 #    pathmatch:
 #      matching-strategy: ant_path_matcher
@@ -50,4 +64,4 @@ jwt:
   
 # 채팅 경로
 chat:
-  path: http://localhost:8080 
+  path: http://localhost:8080

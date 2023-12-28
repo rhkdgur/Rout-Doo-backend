@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.routdoo'
-version = '0.0.1-SNAPSHOT'
+version = 'v1'
 apply plugin: 'war'
 
 //외장톰켓을 이용하기 위한 bootWar가 아닌 war로 생성방법
@@ -15,6 +15,11 @@ war.enabled = true
 
 java {
     sourceCompatibility = '17'
+}
+
+bootJar {
+    archiveFileName = 'dailyroutine.jar' // 생성 파일명
+    mainClass = 'com.routdoo.dailyroutine.DailyroutineApplication'
 }
 
 configurations {
