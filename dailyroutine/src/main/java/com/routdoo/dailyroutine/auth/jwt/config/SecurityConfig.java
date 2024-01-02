@@ -1,5 +1,9 @@
 package com.routdoo.dailyroutine.auth.jwt.config;
 
+import com.routdoo.dailyroutine.auth.jwt.JwtProvider;
+import com.routdoo.dailyroutine.auth.jwt.filter.JwtAuthenticationFilter;
+import com.routdoo.dailyroutine.auth.jwt.service.JwtTokenService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,19 +17,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.routdoo.dailyroutine.auth.jwt.JwtProvider;
-import com.routdoo.dailyroutine.auth.jwt.filter.JwtAuthenticationFilter;
-import com.routdoo.dailyroutine.auth.jwt.service.JwtTokenService;
-
-import lombok.RequiredArgsConstructor;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig{
 	
-//	private final CorsFilter corsFilter;
+	private final CorsFilterConfig corsFilter;
 	
 	private final JwtProvider jwtProvider;
 	
@@ -67,7 +65,7 @@ public class SecurityConfig{
 		return  http
 		.httpBasic(AbstractHttpConfigurer::disable)
 		.cors(AbstractHttpConfigurer::disable)
-		.csrf(AbstractHttpConfigurer::disable)
+		.csrf(AbstractHttpConfigurer::disable).addFilter(corsFilter.corsFilter())
 //		.addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
 		.exceptionHandling((exceptionHandling) ->
            exceptionHandling
