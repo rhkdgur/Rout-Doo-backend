@@ -75,7 +75,7 @@ public class SecurityConfig{
 		.authorizeHttpRequests((authorize) -> authorize
 				.requestMatchers(PERMIT_URL_ARRAY).permitAll()
 				.requestMatchers("/mgn/**").hasAuthority("ADMIN")
-				.requestMatchers(HttpMethod.POST,"/api/member/login","/api/member/signup","/api/jwt/token/refresh").permitAll()
+				.requestMatchers(HttpMethod.POST,"/api/member/login","/api/member/signup/**","/api/jwt/token/refresh").permitAll()
 				.requestMatchers("/api/**").hasAuthority("USER")
 		).addFilterBefore(new JwtAuthenticationFilter(jwtProvider,jwtTokenService), UsernamePasswordAuthenticationFilter.class)
 		.build();
