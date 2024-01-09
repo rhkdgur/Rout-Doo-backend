@@ -51,7 +51,7 @@ public class DailyRoutineDto {
 	private String endDate = "";
 	
 	/**일정타입*/
-	@Schema(description = "일정 타입")
+	@Schema(description = "일정 타입", example = "DAY : 단기, LONG_DAY : 장기")
 	private String dayType = "";
 	
 	/**공개여부*/

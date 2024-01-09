@@ -95,7 +95,7 @@ public class DailyRoutine{
 		this.tag = dto.getTag();
 		this.startDate = dto.getStartDate();
 		//당일일 경우
-		if(dayType.equals(RoutineDayType.DAY)){
+		if(dto.getDayType().equals(RoutineDayType.DAY.name())){
 			this.endDate = dto.getStartDate();
 		}else {
 			this.endDate = dto.getEndDate();

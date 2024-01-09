@@ -1,5 +1,6 @@
 FROM openjdk:17.0.2-jdk-slim-buster AS builder
 
+
 WORKDIR /app
 COPY gradlew settings.gradle build.gradle ./
 COPY gradle ./gradle

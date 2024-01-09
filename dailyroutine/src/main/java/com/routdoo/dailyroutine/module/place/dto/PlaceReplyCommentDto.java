@@ -19,15 +19,15 @@ import java.util.Map;
 public class PlaceReplyCommentDto {
 
     /**일련번호*/
-    @Schema(description = "일련번호")
+    @Schema(description = "일련번호",defaultValue = "0")
     private Long idx = 0L;
     
     /**코멘트 일련번호*/
-    @Schema(description = "댓글 일련번호")
+    @Schema(description = "댓글 일련번호" ,defaultValue = "0")
     private Long commentIdx = 0L;
     
     /**장소번호*/
-    @Schema(description = "장소 번호")
+    @Schema(description = "장소 번호",defaultValue = "")
     private String placeNum = "";
     
     /***회원 정보*/

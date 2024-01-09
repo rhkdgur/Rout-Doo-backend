@@ -30,7 +30,7 @@ public class DailyRoutineLikeDto {
     @Schema(description = "일련번호", defaultValue = "0")
     private Long idx = 0L;
 
-    @Schema(description = "일정 일련번호")
+    @Schema(description = "일정 일련번호" , defaultValue = "0")
     private Long dailyIdx = 0L;
     
     /**일정 일련번호*/
@@ -38,9 +38,7 @@ public class DailyRoutineLikeDto {
     private DailyRoutineDto dailyRoutineDto = new DailyRoutineDto();
     
     /**회원 아이디*/
-    @Schema(
-            description = "회원아이디"
-    )
+    @Schema( description = "회원아이디", defaultValue = "")
     private String memberId = "";
     
     /**등록일자*/

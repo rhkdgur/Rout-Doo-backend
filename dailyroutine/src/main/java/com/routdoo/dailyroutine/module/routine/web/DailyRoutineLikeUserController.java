@@ -4,6 +4,12 @@ import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineLikeDto;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
  * -----------------------------------------------------------
  * 2023-11-26        rhkdg       최초 생성
  */
+@Tag(name="좋아요 처리 컨트롤러")
 @RestController
 @RequiredArgsConstructor
 public class DailyRoutineLikeUserController extends BaseModuleController {
@@ -38,8 +45,17 @@ public class DailyRoutineLikeUserController extends BaseModuleController {
      * @return
      * @throws Exception
      */
+    @Operation(summary = "좋아요 등록")
+    @Parameters(value={
+            @Parameter(name = "dailyIdx", description = "일정 일련번호"),
+            @Parameter(name = "memberId", description = "회원 아이디")
+    })
+    @ApiResponses(value={
+            @ApiResponse(responseCode = "200", description = "좋아요 추가 완료"),
+            @ApiResponse(responseCode = "422", description = "좋아요 추가 오류")
+    })
     @PostMapping(API_URL+"/daily/routine/like/ins")
-    public ResponseEntity<String> insertDailyRoutineLike(@RequestBody DailyRoutineLikeDto dailyRoutineLikeDto) throws Exception {
+    public ResponseEntity<String> insertDailyRoutineLike(DailyRoutineLikeDto dailyRoutineLikeDto) throws Exception {
 
         try{
             dailyRoutineLikeDto.setMemberId(memberSession.getMemberSession().getId());
@@ -58,6 +74,13 @@ public class DailyRoutineLikeUserController extends BaseModuleController {
      * @return
      * @throws Exception
      */
+    @Operation(summary = "좋아요 삭제")
+    @Parameter(name = "idx", description = "좋아요 일련번호")
+    @ApiResponses(value={
+            @ApiResponse(responseCode = "200", description = "좋아요 삭제 완료"),
+            @ApiResponse(responseCode = "404", description = "좋아요 삭제시 회원정보 일치 x"),
+            @ApiResponse(responseCode = "422", description = "좋아요 삭제 오류")
+    })
     @PostMapping(API_URL+"/daily/routine/like/del")
     public ResponseEntity<String>  deleteDailyRoutineLike(@RequestParam("idx") Long idx) throws Exception {
 

@@ -36,7 +36,6 @@ import java.util.Map;
  */
 @Tag(name="회원 사용자 컨트롤")
 @RestController
-@CrossOrigin("*")
 @RequiredArgsConstructor
 public class MemberUserController extends BaseModuleController{
 	
@@ -82,7 +81,8 @@ public class MemberUserController extends BaseModuleController{
 	
 	/**
 	 * 로그인 처리
-	 * @param dto
+	 * @param id
+	 * @param pw
 	 * @return
 	 * @throws Exception
 	 */
@@ -90,6 +90,11 @@ public class MemberUserController extends BaseModuleController{
 	@Parameters(value={
 		@Parameter(name = "id", description ="아이디 "),
 		@Parameter(name = "pw", description="비밀번호 ")
+	})
+	@ApiResponses(value={
+			@ApiResponse(responseCode = "200", description = "token 전달"),
+			@ApiResponse(responseCode = "304", description = "아이디 또는 비밀번호가 일치하지 않는 상태"),
+			@ApiResponse(responseCode = "422", description = "로그인 접근시 이슈 발생")
 	})
 	@PostMapping(API_URL+"/member/login")
 	public ResponseEntity<?> loginMember(@RequestParam("id") String id,
@@ -119,6 +124,7 @@ public class MemberUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@Operation(summary="사용자 로그아웃 ")
+	@ApiResponse(responseCode = "200", description = "로그아웃")
 	@PostMapping(API_URL+"/member/logout")
 	public ResponseEntity<?> logoutMember() throws Exception {
 		memberSession.clearMemberSession();
@@ -131,7 +137,7 @@ public class MemberUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
-	@Operation(summary="사용자 회원가입 ")
+	@Operation(summary="사용자 회원가입 ", description = "요청하는 파라미터는 모두 입력할 수 있도록 할 것")
 	@Parameters({
 		@Parameter(name = "id", description ="아이디 "),
 		@Parameter(name = "pw", description ="비밀번호 "),
@@ -143,6 +149,12 @@ public class MemberUserController extends BaseModuleController{
 		@Parameter(name = "birth", description ="생년월일"),
 		@Parameter(name = "mbti", description ="MBTI")
 	})
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "가입 완료"),
+			@ApiResponse(responseCode = "208", description = "이미 존재하는 회원 아이디"),
+			@ApiResponse(responseCode = "422", description = "회원 가입이 진행되지 않음"),
+			@ApiResponse(responseCode = "400", description = "회원 가입시 오류가 발생")
+	})
 	@PostMapping(API_URL+"/member/signup")
 	public ResponseEntity<?> createMember(MemberDto dto) throws Exception {
 		
@@ -153,11 +165,11 @@ public class MemberUserController extends BaseModuleController{
 			}
 			AuthServiceResult<?> result = memberService.saveMember(dto);
 			if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
-				return new ResponseEntity<>("회원 가입이 진행되지 않았습니다.",HttpStatus.NOT_MODIFIED);
+				return new ResponseEntity<>("회원 가입이 진행되지 않았습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}catch (Exception e) {
 			logger.error("### member create error {}",e.getMessage());
-			return new ResponseEntity<>("회원 가입시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+			return new ResponseEntity<>("회원 가입시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
 		}
 		
 		return new ResponseEntity<>("가입 되었습니다.",HttpStatus.OK);
@@ -213,6 +225,11 @@ public class MemberUserController extends BaseModuleController{
 		@Parameter(name = "age", description="나이"),
 		@Parameter(name = "birth", description="생년월일"),
 		@Parameter(name = "mbti", description = "MBTI")
+	})
+	@ApiResponses(value={
+			@ApiResponse(responseCode = "200", description = "수정 완료"),
+			@ApiResponse(responseCode = "304", description = "회원정보 업데이트에 실패"),
+			@ApiResponse(responseCode = "422", description = "회원정보 업데이트시 오류")
 	})
 	@PostMapping(API_URL+"/member/act/upd")
 	public ResponseEntity<?> updateMember(MemberDto dto) throws Exception {

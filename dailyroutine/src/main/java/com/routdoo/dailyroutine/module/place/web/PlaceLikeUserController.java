@@ -4,7 +4,14 @@ import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.place.dto.PlaceLikeDto;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.ParameterScriptAssert;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
  * -----------------------------------------------------------
  * 2023-11-27        rhkdg       최초 생성
  */
+@Tag(name = "장소 좋아요 컨트롤러")
 @RestController
 @RequiredArgsConstructor
 public class PlaceLikeUserController extends BaseModuleController {
@@ -38,8 +46,18 @@ public class PlaceLikeUserController extends BaseModuleController {
      * @return
      * @throws Exception
      */
+    @Operation(summary = "장소 좋아요 등록")
+    @Parameters(value={
+            @Parameter(name = "placeNum", description = "장소 일련번호"),
+            @Parameter(name = "memberId", description = "회원 아이디")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "좋아요 추가 완료"),
+            @ApiResponse(responseCode = "400", description = "좋아요 추가 오류"),
+            @ApiResponse(responseCode = "422", description = "좋아요 추가 실패")
+    })
     @PostMapping(API_URL+"/place/like/ins")
-    public ResponseEntity<String> insertPlaceLike(@RequestBody PlaceLikeDto placeLikeDto) throws Exception {
+    public ResponseEntity<String> insertPlaceLike(PlaceLikeDto placeLikeDto) throws Exception {
 
         try{
             placeLikeDto.setMemberId(memberSession.getMemberSession().getId());
@@ -49,7 +67,7 @@ public class PlaceLikeUserController extends BaseModuleController {
             }
         } catch (Exception e){
             logger.error("### insert place like error : {}",e.getMessage());
-            return new ResponseEntity<>("좋아요 추가시 이슈가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>("좋아요 추가시 이슈가 발생하였습니다.",HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity<>("좋아요 추가하였습니다.", HttpStatus.OK);
@@ -61,6 +79,13 @@ public class PlaceLikeUserController extends BaseModuleController {
      * @return
      * @throws Exception
      */
+    @Operation(summary = "장소 좋아요 삭제")
+    @Parameter(name = "idx" ,description = "장소 좋아요 일련번호")
+    @ApiResponses(value={
+            @ApiResponse(responseCode = "200" , description = "좋아요 삭제 완료"),
+            @ApiResponse(responseCode = "422", description = "좋아요 삭제 오류"),
+            @ApiResponse(responseCode = "404", description = "좋아요 삭제시 회원 정보 불일치")
+    })
     @PostMapping(API_URL+"/place/like/del")
     public ResponseEntity<String> deletePlaceLike(@RequestParam("idx") Long idx) throws Exception {
         

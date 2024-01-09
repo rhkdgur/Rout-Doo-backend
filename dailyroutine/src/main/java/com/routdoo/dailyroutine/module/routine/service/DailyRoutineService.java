@@ -63,7 +63,6 @@ public class DailyRoutineService {
 	 * @throws Exception
 	 */
 	public Page<DailyRoutineDto> selectDailyRoutinePageList(DailyRoutineDefaultDto searchDto) throws Exception {
-		System.out.println("########");
 		return dailyRoutineRepository.selectDailyRoutinePageList(searchDto);
 	}
 	
@@ -143,7 +142,6 @@ public class DailyRoutineService {
 			date = date.substring(0,7);
 		}
 		List<Map<String,Object>> list = dailyRoutineRepository.selectDailyRoutineExistList(date,searchDto.getMemberId());
-		System.out.println("@@@@@@@");
 		String month = LocalDate.now().toString().substring(0,7);
 		LocalDate startDt = LocalDate.parse(month+"-01");
 		LocalDate endDt = startDt.withDayOfMonth(startDt.lengthOfMonth());

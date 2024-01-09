@@ -10,6 +10,8 @@ import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -180,7 +182,16 @@ public class DailyRoutineCummunityController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "댓글 등록")
-    @Parameter(name ="DailyRoutineCommentDto", description = "댓글 정보(클래스)")
+    @Parameters(value= {
+            @Parameter(name = "memberId", description = "회원 아이디"),
+            @Parameter(name = "dailyIdx", description = "일정 일련번호"),
+            @Parameter(name = "context", description = "내용")
+    })
+    @ApiResponses(value={
+            @ApiResponse(responseCode = "200", description = "등록 완료"),
+            @ApiResponse(responseCode = "400", description = "등록 오류"),
+            @ApiResponse(responseCode = "422", description = "등록 실패")
+    })
     @PostMapping(API_URL+"/daily/routine/comment/ins")
     public ResponseEntity<String> insertDailyRoutineComment(DailyRoutineCommentDto commentDto) throws Exception {
 
@@ -191,7 +202,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
             }
         }catch (Exception e) {
             logger.error("### insert daily routine comment error : {}",e.getMessage());
-            return new ResponseEntity<>("등록시 오류가 발생했습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>("등록시 오류가 발생했습니다.", HttpStatus.BAD_REQUEST);
         }
         
         return new ResponseEntity<>("등록 되었습니다.",HttpStatus.OK);
@@ -204,7 +215,17 @@ public class DailyRoutineCummunityController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "댓글 수정")
-    @Parameter(name="DaiylRoutineCommentDto", description = "댓글 정보(클래스)")
+    @Parameters(value= {
+            @Parameter(name= "idx", description = "댓글 일련번호"),
+            @Parameter(name = "memberId", description = "회원 아이디"),
+            @Parameter(name = "dailyIdx", description = "일정 일련번호"),
+            @Parameter(name = "context", description = "내용")
+    })
+    @ApiResponses(value={
+            @ApiResponse(responseCode = "200", description = "수정 완료"),
+            @ApiResponse(responseCode = "422", description = "수정 실패"),
+            @ApiResponse(responseCode = "400", description = "수정 오류")
+    })
     @PostMapping(API_URL+"/daily/routine/comment/upd")
     public ResponseEntity<String> updateDailyRoutineComment(DailyRoutineCommentDto commentDto) throws Exception {
 
@@ -215,7 +236,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
             }
         }catch (Exception e){
             logger.error("### update daily routine comment error : {}",e.getMessage());
-            return new ResponseEntity<>("수정시 오류가 발생했습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>("수정시 오류가 발생했습니다.", HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity<>("수정 되었습니다.",HttpStatus.OK);
@@ -229,6 +250,11 @@ public class DailyRoutineCummunityController extends BaseModuleController {
      */
     @Operation(summary = "댓글 삭제")
     @Parameter(name="idx", description = "댓글 일련번호")
+    @ApiResponses(value={
+            @ApiResponse(responseCode = "200", description = "삭제 완료"),
+            @ApiResponse(responseCode = "400", description = "삭제 오류"),
+            @ApiResponse(responseCode = "422", description = "삭제 실패")
+    })
     @PostMapping(API_URL+"/daily/routine/comment/del")
     public ResponseEntity<String> deleteDailyRoutineComment(@RequestParam("idx") Long idx) throws Exception {
 
@@ -241,7 +267,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
             }
         }catch (Exception e){
             logger.error("### delete daily routine comment error : {}",e.getMessage());
-            return new ResponseEntity<>("삭제시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>("삭제시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity<>("삭제 되었습니다.",HttpStatus.OK);
@@ -254,7 +280,16 @@ public class DailyRoutineCummunityController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "답글 등록")
-    @Parameter(name="DailyRoutineReplyCommentDto", description = "답글 정보(클래스)")
+    @Parameters(value={
+            @Parameter(name = "memberId", description = "회원 아이디"),
+            @Parameter(name = "commentIdx", description = "댓글 일련번호"),
+            @Parameter(name = "context", description = "내용")
+    })
+    @ApiResponses(value={
+            @ApiResponse(responseCode = "200", description = "등록 완료"),
+            @ApiResponse(responseCode = "422", description = "등록 실패"),
+            @ApiResponse(responseCode = "400", description = "등록 오류")
+    })
     @PostMapping(API_URL+"/daily/routine/reply/ins")
     public ResponseEntity<String> insertDailyRoutineReplyComment(DailyRoutineReplyCommentDto replyCommentDto) throws Exception {
 
@@ -265,7 +300,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
             }
         }catch (Exception e){
             logger.error("### insert daily routine reply comment error : {}",e.getMessage());
-            return new ResponseEntity<>("등록시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>("등록시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity<>("등록 되었습니다.",HttpStatus.OK);
@@ -278,7 +313,17 @@ public class DailyRoutineCummunityController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "답글 수정")
-    @Parameter(name="DailyRoutineReplyCommentDto", description = "답글 정보(클래스)")
+    @Parameters(value={
+            @Parameter(name = "idx", description = "답글 일련번호"),
+            @Parameter(name = "memberId", description = "회원 아이디"),
+            @Parameter(name = "commentIdx", description = "댓글 일련번호"),
+            @Parameter(name = "context", description = "내용")
+    })
+    @ApiResponses(value={
+            @ApiResponse(responseCode = "200", description = "수정 완료"),
+            @ApiResponse(responseCode = "422", description = "수정 실패"),
+            @ApiResponse(responseCode = "400", description = "수정 오류")
+    })
     @PostMapping(API_URL+"/daily/routine/reply/upd")
     public ResponseEntity<String> updateDailyRoutineReplyComment(DailyRoutineReplyCommentDto replyCommentDto) throws Exception {
 
@@ -303,6 +348,11 @@ public class DailyRoutineCummunityController extends BaseModuleController {
      */
     @Operation(summary = "답글 삭제")
     @Parameter(name="idx", description = "답글 일련번호")
+    @ApiResponses(value={
+            @ApiResponse(responseCode = "200", description = "삭제 완료"),
+            @ApiResponse(responseCode = "422", description = "삭제 실패"),
+            @ApiResponse(responseCode = "400", description = "삭제 오류")
+    })
     @PostMapping(API_URL+"/daily/routine/reply/del")
     public ResponseEntity<String> deleteDailyRoutineReplyComment(@RequestParam("idx") Long idx) throws Exception {
 
@@ -315,7 +365,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
             }
         }catch (Exception e){
             logger.error("### delete daily routine reply comment error : {}",e.getMessage());
-            return new ResponseEntity<>("삭제시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>("삭제시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity<>("삭제 되었습니다.",HttpStatus.OK);

@@ -35,15 +35,15 @@ public class DailyRoutineCommentDto extends BaseVo {
     private Long idx = 0L;
     
     /**회원아이디*/
-    @Schema(description = "유저 아이디")
+    @Schema(description = "유저 아이디", defaultValue = "")
     private String memberId = "";
     
     /**일정 일련번호*/
-    @Schema(description = "일정 일련번호")
+    @Schema(description = "일정 일련번호", defaultValue = "0")
     private Long dailyIdx = 0L;
     
     /**내용*/
-    @Schema(description = "내용")
+    @Schema(description = "내용", defaultValue = "")
     private String context = "";
     
     /**회원 dto*/

@@ -5,6 +5,8 @@ import java.util.*;
 
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
 import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -169,6 +171,11 @@ public class DailyRoutineUserController extends BaseModuleController{
 		@Parameter(name = "endDate", description ="제목(장소)"),
 		@Parameter(name = "dayType", description ="해쉬태그")
 	})
+	@ApiResponses(value={
+			@ApiResponse(responseCode = "200", description = "등록 완료"),
+			@ApiResponse(responseCode = "422", description = "등록이 이루어지지 않음"),
+			@ApiResponse(responseCode = "400", description = "등록 오류 발생")
+	})
 	@PostMapping(API_URL+"/daily/routine/ins")
 	public ResponseEntity<String> insertDailyRoutineBatch(DailyRoutineDto dailyRoutineDto) throws Exception {
 		RoutineServiceResult<?> result = null;
@@ -180,7 +187,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 			}
 		}catch (Exception e) {
 			logger.error("insert daily routine info and timeline error : {}",e.getMessage());
-			return new ResponseEntity<String>("등록시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+			return new ResponseEntity<String>("등록시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
 		}
 		
 		return new ResponseEntity<String>(result.getMessage(),HttpStatus.OK);
@@ -194,6 +201,11 @@ public class DailyRoutineUserController extends BaseModuleController{
 	 */
 	@Operation(summary="스케줄명 및 타임라인 일괄 삭제")
 	@Parameter(name = "idx", description = "일련번호")
+	@ApiResponses(value={
+			@ApiResponse(responseCode = "200", description = "삭제 완료"),
+			@ApiResponse(responseCode = "422", description = "삭제가 이루어지지 않음"),
+			@ApiResponse(responseCode = "400", description = "삭제 오류"),
+	})
 	@PostMapping(API_URL+"/daily/routine/del")
 	public ResponseEntity<String> deleteDailyRoutine(@RequestParam("idx") Long idx) throws Exception {
 		
@@ -208,7 +220,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 			}
 		}catch (Exception e) {
 			logger.error("delete daily routine error : {}",e.getMessage());
-			return new ResponseEntity<String>("삭제시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+			return new ResponseEntity<String>("삭제시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
 		}
 		
 		return new ResponseEntity<String>(result.getMessage(),HttpStatus.OK);
@@ -234,6 +246,11 @@ public class DailyRoutineUserController extends BaseModuleController{
 		@Parameter(name = "emin", description ="마지막분"),
 		@Parameter(name = "cost", description ="비용")
 	})
+	@ApiResponses(value={
+			@ApiResponse(responseCode = "200", description = "등록 완료"),
+			@ApiResponse(responseCode = "422", description = "등록 이루어지지 않음"),
+			@ApiResponse(responseCode = "400", description = "등록 오류 발생")
+	})
 	@PostMapping(value=API_URL+"/daily/routine/time/line/act",params="amode=ins")
 	public ResponseEntity<String> insertDailyRoutineTimeLine(DailyRoutineTimeLineDto dailyRoutineTimeLineDto) throws Exception {
 		
@@ -244,7 +261,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 			}
 		}catch (Exception e) {
 			logger.error("insert daily routine time line error : {}",e.getMessage());
-			return new ResponseEntity<String>("등록시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+			return new ResponseEntity<String>("등록시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
 		}
 		
 		return new ResponseEntity<String>("등록 되었습니다.",HttpStatus.OK);
@@ -272,6 +289,11 @@ public class DailyRoutineUserController extends BaseModuleController{
 		@Parameter(name = "emin", description="마지막분"),
 		@Parameter(name = "cost", description="비용")
 	})
+	@ApiResponses(value={
+			@ApiResponse(responseCode = "200", description = "수정 완료"),
+			@ApiResponse(responseCode = "422", description = "수정이 이루어지지 않음"),
+			@ApiResponse(responseCode = "400", description = "수정 오류")
+	})
 	@PostMapping(value=API_URL+"/daily/routine/time/line/act",params="amode=upd")
 	public ResponseEntity<String> updateDailyRoutineTimeLine(DailyRoutineTimeLineDto dailyRoutineTimeLineDto) throws Exception {
 		
@@ -284,7 +306,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 			}
 		}catch (Exception e) {
 			logger.error("update daily routine timeline error : {}",e.getMessage());
-			return new ResponseEntity<String>("수정시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+			return new ResponseEntity<String>("수정시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
 		}
 		
 		return new ResponseEntity<String>(result.getMessage(),HttpStatus.OK);
@@ -298,6 +320,10 @@ public class DailyRoutineUserController extends BaseModuleController{
 	 */
 	@Operation(summary="타임라인별 삭제")
 	@Parameter(name = "idx", description="일련번호")
+	@ApiResponses(value= {
+			@ApiResponse(responseCode = "200", description = "삭제 완료"),
+			@ApiResponse(responseCode = "422", description = "삭제 오류")
+	})
 	@PostMapping(value=API_URL+"/daily/routine/time/line/act",params="amode=del")
 	public ResponseEntity<String> deleteDailyRoutineTimeLine(@RequestParam("idx") Long idx) throws Exception {
 		
@@ -324,6 +350,11 @@ public class DailyRoutineUserController extends BaseModuleController{
 			@Parameter(name = "idx", description = "일정 일련번호"),
 			@Parameter(name = "rangeType", description = "범위 설정 ex) PUBLIC : 공개, PRIVATE : 비공개 ")
 	})
+	@ApiResponses(value= {
+			@ApiResponse(responseCode = "200", description = "설정 완료"),
+			@ApiResponse(responseCode = "422", description = "공개 범위 설정 실패"),
+			@ApiResponse(responseCode = "400", description = "공개 범위 설정 오류")
+	})
 	@PostMapping(API_URL+"/daily/routine/config/range/change")
 	public ResponseEntity<String> updateDailyRoutineConfigRangeChange(
 											@RequestParam("idx") Long idx,
@@ -339,7 +370,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 			}
 		}catch (Exception e) {
 			logger.error("### daily routine config range change error : {}",e.getMessage());
-			return new ResponseEntity<>("공개 범위 설정시 오류가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+			return new ResponseEntity<>("공개 범위 설정시 오류가 발생하였습니다.",HttpStatus.BAD_REQUEST);
 		}
 
 		return new ResponseEntity<>(RoutineRangeConfigType.valueOf(rangeType).getDisplay()+" 설정되었습니다.",HttpStatus.OK);
@@ -437,6 +468,10 @@ public class DailyRoutineUserController extends BaseModuleController{
 	 */
 	@Operation(summary="친구 초대 삭제")
 	@Parameter(name = "idx", description="일련번호")
+	@ApiResponses(value={
+			@ApiResponse(responseCode = "200", description = "친구 초대 삭제 완료"),
+			@ApiResponse(responseCode = "422", description = "친구 삭제 오류")
+	})
 	@PostMapping(value=API_URL+"/daily/routine/invite/del")
 	public ResponseEntity<?> deleteDailyRoutineInvite(@RequestParam("idx") Long idx) throws Exception {
 		
