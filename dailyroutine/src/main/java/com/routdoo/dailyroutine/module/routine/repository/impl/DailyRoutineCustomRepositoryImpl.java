@@ -52,9 +52,9 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 		}
 		if(searchDto.getIdx() != 0L) {
 			sql.and(qDailyRoutine.idx.eq(searchDto.getIdx()));
-		}		
+		}
 		if(searchDto.getToDate() != null && !searchDto.getToDate().isEmpty()) {
-			sql.and(qDailyRoutine.startDate.goe(searchDto.getToDate()));
+			sql.and(qDailyRoutine.startDate.loe(searchDto.getToDate()).and(qDailyRoutine.endDate.goe(searchDto.getToDate())));
 		}
 		if(searchDto.getRangeType() != null && !searchDto.getRangeType().isEmpty()){
 			sql.and(qDailyRoutine.rangeType.eq(RoutineRangeConfigType.valueOf(searchDto.getRangeType())));

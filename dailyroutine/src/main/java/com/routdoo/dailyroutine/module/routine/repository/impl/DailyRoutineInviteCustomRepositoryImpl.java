@@ -50,7 +50,7 @@ public class DailyRoutineInviteCustomRepositoryImpl extends BaseAbstractReposito
                     qMember.nickname
                 )
                 .from(qDailyRoutineInvite)
-                .join(qMember).fetchJoin()
+                .join(qMember).on(qMember.id.eq(qDailyRoutineInvite.member.id)).fetchJoin()
                 .where(qDailyRoutineInvite.dailyRoutine.idx.eq(dto.getDailyIdx()))
                 .fetch();
 

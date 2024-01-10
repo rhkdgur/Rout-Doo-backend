@@ -36,6 +36,7 @@ import java.util.Map;
  * 2023-11-24        rhkdg     최초 생성
  */
 @Tag(name="놀거리 댓글 컨트롤러")
+@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class PlaceUserCommentController extends BaseModuleController {

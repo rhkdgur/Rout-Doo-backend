@@ -20,10 +20,7 @@ import org.apache.coyote.Response;
 import org.hibernate.validator.constraints.ParameterScriptAssert;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -39,6 +36,7 @@ import java.util.Map;
  * 2023-12-15        rhkdg       최초 생성
  */
 @Tag(name = "놀거리 정보 수정 제안 컨트롤러")
+@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class PlaceRecordUserController extends BaseModuleController {

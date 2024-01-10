@@ -12,10 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
@@ -52,6 +49,7 @@ import lombok.RequiredArgsConstructor;
 * 2023.09.24        ghgo       최초 생성
  */
 @Tag(name="사용자 스케줄 관리 컨트롤러")
+@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class DailyRoutineUserController extends BaseModuleController{
@@ -169,7 +167,8 @@ public class DailyRoutineUserController extends BaseModuleController{
 		@Parameter(name = "title", description ="제목"),
 		@Parameter(name = "startdate", description ="시작일자"),
 		@Parameter(name = "endDate", description ="제목(장소)"),
-		@Parameter(name = "dayType", description ="해쉬태그")
+			@Parameter(name = "tag", description ="태그"),
+		@Parameter(name = "dayType", description ="일정 타입")
 	})
 	@ApiResponses(value={
 			@ApiResponse(responseCode = "200", description = "등록 완료"),
@@ -237,7 +236,10 @@ public class DailyRoutineUserController extends BaseModuleController{
 		@Parameter(name = "writeType", description ="작성타입"),
 		@Parameter(name = "applyDate", description ="적용일자"),
 		@Parameter(name = "title", description ="제목"),
-		@Parameter(name = "placeName", description ="장소명"),
+			@Parameter(name = "placeName", description="장소명"),
+			@Parameter(name="addr", description = "주소"),
+			@Parameter(name="mapx", description = "경도"),
+			@Parameter(name="mapy", description = "위도"),
 		@Parameter(name = "ord", description ="순서"),
 		@Parameter(name = "context", description ="내용"),
 		@Parameter(name = "shour", description ="시작시간"),
@@ -251,7 +253,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "422", description = "등록 이루어지지 않음"),
 			@ApiResponse(responseCode = "400", description = "등록 오류 발생")
 	})
-	@PostMapping(value=API_URL+"/daily/routine/time/line/act",params="amode=ins")
+	@PostMapping(value=API_URL+"/daily/routine/time/line/act/ins")
 	public ResponseEntity<String> insertDailyRoutineTimeLine(DailyRoutineTimeLineDto dailyRoutineTimeLineDto) throws Exception {
 		
 		try {
@@ -281,6 +283,9 @@ public class DailyRoutineUserController extends BaseModuleController{
 		@Parameter(name = "applyDate", description="적용일자"),
 		@Parameter(name = "title", description="제목"),
 		@Parameter(name = "placeName", description="장소명"),
+			@Parameter(name="addr", description = "주소"),
+			@Parameter(name="mapx", description = "경도"),
+			@Parameter(name="mapy", description = "위도"),
 		@Parameter(name = "ord", description="순서"),
 		@Parameter(name = "context", description="내용"),
 		@Parameter(name = "shour", description="시작시간"),
@@ -294,7 +299,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "422", description = "수정이 이루어지지 않음"),
 			@ApiResponse(responseCode = "400", description = "수정 오류")
 	})
-	@PostMapping(value=API_URL+"/daily/routine/time/line/act",params="amode=upd")
+	@PostMapping(value=API_URL+"/daily/routine/time/line/act/upd")
 	public ResponseEntity<String> updateDailyRoutineTimeLine(DailyRoutineTimeLineDto dailyRoutineTimeLineDto) throws Exception {
 		
 		RoutineServiceResult<?> result = null;
@@ -324,7 +329,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "200", description = "삭제 완료"),
 			@ApiResponse(responseCode = "422", description = "삭제 오류")
 	})
-	@PostMapping(value=API_URL+"/daily/routine/time/line/act",params="amode=del")
+	@PostMapping(value=API_URL+"/daily/routine/time/line/act/del")
 	public ResponseEntity<String> deleteDailyRoutineTimeLine(@RequestParam("idx") Long idx) throws Exception {
 		
 		try {		

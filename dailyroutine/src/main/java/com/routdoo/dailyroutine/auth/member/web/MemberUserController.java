@@ -35,6 +35,7 @@ import java.util.Map;
 * 2023.07.14        ghgo       최초 생성
  */
 @Tag(name="회원 사용자 컨트롤")
+@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class MemberUserController extends BaseModuleController{

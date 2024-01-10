@@ -12,10 +12,7 @@ import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.place.dto.PlaceCommentDto;
@@ -43,6 +40,7 @@ import lombok.RequiredArgsConstructor;
 * 2023.08.03        ghgo       최초 생성
  */
 @Tag(name="장소 사용자 컨트롤러",description = "장소에 대한 데이터 처리를 합니다.")
+@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class PlaceUserController extends BaseModuleController{

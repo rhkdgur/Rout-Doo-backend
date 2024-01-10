@@ -1,9 +1,11 @@
 package com.routdoo.dailyroutine.auth.jwt;
 
-import java.security.Key;
-import java.util.Date;
-import java.util.stream.Collectors;
-
+import com.routdoo.dailyroutine.auth.jwt.service.JwtTokenService;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,19 +14,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.routdoo.dailyroutine.auth.jwt.service.JwtTokenService;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
+import java.security.Key;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.util.Date;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -53,14 +47,20 @@ public class JwtProvider {
 	
 	private String secret;
 	
+	/**토큰*/
 	private long tokenValidityInMilliseconds;
+
+	/**리플레쉬 토큰*/
+	private long refreshTokenValidityInMilliseconds;
 
 	private Key key;
 	
 	@PostConstruct
 	protected void init() {
 		this.secret = jwtProperties.getSecretkey();
-		this.tokenValidityInMilliseconds = jwtProperties.getAccessTokenValidityInSeconds() * 1000;
+//		this.tokenValidityInMilliseconds = Duration.ofMinutes(jwtProperties.getAccessTokenValidityInSeconds() % 60).toMillis();
+		this.tokenValidityInMilliseconds = Duration.ofDays(1).toMillis();
+		this.refreshTokenValidityInMilliseconds = Duration.ofDays(7).toMillis();
 		//시크릿 값을 decode해서 키 변수에 할당
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
@@ -110,7 +110,7 @@ public class JwtProvider {
 		
 		Date now = new Date();
 		long time = now.getTime();
-		Date validity = new Date(time + 480 * this.tokenValidityInMilliseconds);
+		Date validity = new Date(time + this.refreshTokenValidityInMilliseconds);
 		String AUTHORITIES_KEY = "";
 		String id = "";
 		if(isUser) {

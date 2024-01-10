@@ -13,10 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * packageName    : com.routdoo.dailyroutine.module.routine.web
@@ -30,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 2023-11-26        rhkdg       최초 생성
  */
 @Tag(name="좋아요 처리 컨트롤러")
+@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class DailyRoutineLikeUserController extends BaseModuleController {

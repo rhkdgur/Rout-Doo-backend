@@ -14,10 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.ParameterScriptAssert;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * packageName    : com.routdoo.dailyroutine.module.place.web
@@ -31,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 2023-11-27        rhkdg       최초 생성
  */
 @Tag(name = "장소 좋아요 컨트롤러")
+@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class PlaceLikeUserController extends BaseModuleController {
