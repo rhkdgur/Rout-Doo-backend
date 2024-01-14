@@ -1,6 +1,9 @@
 package com.routdoo.dailyroutine.module.place.repository;
 
+import com.routdoo.dailyroutine.module.place.dto.PlaceIntroDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceRecordDto;
+
+import java.util.List;
 
 /**
  * packageName    : com.routdoo.dailyroutine.module.place.repository
@@ -14,6 +17,14 @@ import com.routdoo.dailyroutine.module.place.dto.PlaceRecordDto;
  * 2023-12-14        rhkdg       최초 생성
  */
 public interface PlaceRecordCustomRepository {
+
+    /**
+     * 목록 조회
+     * @param placeRecordDto
+     * @return
+     * @throws Exception
+     */
+    List<PlaceRecordDto> selectPlaceRecordList(PlaceRecordDto placeRecordDto) throws  Exception;
 
     /**
      * 상세 조회

@@ -1,7 +1,19 @@
 package com.routdoo.dailyroutine.auth.member.web;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import com.routdoo.dailyroutine.auth.member.service.FriendListService;
+import com.routdoo.dailyroutine.module.place.domain.PlaceIntro;
+import com.routdoo.dailyroutine.module.place.dto.PlaceDefaultDto;
+import com.routdoo.dailyroutine.module.place.dto.PlaceIntroDto;
+import com.routdoo.dailyroutine.module.place.service.PlaceRecordService;
+import com.routdoo.dailyroutine.module.place.service.PlaceService;
+import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
+import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDefaultDto;
+import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
+import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +47,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberController extends BaseController{
 
+	//회원 서비스
 	private final MemberService memberService;
+
+	//회원 친구 서비스
+	private final FriendListService friendListService;
+	
+	//일정 서비스
+	private final DailyRoutineService dailyRoutineService;
+	
+	//장소 서비스
+	private final PlaceService placeService;
 	
 	
 	/**
@@ -49,7 +71,8 @@ public class MemberController extends BaseController{
 
 		//회원 목록 조회
 		Page<MemberDto> resultList = memberService.selectMemberPageList(searchDto);
-		modelMap.put("memberList", resultList);
+		modelMap.put("resultList", resultList);
+		modelMap.put("searchDto",searchDto);
 		
 		return modelMap;
 	}
@@ -62,10 +85,43 @@ public class MemberController extends BaseController{
 	 * @throws Exception
 	 */
 	@GetMapping(MGN_URL+"/member/view")
-	public Map<String,Object> selectMemberView(MemberDto dto) throws Exception {
-		
+	public Map<String,Object> selectMemberView(@RequestParam("id") String memberId) throws Exception {
+
+
+
+		MemberDto dto = new MemberDto();
+		dto.setId(memberId);
 		dto = memberService.selectMember(dto);
+
+		MemberDefaultDto searchDto = new MemberDefaultDto();
+		searchDto.setMemberId(dto.getId());
+
+		//친구 목록
+		List<Map<String,Object>> friendsList = friendListService.selectMemberFriendsList(searchDto);
+		
+		//차단 목록
+		List<Map<String,Object>> blockList = friendListService.selectMypageFriendsBlockList(searchDto);
+
+		//공개일정 개수
+		DailyRoutineDefaultDto dailyRoutineDefaultDto = new DailyRoutineDefaultDto();
+		dailyRoutineDefaultDto.setRangeType(RoutineRangeConfigType.PUBLIC.name());
+		long dailyRoutineCnt = dailyRoutineService.selectDailyRoutineTotalCount(dailyRoutineDefaultDto);
+
+		//장소등록 개수
+		PlaceIntroDto placeIntroDto = new PlaceIntroDto();
+		placeIntroDto.setMemberId(dto.getId());
+		List<PlaceIntroDto> introList = placeService.selectPlaceIntroList(placeIntroDto);
+
+		//회원 상세 정보
 		modelMap.put("member", dto);
+		//회원 친구 목록
+		modelMap.put("friendsList", friendsList);
+		//회원 차단 목록
+		modelMap.put("blockList", blockList);
+		//공개 일정 개수
+		modelMap.put("routineCnt", dailyRoutineCnt);
+		//장소 등록 개수
+		modelMap.put("placeCnt", introList.size());
 		
 		return modelMap;
 	}

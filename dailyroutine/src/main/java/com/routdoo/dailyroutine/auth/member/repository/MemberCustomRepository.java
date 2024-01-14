@@ -3,6 +3,7 @@ package com.routdoo.dailyroutine.auth.member.repository;
 import java.util.List;
 import java.util.Map;
 
+import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.auth.member.domain.MemberFriends;
 import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
 import org.springframework.data.domain.Page;
@@ -55,11 +56,27 @@ public interface MemberCustomRepository {
 	Page<Map<String,Object>> selectMemberFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception;
 
 	/**
+	 * 차단 목록( no paging)
+	 * @param searchDto
+	 * @return
+	 * @throws Exception
+	 */
+	List<Map<String,Object>> selectMemberFriendsBlockList(MemberDefaultDto searchDto) throws Exception;
+
+	/**
 	 *  친구목록 조회
 	 * @param searchDto
 	 * @return
 	 * @throws Exception
 	 */
 	Page<Map<String,Object>> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception;
+
+	/**
+	 * 친구목록 paging x
+	 * @param searchDto
+	 * @return
+	 * @throws Exception
+	 */
+	List<Map<String,Object>> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception;
 
 }

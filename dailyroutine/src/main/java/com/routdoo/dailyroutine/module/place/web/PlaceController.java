@@ -1,7 +1,11 @@
 package com.routdoo.dailyroutine.module.place.web;
 
+import java.util.List;
 import java.util.Map;
 
+import com.routdoo.dailyroutine.module.place.domain.PlaceIntro;
+import com.routdoo.dailyroutine.module.place.dto.*;
+import com.routdoo.dailyroutine.module.place.service.PlaceRecordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -15,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.routdoo.dailyroutine.common.web.BaseController;
-import com.routdoo.dailyroutine.module.place.dto.PlaceDefaultDto;
-import com.routdoo.dailyroutine.module.place.dto.PlaceDto;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
 
 import lombok.RequiredArgsConstructor;
@@ -39,6 +41,8 @@ import lombok.RequiredArgsConstructor;
 public class PlaceController extends BaseController{
 
 	private final PlaceService placeService;
+
+	private final PlaceRecordService placeRecordService;
 	
 	
 	/**
@@ -52,7 +56,8 @@ public class PlaceController extends BaseController{
 	public Map<String,Object> selectPlaceList(PlaceDefaultDto searchDto) throws Exception {
 		
 		Page<PlaceDto> places = placeService.selectPlacePageList(searchDto);
-		modelMap.put("placeList", places);
+		modelMap.put("resultList", places);
+		modelMap.put("searchDto", searchDto);
 		
 		return modelMap;
 	}
@@ -71,10 +76,29 @@ public class PlaceController extends BaseController{
 		PlaceDto dto = new PlaceDto();
 		dto.setPlaceNum(placeNum);
 		
+		//놀거리 대표 정보
 		dto = placeService.selectPlaceView(dto);
-		
+
+		//놀거리 intro 정보
+		PlaceIntroDto introDto = new PlaceIntroDto();
+		introDto.setPlaceNum(placeNum);
+		List<PlaceIntroDto> introList = placeService.selectPlaceIntroList(introDto);
+
+		//정보 수정 제안 목록
+		PlaceRecordDto placeRecordDto = new PlaceRecordDto();
+		placeRecordDto.setPlaceNum(placeNum);
+		List<PlaceRecordDto> recordList = placeRecordService.selectPlaceRecordList(placeRecordDto);
+
+		//삭제 요청 목록
+		PlaceRecordRemoveDto placeRecordRemoveDto = new PlaceRecordRemoveDto();
+		placeRecordRemoveDto.setPlaceNum(placeNum);
+		List<PlaceRecordRemoveDto> removeList = placeRecordService.selectPlaceRemoveList(placeRecordRemoveDto);
+
 		modelMap.put("place", dto);
-		
+		modelMap.put("introList",introList);
+		modelMap.put("recordList", recordList);
+		modelMap.put("removeList", removeList);
+
 		return modelMap;
 	}
 	

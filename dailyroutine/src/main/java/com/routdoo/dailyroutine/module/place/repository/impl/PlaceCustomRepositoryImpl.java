@@ -145,6 +145,9 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 		if(dto.getPlaceNum() != null && !dto.getPlaceNum().isEmpty()){
 			sql.and(qPlaceIntro.place.placeNum.eq(dto.getPlaceNum()));
 		}
+		if(dto.getMemberId() != null && !dto.getMemberId().isEmpty()){
+			sql.and(qPlaceIntro.member.id.eq(dto.getMemberId()));
+		}
 
 		List<PlaceIntro> list = jpaQueryFactory.selectFrom(qPlaceIntro)
 				.where(sql).fetch();

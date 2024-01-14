@@ -69,13 +69,23 @@ public class FriendListService {
 	}
 
 	/**
-	 * 친구 차단 처리 헤제 여부
+	 * 친구 차단 목록
 	 * @param searchDto
 	 * @return
 	 * @throws Exception
 	 */
 	public Page<Map<String,Object>> selectMypageFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception {
 		return memberRepository.selectMemberFriendsBlockPageList(searchDto);
+	}
+
+	/**
+	 * 친구 차단 목록(no paging) 
+	 * @param searchDto
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Map<String,Object>> selectMypageFriendsBlockList(MemberDefaultDto searchDto) throws Exception {
+		return memberRepository.selectMemberFriendsBlockList(searchDto);
 	}
 
 	/**
@@ -86,5 +96,15 @@ public class FriendListService {
 	 */
 	public Page<Map<String,Object>> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception {
 		return memberRepository.selectMemberFriendsPageList(searchDto);
+	}
+
+	/**
+	 * 친구 목록( no paging)
+	 * @param searchDto
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Map<String,Object>> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception {
+		return memberRepository.selectMemberFriendsList(searchDto);
 	}
 }

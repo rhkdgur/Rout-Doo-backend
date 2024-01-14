@@ -41,6 +41,9 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 				sql.and(qMember.nickname.like("%"+searchDto.getSstring()+"%"));
 			}
 		}
+		if(searchDto.getMemberId() != null && !searchDto.getMemberId().isEmpty()){
+			sql.and(qMember.id.eq(searchDto.getMemberId()));
+		}
 		return sql;
 	}
 	
@@ -116,6 +119,32 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 	}
 
 	@Override
+	public List<Map<String, Object>> selectMemberFriendsBlockList(MemberDefaultDto searchDto) throws Exception {
+		QMember qMember = QMember.member;
+		QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
+
+
+		List<MemberDto> list = jpaQueryFactory.select(
+						Projections.bean(
+								MemberDto.class,
+								qMember.id,
+								qMember.nickname,
+								qMember.gender,
+								qMember.age,
+								qMember.mbti
+						)
+				)
+				.from(qMember)
+				.join(qMemberFriends).fetchJoin()
+				.where(new BooleanBuilder().and(qMember.id.eq(searchDto.getMemberId())).and(qMemberFriends.blockYn.eq(searchDto.getBlockYn())))
+				.fetch();
+
+		//Map 변환
+		return list.stream().map(MemberDto::getSummaryInfo).toList();
+	}
+
+
+	@Override
 	public Page<Map<String, Object>> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception {
 		QMember qMember = QMember.member;
 		QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
@@ -148,6 +177,28 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 		return new PageImpl<>(resultList,searchDto.getPageable(),cnt);
 	}
 
+	@Override
+	public List<Map<String,Object>> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception {
+		QMember qMember = QMember.member;
+		QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
+
+		List<MemberDto> list = jpaQueryFactory.select(
+						Projections.bean(
+								MemberDto.class,
+								qMember.id,
+								qMember.nickname,
+								qMember.gender,
+								qMember.age,
+								qMember.mbti
+						)
+				)
+				.from(qMember)
+				.join(qMemberFriends).fetchJoin()
+				.where(commonQuery(searchDto))
+				.fetch();
+
+		return list.stream().map(MemberDto::getSummaryInfo).toList();
+	}
 	/**
 	 * 회원 페이징 목록
 	 */

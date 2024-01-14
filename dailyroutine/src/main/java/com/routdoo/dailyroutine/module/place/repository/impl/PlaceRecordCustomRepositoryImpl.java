@@ -1,20 +1,18 @@
 package com.routdoo.dailyroutine.module.place.repository.impl;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Expression;
-import com.querydsl.core.types.Projections;
 import com.routdoo.dailyroutine.auth.member.domain.QMember;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
-import com.routdoo.dailyroutine.module.place.domain.QPlace;
+import com.routdoo.dailyroutine.module.place.domain.PlaceRecord;
 import com.routdoo.dailyroutine.module.place.domain.QPlaceRecord;
 import com.routdoo.dailyroutine.module.place.dto.PlaceRecordDto;
 import com.routdoo.dailyroutine.module.place.dto.QPlaceRecordDto;
 import com.routdoo.dailyroutine.module.place.repository.PlaceRecordCustomRepository;
 import com.routdoo.dailyroutine.module.place.service.PlaceStatusType;
-import org.springframework.expression.spel.ast.Projection;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * packageName    : com.routdoo.dailyroutine.module.place.repository.impl
@@ -30,6 +28,17 @@ import java.time.LocalDateTime;
 @Repository
 public class PlaceRecordCustomRepositoryImpl extends BaseAbstractRepositoryImpl implements PlaceRecordCustomRepository {
 
+
+    @Override
+    public List<PlaceRecordDto> selectPlaceRecordList(PlaceRecordDto placeRecordDto) throws Exception {
+        QPlaceRecord qPlaceRecord = QPlaceRecord.placeRecord;
+
+        List<PlaceRecord>  list = jpaQueryFactory.selectFrom(qPlaceRecord)
+                .where(new BooleanBuilder().and(qPlaceRecord.place.placeNum.eq(placeRecordDto.getPlaceNum())))
+                .fetch();
+
+        return list.stream().map(PlaceRecordDto::new).toList();
+    }
 
     @Override
     public PlaceRecordDto selectPlaceRecord(PlaceRecordDto dto) throws Exception {

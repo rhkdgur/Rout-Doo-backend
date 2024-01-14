@@ -11,6 +11,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * packageName    : com.routdoo.dailyroutine.module.place.dto
@@ -110,6 +112,21 @@ public class PlaceRecordDto {
         this.useType = useType.name();
         this.createDate = createDate;
         this.modifyDate = modifyDate;
+    }
+
+    public Map<String,Object> toSummaryMap(){
+        Map<String,Object> map = new LinkedHashMap<>();
+        map.put("idx",this.idx);
+        map.put("memberId",this.memberId);
+        map.put("placeNum",this.placeNum);
+        map.put("tel", this.tel);
+        map.put("addr", this.addr);
+        map.put("mapx", this.mapx);
+        map.put("mapy", this.mapy);
+        map.put("useInfo",this.useInfo);
+        map.put("detailText",this.detailText);
+        map.put("useType", this.useType);
+        return map;
     }
 
     public String getUseTypeDisplay(){

@@ -251,6 +251,16 @@ public class PlaceService {
 		Long result = placeRepository.deletePlaceComment(dto);
 		return result > 0;
 	}
+
+	/**
+	 *
+	 * @param placeintroDto
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PlaceIntroDto> selectPlaceIntroList(PlaceIntroDto placeintroDto) throws Exception {
+		return placeRepository.selectPlaceIntroList(placeintroDto);
+	}
 			
 
 	/**

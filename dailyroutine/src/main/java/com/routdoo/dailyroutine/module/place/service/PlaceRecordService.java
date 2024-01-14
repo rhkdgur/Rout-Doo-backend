@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * packageName    : com.routdoo.dailyroutine.module.place.service
  * fileName       : PlaceRecordService
@@ -27,6 +29,16 @@ public class PlaceRecordService {
     private final PlaceRecordRepository placeRecordRepository;
 
     private final PlaceRecordRemoveRepository placeRecordRemoveCustomRepository;
+
+    /**
+     * 목록 조회
+     * @param dto
+     * @return
+     * @throws Exception
+     */
+    public List<PlaceRecordDto> selectPlaceRecordList(PlaceRecordDto dto) throws Exception {
+        return placeRecordRepository.selectPlaceRecordList(dto);
+    }
 
     /**
      * 상세조회
@@ -69,6 +81,17 @@ public class PlaceRecordService {
     @Transactional
     public boolean deletePlaceRecord(PlaceRecordDto dto) throws Exception {
         return placeRecordRepository.deletePlaceRecord(dto);
+    }
+
+
+    /**
+     * 놀거리 정보 삭제 요청 목록
+     * @param dto
+     * @return
+     * @throws Exception
+     */
+    public List<PlaceRecordRemoveDto> selectPlaceRemoveList(PlaceRecordRemoveDto dto) throws Exception {
+        return placeRecordRemoveCustomRepository.selectPlaceRemoveList(dto);
     }
 
 
