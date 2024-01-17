@@ -41,7 +41,7 @@ public class MemberSession {
 	
 	/**
 	 * 회원 세션 등록
-	 * @param session
+	 * @param
 	 * @param dto
 	 * @throws Exception 
 	 */
@@ -58,7 +58,7 @@ public class MemberSession {
 	
 	public boolean isAuthenticated() {
 		authentication = SecurityContextHolder.getContext().getAuthentication();
-		return authentication.isAuthenticated();
+		return jwtTokenService.find(authentication.getName()) != null;
 	}
 	
 	/**
@@ -72,7 +72,7 @@ public class MemberSession {
 
 	/**
 	 * 정보 조회
-	 * @param session
+	 * @param
 	 * @return
 	 * @throws Exception
 	 */
