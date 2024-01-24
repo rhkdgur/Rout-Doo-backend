@@ -11,8 +11,11 @@ import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCommentRep
 import org.qlrm.mapper.JpaResultMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import javax.management.Query;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -329,6 +332,43 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
         return jpaQueryFactory.delete(qDailyRoutineReplyComment)
                 .where(new BooleanBuilder().and(qDailyRoutineReplyComment.idx.eq(dto.getIdx())))
                 .execute() > 0;
+    }
+
+    @Override
+    public Page<Map> selectCommentPageList(Map<String, String> paramUtil) throws Exception {
+
+        int cpage = paramUtil.get("cpage") == null ? 1 : Integer.parseInt(paramUtil.get("cpage"));
+        int totalPage = (cpage-1)*10;
+
+        StringBuffer sql = new StringBuffer();
+        sql.append(" select idx ,context, parentIdx, member_id memberId , nickname, create_date createDate from (");
+        sql.append(" select idx, context, place_num as parentIdx, member_id , nickname , create_date , '놀거리' as gubun ");
+        sql.append(" from place_comment ");
+        sql.append(" left join ( select id,nickname from member ) b ON place_comment.member_id = b.id ");
+        sql.append(" union all ");
+        sql.append(" select idx, context, daily_idx as parentIdx, member_id , nickname , create_date , '일정' as gubun ");
+        sql.append(" from daily_routine_comment ");
+        sql.append(" left join ( select id,nickname from member ) c ON daily_routine_comment.member_id = c.id ");
+        sql.append(" )");
+        sql.append(" limit "+(cpage-1)+","+totalPage);
+
+        JpaResultMapper jpaResultMapper = new JpaResultMapper();
+        List<Map> resultList = jpaResultMapper.list(entityManager.createNativeQuery(sql.toString()),Map.class);
+
+        sql = new StringBuffer();
+        sql.append(" select count(*) cnt (");
+        sql.append(" select idx, context, place_num as parentIdx, member_id , create_date , '놀거리' as gubun ");
+        sql.append(" from place_comment ");
+        sql.append(" union all ");
+        sql.append(" select idx, context, daily_idx as parentIdx, member_id , create_date , '일정' as gubun ");
+        sql.append(" from daily_routine_comment ");
+        sql.append(" )");
+
+        int totCnt = entityManager.createNativeQuery(sql.toString()).getFirstResult();
+
+        Pageable pageable = PageRequest.of((cpage - 1),totCnt);
+
+        return new PageImpl<>(resultList,pageable,totCnt);
     }
 
 }

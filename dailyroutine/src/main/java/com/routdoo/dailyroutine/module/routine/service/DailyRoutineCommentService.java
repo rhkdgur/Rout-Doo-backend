@@ -1,6 +1,5 @@
 package com.routdoo.dailyroutine.module.routine.service;
 
-import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineReplyComment;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCommentRepository;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * packageName    : com.routdoo.dailyroutine.module.routine.service
@@ -173,5 +173,15 @@ public class DailyRoutineCommentService {
     @Transactional
     public boolean deleteDailyRoutineReplyComment(DailyRoutineReplyCommentDto dto) throws Exception {
         return dailyRoutineCommentRepository.deleteDailyRoutineReplyComment(dto);
+    }
+
+    /**
+     * 일정, 놀거리 댓글 목록 조회
+     * @param paramUtil
+     * @return
+     * @throws Exception
+     */
+    public Page<Map> selectCommentPageList(Map<String,String> paramUtil) throws Exception {
+        return dailyRoutineCommentRepository.selectCommentPageList(paramUtil);
     }
 }

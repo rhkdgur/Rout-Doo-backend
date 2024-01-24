@@ -5,6 +5,7 @@ import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * packageName    : com.routdoo.dailyroutine.module.routine.repository
@@ -133,4 +134,11 @@ public interface DailyRoutineCommentRepository  {
      */
     boolean deleteDailyRoutineReplyComment(DailyRoutineReplyCommentDto dto) throws Exception;
 
+    /**
+     * 놀거리, 일정 댓글 정보 조회
+     * @param paramUtil
+     * @return
+     * @throws Exception
+     */
+    Page<Map> selectCommentPageList(Map<String,String> paramUtil) throws Exception;
 }
