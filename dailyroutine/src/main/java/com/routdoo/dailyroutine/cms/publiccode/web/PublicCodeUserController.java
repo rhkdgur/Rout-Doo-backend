@@ -28,7 +28,7 @@ import java.util.Map;
 @Tag(name = "공통코드 사용자 컨트롤러")
 @RestController
 @RequiredArgsConstructor
-public class PublicUserController extends BaseModuleController {
+public class PublicCodeUserController extends BaseModuleController {
 
     private final PublicCodeService publicCodeService;
 

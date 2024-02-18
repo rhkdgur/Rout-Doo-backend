@@ -1,5 +1,6 @@
 package com.routdoo.dailyroutine.auth.member.repository.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -106,7 +107,7 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 						)
 				)
 				.from(qMember)
-				.join(qMemberFriends).fetchJoin()
+				.join(qMemberFriends).on(qMember.id.eq(qMemberFriends.member.id)).fetchJoin()
 				.where(new BooleanBuilder().and(qMember.id.eq(searchDto.getMemberId())).and(qMemberFriends.blockYn.eq(searchDto.getBlockYn())))
 				.offset(searchDto.getPageable().getOffset())
 				.limit(searchDto.getPageable().getPageSize())
@@ -135,7 +136,7 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 						)
 				)
 				.from(qMember)
-				.join(qMemberFriends).fetchJoin()
+				.join(qMemberFriends).on(qMember.id.eq(qMemberFriends.member.id)).fetchJoin()
 				.where(new BooleanBuilder().and(qMember.id.eq(searchDto.getMemberId())).and(qMemberFriends.blockYn.eq(searchDto.getBlockYn())))
 				.fetch();
 
@@ -163,9 +164,8 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 								qMember.age,
 								qMember.mbti
 						)
-				)
-				.from(qMember)
-				.join(qMemberFriends).fetchJoin()
+				).from(qMember)
+				.join(qMemberFriends).on(qMember.id.eq(qMemberFriends.member.id)).fetchJoin()
 				.where(commonQuery(searchDto))
 				.offset(searchDto.getPageable().getOffset())
 				.limit(searchDto.getPageable().getPageSize())
@@ -193,9 +193,8 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 						)
 				)
 				.from(qMember)
-				.join(qMemberFriends).fetchJoin()
-				.where(commonQuery(searchDto))
-				.fetch();
+				.join(qMemberFriends).on(qMember.id.eq(qMemberFriends.member.id)).fetchJoin()
+				.where(commonQuery(searchDto)).fetch();
 
 		return list.stream().map(MemberDto::getSummaryInfo).toList();
 	}

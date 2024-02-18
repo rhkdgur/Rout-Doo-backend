@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.routdoo.dailyroutine.module.place.dto.PlaceDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineTimeLine;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -111,9 +111,13 @@ public class DailyRoutineTimeLineDto {
 
 	public DailyRoutineTimeLineDto(DailyRoutineTimeLine entity) {
 		this.idx = entity.getIdx();
+		this.applyDate = entity.getApplyDate();
 		this.writeType = entity.getWriteType().name();
 		this.title = entity.getTitle();
 		this.placeName = entity.getPlaceName();
+		this.addr = entity.getAddr();
+		this.mapx = entity.getMapx();
+		this.mapy = entity.getMapy();
 		this.ord = entity.getOrd();
 		this.context = entity.getContext();
 		this.shour = entity.getShour();
@@ -137,9 +141,31 @@ public class DailyRoutineTimeLineDto {
 		map.put("idx", this.idx);
 		map.put("dailyIdx", this.dailyIdx);
 		map.put("title", this.title);
+		map.put("applyDate",this.applyDate);
 		map.put("startTime", this.shour+":"+this.smin);
 		map.put("endTime", this.ehour+":"+this.emin);
 		map.put("ord", this.ord);
+		return map;
+	}
+
+	public Map<String,Object> toMap(){
+		Map<String,Object> map = new LinkedHashMap<String,Object>();
+		map.put("idx", this.idx);
+		map.put("dailyIdx", this.dailyIdx);
+		map.put("title", this.title);
+		map.put("writeType", this.writeType);
+		map.put("applyDate",this.applyDate);
+		map.put("startTime", this.shour+":"+this.smin);
+		map.put("endTime", this.ehour+":"+this.emin);
+		map.put("addr",this.addr);
+		map.put("mapx",this.mapx);
+		map.put("mapy",this.mapy);
+		map.put("ord", this.ord);
+		map.put("placeName",this.placeName);
+		map.put("context",this.context);
+		map.put("cost",this.cost);
+		map.put("createDate",this.creatDate);
+		map.put("modifyDate",this.modifyDate);
 		return map;
 	}
 	

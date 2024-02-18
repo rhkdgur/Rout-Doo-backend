@@ -47,7 +47,8 @@ public class DailyRoutineInviteCustomRepositoryImpl extends BaseAbstractReposito
                     qDailyRoutineInvite.idx,
                     qDailyRoutineInvite.dailyRoutine.idx,
                     qMember.id,
-                    qMember.nickname
+                    qMember.nickname,
+                    qMember.gender
                 )
                 .from(qDailyRoutineInvite)
                 .join(qMember).on(qMember.id.eq(qDailyRoutineInvite.member.id)).fetchJoin()
@@ -60,6 +61,7 @@ public class DailyRoutineInviteCustomRepositoryImpl extends BaseAbstractReposito
             inviteDto.setDailyIdx(tp.get(qDailyRoutineInvite.dailyRoutine.idx));
             inviteDto.getMember().setId(tp.get(qMember.id));
             inviteDto.getMember().setNickname(tp.get(qMember.nickname));
+            inviteDto.getMember().setGender(tp.get(qMember.gender));
             resultList.add(inviteDto);
         }
 

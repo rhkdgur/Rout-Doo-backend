@@ -1,7 +1,9 @@
 package com.routdoo.dailyroutine.module.place.repository.impl;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.routdoo.dailyroutine.auth.member.domain.QMember;
+import com.routdoo.dailyroutine.cms.publiccode.domain.QPublicCode;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 import com.routdoo.dailyroutine.module.place.domain.*;
 import com.routdoo.dailyroutine.module.place.dto.*;
@@ -68,6 +70,7 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 		QPlace qPlace = QPlace.place;
 		QPlaceComment qPlaceComment = QPlaceComment.placeComment;
 		QPlaceLike qPlaceLike = QPlaceLike.placeLike;
+		QPublicCode qPublicCode = QPublicCode.publicCode;
 		List<PlaceDto> placesList = new ArrayList<PlaceDto>();
 		
 		Long cnt = jpaQueryFactory.select(qPlace.count()).from(qPlace)
@@ -76,18 +79,46 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 				.where(commonQuery(searchDto))
 				.fetchOne();
 		
-		List<Place> places = jpaQueryFactory.selectFrom(qPlace)
+		List<Tuple> places = jpaQueryFactory.select(
+					qPlace.placeNum,
+					qPlace.title,
+					qPlace.tel,
+					qPlace.categCd,
+					qPublicCode.title,
+					qPlace.addr,
+					qPlace.mapx,
+					qPlace.mapy,
+					qPlace.useInfo,
+					qPlace.detailText,
+					qPlace.pstatus,
+					qPlace.createDate,
+					qPlace.modifyDate
+				)
+					.from(qPlace)
 					.leftJoin(qPlaceComment).on(qPlace.placeNum.eq(qPlaceComment.place.placeNum)).fetchJoin()
 					.leftJoin(qPlaceLike).on(qPlace.placeNum.eq(qPlaceLike.place.placeNum)).fetchJoin()
+				  .leftJoin(qPublicCode).on(qPublicCode.pubCd.eq(qPlace.categCd)).fetchJoin()
 					.where(commonQuery(searchDto))
 					.offset(searchDto.getPageable().getOffset())
 					.limit(searchDto.getPageable().getPageSize())
 					.fetch();
-		
-		for(Place place : places) {
-			PlaceDto dto = new PlaceDto();
-			dto.addPlaceSummaryInfo(place);
-			placesList.add(dto);
+
+		for(Tuple tp : places){
+			PlaceDto placeDto = new PlaceDto();
+			placeDto.setPlaceNum(tp.get(qPlace.placeNum));
+			placeDto.setTitle(tp.get(qPlace.title));
+			placeDto.setTel(tp.get(qPlace.tel));
+			placeDto.setCategCd(tp.get(qPlace.categCd));
+			placeDto.setCategNm(tp.get(qPublicCode.title));
+			placeDto.setAddr(tp.get(qPlace.addr));
+			placeDto.setMapx(tp.get(qPlace.mapx));
+			placeDto.setMapy(tp.get(qPlace.mapy));
+			placeDto.setUseInfo(tp.get(qPlace.useInfo));
+			placeDto.setDetailText(tp.get(qPlace.detailText));
+			placeDto.setPstatus(tp.get(qPlace.pstatus.stringValue()));
+			placeDto.setCreateDate(tp.get(qPlace.createDate));
+			placeDto.setModifyDate(tp.get(qPlace.modifyDate));
+			placesList.add(placeDto);
 		}
 		
 		return new PageImpl<>(placesList,searchDto.getPageable(),cnt);
@@ -99,18 +130,46 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 		QPlace qPlace = QPlace.place;
 		QPlaceComment qPlaceComment = QPlaceComment.placeComment;
 		QPlaceLike qPlaceLike = QPlaceLike.placeLike;
+		QPublicCode qPublicCode = QPublicCode.publicCode;
 		List<PlaceDto> placesList = new ArrayList<PlaceDto>();
 		
-		List<Place> places = jpaQueryFactory.selectFrom(qPlace)
-				.leftJoin(qPlaceComment).fetchJoin()
-				.leftJoin(qPlaceLike).fetchJoin()
+		List<Tuple> places = jpaQueryFactory.select(
+						qPlace.placeNum,
+						qPlace.title,
+						qPlace.tel,
+						qPlace.categCd,
+						qPublicCode.title,
+						qPlace.addr,
+						qPlace.mapx,
+						qPlace.mapy,
+						qPlace.useInfo,
+						qPlace.detailText,
+						qPlace.pstatus,
+						qPlace.createDate,
+						qPlace.modifyDate
+				).from(qPlace)
+				.leftJoin(qPlaceComment).on(qPlace.placeNum.eq(qPlaceComment.place.placeNum)).fetchJoin()
+				.leftJoin(qPlaceLike).on(qPlace.placeNum.eq(qPlaceLike.place.placeNum)).fetchJoin()
+				.leftJoin(qPublicCode).on(qPublicCode.pubCd.eq(qPlace.categCd)).fetchJoin()
 				.where(commonQuery(searchDto))
 				.fetch();
-	
-		for(Place place : places) {
-			PlaceDto dto = new PlaceDto();
-			dto.addPlaceSummaryInfo(place);
-			placesList.add(dto);
+
+		for(Tuple tp : places){
+			PlaceDto placeDto = new PlaceDto();
+			placeDto.setPlaceNum(tp.get(qPlace.placeNum));
+			placeDto.setTitle(tp.get(qPlace.title));
+			placeDto.setTel(tp.get(qPlace.tel));
+			placeDto.setCategCd(tp.get(qPlace.categCd));
+			placeDto.setCategNm(tp.get(qPublicCode.title));
+			placeDto.setAddr(tp.get(qPlace.addr));
+			placeDto.setMapx(tp.get(qPlace.mapx));
+			placeDto.setMapy(tp.get(qPlace.mapy));
+			placeDto.setUseInfo(tp.get(qPlace.useInfo));
+			placeDto.setDetailText(tp.get(qPlace.detailText));
+			placeDto.setPstatus(tp.get(qPlace.pstatus.stringValue()));
+			placeDto.setCreateDate(tp.get(qPlace.createDate));
+			placeDto.setModifyDate(tp.get(qPlace.modifyDate));
+			placesList.add(placeDto);
 		}
 		
 		return placesList;
@@ -140,6 +199,7 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 	@Override
 	public List<PlaceIntroDto> selectPlaceIntroList(PlaceIntroDto dto) throws Exception {
 		QPlaceIntro qPlaceIntro = QPlaceIntro.placeIntro;
+		QMember qMember = QMember.member;
 
 		BooleanBuilder sql = new BooleanBuilder();
 		if(dto.getPlaceNum() != null && !dto.getPlaceNum().isEmpty()){
@@ -149,10 +209,36 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 			sql.and(qPlaceIntro.member.id.eq(dto.getMemberId()));
 		}
 
-		List<PlaceIntro> list = jpaQueryFactory.selectFrom(qPlaceIntro)
+		List<PlaceIntroDto> resultList = new ArrayList<>();
+
+		List<Tuple> list = jpaQueryFactory.select(
+					qPlaceIntro.idx,
+				qPlaceIntro.member.id,
+				qPlaceIntro.place.placeNum,
+				qPlaceIntro.introText,
+				qPlaceIntro.visitDate,
+				qPlaceIntro.score,
+				qPlaceIntro.createDate,
+				qPlaceIntro.modifyDate,
+				qMember.nickname
+				)
+				.from(qPlaceIntro)
+				.join(qMember).on(qMember.id.eq(qPlaceIntro.member.id)).fetchJoin()
 				.where(sql).fetch();
 
-		return list.stream().map(PlaceIntroDto::new).toList();
+		for(Tuple tuple : list){
+			dto = new PlaceIntroDto();
+			dto.setIdx(tuple.get(qPlaceIntro.idx));
+			dto.setPlaceNum(tuple.get(qPlaceIntro.place.placeNum));
+			dto.setMemberId(tuple.get(qPlaceIntro.member.id));
+			dto.setIntroText(tuple.get(qPlaceIntro.introText));
+			dto.setVisitDate(tuple.get(qPlaceIntro.visitDate));
+			dto.setScore(tuple.get(qPlaceIntro.score));
+			dto.getMember().setNickname(tuple.get(qMember.nickname));
+			resultList.add(dto);
+		}
+
+		return resultList;
 	}
 
 	@Override

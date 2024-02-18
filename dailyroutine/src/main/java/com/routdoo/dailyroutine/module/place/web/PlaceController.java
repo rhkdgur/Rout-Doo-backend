@@ -3,6 +3,7 @@ package com.routdoo.dailyroutine.module.place.web;
 import java.util.List;
 import java.util.Map;
 
+import com.routdoo.dailyroutine.module.place.domain.PlaceComment;
 import com.routdoo.dailyroutine.module.place.domain.PlaceIntro;
 import com.routdoo.dailyroutine.module.place.dto.*;
 import com.routdoo.dailyroutine.module.place.service.PlaceRecordService;
@@ -94,10 +95,16 @@ public class PlaceController extends BaseController{
 		placeRecordRemoveDto.setPlaceNum(placeNum);
 		List<PlaceRecordRemoveDto> removeList = placeRecordService.selectPlaceRemoveList(placeRecordRemoveDto);
 
+		//댓글 개수
+		PlaceDefaultDto placeDefaultDto = new PlaceDefaultDto();
+		placeDefaultDto.setPlaceNum(dto.getPlaceNum());
+		Page<PlaceCommentDto> resultList = placeService.selectPlaceCommentPageList(placeDefaultDto);
+
 		modelMap.put("place", dto);
 		modelMap.put("introList",introList);
 		modelMap.put("recordList", recordList);
 		modelMap.put("removeList", removeList);
+		modelMap.put("commentCnt",resultList.getTotalElements());
 
 		return modelMap;
 	}

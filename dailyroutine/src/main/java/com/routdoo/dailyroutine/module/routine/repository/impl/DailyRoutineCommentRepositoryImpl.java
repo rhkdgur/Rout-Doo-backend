@@ -337,11 +337,11 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
     @Override
     public Page<Map> selectCommentPageList(Map<String, String> paramUtil) throws Exception {
 
-        int cpage = paramUtil.get("cpage") == null ? 1 : Integer.parseInt(paramUtil.get("cpage"));
-        int totalPage = (cpage-1)*10;
+        int cpage = paramUtil.get("page") == null ? 1 : Integer.parseInt(paramUtil.get("page"));
+        int totalPage = 10;
 
         StringBuffer sql = new StringBuffer();
-        sql.append(" select idx ,context, parentIdx, member_id memberId , nickname, create_date createDate from (");
+        sql.append(" select idx ,context, parentIdx, member_id as memberId , nickname, create_date as createDate , gubun from (");
         sql.append(" select idx, context, place_num as parentIdx, member_id , nickname , create_date , '놀거리' as gubun ");
         sql.append(" from place_comment ");
         sql.append(" left join ( select id,nickname from member ) b ON place_comment.member_id = b.id ");
@@ -349,7 +349,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
         sql.append(" select idx, context, daily_idx as parentIdx, member_id , nickname , create_date , '일정' as gubun ");
         sql.append(" from daily_routine_comment ");
         sql.append(" left join ( select id,nickname from member ) c ON daily_routine_comment.member_id = c.id ");
-        sql.append(" )");
+        sql.append(" ) T ");
         sql.append(" limit "+(cpage-1)+","+totalPage);
 
         JpaResultMapper jpaResultMapper = new JpaResultMapper();
@@ -362,11 +362,11 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
         sql.append(" union all ");
         sql.append(" select idx, context, daily_idx as parentIdx, member_id , create_date , '일정' as gubun ");
         sql.append(" from daily_routine_comment ");
-        sql.append(" )");
+        sql.append(" ) T ");
 
         int totCnt = entityManager.createNativeQuery(sql.toString()).getFirstResult();
 
-        Pageable pageable = PageRequest.of((cpage - 1),totCnt);
+        Pageable pageable = PageRequest.of((cpage - 1),totalPage);
 
         return new PageImpl<>(resultList,pageable,totCnt);
     }

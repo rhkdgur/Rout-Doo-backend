@@ -79,6 +79,8 @@ public class PlaceRecordDto {
     @Schema(description = "수정일자", defaultValue = "", example = "2023-00-00 00:00:00 ")
     private LocalDateTime modifyDate;
 
+    private MemberDto member = new MemberDto();
+
     public PlaceRecord toEntity(){
         return PlaceRecord.builder().dto(this).build();
     }

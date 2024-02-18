@@ -89,7 +89,7 @@ public class Member implements Persistable<String> {
 	
 	/**친구목록*/
 	@OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
-	private List<MemberFriends> friendList = new ArrayList<MemberFriends>(); 
+	private List<MemberFriends> friendList = new ArrayList<MemberFriends>();
 	
 	/**
 	 * entity에 dto 정보 처리 생성자

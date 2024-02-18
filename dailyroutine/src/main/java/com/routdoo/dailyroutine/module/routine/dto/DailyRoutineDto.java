@@ -1,17 +1,15 @@
 package com.routdoo.dailyroutine.module.routine.dto;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
-
+import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -69,9 +67,12 @@ public class DailyRoutineDto {
 	/**회원 아이디*/
 	@Schema(description = "회원아이디")
 	private String memberId = "";
+	
+	/**이름*/
+	private String nickname = "";
 
 	@Schema(description = "타임라인 리스트")
-	List<DailyRoutineTimeLineDto> timeList = new ArrayList<DailyRoutineTimeLineDto>();
+	private List<DailyRoutineTimeLineDto> timeList = new ArrayList<DailyRoutineTimeLineDto>();
 	
 	public DailyRoutine toEntity() {
 		return DailyRoutine.builder().dto(this).build();
@@ -88,6 +89,11 @@ public class DailyRoutineDto {
 		this.rangeType = entity.getRangeType().name();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
+		if(entity.getMember() != null){
+			if(!entity.getMember().getNickname().isEmpty()){
+				this.nickname = entity.getMember().getNickname();
+			}
+		}
 	}
 
 	/**
@@ -98,12 +104,38 @@ public class DailyRoutineDto {
 		Map<String,Object> map = new LinkedHashMap<>();
 		map.put("idx",this.idx);
 		map.put("memberId", this.memberId);
+		map.put("nickname", this.nickname);
 		map.put("tag",this.tag);
 		map.put("title",this.title);
 		map.put("startDate",this.startDate);
 		map.put("endDate",this.endDate);
 		map.put("rangeType",this.rangeType);
+		map.put("rangeTypeDisplay", this.getRangeTypeDisplay());
 		return map;
 	}
 
+	public String getRangeTypeDisplay(){
+		return RoutineRangeConfigType.valueOf(this.rangeType).getDisplay();
+	}
+
+	// 일자별 타임라인 map 처리
+	public Map<String,Object> getGroupTimeMap() {
+		Map<String,Object> groupMap = new LinkedHashMap<>();
+
+		if(!this.timeList.isEmpty()){
+			//중복일자 제거
+			List<String> dateList = new ArrayList<>();
+			for(DailyRoutineTimeLineDto time : this.timeList){
+				dateList.add(time.getApplyDate());
+			}
+
+			dateList = dateList.stream().distinct().toList();
+
+			Map<String, List<Map<String,Object>>> map = this.timeList.stream().map(DailyRoutineTimeLineDto::toMap).collect(Collectors.groupingBy(p-> p.get("applyDate").toString()));
+			groupMap.put("days", dateList);
+			groupMap.put("daysMap",map);
+		}
+
+		return groupMap;
+	}
 }

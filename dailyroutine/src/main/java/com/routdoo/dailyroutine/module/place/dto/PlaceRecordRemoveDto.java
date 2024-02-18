@@ -1,5 +1,6 @@
 package com.routdoo.dailyroutine.module.place.dto;
 
+import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.module.place.domain.PlaceRecordRemove;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -56,6 +57,8 @@ public class PlaceRecordRemoveDto {
     /**수정일자*/
     @Schema(description = "수정일자")
     private LocalDateTime modifyDate;
+
+    private MemberDto memberDto = new MemberDto();
 
     public PlaceRecordRemove toEntity(){
         return PlaceRecordRemove.builder().dto(this).build();

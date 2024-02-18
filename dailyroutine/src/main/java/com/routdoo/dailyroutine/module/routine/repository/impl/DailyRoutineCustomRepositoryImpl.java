@@ -2,10 +2,12 @@ package com.routdoo.dailyroutine.module.routine.repository.impl;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
+import com.routdoo.dailyroutine.auth.member.domain.QMember;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 import com.routdoo.dailyroutine.module.routine.domain.*;
 import com.routdoo.dailyroutine.module.routine.dto.*;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCustomRepository;
+import com.routdoo.dailyroutine.module.routine.service.RoutineDayType;
 import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -83,26 +86,93 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 	@Override
 	public Page<DailyRoutineDto> selectDailyRoutinePageList(DailyRoutineDefaultDto searchDto) {
 		QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
+		QMember qMember = QMember.member;
 		
-		Long cnt = jpaQueryFactory.select(qDailyRoutine.count()).from(qDailyRoutine)
-				.where(commonQuery(searchDto)).fetchOne();
+		long cnt = jpaQueryFactory.select(qDailyRoutine.count()).from(qDailyRoutine)
+				.where(commonQuery(searchDto)).fetchFirst();
 		
-		List<DailyRoutine> list = jpaQueryFactory.selectFrom(qDailyRoutine)
+		List<Tuple> list = jpaQueryFactory
+				.select(qDailyRoutine.idx,
+						qDailyRoutine.title,
+						qDailyRoutine.tag,
+						qMember.id,
+						qMember.nickname,
+						qDailyRoutine.startDate,
+						qDailyRoutine.endDate,
+						qDailyRoutine.dayType.stringValue(),
+						qDailyRoutine.rangeType.stringValue(),
+						qDailyRoutine.createDate,
+						qDailyRoutine.modifyDate)
+				.from(qDailyRoutine)
+				.leftJoin(qDailyRoutine.member,qMember)
 				.where(commonQuery(searchDto))
 				.offset(searchDto.getPageable().getOffset())
 				.limit(searchDto.getPageable().getPageSize())
 				.fetch();
+
+		List<DailyRoutineDto> dtos = new ArrayList<>();
+
+
+		for(Tuple tuple : list){
+			DailyRoutineDto dto = new DailyRoutineDto();
+			dto.setIdx(tuple.get(qDailyRoutine.idx));
+			dto.setTitle(tuple.get(qDailyRoutine.title));
+			dto.setTag(tuple.get(qDailyRoutine.tag));
+			dto.setMemberId(tuple.get(qMember.id));
+			dto.setNickname(tuple.get(qMember.nickname));
+			dto.setStartDate(tuple.get(qDailyRoutine.startDate));
+			dto.setEndDate(tuple.get(qDailyRoutine.endDate));
+			dto.setDayType(tuple.get(qDailyRoutine.dayType.stringValue()));
+			dto.setRangeType(tuple.get(qDailyRoutine.rangeType.stringValue()));
+			dto.setCreateDate(tuple.get(qDailyRoutine.createDate));
+			dto.setModifyDate(tuple.get(qDailyRoutine.modifyDate));
+			dtos.add(dto);
+		}
 		
-		return new PageImpl<>(list.stream().map(x-> new DailyRoutineDto(x)).collect(Collectors.toList()), searchDto.getPageable(),cnt);
+		return new PageImpl<>(dtos, searchDto.getPageable(),cnt);
 	}
 
 	@Override
 	public List<DailyRoutineDto> selectDailyRoutineList(DailyRoutineDefaultDto searchDto) {
 		QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
-		List<DailyRoutine> list = jpaQueryFactory.selectFrom(qDailyRoutine)
+		QMember qMember = QMember.member;
+
+		List<Tuple> list = jpaQueryFactory
+				.select(qDailyRoutine.idx,
+						qDailyRoutine.title,
+						qDailyRoutine.tag,
+						qMember.id,
+						qMember.nickname,
+						qDailyRoutine.startDate,
+						qDailyRoutine.endDate,
+						qDailyRoutine.dayType.stringValue(),
+						qDailyRoutine.rangeType.stringValue(),
+						qDailyRoutine.createDate,
+						qDailyRoutine.modifyDate)
+				.from(qDailyRoutine)
+				.leftJoin(qDailyRoutine.member,qMember)
 				.where(commonQuery(searchDto))
 				.fetch();
-		return list.stream().map(x-> new DailyRoutineDto(x)).collect(Collectors.toList());
+
+		List<DailyRoutineDto> dtos = new ArrayList<>();
+
+		for(Tuple tuple : list){
+			DailyRoutineDto dto = new DailyRoutineDto();
+			dto.setIdx(tuple.get(qDailyRoutine.idx));
+			dto.setTitle(tuple.get(qDailyRoutine.title));
+			dto.setTag(tuple.get(qDailyRoutine.tag));
+			dto.setMemberId(tuple.get(qMember.id));
+			dto.setNickname(tuple.get(qMember.nickname));
+			dto.setStartDate(tuple.get(qDailyRoutine.startDate));
+			dto.setEndDate(tuple.get(qDailyRoutine.endDate));
+			dto.setDayType(tuple.get(qDailyRoutine.dayType.stringValue()));
+			dto.setRangeType(tuple.get(qDailyRoutine.rangeType.stringValue()));
+			dto.setCreateDate(tuple.get(qDailyRoutine.createDate));
+			dto.setModifyDate(tuple.get(qDailyRoutine.modifyDate));
+			dtos.add(dto);
+		}
+
+		return dtos;
 	}
 
 	@Override

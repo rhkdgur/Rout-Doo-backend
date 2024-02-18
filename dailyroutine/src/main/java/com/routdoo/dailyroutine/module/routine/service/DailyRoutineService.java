@@ -93,12 +93,12 @@ public class DailyRoutineService {
 	 * @throws Exception
 	 */
 	public DailyRoutineDto selectDailyRoutineView(DailyRoutineDto dto) throws Exception {
-		
+
 		DailyRoutine dr = dailyRoutineRepository.findById(dto.getIdx()).orElse(null);
 		if(dr != null) {
 			DailyRoutineTimeLineDefaultDto searchDto = new DailyRoutineTimeLineDefaultDto();
 			searchDto.setDailyIdx(dto.getIdx());
-			List<DailyRoutineTimeLineDto> list = dailyRoutineRepository.selectDailyRoutineTimeLineList(searchDto);
+			List<DailyRoutineTimeLineDto> list = this.selectDailyRoutineTimeLineList(searchDto);
 			dto = new DailyRoutineDto(dr);
 			dto.setTimeList(list);
 		}else {

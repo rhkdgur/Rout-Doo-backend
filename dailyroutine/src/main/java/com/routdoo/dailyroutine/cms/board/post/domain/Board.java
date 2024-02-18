@@ -29,29 +29,28 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class Board {
 
-    @Comment("일련번호")
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy =GenerationType.IDENTITY)
     private Long idx;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "gcode",nullable = false)
-    private BoardGroup boardGroup;
+    @JoinColumn(name = "gcode")
+    private BoardGroup boardGroup = new BoardGroup();
 
     @Comment("비밀번호")
-    private String password = "";
+    private String password;
 
     @Comment("작성자")
-    private String name = "";
+    private String name;
 
     @Comment("제목")
-    private String title = "";
+    private String title;
 
     @Lob
     @Comment("내용")
     private String content;
     
     @Comment("조회수")
-    private int viewCnt = 0;
+    private int viewCnt;
 
     @Column(length = 20)
     @Comment("게시 시작일자")
@@ -61,19 +60,19 @@ public class Board {
     @Comment("게시 마지막일자")
     private String endDate;
 
-    @Column(columnDefinition = "N", length = 1)
+    @Column(columnDefinition = "varchar(1) default 'N'")
     @Comment("비공개 여부")
     private String privityYn;
 
-    @Column(columnDefinition = "N", length = 1)
+    @Column(columnDefinition = "varchar(1) default 'N'")
     @Comment("공지글 여부")
     private String noticeYn;
 
     @Column(length = 20)
     @Comment("작성자 아이피")
-    private String ip;
+    private String writeIp;
 
-    @Column(columnDefinition = "N", length = 1)
+    @Column(columnDefinition = "varchar(1) default 'N'")
     @Comment("삭제여부")
     private String delYn;
 

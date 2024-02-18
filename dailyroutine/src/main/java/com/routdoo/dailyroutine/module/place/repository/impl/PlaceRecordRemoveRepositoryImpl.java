@@ -1,6 +1,8 @@
 package com.routdoo.dailyroutine.module.place.repository.impl;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
+import com.routdoo.dailyroutine.auth.member.domain.QMember;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 import com.routdoo.dailyroutine.module.place.domain.PlaceRecordRemove;
 import com.routdoo.dailyroutine.module.place.domain.QPlaceRecordRemove;
@@ -9,6 +11,7 @@ import com.routdoo.dailyroutine.module.place.repository.PlaceRecordRemoveReposit
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,11 +44,40 @@ public class PlaceRecordRemoveRepositoryImpl extends BaseAbstractRepositoryImpl 
     @Override
     public List<PlaceRecordRemoveDto> selectPlaceRemoveList(PlaceRecordRemoveDto dto) throws Exception {
         QPlaceRecordRemove qPlaceRemove = QPlaceRecordRemove.placeRecordRemove;
+        QMember qMember = QMember.member;
 
-        List<PlaceRecordRemove> list = jpaQueryFactory.selectFrom(qPlaceRemove)
+        List<PlaceRecordRemoveDto> resultList = new ArrayList<>();
+
+        List<Tuple> list = jpaQueryFactory.select(
+                    qPlaceRemove.idx,
+                qPlaceRemove.member.id,
+                qPlaceRemove.place.placeNum,
+                qPlaceRemove.deleteReason,
+                qPlaceRemove.rejectReason,
+                qPlaceRemove.approveType.stringValue(),
+                qPlaceRemove.createDate,
+                qPlaceRemove.modifyDate,
+                qMember.nickname
+                )
+                .from(qPlaceRemove)
+                .join(qMember).on(qMember.id.eq(qPlaceRemove.member.id)).fetchJoin()
                 .where(commonQuery(dto)).fetch();
 
-        return list.stream().map(PlaceRecordRemoveDto::new).toList();
+        for(Tuple tuple : list){
+            dto = new PlaceRecordRemoveDto();
+            dto.setIdx(tuple.get(qPlaceRemove.idx));
+            dto.setMemberId(tuple.get(qPlaceRemove.member.id));
+            dto.setPlaceNum(tuple.get(qPlaceRemove.place.placeNum));
+            dto.setDeleteReason(tuple.get(qPlaceRemove.deleteReason));
+            dto.setRejectReason(tuple.get(qPlaceRemove.rejectReason));
+            dto.setApproveType(tuple.get(qPlaceRemove.approveType.stringValue()));
+            dto.setCreateDate(tuple.get(qPlaceRemove.createDate));
+            dto.setModifyDate(tuple.get(qPlaceRemove.modifyDate));
+            dto.getMemberDto().setNickname(tuple.get(qMember.nickname));
+            resultList.add(dto);
+        }
+
+        return resultList;
     }
 
     @Override

@@ -53,7 +53,7 @@ public class DailyRoutine{
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id",nullable = false)
-	private Member member = new Member();
+	private Member member;
 	
 	/**
 	 * 일상 정보

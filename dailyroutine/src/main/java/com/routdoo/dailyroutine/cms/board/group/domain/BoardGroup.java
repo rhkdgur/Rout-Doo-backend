@@ -38,19 +38,19 @@ public class BoardGroup implements Persistable<String> {
     @Comment("제목")
     private String title;
 
-    @Column(columnDefinition = "Y",length = 1)
+    @Column(columnDefinition = "varchar(1) default 'N'")
     @Comment("공개비공개여부")
     private String publicYn;
 
-    @Column(columnDefinition = "N",length = 1)
+    @Column(columnDefinition = "varchar(1) default 'N'")
     @Comment("비공개글 작성여부")
     private String usePrivity;
 
     @Comment("공지 게시글여부 버튼 사용여부")
-    @Column(columnDefinition = "N",length = 1)
+    @Column(columnDefinition = "varchar(1) default 'N'")
     private String useNotice;
 
-    @Column(columnDefinition = "N", length = 1)
+    @Column(columnDefinition = "varchar(1) default 'N'")
     @Comment("게시기간 사용여부")
     private String periodYn;
     
@@ -64,7 +64,7 @@ public class BoardGroup implements Persistable<String> {
     @Comment("비고")
     private String remark;
 
-    @Column(columnDefinition = "Y", length = 1)
+    @Column(columnDefinition = "varchar(1) default 'Y'")
     @Comment("사용여부")
     private String useYn;
 

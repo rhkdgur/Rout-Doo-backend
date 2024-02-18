@@ -28,23 +28,23 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MemberDto {
 
-	private String id;
+	private String id = "";
 	
-	private String pw;
+	private String pw = "";
 	
-	private String email;
+	private String email = "";
 	
-	private String nickname;
+	private String nickname = "";
 	
-	private String phonenumber;
+	private String phonenumber = "";
 	
-	private String gender;
+	private String gender = "";
 	
-	private int age;
+	private int age = 0;
 	
-	private String birth;
+	private String birth = "";
 	
-	private String mbti;
+	private String mbti = "";
 	
 	private LocalDateTime createDate;
 	
