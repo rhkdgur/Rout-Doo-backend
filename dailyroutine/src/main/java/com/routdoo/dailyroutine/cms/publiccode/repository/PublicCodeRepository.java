@@ -74,4 +74,11 @@ public interface PublicCodeRepository {
      * @throws Exception
      */
     boolean deletePublicCode(PublicCodeDto dto) throws Exception;
+
+    /**
+     * 정렬 순서 업데이트
+     * @param dto
+     * @throws Exception
+     */
+    boolean updatePublicCodeOrd(PublicCodeDto dto) throws Exception;
 }

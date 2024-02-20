@@ -24,4 +24,8 @@ public class PublicCodeDefaultDto extends BaseVo {
 
     private String useYn = "";
 
+    private String orderBy = "";
+
+    private boolean ascOrder = false;
+
 }

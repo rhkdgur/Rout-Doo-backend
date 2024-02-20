@@ -61,6 +61,9 @@ public class PublicCodeDto implements Serializable {
     )
     private String useYn = "";
 
+    @Schema(description = "정렬")
+    private int ord = 0;
+
     /**등록일자*/
     @Schema(description = "등록일자")
     private LocalDateTime createDate;
@@ -82,6 +85,7 @@ public class PublicCodeDto implements Serializable {
         this.etc2 = entity.getEtc2();
         this.etc3 = entity.getEtc3();
         this.useYn = entity.getUseYn();
+        this.ord = entity.getOrd();
         this.createDate = entity.getCreateDate();
         this.modifyDate = entity.getModifyDate();
     }

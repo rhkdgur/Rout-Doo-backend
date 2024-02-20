@@ -63,6 +63,9 @@ public class PublicCode implements Persistable<String> {
     @Comment("사용여부")
     @Column(length = 1)
     private String useYn;
+    
+    @Comment("정렬")
+    private int ord;
 
     @CreatedDate
     private LocalDateTime createDate;
@@ -80,6 +83,7 @@ public class PublicCode implements Persistable<String> {
         this.etc2 = dto.getEtc2();
         this.etc3 = dto.getEtc3();
         this.useYn = dto.getUseYn();
+        this.ord = dto.getOrd();
         this.createDate = dto.getCreateDate();
         this.modifyDate = dto.getModifyDate();
     }

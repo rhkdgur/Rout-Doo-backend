@@ -29,6 +29,8 @@ public class QPublicCode extends EntityPathBase<PublicCode> {
 
     public final DateTimePath<java.time.LocalDateTime> modifyDate = createDateTime("modifyDate", java.time.LocalDateTime.class);
 
+    public final NumberPath<Integer> ord = createNumber("ord", Integer.class);
+
     public final StringPath parentCd = createString("parentCd");
 
     public final StringPath pubCd = createString("pubCd");

@@ -9,12 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,6 +43,12 @@ public class PublicCodeController extends BaseController {
     public Map<String,Object> selectPublicCodePageList(PublicCodeDefaultDto searchDto) throws Exception {
         modelMap = new LinkedHashMap<>();
 
+        PublicCodeDefaultDto defaultDto = new PublicCodeDefaultDto();
+        defaultDto.setUseYn("Y");
+        defaultDto.setParentCd("_TOP");
+        List<PublicCodeDto> publicCodeList = publicCodeService.selectPublicCodeList(defaultDto);
+        modelMap.put("publicCodeList",publicCodeList);
+
         Page<PublicCodeDto> resultList = publicCodeService.selectPublicCodePageList(searchDto);
         modelMap.put("resultList",resultList);
 
@@ -61,6 +65,11 @@ public class PublicCodeController extends BaseController {
     public Map<String,Object> selectPublicCodeView(PublicCodeDto publicCodeDto) throws Exception {
         modelMap = new LinkedHashMap<>();
 
+        PublicCodeDefaultDto searchDto = new PublicCodeDefaultDto();
+        searchDto.setParentCd("_TOP");
+        List<PublicCodeDto> list = publicCodeService.selectPublicCodeList(searchDto);
+
+        modelMap.put("codeList", list);
         modelMap.put("publicCodeDto",publicCodeService.selectPublicCodeView(publicCodeDto));
 
         return modelMap;
@@ -130,5 +139,18 @@ public class PublicCodeController extends BaseController {
         }
 
         return new ResponseEntity<>("삭제 되었습니다.",HttpStatus.OK);
+    }
+
+    @PostMapping(MGN_URL+"/public/code/ord")
+    public ResponseEntity<String> updatePublicCodeOrd(@RequestParam("pubCds[]") List<String> pubCdList) throws Exception {
+
+        try{
+            publicCodeService.updatePublicCodeOrdBatch(pubCdList);
+        }catch (Exception e){
+            logger.error("## update public code ord batch error : {}",e.getMessage());
+            return new ResponseEntity<>("정렬 업데이트시 오류가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        return new ResponseEntity<>("수정되었습니다.",HttpStatus.OK);
     }
 }

@@ -1,18 +1,22 @@
 package com.routdoo.dailyroutine.cms.publiccode.repository.impl;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.routdoo.dailyroutine.cms.publiccode.domain.PublicCode;
 import com.routdoo.dailyroutine.cms.publiccode.domain.QPublicCode;
 import com.routdoo.dailyroutine.cms.publiccode.dto.PublicCodeDefaultDto;
 import com.routdoo.dailyroutine.cms.publiccode.dto.PublicCodeDto;
 import com.routdoo.dailyroutine.cms.publiccode.repository.PublicCodeRepository;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,6 +52,25 @@ public class PublicCodeRepositoryImpl extends BaseAbstractRepositoryImpl impleme
         return sql;
     }
 
+    //정렬
+    private OrderSpecifier[] commonOrderQuery(PublicCodeDefaultDto searchDto) {
+        List<OrderSpecifier> orderSpecifiers = new ArrayList<>();
+
+        QPublicCode qPublicCode = QPublicCode.publicCode;
+        if(searchDto.getOrderBy() != null && !searchDto.getOrderBy().isEmpty()) {
+            if (searchDto.getOrderBy().equals("ord")) {
+                if (searchDto.isAscOrder()) {
+                    orderSpecifiers.add(new OrderSpecifier(Order.ASC, qPublicCode.ord));
+                }else{
+                    orderSpecifiers.add(new OrderSpecifier(Order.DESC, qPublicCode.ord));
+                }
+            }
+        }else{
+            orderSpecifiers.add(new OrderSpecifier(Order.DESC,qPublicCode.createDate));
+        }
+        return orderSpecifiers.toArray(new OrderSpecifier[orderSpecifiers.size()]);
+    }
+
     @Override
     public Page<PublicCodeDto> selectPublicCodePageList(PublicCodeDefaultDto searchDto) throws Exception {
         QPublicCode qPublicCode = QPublicCode.publicCode;
@@ -59,6 +82,7 @@ public class PublicCodeRepositoryImpl extends BaseAbstractRepositoryImpl impleme
 
         List<PublicCode> list = jpaQueryFactory.selectFrom(qPublicCode)
                 .where(commonQuery(searchDto))
+                .orderBy(commonOrderQuery(searchDto))
                 .offset(searchDto.getPageable().getOffset())
                 .limit(searchDto.getPageable().getPageSize()).fetch();
 
@@ -69,9 +93,7 @@ public class PublicCodeRepositoryImpl extends BaseAbstractRepositoryImpl impleme
     public List<PublicCodeDto> selectPublicCodeList(PublicCodeDefaultDto searchDto) throws Exception {
         QPublicCode qPublicCode = QPublicCode.publicCode;
         List<PublicCode> list = jpaQueryFactory.selectFrom(qPublicCode)
-                .where(commonQuery(searchDto))
-                .offset(searchDto.getPageable().getOffset())
-                .limit(searchDto.getPageable().getPageSize()).fetch();
+                .where(commonQuery(searchDto)).orderBy(commonOrderQuery(searchDto)).fetch();
 
         return list.stream().map(PublicCodeDto::new).toList();
     }
@@ -113,6 +135,7 @@ public class PublicCodeRepositoryImpl extends BaseAbstractRepositoryImpl impleme
                         qPublicCode.etc2,
                         qPublicCode.etc3,
                         qPublicCode.useYn,
+                        qPublicCode.ord,
                         qPublicCode.createDate,
                         qPublicCode.modifyDate
                 ).values(
@@ -124,6 +147,7 @@ public class PublicCodeRepositoryImpl extends BaseAbstractRepositoryImpl impleme
                         dto.getEtc2(),
                         dto.getEtc3(),
                         dto.getUseYn(),
+                        dto.getOrd(),
                         LocalDateTime.now(),
                         LocalDateTime.now()
                 ).execute() > 0;
@@ -138,6 +162,7 @@ public class PublicCodeRepositoryImpl extends BaseAbstractRepositoryImpl impleme
                 .set(qPublicCode.etc2,dto.getEtc2())
                 .set(qPublicCode.etc3,dto.getEtc3())
                 .set(qPublicCode.useYn,dto.getUseYn())
+                .set(qPublicCode.ord,dto.getOrd())
                 .set(qPublicCode.modifyDate, LocalDateTime.now())
                 .where(new BooleanBuilder().and(qPublicCode.pubCd.eq(dto.getPubCd()))).execute() > 0;
     }
@@ -146,6 +171,14 @@ public class PublicCodeRepositoryImpl extends BaseAbstractRepositoryImpl impleme
     public boolean deletePublicCode(PublicCodeDto dto) throws Exception {
         QPublicCode qPublicCode = QPublicCode.publicCode;
         return jpaQueryFactory.delete(qPublicCode)
+                .where(new BooleanBuilder().and(qPublicCode.pubCd.eq(dto.getPubCd()))).execute() > 0;
+    }
+
+    @Override
+    public boolean updatePublicCodeOrd(PublicCodeDto dto) throws Exception {
+        QPublicCode qPublicCode = QPublicCode.publicCode;
+        return jpaQueryFactory.update(qPublicCode)
+                .set(qPublicCode.ord,dto.getOrd())
                 .where(new BooleanBuilder().and(qPublicCode.pubCd.eq(dto.getPubCd()))).execute() > 0;
     }
 }

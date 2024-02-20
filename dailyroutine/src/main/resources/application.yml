@@ -3,7 +3,7 @@ spring:
     group:
       local : local,common
       dev : dev,common
-    active: local
+    active: dev
 
 ---
 # profiles local

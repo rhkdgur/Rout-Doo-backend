@@ -115,4 +115,20 @@ public class PublicCodeService {
         searchDto.setUseYn("Y");
         return publicCodeRepository.selectPublicCodeList(searchDto);
     }
+
+    /**
+     * 정렬 업데이트
+     * @param pubCdList
+     * @throws Exception
+     */
+    @Transactional
+    public void updatePublicCodeOrdBatch(List<String> pubCdList) throws Exception {
+        int index = 1;
+        for(String pubCd : pubCdList){
+            PublicCodeDto dto = new PublicCodeDto();
+            dto.setPubCd(pubCd);
+            dto.setOrd(index++);
+            publicCodeRepository.updatePublicCodeOrd(dto);
+        }
+    }
 }
