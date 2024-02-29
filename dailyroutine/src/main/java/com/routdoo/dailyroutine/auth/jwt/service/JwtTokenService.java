@@ -1,8 +1,15 @@
 package com.routdoo.dailyroutine.auth.jwt.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.routdoo.dailyroutine.auth.jwt.AuthAdminDetails;
+import com.routdoo.dailyroutine.auth.jwt.domain.JwtToken;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,13 +48,19 @@ public class JwtTokenService {
 	
 	
 	@Transactional
+	@CacheEvict(value={ "admin_login_info", "member_login_info"}, allEntries = true)
 	public void save(JwtTokenEntity entity) throws Exception {
 		jwtTokenEntityRepository.save(entity);
 	}
 	
 	@Transactional
+	@CacheEvict(value={ "admin_login_info", "member_login_info"}, allEntries = true)
 	public void delete(String id) throws Exception {
 		jwtTokenEntityRepository.deleteById(id);
+	}
+
+	public List<JwtTokenEntity> findList() throws Exception {
+		return jwtTokenEntityRepository.findAll();
 	}
 	
 	public JwtTokenEntity find(String id) {
@@ -60,16 +73,10 @@ public class JwtTokenService {
 	 * @return
 	 * @throws Exception
 	 */
-	public CustomeUserDetails loadAdminByUsername(String loginId) throws Exception {
-		Admin admin = adminRepository.findById(loginId).orElse(null);
-		if(admin == null) {
-			throw new Exception();
-		}
-		Map<String,String> map = new HashMap<>();
-		map.put("username", admin.getName());
-		map.put("id", admin.getId());
-		map.put("password", admin.getPw());
-		return new CustomeUserDetails(map,"ADMIN");
+	@Cacheable(value="admin_login_info", key="#loginId")
+	public AuthAdminDetails loadAdminByUsername(String loginId) throws Exception {
+		Admin admin = adminRepository.findById(loginId).orElseThrow(() -> new UsernameNotFoundException(loginId + "-> 존재 하지 않음"));
+		return new AuthAdminDetails(admin);
 	}
 	
 	
@@ -79,14 +86,13 @@ public class JwtTokenService {
 	 * @return
 	 * @throws Exception
 	 */
+	@Cacheable(value="member_login_info", key="#loginId")
 	public CustomeUserDetails loadUserByUsername(String loginId) throws Exception {
-		Member member = memberRepository.findById(loginId).orElse(null);
-		if(member == null) {
-			throw new Exception();
-		}
+		Member member = memberRepository.findById(loginId).orElseThrow(() -> new UsernameNotFoundException(loginId + "-> 존재 하지 않음"));
 		Map<String,String> map = new HashMap<>();
 		map.put("username", member.getId());
 		map.put("password", member.getPw());
 		return new CustomeUserDetails(map,"USER");
 	}
+
 }

@@ -1,8 +1,12 @@
 package com.routdoo.dailyroutine.auth.jwt;
 
 import java.util.Collection;
+import java.util.List;
 
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.routdoo.dailyroutine.auth.admin.domain.Admin;
@@ -27,6 +31,12 @@ public class AuthAdminDetails implements UserDetails{
 	private static final long serialVersionUID = 1L;
 	
 	private final Admin admin;
+
+	private final User user = null;
+
+	@Getter
+	@Setter
+	private String auth = "ADMIN";
 	
 	public AuthAdminDetails(Admin admin) {
 		this.admin = admin;
@@ -34,7 +44,7 @@ public class AuthAdminDetails implements UserDetails{
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return null;
+		return List.of(new SimpleGrantedAuthority(this.auth));
 	}
 
 	@Override
@@ -44,27 +54,27 @@ public class AuthAdminDetails implements UserDetails{
 
 	@Override
 	public String getUsername() {
-		return admin.getName();
+		return admin.getId();
 	}
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return false;
+		return true;
 	}
 
 }

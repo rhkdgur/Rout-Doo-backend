@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -116,7 +117,10 @@ public class MemberUserController extends BaseModuleController{
 		
 		//세션 정보 등록
 		String token = memberSession.createMemberSession((MemberDto)result.getElement());
-		return new ResponseEntity<>(token,HttpStatus.OK);
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.add("Authorization", "Bearer " + token);
+
+		return new ResponseEntity<>(token,httpHeaders,HttpStatus.OK);
 	}
 	
 	/**

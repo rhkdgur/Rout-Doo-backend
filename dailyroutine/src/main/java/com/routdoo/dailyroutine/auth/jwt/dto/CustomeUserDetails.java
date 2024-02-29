@@ -6,20 +6,32 @@ import java.util.Map;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
 public class CustomeUserDetails implements UserDetails{
 	
 	private static final long serialVersionUID = 1L;
-	
+
+	@Getter
+	@Setter
 	private final Map<String,String> element;
-	
+
+	@Getter
+	@Setter
 	private String auth = "";
+
+	private final User user = null;
+
+	public User getUser(){
+		if(element == null){
+			return null;
+		}
+		return new User(element.get("username"),element.get("password"),getAuthorities());
+	}
 	
 	public CustomeUserDetails(Map<String,String> element,String auth){
 		this.element = element;

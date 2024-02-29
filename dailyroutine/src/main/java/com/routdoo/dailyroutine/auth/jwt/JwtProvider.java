@@ -151,9 +151,7 @@ public class JwtProvider {
     public JwtServiceResult<Claims> getValidateToken(String token) {
     	Claims claims  = null;
         try {
-        	logger.debug("### key : "+key+","+token);
             claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
-            logger.debug("#### {} ",claims);
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             logger.error("잘못된 JWT 서명입니다.");
             return new JwtServiceResult<>(JwtResultCodeType.TOKEN_FAIL);

@@ -3,6 +3,8 @@ package com.routdoo.dailyroutine.auth.jwt.domain;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -42,9 +44,11 @@ public class JwtTokenEntity implements Persistable<String>{
 	private String refreshToken;
 	
 	@Comment("등록일자")
+	@CreatedDate
 	private LocalDateTime createDate;
 	
 	@Comment("수정일자")
+	@LastModifiedDate
 	private LocalDateTime modifyDate;
 	
 	public JwtTokenEntity(String id, String accessToken, String refreshToken) {
