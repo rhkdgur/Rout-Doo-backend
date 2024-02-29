@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -134,22 +135,22 @@ public class MemberUserController extends BaseModuleController{
 	
 	/**
 	 * 회원 가입
-	 * @param dto
+	 * @param memberDto
 	 * @return
 	 * @throws Exception
 	 */
 	@Operation(summary="사용자 회원가입 ", description = "요청하는 파라미터는 모두 입력할 수 있도록 할 것")
-	@Parameters({
-		@Parameter(name = "id", description ="아이디 "),
-		@Parameter(name = "pw", description ="비밀번호 "),
-		@Parameter(name = "email", description ="이메일"),
-		@Parameter(name = "nickname", description ="닉네임"),
-		@Parameter(name = "phonenumber", description ="휴대전화번호"),
-		@Parameter(name = "gender", description ="성별"),
-		@Parameter(name = "age", description ="나이"),
-		@Parameter(name = "birth", description ="생년월일"),
-		@Parameter(name = "mbti", description ="MBTI")
-	})
+//	@Parameters({
+//		@Parameter(name = "id", description ="아이디 "),
+//		@Parameter(name = "pw", description ="비밀번호 "),
+//		@Parameter(name = "email", description ="이메일"),
+//		@Parameter(name = "nickname", description ="닉네임"),
+//		@Parameter(name = "phonenumber", description ="휴대전화번호"),
+//		@Parameter(name = "gender", description ="성별"),
+//		@Parameter(name = "age", description ="나이"),
+//		@Parameter(name = "birth", description ="생년월일"),
+//		@Parameter(name = "mbti", description ="MBTI")
+//	})
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "가입 완료"),
 			@ApiResponse(responseCode = "208", description = "이미 존재하는 회원 아이디"),
@@ -157,14 +158,14 @@ public class MemberUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "400", description = "회원 가입시 오류가 발생")
 	})
 	@PostMapping(API_URL+"/member/signup")
-	public ResponseEntity<?> createMember(MemberDto dto) throws Exception {
-		
+	public ResponseEntity<?> createMember(final @Valid @RequestBody MemberDto memberDto) throws Exception {
+
 		try {
-			MemberDto checkDto = memberService.selectMember(dto);
+			MemberDto checkDto = memberService.selectMember(memberDto);
 			if(checkDto != null) {
 				return new ResponseEntity<>("이미 존재하는 회원 아이디 입니다.",HttpStatus.ALREADY_REPORTED);
 			}
-			AuthServiceResult<?> result = memberService.saveMember(dto);
+			AuthServiceResult<?> result = memberService.saveMember(memberDto);
 			if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<>("회원 가입이 진행되지 않았습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 			}
@@ -211,31 +212,31 @@ public class MemberUserController extends BaseModuleController{
 	
 	/**
 	 * 회원 정보 업데이트
-	 * @param dto
+	 * @param memberDto
 	 * @return
 	 * @throws Exception
 	 */
 	@Operation(summary="사용자 회원 정보 업데이트 ")
-	@Parameters(value={
-		@Parameter(name = "id", description="아이디 "),
-		@Parameter(name = "pw", description="비밀번호 "),
-		@Parameter(name = "email", description="이메일"),
-		@Parameter(name = "nickname", description="닉네임"),
-		@Parameter(name = "phonenumber", description="휴대전화번호"),
-		@Parameter(name = "gender", description="성별"),
-		@Parameter(name = "age", description="나이"),
-		@Parameter(name = "birth", description="생년월일"),
-		@Parameter(name = "mbti", description = "MBTI")
-	})
+//	@Parameters(value={
+//		@Parameter(name = "id", description="아이디 "),
+//		@Parameter(name = "pw", description="비밀번호 "),
+//		@Parameter(name = "email", description="이메일"),
+//		@Parameter(name = "nickname", description="닉네임"),
+//		@Parameter(name = "phonenumber", description="휴대전화번호"),
+//		@Parameter(name = "gender", description="성별"),
+//		@Parameter(name = "age", description="나이"),
+//		@Parameter(name = "birth", description="생년월일"),
+//		@Parameter(name = "mbti", description = "MBTI")
+//	})
 	@ApiResponses(value={
 			@ApiResponse(responseCode = "200", description = "수정 완료"),
 			@ApiResponse(responseCode = "304", description = "회원정보 업데이트에 실패"),
 			@ApiResponse(responseCode = "422", description = "회원정보 업데이트시 오류")
 	})
 	@PostMapping(API_URL+"/member/act/upd")
-	public ResponseEntity<?> updateMember(MemberDto dto) throws Exception {
+	public ResponseEntity<?> updateMember(final @Valid @RequestBody MemberDto memberDto) throws Exception {
 		try {
-			AuthServiceResult<MemberDto> result =  memberService.saveMember(dto);
+			AuthServiceResult<MemberDto> result =  memberService.saveMember(memberDto);
 			if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<>(result.getMessage(),HttpStatus.NOT_MODIFIED);
 			}

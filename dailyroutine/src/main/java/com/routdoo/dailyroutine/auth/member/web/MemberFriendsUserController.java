@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -67,16 +68,16 @@ public class MemberFriendsUserController extends BaseModuleController {
 
     /**
      * 친구 추가
-     * @param friendsDto
+     * @param memberFriendsDto
      * @return
      * @throws Exception
      */
     @Operation(summary = "친구 추가")
     @PostMapping(API_URL+"/member/friends/ins")
-    public ResponseEntity<String> insertMemberFriends(MemberFriendsDto friendsDto) throws  Exception {
+    public ResponseEntity<String> insertMemberFriends(final @Valid @RequestBody MemberFriendsDto memberFriendsDto) throws  Exception {
 
         try{
-            friendListService.insertFriendList(friendsDto);
+            friendListService.insertFriendList(memberFriendsDto);
         }catch (Exception e) {
             logger.error("### insert member friends error  : {}",e.getMessage());
             return new ResponseEntity<>("친구추가시 오류가 발생했습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
