@@ -8,6 +8,7 @@ import java.util.Map;
 import com.routdoo.dailyroutine.auth.member.MemberSession;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -159,23 +160,23 @@ public class PlaceUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@Operation(summary = "장소 등록")
-	@Parameters(value={
-			@Parameter(name = "title", description = "제목"),
-			@Parameter(name = "tel", description = "연락처"),
-			@Parameter(name = "categCd", description = "카테고리코드"),
-			@Parameter(name = "addr", description = "주소"),
-			@Parameter(name = "mapx", description = "경도"),
-			@Parameter(name = "mapy", description = "위도"),
-			@Parameter(name = "useInfo", description = "이용아내"),
-			@Parameter(name = "detailText", description = "상세정보"),
-			@Parameter(name = "pstatus", description = "사용여부 ex) Y, N ")
-	})
+//	@Parameters(value={
+//			@Parameter(name = "title", description = "제목"),
+//			@Parameter(name = "tel", description = "연락처"),
+//			@Parameter(name = "categCd", description = "카테고리코드"),
+//			@Parameter(name = "addr", description = "주소"),
+//			@Parameter(name = "mapx", description = "경도"),
+//			@Parameter(name = "mapy", description = "위도"),
+//			@Parameter(name = "useInfo", description = "이용아내"),
+//			@Parameter(name = "detailText", description = "상세정보"),
+//			@Parameter(name = "pstatus", description = "사용여부 ex) Y, N ")
+//	})
 	@ApiResponses(value={
 			@ApiResponse(responseCode = "200", description = "등록 완료"),
 			@ApiResponse(responseCode = "422", description = "등록 오류")
 	})
 	@PostMapping(API_URL+"/place/act/ins")
-	public ResponseEntity<String> insertPlace(PlaceDto placeDto) throws Exception {
+	public ResponseEntity<String> insertPlace(final @Valid @RequestBody  PlaceDto placeDto) throws Exception {
 		try{
 			placeDto.setMemberId(memberSession.getMemberSession().getId());
 			placeService.savePlace(placeDto);
@@ -193,7 +194,7 @@ public class PlaceUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@Operation(summary = "장소 수정")
-	@Parameters(value={
+	/*@Parameters(value={
 			@Parameter(name = "placeNum", description = "장소 일련번호"),
 			@Parameter(name = "title", description = "제목"),
 			@Parameter(name = "tel", description = "연락처"),
@@ -204,13 +205,13 @@ public class PlaceUserController extends BaseModuleController{
 			@Parameter(name = "useInfo", description = "이용아내"),
 			@Parameter(name = "detailText", description = "상세정보"),
 			@Parameter(name = "pstatus", description = "사용여부 ex) Y, N ")
-	})
+	})*/
 	@ApiResponses(value={
 			@ApiResponse(responseCode = "200", description = "수정 완료"),
 			@ApiResponse(responseCode = "422", description = "수정 오류")
 	})
 	@PostMapping(API_URL+"/place/act/upd")
-	public ResponseEntity<String> updatePlace(PlaceDto placeDto) throws Exception {
+	public ResponseEntity<String> updatePlace(final @Valid @RequestBody  PlaceDto placeDto) throws Exception {
 		try{
 			placeDto.setMemberId(memberSession.getMemberSession().getId());
 			placeService.savePlace(placeDto);

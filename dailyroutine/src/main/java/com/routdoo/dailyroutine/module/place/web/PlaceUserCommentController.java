@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
@@ -83,18 +84,18 @@ public class PlaceUserCommentController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "댓글 등록")
-    @Parameters(value = {
+    /*@Parameters(value = {
             @Parameter(name = "memberId", description = "회원 아이디"),
             @Parameter(name = "placeNum", description = "장소 일련번호"),
             @Parameter(name = "context", description = "내용")
-    })
+    })*/
     @ApiResponses(value ={
             @ApiResponse(responseCode = "200", description = "등록 완료"),
             @ApiResponse(responseCode = "400", description = "등록 오류"),
             @ApiResponse(responseCode = "422", description = "등록 실패")
     })
     @PostMapping(API_URL+"/place/comment/ins")
-    public ResponseEntity<String> insertPlaceComment(PlaceCommentDto dto) throws Exception {
+    public ResponseEntity<String> insertPlaceComment(final @Valid @RequestBody PlaceCommentDto dto) throws Exception {
 
 
         try{
@@ -118,19 +119,19 @@ public class PlaceUserCommentController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "댓글 수정")
-    @Parameters(value = {
-            @Parameter(name = "idx", description = "댓글 일련번호"),
-            @Parameter(name = "memberId", description = "회원 아이디"),
-            @Parameter(name = "placeNum", description = "장소 일련번호"),
-            @Parameter(name = "context", description = "내용")
-    })
+//    @Parameters(value = {
+//            @Parameter(name = "idx", description = "댓글 일련번호"),
+//            @Parameter(name = "memberId", description = "회원 아이디"),
+//            @Parameter(name = "placeNum", description = "장소 일련번호"),
+//            @Parameter(name = "context", description = "내용")
+//    })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "수정 완료"),
             @ApiResponse(responseCode = "400", description = "수정 오류"),
             @ApiResponse(responseCode = "422", description = "수정 실패")
     })
     @PostMapping(API_URL+"/place/comment/upd")
-    public ResponseEntity<String> updatePlaceComment(PlaceCommentDto dto) throws Exception {
+    public ResponseEntity<String> updatePlaceComment(final @Valid @RequestBody PlaceCommentDto dto) throws Exception {
         try{
             dto.getMemberDto().setId(memberSession.getMemberSession().getId());
             boolean result = placeService.updatePlaceComment(dto);
@@ -238,28 +239,28 @@ public class PlaceUserCommentController extends BaseModuleController {
 
     /**
      * 답글 등록
-     * @param dto
+     * @param placeReplyCommentDto
      * @return
      * @throws Exception
      */
     @Operation(summary = "답글 등록")
-    @Parameters(value={
-        @Parameter(name = "commentIdx", description = "댓글 일련번호"),
-            @Parameter(name = "placeNum", description = "장소 일련번호"),
-            @Parameter(name = "memberId", description = "회원 아이디"),
-            @Parameter(name = "context", description = "내용")
-    })
+//    @Parameters(value={
+//        @Parameter(name = "commentIdx", description = "댓글 일련번호"),
+//            @Parameter(name = "placeNum", description = "장소 일련번호"),
+//            @Parameter(name = "memberId", description = "회원 아이디"),
+//            @Parameter(name = "context", description = "내용")
+//    })
     @ApiResponses(value={
             @ApiResponse(responseCode = "200", description = "답글 등록 완료"),
             @ApiResponse(responseCode = "400", description = "답글 등록 오류"),
             @ApiResponse(responseCode = "422", description = "답글 등록 실패")
     })
     @PostMapping(API_URL+"/place/comment/reply/ins")
-    public ResponseEntity<String> insertReplyComment(PlaceReplyCommentDto dto) throws Exception {
+    public ResponseEntity<String> insertReplyComment(final @Valid @RequestBody PlaceReplyCommentDto placeReplyCommentDto) throws Exception {
 
         try{
-            dto.getMemberDto().setId(memberSession.getMemberSession().getId());
-            boolean result = placeService.insertPlaceReplyComment(dto);
+            placeReplyCommentDto.getMemberDto().setId(memberSession.getMemberSession().getId());
+            boolean result = placeService.insertPlaceReplyComment(placeReplyCommentDto);
             if(result){
                 return new ResponseEntity<>("답글등록요청이 진행되지않았습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
             }
@@ -278,20 +279,20 @@ public class PlaceUserCommentController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "답글 수정")
-    @Parameters(value={
-            @Parameter(name = "idx", description = "답글 일련번호"),
-            @Parameter(name = "commentIdx", description = "댓글 일련번호"),
-            @Parameter(name = "placeNum", description = "장소 일련번호"),
-            @Parameter(name = "memberId", description = "회원 아이디"),
-            @Parameter(name = "context", description = "내용")
-    })
+//    @Parameters(value={
+//            @Parameter(name = "idx", description = "답글 일련번호"),
+//            @Parameter(name = "commentIdx", description = "댓글 일련번호"),
+//            @Parameter(name = "placeNum", description = "장소 일련번호"),
+//            @Parameter(name = "memberId", description = "회원 아이디"),
+//            @Parameter(name = "context", description = "내용")
+//    })
     @ApiResponses(value={
             @ApiResponse(responseCode = "200", description = "답글 수정 완료"),
             @ApiResponse(responseCode = "400", description = "답글 수정 오류"),
             @ApiResponse(responseCode = "422", description = "답글 수정 실패")
     })
     @PostMapping(API_URL+"/place/comment/reply/upd")
-    public ResponseEntity<String> updateReplyComment(PlaceReplyCommentDto dto) throws Exception {
+    public ResponseEntity<String> updateReplyComment(final @Valid @RequestBody PlaceReplyCommentDto dto) throws Exception {
         
         try{
             dto.getMemberDto().setId(memberSession.getMemberSession().getId());    

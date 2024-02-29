@@ -7,6 +7,7 @@ import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
 import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -163,20 +164,20 @@ public class DailyRoutineUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@Operation(summary="일정 등록" ,description = "타임라인 등록전 대표일정 등록")
-	@Parameters( value = {
+	/*@Parameters( value = {
 		@Parameter(name = "title", description ="제목"),
 		@Parameter(name = "startdate", description ="시작일자"),
 		@Parameter(name = "endDate", description ="제목(장소)"),
 			@Parameter(name = "tag", description ="태그"),
 		@Parameter(name = "dayType", description ="일정 타입")
-	})
+	})*/
 	@ApiResponses(value={
 			@ApiResponse(responseCode = "200", description = "등록 완료"),
 			@ApiResponse(responseCode = "422", description = "등록이 이루어지지 않음"),
 			@ApiResponse(responseCode = "400", description = "등록 오류 발생")
 	})
 	@PostMapping(API_URL+"/daily/routine/ins")
-	public ResponseEntity<String> insertDailyRoutineBatch(DailyRoutineDto dailyRoutineDto) throws Exception {
+	public ResponseEntity<String> insertDailyRoutineBatch(final @Valid @RequestBody  DailyRoutineDto dailyRoutineDto) throws Exception {
 		RoutineServiceResult<?> result = null;
 		try {		
 			dailyRoutineDto.setMemberId(memberSession.getMemberSession().getId());
@@ -231,30 +232,30 @@ public class DailyRoutineUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@Operation(summary="타임라인별 등록")
-	@Parameters( value = {
-		@Parameter(name = "dailyIdx", description ="부모 일련번호"),
-		@Parameter(name = "writeType", description ="작성타입"),
-		@Parameter(name = "applyDate", description ="적용일자"),
-		@Parameter(name = "title", description ="제목"),
-			@Parameter(name = "placeName", description="장소명"),
-			@Parameter(name="addr", description = "주소"),
-			@Parameter(name="mapx", description = "경도"),
-			@Parameter(name="mapy", description = "위도"),
-		@Parameter(name = "ord", description ="순서"),
-		@Parameter(name = "context", description ="내용"),
-		@Parameter(name = "shour", description ="시작시간"),
-		@Parameter(name = "smin", description ="시작분"),
-		@Parameter(name = "ehour", description ="마지막시간"),
-		@Parameter(name = "emin", description ="마지막분"),
-		@Parameter(name = "cost", description ="비용")
-	})
+//	@Parameters( value = {
+//		@Parameter(name = "dailyIdx", description ="부모 일련번호"),
+//		@Parameter(name = "writeType", description ="작성타입"),
+//		@Parameter(name = "applyDate", description ="적용일자"),
+//		@Parameter(name = "title", description ="제목"),
+//			@Parameter(name = "placeName", description="장소명"),
+//			@Parameter(name="addr", description = "주소"),
+//			@Parameter(name="mapx", description = "경도"),
+//			@Parameter(name="mapy", description = "위도"),
+//		@Parameter(name = "ord", description ="순서"),
+//		@Parameter(name = "context", description ="내용"),
+//		@Parameter(name = "shour", description ="시작시간"),
+//		@Parameter(name = "smin", description ="시작분"),
+//		@Parameter(name = "ehour", description ="마지막시간"),
+//		@Parameter(name = "emin", description ="마지막분"),
+//		@Parameter(name = "cost", description ="비용")
+//	})
 	@ApiResponses(value={
 			@ApiResponse(responseCode = "200", description = "등록 완료"),
 			@ApiResponse(responseCode = "422", description = "등록 이루어지지 않음"),
 			@ApiResponse(responseCode = "400", description = "등록 오류 발생")
 	})
 	@PostMapping(value=API_URL+"/daily/routine/time/line/act/ins")
-	public ResponseEntity<String> insertDailyRoutineTimeLine(DailyRoutineTimeLineDto dailyRoutineTimeLineDto) throws Exception {
+	public ResponseEntity<String> insertDailyRoutineTimeLine(final @Valid @RequestBody DailyRoutineTimeLineDto dailyRoutineTimeLineDto) throws Exception {
 		
 		try {
 			
@@ -300,7 +301,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "400", description = "수정 오류")
 	})
 	@PostMapping(value=API_URL+"/daily/routine/time/line/act/upd")
-	public ResponseEntity<String> updateDailyRoutineTimeLine(DailyRoutineTimeLineDto dailyRoutineTimeLineDto) throws Exception {
+	public ResponseEntity<String> updateDailyRoutineTimeLine(final @Valid @RequestBody DailyRoutineTimeLineDto dailyRoutineTimeLineDto) throws Exception {
 		
 		RoutineServiceResult<?> result = null;
 		try {

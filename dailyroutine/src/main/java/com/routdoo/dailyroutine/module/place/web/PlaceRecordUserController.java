@@ -2,11 +2,8 @@ package com.routdoo.dailyroutine.module.place.web;
 
 import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
-import com.routdoo.dailyroutine.module.place.dto.PlaceIntroDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceRecordDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceRecordRemoveDto;
-import com.routdoo.dailyroutine.module.place.repository.PlaceRecordRepository;
-import com.routdoo.dailyroutine.module.place.repository.PlaceRepository;
 import com.routdoo.dailyroutine.module.place.service.PlaceRecordService;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,14 +12,11 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.hibernate.validator.constraints.ParameterScriptAssert;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 /**
  * packageName    : com.routdoo.dailyroutine.module.place.web
@@ -54,24 +48,24 @@ public class PlaceRecordUserController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "정보 수정 제안 (등록)")
-    @Parameters(value={
-            @Parameter(name = "memberId", description = "회원 아이디"),
-            @Parameter(name = "placeNum", description = "장소 일련번호"),
-            @Parameter(name = "tel", description = "연락처"),
-            @Parameter(name = "addr", description = "주소"),
-            @Parameter(name = "mapx", description = "경도"),
-            @Parameter(name = "mapy", description = "위도"),
-            @Parameter(name = "useInfo", description = "이용안내"),
-            @Parameter(name = "detailText", description = "상세 내용"),
-            @Parameter(name = "useType", description = "사용여부 ex) Y, N")
-    })
+//    @Parameters(value={
+//            @Parameter(name = "memberId", description = "회원 아이디"),
+//            @Parameter(name = "placeNum", description = "장소 일련번호"),
+//            @Parameter(name = "tel", description = "연락처"),
+//            @Parameter(name = "addr", description = "주소"),
+//            @Parameter(name = "mapx", description = "경도"),
+//            @Parameter(name = "mapy", description = "위도"),
+//            @Parameter(name = "useInfo", description = "이용안내"),
+//            @Parameter(name = "detailText", description = "상세 내용"),
+//            @Parameter(name = "useType", description = "사용여부 ex) Y, N")
+//    })
     @ApiResponses(value={
             @ApiResponse(responseCode = "200", description = "정보 수정 제안 신청 완료"),
             @ApiResponse(responseCode = "400", description = "정보 수정 제안 신청 오류"),
             @ApiResponse(responseCode = "422", description = "정보 수정 제안 신청 실패")
     })
     @PostMapping(API_URL+"/place/record/ins")
-    public ResponseEntity<String> insertPlaceRecord(PlaceRecordDto placeRecordDto) throws Exception {
+    public ResponseEntity<String> insertPlaceRecord(final @Valid @RequestBody  PlaceRecordDto placeRecordDto) throws Exception {
 
         try{
             placeRecordDto.setMemberId(memberSession.getMemberSession().getId());
@@ -94,25 +88,25 @@ public class PlaceRecordUserController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "정보 수정 제안 (수정)")
-    @Parameters(value={
-            @Parameter(name = "idx", description = "장소 정보 수정 일련번호"),
-            @Parameter(name = "memberId", description = "회원 아이디"),
-            @Parameter(name = "placeNum", description = "장소 일련번호"),
-            @Parameter(name = "tel", description = "연락처"),
-            @Parameter(name = "addr", description = "주소"),
-            @Parameter(name = "mapx", description = "경도"),
-            @Parameter(name = "mapy", description = "위도"),
-            @Parameter(name = "useInfo", description = "이용안내"),
-            @Parameter(name = "detailText", description = "상세 내용"),
-            @Parameter(name = "useType", description = "사용여부 ex) Y, N")
-    })
+//    @Parameters(value={
+//            @Parameter(name = "idx", description = "장소 정보 수정 일련번호"),
+//            @Parameter(name = "memberId", description = "회원 아이디"),
+//            @Parameter(name = "placeNum", description = "장소 일련번호"),
+//            @Parameter(name = "tel", description = "연락처"),
+//            @Parameter(name = "addr", description = "주소"),
+//            @Parameter(name = "mapx", description = "경도"),
+//            @Parameter(name = "mapy", description = "위도"),
+//            @Parameter(name = "useInfo", description = "이용안내"),
+//            @Parameter(name = "detailText", description = "상세 내용"),
+//            @Parameter(name = "useType", description = "사용여부 ex) Y, N")
+//    })
     @ApiResponses(value={
             @ApiResponse(responseCode = "200", description = "정보 수정 제안 신청 수정 완료"),
             @ApiResponse(responseCode = "400", description = "정보 수정 제안 신청 수정 오류"),
             @ApiResponse(responseCode = "422", description = "정보 수정 제안 신청 수정 실패")
     })
     @PostMapping(API_URL+"/place/record/upd")
-    public ResponseEntity<String> updatePlaceRecord(PlaceRecordDto placeRecordDto) throws Exception {
+    public ResponseEntity<String> updatePlaceRecord(final @Valid @RequestBody PlaceRecordDto placeRecordDto) throws Exception {
         try{
             placeRecordDto.setMemberId(memberSession.getMemberSession().getId());
             boolean result = placeRecordService.updatePlaceRecord(placeRecordDto);

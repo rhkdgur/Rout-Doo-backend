@@ -90,7 +90,10 @@ public class DailyRoutine{
 		if (dto.getIdx() != 0) {
 			this.idx = dto.getIdx();
 		}
-		this.member.addId(dto.getMemberId());
+		if(dto.getMemberId() != null && !dto.getMemberId().isEmpty()){
+			this.member = new Member();
+			this.member.addId(dto.getMemberId());
+		}
 		this.title = dto.getTitle();
 		this.tag = dto.getTag();
 		this.startDate = dto.getStartDate();

@@ -1,8 +1,10 @@
 package com.routdoo.dailyroutine.module.routine.dto;
 
+import com.routdoo.dailyroutine.common.exception.validate.annotation.date.Date;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
 import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,26 +35,36 @@ public class DailyRoutineDto {
 	private Long idx = 0L;
 	
 	/**제목*/
+	@NotNull
 	@Schema(description = "제목")
 	private String title ="";
 	
 	/**태그*/
+	@NotNull
 	@Schema(description = "태그")
 	private String tag = "";
 	
 	/**시작일자*/
+	@NotEmpty
 	@Schema(description = "시작일자")
+	@Date
+	@NotBlank
 	private String startDate = "";
 	
 	/**마지막일자*/
+	@NotNull
+	@Date
+	@NotBlank
 	@Schema(description = "마지막일자")
 	private String endDate = "";
 	
 	/**일정타입*/
+	@NotBlank
 	@Schema(description = "일정 타입", example = "DAY : 단기, LONG_DAY : 장기")
 	private String dayType = "";
 	
 	/**공개여부*/
+	@NotBlank
 	@Schema(description = "공개범위" ,example = "PUBLIC : 공개 , PRIVATE : 비공개")
 	private String rangeType = "";
 	
@@ -66,9 +78,11 @@ public class DailyRoutineDto {
 	
 	/**회원 아이디*/
 	@Schema(description = "회원아이디")
+	@NotBlank
 	private String memberId = "";
 	
 	/**이름*/
+	@NotBlank
 	private String nickname = "";
 
 	@Schema(description = "타임라인 리스트")

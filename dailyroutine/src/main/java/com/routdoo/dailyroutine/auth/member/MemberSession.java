@@ -79,6 +79,7 @@ public class MemberSession {
 	public MemberDto getMemberSession() throws Exception {
 		authentication = SecurityContextHolder.getContext().getAuthentication();
 		MemberDto dto = new MemberDto();
+		System.out.println(authentication.getName());
 		dto.setId(authentication.getName());
 		return memberService.selectMember(dto);
 	}

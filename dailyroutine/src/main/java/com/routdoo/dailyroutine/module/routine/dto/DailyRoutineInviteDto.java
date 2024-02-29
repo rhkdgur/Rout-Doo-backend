@@ -6,6 +6,7 @@ import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineInvite;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,10 +35,12 @@ public class DailyRoutineInviteDto {
 	
 	/**스케줄 일련번호*/
 	@Schema(description = "일정 일련번호")
+	@NotBlank
 	private Long dailyIdx = 0L;
 	
 	/**회원 일련번호*/
 	@Schema(description = "회원 아이디")
+	@NotBlank
 	private String memberId = "";
 
 	/**등록일자*/

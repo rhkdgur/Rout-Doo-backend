@@ -5,6 +5,8 @@ import com.routdoo.dailyroutine.common.vo.BaseVo;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineComment;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineReplyComment;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,19 +38,18 @@ public class DailyRoutineCommentDto extends BaseVo {
     
     /**회원아이디*/
     @Schema(description = "유저 아이디", defaultValue = "")
+    @NotBlank
     private String memberId = "";
     
     /**일정 일련번호*/
     @Schema(description = "일정 일련번호", defaultValue = "0")
+    @NotBlank
     private Long dailyIdx = 0L;
     
     /**내용*/
     @Schema(description = "내용", defaultValue = "")
+    @NotEmpty
     private String context = "";
-    
-    /**회원 dto*/
-    @Schema(description = "회원정보")
-    private MemberDto memberDto = new MemberDto();
     
     /**등록일자*/
     @Schema(description = "등록일자")
@@ -59,8 +60,12 @@ public class DailyRoutineCommentDto extends BaseVo {
     private LocalDateTime modifyDate;
     
     /**답글 개수*/
-    @Schema(description = "답글 개수")
+    @Schema(description = "답글 개수(조회에 사용)")
     private int replyCnt = 0;
+
+    /**회원 dto*/
+    @Schema(description = "회원정보(조회에 사용)")
+    private MemberDto memberDto = new MemberDto();
 
     public DailyRoutineComment toEntity(){
         return DailyRoutineComment.builder().dto(this).build();
