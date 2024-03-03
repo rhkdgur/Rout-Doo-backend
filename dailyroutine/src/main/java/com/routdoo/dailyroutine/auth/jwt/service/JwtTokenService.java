@@ -48,13 +48,13 @@ public class JwtTokenService {
 	
 	
 	@Transactional
-	@CacheEvict(value={ "admin_login_info", "member_login_info"}, allEntries = true)
+	@CacheEvict(value={ "admin_login_info", "member_login_info", "jwt_token_info"})
 	public void save(JwtTokenEntity entity) throws Exception {
 		jwtTokenEntityRepository.save(entity);
 	}
 	
 	@Transactional
-	@CacheEvict(value={ "admin_login_info", "member_login_info"}, allEntries = true)
+	@CacheEvict(value={ "admin_login_info", "member_login_info","jwt_token_info"})
 	public void delete(String id) throws Exception {
 		jwtTokenEntityRepository.deleteById(id);
 	}
@@ -62,7 +62,8 @@ public class JwtTokenService {
 	public List<JwtTokenEntity> findList() throws Exception {
 		return jwtTokenEntityRepository.findAll();
 	}
-	
+
+//	@Cacheable(value="jwt_token_info", key="#id")
 	public JwtTokenEntity find(String id) {
 		return jwtTokenEntityRepository.findById(id).orElse(null);
 	}

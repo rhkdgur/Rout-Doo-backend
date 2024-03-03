@@ -28,7 +28,7 @@ public class CacheConfig {
     public CacheManager cacheManager() {
         ConcurrentMapCacheManager cacheManager = new ConcurrentMapCacheManager();
         cacheManager.setAllowNullValues(false);
-        cacheManager.setCacheNames(List.of("public_code","daily_routine","admin_login_info","member_login_info"));
+        cacheManager.setCacheNames(List.of("public_codes","daily_routine","admin_login_info","member_login_info","jwt_token_info","MemberSession"));
         return cacheManager;
     }
 

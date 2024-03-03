@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -35,9 +37,13 @@ public class JwtCacheJob {
         log.debug("jwt cache check start");
         try{
             List<JwtTokenEntity> list = jwtTokenService.findList();
+            LocalDateTime localDateTime = LocalDateTime.now();
             for(JwtTokenEntity entity : list){
-                if(jwtProvider.getValidateToken(entity.getAccessToken()).getCodeType().name().equals(JwtResultCodeType.TOKEN_EXPIRE.name())){
-                   jwtTokenService.delete(entity.getId());
+                LocalDateTime weekDay = entity.getModifyDate().plusDays(7);
+                if(localDateTime.isAfter(weekDay)) {
+                    if (jwtProvider.getValidateToken(entity.getAccessToken()).getCodeType().name().equals(JwtResultCodeType.EXPIRED_TOKEN.name())) {
+                        jwtTokenService.delete(entity.getId());
+                    }
                 }
             }
         }catch (Exception e){

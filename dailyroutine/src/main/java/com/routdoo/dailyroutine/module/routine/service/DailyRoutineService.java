@@ -14,6 +14,7 @@ import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineRepository
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineTimeLineRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -269,6 +270,7 @@ public class DailyRoutineService {
 	 * @return
 	 * @throws Exception
 	 */
+	@CacheEvict(value="daily_routine" , key = "#dto.startDate")
 	@Transactional
 	public RoutineServiceResult<?> deleteDailyRoutine(DailyRoutineDto dto) throws Exception {
 		

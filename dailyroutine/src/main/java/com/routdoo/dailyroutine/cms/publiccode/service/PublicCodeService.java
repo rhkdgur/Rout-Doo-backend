@@ -5,6 +5,7 @@ import com.routdoo.dailyroutine.cms.publiccode.dto.PublicCodeDto;
 import com.routdoo.dailyroutine.cms.publiccode.repository.PublicCodeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -77,6 +78,7 @@ public class PublicCodeService {
      * @return
      * @throws Exception
      */
+    @CacheEvict(value="public_codes" , key = "#dto.parentCd")
     @Transactional
     public boolean insertPublicCode(PublicCodeDto dto) throws Exception {
         return publicCodeRepository.insertPubliceCode(dto);
@@ -88,6 +90,7 @@ public class PublicCodeService {
      * @return
      * @throws Exception
      */
+    @CacheEvict(value="public_codes" , key = "#dto.parentCd")
     @Transactional
     public boolean updatePublicCode(PublicCodeDto dto) throws  Exception {
         return publicCodeRepository.updatePublicCode(dto);
@@ -99,6 +102,7 @@ public class PublicCodeService {
      * @return
      * @throws Exception
      */
+    @CacheEvict(value="public_codes" , key = "#dto.parentCd")
     @Transactional
     public boolean deletePublicCode(PublicCodeDto dto) throws Exception {
         return publicCodeRepository.deletePublicCode(dto);
@@ -110,7 +114,7 @@ public class PublicCodeService {
      * @return
      * @throws Exception
      */
-    @Cacheable(value="public_code" , key = "#searchDto.parentCd")
+    @Cacheable(value="public_codes" , key = "#searchDto.parentCd")
     public List<PublicCodeDto> selectPublicCodeCacheList(PublicCodeDefaultDto searchDto) throws Exception {
         searchDto.setUseYn("Y");
         return publicCodeRepository.selectPublicCodeList(searchDto);

@@ -2,6 +2,8 @@ package com.routdoo.dailyroutine.auth.member.service;
 
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,13 +64,18 @@ public class MemberService {
 	public MemberDto selectMember(MemberDto dto) throws Exception {
 		return memberRepository.selectMember(dto);
 	}
-	
-	public MemberDto selectMemberSession(String id){
-		Member member = memberRepository.findById(id).orElse(null);
-		if(member == null) {
-			return null;
-		}
-		return new MemberDto(member); 
+
+	/**
+	 * 회원 세션 정보 조회
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	@Cacheable(value = "MemberSession", key="#id")
+	public MemberDto selectMemberSession(String id) throws Exception {
+		MemberDto dto = new MemberDto();
+		dto.setId(id);
+		return memberRepository.selectMember(dto);
 	}
 	
 	
@@ -108,6 +115,15 @@ public class MemberService {
 		}
 		
 		return new AuthServiceResult<>(AuthResultCodeType.INFO_OK,new MemberDto(member));
+	}
+
+	/**
+	 * redis 회원 캐시 삭제처리
+	 * @param id
+	 */
+	@CacheEvict(value = "MemberSession", key="#id")
+	public void memberLogout(String id) {
+		//....
 	}
 	
 	

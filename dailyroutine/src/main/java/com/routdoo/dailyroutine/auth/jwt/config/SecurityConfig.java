@@ -1,6 +1,7 @@
 package com.routdoo.dailyroutine.auth.jwt.config;
 
 import com.routdoo.dailyroutine.auth.jwt.JwtProvider;
+import com.routdoo.dailyroutine.auth.jwt.filter.ExceptionHandlerFilter;
 import com.routdoo.dailyroutine.auth.jwt.filter.JwtAuthenticationFilter;
 import com.routdoo.dailyroutine.auth.jwt.service.JwtTokenService;
 import lombok.RequiredArgsConstructor;
@@ -67,19 +68,18 @@ public class SecurityConfig{
 		.cors(AbstractHttpConfigurer::disable)
 		.csrf(AbstractHttpConfigurer::disable).addFilter(corsFilter.corsFilter())
 //		.addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
-		.exceptionHandling((exceptionHandling) ->
-           exceptionHandling
-           	.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-           	.accessDeniedHandler(jwtAccessDeniedHandler)
-		).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 		.authorizeHttpRequests((authorize) -> authorize
 				.requestMatchers(PERMIT_URL_ARRAY).permitAll()
 				.requestMatchers(HttpMethod.POST,"/api/member/login","/api/member/signup/**","/api/jwt/token/refresh").permitAll()
 //				.requestMatchers("/mgn/**").hasAuthority("ADMIN")
 						.requestMatchers("/mgn/**").permitAll()
 				.requestMatchers("/api/**").hasAuthority("USER")
-		).addFilterBefore(new JwtAuthenticationFilter(jwtProvider,jwtTokenService), UsernamePasswordAuthenticationFilter.class)
-		.build();
+		).exceptionHandling((exceptionHandling) ->exceptionHandling
+						.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+						.accessDeniedHandler(jwtAccessDeniedHandler)
+				).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.addFilterBefore(new JwtAuthenticationFilter(jwtProvider,jwtTokenService), UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(new ExceptionHandlerFilter(jwtProvider), JwtAuthenticationFilter.class).build();
 		
 	}
 }

@@ -49,7 +49,7 @@ public class MemberSession {
 		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(dto.getId(), dto.getPw());		
 		
 		String token = jwtProvider.createToken(authentication,true);
-		String refreshToken = jwtProvider.createRefreshToken(authentication, true);
+		String refreshToken = jwtProvider.createRefreshToken(true);
 		
 		JwtTokenEntity jwtToken = new JwtTokenEntity(dto.getId(),token,refreshToken);
 		jwtTokenService.save(jwtToken);
@@ -67,6 +67,7 @@ public class MemberSession {
 	 */
 	public void clearMemberSession() throws Exception {
 		authentication = SecurityContextHolder.getContext().getAuthentication();
+		memberService.memberLogout(authentication.getName());
 		jwtTokenService.delete(authentication.getName());
 	}
 
@@ -78,10 +79,7 @@ public class MemberSession {
 	 */
 	public MemberDto getMemberSession() throws Exception {
 		authentication = SecurityContextHolder.getContext().getAuthentication();
-		MemberDto dto = new MemberDto();
-		System.out.println(authentication.getName());
-		dto.setId(authentication.getName());
-		return memberService.selectMember(dto);
+		return memberService.selectMemberSession(authentication.getName());
 	}
 
 }
