@@ -98,5 +98,6 @@ public interface DailyRoutineCustomRepository {
 	 */
 	Long deleteDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception;
 
-	
+
+	boolean updateDailyRoutinePublicYn(DailyRoutineDto dto) throws Exception;
 }

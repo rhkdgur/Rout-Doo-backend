@@ -197,4 +197,24 @@ public class MemberController extends BaseController{
 		
 		return new ResponseEntity<>("삭제 되었습니다.",HttpStatus.OK);
 	}
+
+	/**
+	 * 회원 삭제 batch
+	 * @param memberIds
+	 * @return
+	 * @throws Exception
+	 */
+	@PostMapping(MGN_URL+"/member/act/batch/del")
+	public ResponseEntity<?> deleteMemberBatch(@RequestParam("memberIds[]") List<String> memberIds,
+											   @RequestParam("useStatus") String useStatus) throws Exception {
+
+		try{
+			memberService.updateMemberUseStatusBatch(memberIds,useStatus);
+		}catch (Exception e ){
+			logger.error("### delete member batch error");
+			return new ResponseEntity<>("삭제시 오류가 발생하였습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
+		}
+
+		return new ResponseEntity<>("삭제 되었습니다.", HttpStatus.OK);
+	}
 }

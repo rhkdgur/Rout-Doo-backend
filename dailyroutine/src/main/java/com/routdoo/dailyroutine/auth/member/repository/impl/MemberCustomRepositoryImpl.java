@@ -87,6 +87,15 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 	}
 
 	@Override
+	public boolean updateMemberUseStatus(MemberDto dto) throws Exception {
+		QMember qMember = QMember.member;
+		return jpaQueryFactory.update(qMember)
+				.set(qMember.useStatus,dto.getUseStatus())
+				.where(new BooleanBuilder().and(qMember.id.eq(dto.getId())))
+				.execute() > 0;
+	}
+
+	@Override
 	public Page<Map<String, Object>> selectMemberFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception {
 		QMember qMember = QMember.member;
 		QMemberFriends qMemberFriends = QMemberFriends.memberFriends;

@@ -415,4 +415,23 @@ public class DailyRoutineService {
 	public boolean deleteDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception {
 		return dailyRoutineRepository.deleteDailyRoutineLike(dto) > 0;
 	}
+
+	@Transactional
+	public void updateDailyRoutinePublicYnBatch(List<Long> planIdxs, String publicYn) throws Exception {
+		for(long idx : planIdxs){
+			DailyRoutineDto dto = new DailyRoutineDto();
+			dto.setIdx(idx);
+			dto.setRangeType(RoutineRangeConfigType.valueOf(publicYn).name());
+			dailyRoutineRepository.updateDailyRoutinePublicYn(dto);
+		}
+	}
+
+	@Transactional
+	public void deleteDailyRoutineRangeTypeBatch(List<Long> planIdxs) throws Exception {
+		for(long idx : planIdxs){
+			DailyRoutine dailyRoutine = new DailyRoutine();
+			dailyRoutine.addIdx(idx);
+			dailyRoutineRepository.delete(dailyRoutine);
+		}
+	}
 }

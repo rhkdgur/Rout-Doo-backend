@@ -73,6 +73,10 @@ public class MemberDto {
 	@NotBlank
 	private String mbti = "";
 
+	@Schema(description = "회원상태")
+	@NotBlank
+	private String useStatus = "";
+
 	@Schema(description = "등록일자")
 	private LocalDateTime createDate;
 
@@ -101,6 +105,7 @@ public class MemberDto {
 		this.age = entity.getAge();
 		this.birth = entity.getBirth();
 		this.mbti = entity.getMbti();
+		this.useStatus = entity.getUseStatus();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
 	}

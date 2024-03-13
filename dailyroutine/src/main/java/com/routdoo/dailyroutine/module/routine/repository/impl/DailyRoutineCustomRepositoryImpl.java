@@ -278,4 +278,13 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 				.execute();
 	}
 
+	@Override
+	public boolean updateDailyRoutinePublicYn(DailyRoutineDto dto) throws Exception {
+		QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
+		return jpaQueryFactory.update(qDailyRoutine).
+				set(qDailyRoutine.rangeType,RoutineRangeConfigType.valueOf(dto.getRangeType()))
+				.where(qDailyRoutine.idx.eq(dto.getIdx()))
+				.execute() > 0;
+	}
+
 }

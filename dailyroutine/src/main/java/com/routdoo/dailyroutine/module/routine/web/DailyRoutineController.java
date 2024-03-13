@@ -268,4 +268,27 @@ public class DailyRoutineController extends BaseController {
 
         return new ResponseEntity<String>("삭제 되었습니다.",HttpStatus.OK);
     }
+
+    @PostMapping(value=MGN_URL+"/daily/routine/publicYn")
+    public ResponseEntity<String> updateDailyRoutinPublicYn(@RequestParam("planIdxs[]") List<Long> planIdxs,
+                                                            @RequestParam("publicYn") String publicYn) throws Exception {
+        try{
+            dailyRoutineService.updateDailyRoutinePublicYnBatch(planIdxs,publicYn);
+        }catch (Exception e) {
+            logger.error("update daily public batch error : {}",e.getMessage());
+            return new ResponseEntity<String>("공개여부 변경시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        return new ResponseEntity<String>("공개여부 변경되었습니다.",HttpStatus.OK);
+    }
+
+    @PostMapping(value=MGN_URL+"/daily/routine/del/batch")
+    public ResponseEntity<String> deleteDailyRoutineBatch(@RequestParam("planIdxs") List<Long> planIdxs) throws Exception {
+        try{
+            dailyRoutineService.deleteDailyRoutineRangeTypeBatch(planIdxs);
+        }catch (Exception e){
+            logger.error("delete daily batch error : {}",e.getMessage());
+            return new ResponseEntity<String>("삭제시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        return new ResponseEntity<String>("삭제 되었습니다.",HttpStatus.OK);
+    }
 }

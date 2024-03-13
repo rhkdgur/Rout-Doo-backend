@@ -167,6 +167,16 @@ public class MemberService {
 			return new AuthServiceResult<>(AuthResultCodeType.INFO_FAIL,"삭제 되지않았습니다.");
 		}
 	}
+
+	@Transactional
+	public void updateMemberUseStatusBatch(List<String> memberIds, String useStauts) throws Exception {
+		for(String id : memberIds) {
+			MemberDto dto = new MemberDto();
+			dto.setId(id);
+			dto.setUseStatus(useStauts);
+			memberRepository.updateMemberUseStatus(dto);
+		}
+	}
 	
 	/**
 	 * 나만의 장소

@@ -78,11 +78,10 @@ public class DailyRoutineDto {
 	
 	/**회원 아이디*/
 	@Schema(description = "회원아이디")
-	@NotBlank
 	private String memberId = "";
 	
 	/**이름*/
-	@NotBlank
+	@Schema(description = "닉네임")
 	private String nickname = "";
 
 	@Schema(description = "타임라인 리스트")

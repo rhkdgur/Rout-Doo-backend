@@ -46,6 +46,14 @@ public interface MemberCustomRepository {
 	 */
 	boolean updateMemberFriendsBlockYn(MemberFriendsDto dto) throws Exception;
 
+	/**
+	 * 회원 상태 변경
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	boolean updateMemberUseStatus(MemberDto dto) throws Exception;
+
 
 	/**
 	 * 차단 목록 조회

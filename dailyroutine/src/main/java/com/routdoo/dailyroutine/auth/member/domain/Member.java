@@ -78,6 +78,10 @@ public class Member implements Persistable<String> {
 	@Column(length=4)
 	@Comment("MBTI")
 	private String mbti;
+
+	@Column(length=1, columnDefinition = "char default 'Y' ")
+	@Comment("회원상태")
+	private String useStatus;
 	
 	@Comment("등록일자")
 	@CreatedDate
@@ -106,6 +110,7 @@ public class Member implements Persistable<String> {
 		this.age = dto.getAge();
 		this.birth = dto.getBirth();
 		this.mbti = dto.getMbti();
+		this.useStatus = dto.getUseStatus();
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();
 	}
@@ -124,6 +129,7 @@ public class Member implements Persistable<String> {
 		this.age = dto.getAge();
 		this.birth = dto.getBirth();
 		this.mbti = dto.getMbti();
+		this.useStatus = dto.getUseStatus();
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();
 	}

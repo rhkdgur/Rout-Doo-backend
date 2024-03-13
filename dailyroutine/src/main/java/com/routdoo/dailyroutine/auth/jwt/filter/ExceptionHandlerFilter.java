@@ -41,8 +41,14 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
-            String token = jwtProvider.resolveToken(request);
-            jwtProvider.validateTokenCheck(token);
+            final String requestURI =request.getRequestURI();
+            System.out.println("### : "+requestURI);
+            if(requestURI.indexOf("mgn") > 0){
+                request.setAttribute("nocheck","222");
+            }else{
+                String token = jwtProvider.resolveToken(request);
+                jwtProvider.validateTokenCheck(token);
+            }
         }catch (SecurityException | MalformedJwtException e){
             request.setAttribute("exception",JwtResultCodeType.INVALID_TOKEN.name());
         }catch (ExpiredJwtException e) {

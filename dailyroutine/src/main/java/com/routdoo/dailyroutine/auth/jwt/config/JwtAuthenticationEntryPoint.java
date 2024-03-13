@@ -37,16 +37,19 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint{
 
 		final String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
 		final String exception = (String) request.getAttribute("exception");
+		final String nocheck = (String)request.getAttribute("nocheck");
 
-		// 1. 토큰 없음 2. 시그니처 불일치
-		if (authorization == null || !authorization.startsWith("Bearer ")) {
-			log.error("토큰이 존재하지 않거나 Bearer로 시작하지 않는 경우");
-			setErrorResponse(response, HttpStatus.UNAUTHORIZED,"잘못된 토큰입니다");
-		} else if(exception != null){
-			// 3. 토큰 만료
-			setErrorResponse(response,HttpStatus.UNAUTHORIZED,JwtResultCodeType.valueOf(exception).getDisplay());
+		if(nocheck != null){
+
+		}else {
+			if (authorization == null || !authorization.startsWith("Bearer ")) {
+				log.error("토큰이 존재하지 않거나 Bearer로 시작하지 않는 경우");
+				setErrorResponse(response, HttpStatus.UNAUTHORIZED, "토큰이 존재하지 않거나 잘못된 토큰입니다");
+			} else if (exception != null) {
+				// 3. 토큰 만료
+				setErrorResponse(response, HttpStatus.UNAUTHORIZED, JwtResultCodeType.valueOf(exception).getDisplay());
+			}
 		}
-
 	}
  
 }
