@@ -56,8 +56,6 @@ public class QDailyRoutineTimeLine extends EntityPathBase<DailyRoutineTimeLine> 
 
     public final StringPath title = createString("title");
 
-    public final EnumPath<com.routdoo.dailyroutine.module.routine.service.RoutineWriteType> writeType = createEnum("writeType", com.routdoo.dailyroutine.module.routine.service.RoutineWriteType.class);
-
     public QDailyRoutineTimeLine(String variable) {
         this(DailyRoutineTimeLine.class, forVariable(variable), INITS);
     }

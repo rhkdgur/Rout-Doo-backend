@@ -11,6 +11,7 @@ import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineTimeLine;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -43,9 +44,9 @@ public class DailyRoutineTimeLineDto {
 	private Long dailyIdx = 0L;
 	
 	/**작성타입*/
-	@Schema(description = "작성타입", example = "직접입력 : DIRECT, 검색입력 : SEARCH ")
-	@NotBlank
-	private String writeType;
+//	@Schema(description = "작성타입", example = "직접입력 : DIRECT, 검색입력 : SEARCH ")
+//	@NotBlank
+//	private String writeType;
 	
 	/**적용일자*/
 	@Schema(description = "적용일자")
@@ -60,7 +61,6 @@ public class DailyRoutineTimeLineDto {
 	
 	/**장소명*/
 	@Schema(description = "장소명")
-	@NotBlank
 	private String placeName;
 
 	/**주소*/
@@ -89,22 +89,22 @@ public class DailyRoutineTimeLineDto {
 	
 	/**시작시간*/
 	@Schema(description = "시작시간" , example = "01")
-	@NotBlank
+	@NotNull
 	private String shour;
 	
 	/**시작분*/
 	@Schema(description = "시작분", example = "01")
-	@NotBlank
+	@NotNull
 	private String smin;
 	
 	/**마지막시간*/
 	@Schema(description = "마지막시간", example = "01")
-	@NotBlank
+	@NotNull
 	private String ehour;
 	
 	/**마지막분*/
 	@Schema(description = "마지막 분", example = "01")
-	@NotBlank
+	@NotNull
 	private String emin;
 	
 	/**비용*/
@@ -130,7 +130,7 @@ public class DailyRoutineTimeLineDto {
 	public DailyRoutineTimeLineDto(DailyRoutineTimeLine entity) {
 		this.idx = entity.getIdx();
 		this.applyDate = entity.getApplyDate();
-		this.writeType = entity.getWriteType().name();
+//		this.writeType = entity.getWriteType().name();
 		this.title = entity.getTitle();
 		this.placeName = entity.getPlaceName();
 		this.addr = entity.getAddr();
@@ -171,7 +171,7 @@ public class DailyRoutineTimeLineDto {
 		map.put("idx", this.idx);
 		map.put("dailyIdx", this.dailyIdx);
 		map.put("title", this.title);
-		map.put("writeType", this.writeType);
+//		map.put("writeType", this.writeType);
 		map.put("applyDate",this.applyDate);
 		map.put("startTime", this.shour+":"+this.smin);
 		map.put("endTime", this.ehour+":"+this.emin);

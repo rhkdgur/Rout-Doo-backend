@@ -56,9 +56,9 @@ public class DailyRoutineTimeLine {
 	@Comment("일련번호")
 	private Long idx;
 	
-	@Comment("작성타입")
-	@Enumerated(EnumType.STRING)
-	private RoutineWriteType writeType;
+//	@Comment("작성타입")
+//	@Enumerated(EnumType.STRING)
+//	private RoutineWriteType writeType;
 	
 	@Comment("적용일자")
 	@Column(length=20)
@@ -131,7 +131,7 @@ public class DailyRoutineTimeLine {
 		if(dto.getIdx() != 0) {
 			this.idx = dto.getIdx();
 		}
-		this.writeType = RoutineWriteType.valueOf(dto.getWriteType());
+//		this.writeType = RoutineWriteType.valueOf(dto.getWriteType());
 		this.applyDate = dto.getApplyDate();
 		this.dailyRoutine = new DailyRoutine();
 		dailyRoutine.addIdx(dto.getDailyIdx());
@@ -177,7 +177,7 @@ public class DailyRoutineTimeLine {
 		if(dto.getIdx() != 0) {
 			this.idx = dto.getIdx();
 		}
-		this.writeType = RoutineWriteType.valueOf(dto.getWriteType());
+//		this.writeType = RoutineWriteType.valueOf(dto.getWriteType());
 		this.applyDate = dto.getApplyDate();	
 //		this.place.addPlaceNum(dto.getPlaceDto().getPlaceNum());
 		this.title = dto.getTitle();
