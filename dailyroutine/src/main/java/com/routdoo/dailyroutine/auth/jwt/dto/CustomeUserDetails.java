@@ -18,7 +18,7 @@ public class CustomeUserDetails implements UserDetails{
 
 	@Getter
 	@Setter
-	private final Map<String,String> element;
+	private Map<String,String> element;
 
 	@Getter
 	@Setter

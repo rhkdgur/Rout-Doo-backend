@@ -277,24 +277,24 @@ public class DailyRoutineUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@Operation(summary="타임라인별 수정")
-	@Parameters(value={
-		@Parameter(name = "idx", description = "일련번호"),
-		@Parameter(name = "dailyIdx", description="부모 일련번호"),
-		@Parameter(name = "writeType", description="작성타입"),
-		@Parameter(name = "applyDate", description="적용일자"),
-		@Parameter(name = "title", description="제목"),
-		@Parameter(name = "placeName", description="장소명"),
-			@Parameter(name="addr", description = "주소"),
-			@Parameter(name="mapx", description = "경도"),
-			@Parameter(name="mapy", description = "위도"),
-		@Parameter(name = "ord", description="순서"),
-		@Parameter(name = "context", description="내용"),
-		@Parameter(name = "shour", description="시작시간"),
-		@Parameter(name = "smin", description="시작분"),
-		@Parameter(name = "ehour", description="마지막시간"),
-		@Parameter(name = "emin", description="마지막분"),
-		@Parameter(name = "cost", description="비용")
-	})
+//	@Parameters(value={
+//		@Parameter(name = "idx", description = "일련번호"),
+//		@Parameter(name = "dailyIdx", description="부모 일련번호"),
+//		@Parameter(name = "writeType", description="작성타입"),
+//		@Parameter(name = "applyDate", description="적용일자"),
+//		@Parameter(name = "title", description="제목"),
+//		@Parameter(name = "placeName", description="장소명"),
+//			@Parameter(name="addr", description = "주소"),
+//			@Parameter(name="mapx", description = "경도"),
+//			@Parameter(name="mapy", description = "위도"),
+//		@Parameter(name = "ord", description="순서"),
+//		@Parameter(name = "context", description="내용"),
+//		@Parameter(name = "shour", description="시작시간"),
+//		@Parameter(name = "smin", description="시작분"),
+//		@Parameter(name = "ehour", description="마지막시간"),
+//		@Parameter(name = "emin", description="마지막분"),
+//		@Parameter(name = "cost", description="비용")
+//	})
 	@ApiResponses(value={
 			@ApiResponse(responseCode = "200", description = "수정 완료"),
 			@ApiResponse(responseCode = "422", description = "수정이 이루어지지 않음"),
