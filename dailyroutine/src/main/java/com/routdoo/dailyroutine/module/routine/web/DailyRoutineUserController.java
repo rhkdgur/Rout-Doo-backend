@@ -77,13 +77,15 @@ public class DailyRoutineUserController extends BaseModuleController{
 	@Parameter(name = "date", description = "날짜 ex) yyyy-MM-dd, 만약 date에 빈값일 경우 오늘 날짜 기준으로 조회해옴")
 	@GetMapping(API_URL+"/daily/routine/list")
 	public Map<String,Object> selectDailyRoutineList(
-													@RequestParam(value="date",defaultValue = "") String date
+													@RequestParam(value="date",defaultValue = "") String date,
+													@RequestParam(value="page",defaultValue = "1") int page
 													) throws Exception {
 		
 		modelMap = new LinkedHashMap<String, Object>();
 		
 		DailyRoutineDefaultDto searchDto = new DailyRoutineDefaultDto();
 		searchDto.setMemberId(memberSession.getMemberSession().getId());
+		searchDto.setPage(page);
 		//초기값 세팅 date가 0일경우
 		if(date.isEmpty()){
 			searchDto.setToDate(LocalDate.now().toString());
@@ -110,7 +112,8 @@ public class DailyRoutineUserController extends BaseModuleController{
 	@Operation(summary="사용자 스케줄 상세 목록 조회")
 	@Parameter(name = "idx", description = "스케줄 부모 idx")
 	@GetMapping(API_URL+"/daily/routine/view")
-	public Map<String,Object> selectDailyRoutineList(@RequestParam("idx") Long dailyIdx) throws Exception {
+	public Map<String,Object> selectDailyRoutineList(@RequestParam("idx") Long dailyIdx,
+													 @RequestParam(value="page", defaultValue = "1") int page ) throws Exception {
 		
 		modelMap = new LinkedHashMap<String, Object>();
 

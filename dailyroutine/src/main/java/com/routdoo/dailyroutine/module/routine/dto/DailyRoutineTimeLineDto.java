@@ -40,7 +40,7 @@ public class DailyRoutineTimeLineDto {
 	
 	/**일정 메인 정보*/
 	@Schema(description = "잃정 일련번호")
-	@NotBlank
+	@NotNull
 	private Long dailyIdx = 0L;
 	
 	/**작성타입*/
@@ -109,7 +109,7 @@ public class DailyRoutineTimeLineDto {
 	
 	/**비용*/
 	@Schema(description = "비용", defaultValue = "0",example = "1000")
-	@NotBlank
+	@NotNull
 	private int cost = 0;
 	
 	/**등록일자*/

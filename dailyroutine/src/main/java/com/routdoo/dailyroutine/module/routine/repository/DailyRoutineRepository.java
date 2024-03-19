@@ -18,13 +18,24 @@ public interface DailyRoutineRepository extends JpaRepository<DailyRoutine, Long
      * @return
      * @throws Exception
      */
-    @Query(value = "SELECT tag as tag , totCnt as totCnt " +
-            "   FROM (" +
-            "   SELECT tag, count(*) totCnt" +
-            "   FROM daily_routine as dr" +
-            "   WHERE range_type = 'PUBLIC'" +
-            "   GROUP BY tag" +
-            " )T ORDER BY tag DESC LIMIT 10 ",nativeQuery = true)
+    @Query(value = " SELECT tag as tag , count(*) as totCnt" +
+            " FROM (" +
+            "               SELECT" +
+            " SUBSTRING_INDEX(SUBSTRING_INDEX(dr.tag, \",\", num.n), \",\" , -1) AS tag" +
+            "                FROM (" +
+            " select 1 as n union all" +
+            " select 2 union all" +
+            " select 3 union all" +
+            " select 4 union all" +
+            " select 5" +
+            "                ) AS num" +
+            "  inner join daily_routine dr" +
+            "    ON (CHAR_LENGTH(dr.tag) - CHAR_LENGTH(replace(dr.tag, \",\", \"\")) >= num.n - 1 ) AND  dr.range_type = 'PUBLIC'  " +
+            " )T " +
+            " WHERE tag != '' " +
+            " GROUP BY tag " +
+            " ORDER BY totCnt DESC , tag ASC " +
+            " LIMIT 10",nativeQuery = true)
     List<Map<String,Object>> selectDailyRoutineTagMostList() throws Exception;
 
     /**
