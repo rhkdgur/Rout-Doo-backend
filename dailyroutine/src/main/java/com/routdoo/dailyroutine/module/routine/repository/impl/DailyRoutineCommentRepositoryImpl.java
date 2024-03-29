@@ -40,15 +40,15 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
         StringBuffer sql = new StringBuffer();
 
         sql.append("SELECT  " +
-                " drc.idx as idx," +
-                " m.id as memberId," +
-                " drc.daily_idx as dailyIdx," +
-                " m.nickname as nickname," +
-                " drc.context as context," +
-                " m.mbti as mbti," +
-                " IFNULL(drcr.replyCnt,0) as replyCnt" +
+                " idx," +
+                " id as memberId," +
+                " daily_idx as dailyIdx," +
+                " nickname," +
+                " context," +
+                " mbti," +
+                " IFNULL(replyCnt,0) as replyCnt" +
                 " FROM (");
-        sql.append(" SELECT * FROM daily_routine_comment drc ");
+        sql.append(" SELECT drc.*,m.*,replyCnt FROM daily_routine_comment drc ");
         sql.append(" JOIN ( SELECT id,nickname,mbti FROM member ) m on m.id = drc.member_id ");
         sql.append(" JOIN ( SELECT idx daily_idx  FROM daily_routine ) dr on dr.daily_idx = drc.daily_idx ");
         sql.append(" LEFT JOIN ( SELECT comment_idx , count(*) replyCnt  FROM daily_routine_comment_reply group by comment_idx ) drcr on drc.idx = drcr.comment_idx ");
@@ -65,8 +65,8 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
         //개수
         Long cnt = jpaQueryFactory.select(qDailyRoutineComment.count())
                 .from(qDailyRoutineComment)
-                .join(qDailyRoutine).fetchJoin()
-                .join(qMember).fetchJoin()
+                .join(qDailyRoutine).on(qDailyRoutine.idx.eq(qDailyRoutineComment.dailyRoutine.idx)).fetchJoin()
+                .join(qMember).on(qMember.id.eq(qDailyRoutineComment.member.id)).fetchJoin()
                 .where(new BooleanBuilder().and(qDailyRoutineComment.dailyRoutine.idx.eq(dto.getDailyIdx())))
                 .fetchFirst();
 
@@ -181,8 +181,8 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
 
         long cnt = jpaQueryFactory.select(qDailyRoutineReplyComment.count())
                 .from(qDailyRoutineReplyComment)
-                .join(qDailyRoutineComment).fetchJoin()
-                .join(qMember).fetchJoin()
+                .join(qDailyRoutineComment).on(qDailyRoutineComment.idx.eq(qDailyRoutineReplyComment.dailyRoutineComment.idx)).fetchJoin()
+                .join(qMember).on(qMember.id.eq(qDailyRoutineReplyComment.member.id)).fetchJoin()
                 .where(new BooleanBuilder().and(qDailyRoutineReplyComment.dailyRoutineComment.idx.eq(dto.getCommentIdx())))
                 .fetchFirst();
 
@@ -196,8 +196,8 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
                         qDailyRoutineReplyComment.modifyDate
                 )
                 .from(qDailyRoutineReplyComment)
-                .join(qDailyRoutineComment).fetchJoin()
-                .join(qMember).fetchJoin()
+                .join(qDailyRoutineComment).on(qDailyRoutineComment.idx.eq(qDailyRoutineReplyComment.dailyRoutineComment.idx)).fetchJoin()
+                .join(qMember).on(qMember.id.eq(qDailyRoutineReplyComment.member.id)).fetchJoin()
                 .where(new BooleanBuilder().and(qDailyRoutineReplyComment.dailyRoutineComment.idx.eq(dto.getCommentIdx())))
                 .offset(dto.getPageable().getOffset())
                 .limit(dto.getPageable().getPageSize())

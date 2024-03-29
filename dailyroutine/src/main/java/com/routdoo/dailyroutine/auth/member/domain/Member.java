@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -12,14 +13,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -79,6 +72,10 @@ public class Member implements Persistable<String> {
 	@Comment("MBTI")
 	private String mbti;
 
+	@Lob
+	@Comment("자기소개글")
+	private String introText;
+
 	@Column(length=1, columnDefinition = "char default 'Y' ")
 	@Comment("회원상태")
 	private String useStatus;
@@ -110,6 +107,7 @@ public class Member implements Persistable<String> {
 		this.age = dto.getAge();
 		this.birth = dto.getBirth();
 		this.mbti = dto.getMbti();
+		this.introText = dto.getIntroText();
 		this.useStatus = dto.getUseStatus();
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();
@@ -129,6 +127,7 @@ public class Member implements Persistable<String> {
 		this.age = dto.getAge();
 		this.birth = dto.getBirth();
 		this.mbti = dto.getMbti();
+		this.introText = dto.getIntroText();
 		this.useStatus = dto.getUseStatus();
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();

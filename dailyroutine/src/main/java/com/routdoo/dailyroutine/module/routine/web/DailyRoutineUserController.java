@@ -109,7 +109,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
-	@Operation(summary="사용자 스케줄 상세 목록 조회")
+	@Operation(summary="사용자 스케줄 기본 상세정보 및 타임라인 목록 조회")
 	@Parameter(name = "idx", description = "스케줄 부모 idx")
 	@GetMapping(API_URL+"/daily/routine/view")
 	public Map<String,Object> selectDailyRoutineList(@RequestParam("idx") Long dailyIdx,
@@ -131,7 +131,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 		//일정 대표 정보
 		modelMap.put("dailyRoutineDto", dailyRoutineDto.toSummaryMap());
 		//일정 타임라인 정보
-		modelMap.put("resultList", dailyRoutineDto.getTimeList().stream().map(DailyRoutineTimeLineDto::toSummaryMap).toList());
+		modelMap.put("resultList", dailyRoutineDto.getTimeList().stream().map(DailyRoutineTimeLineDto::toMap).toList());
 		
 		return modelMap;
 	}
@@ -142,7 +142,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
-	@Operation(summary="사용자 스케줄 상세 목록 조회")
+	@Operation(summary="사용자 스케줄 타임라인 상세 조회")
 	@Parameter(name = "idx", description = "스케줄 자식 idx")
 	@GetMapping(API_URL+"/daily/routine/time/line/view")
 	public Map<String,Object> selectDailyRoutineTimelineView(@RequestParam("idx") Long idx) throws Exception {
@@ -440,23 +440,20 @@ public class DailyRoutineUserController extends BaseModuleController{
 	/**
 	 * 친구 초대
 	 * @param dailyIdx
-	 * @param memberId
 	 * @return
 	 * @throws Exception
 	 */
 	@Operation(summary="친구 초대")
 	@Parameters(value={
 		@Parameter(name = "dailyIdx", description="부모 일련번호"),
-		@Parameter(name = "memberId", description="회웡아이디")
 	})
 	@PostMapping(value=API_URL+"/daily/routine/invite/ins")
-	public ResponseEntity<String> insertDailyRoutineInvite(@RequestParam("dailyIdx") Long dailyIdx,
-														   @RequestParam("memberId") String memberId) throws Exception {
+	public ResponseEntity<String> insertDailyRoutineInvite(@RequestParam(value = "dailyIdx") Long dailyIdx) throws Exception {
 		RoutineServiceResult<?> result = null;
 		try {
 			DailyRoutineInviteDto dto = new DailyRoutineInviteDto();
 			dto.setDailyIdx(dailyIdx);
-			dto.setMemberId(memberId);
+			dto.setMemberId(memberSession.getMemberSession().getId());
 			result = dailyRoutineService.insertDailyRoutineInvite(dto);
 			if(!RoutineResultCodeType.OK.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<String>(result.getMessage(),HttpStatus.UNPROCESSABLE_ENTITY);

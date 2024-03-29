@@ -101,7 +101,7 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 		QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
 
 		long cnt = jpaQueryFactory.select(qMember.count()).from(qMember)
-				.join(qMemberFriends).fetchJoin()
+				.join(qMemberFriends).on(qMember.id.eq(qMemberFriends.member.id)).fetchJoin()
 				.where(new BooleanBuilder().and(qMember.id.eq(searchDto.getMemberId())).and(qMemberFriends.blockYn.eq(searchDto.getBlockYn())))
 				.fetchFirst();
 

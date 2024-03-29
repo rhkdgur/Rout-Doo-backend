@@ -273,12 +273,12 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 		QPlaceLike qPlaceLike = QPlaceLike.placeLike;
 
 		long cnt = jpaQueryFactory.select(qPlace.count()).from(qPlace)
-				.join(qPlaceLike).fetchJoin()
+				.join(qPlaceLike).on(qPlaceLike.place.placeNum.eq(qPlace.placeNum)).fetchJoin()
 				.where(qPlaceLike.member.id.eq(searchDto.getMemberId()))
 				.fetchFirst();
 
 		List<Place> list = jpaQueryFactory.selectFrom(qPlace)
-				.join(qPlaceLike).fetchJoin()
+				.join(qPlaceLike).on(qPlaceLike.place.placeNum.eq(qPlace.placeNum)).fetchJoin()
 				.where(qPlaceLike.member.id.eq(searchDto.getMemberId()))
 				.offset(searchDto.getPageable().getOffset())
 				.limit(searchDto.getPageable().getPageSize())

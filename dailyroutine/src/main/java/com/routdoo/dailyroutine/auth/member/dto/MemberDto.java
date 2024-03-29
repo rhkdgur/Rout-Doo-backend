@@ -73,6 +73,9 @@ public class MemberDto {
 	@NotBlank
 	private String mbti = "";
 
+	@Schema(description = "자기소개")
+	private String introText= "";
+
 	@Schema(description = "회원상태")
 	@NotBlank
 	private String useStatus = "";
@@ -105,6 +108,7 @@ public class MemberDto {
 		this.age = entity.getAge();
 		this.birth = entity.getBirth();
 		this.mbti = entity.getMbti();
+		this.introText = entity.getIntroText();
 		this.useStatus = entity.getUseStatus();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
@@ -120,6 +124,7 @@ public class MemberDto {
 		map.put("nickname", this.nickname);
 		map.put("gender", this.gender);
 		map.put("age", this.age);
+		map.put("introText", this.introText);
 		map.put("mbti", this.mbti);
 		return map;
 	}

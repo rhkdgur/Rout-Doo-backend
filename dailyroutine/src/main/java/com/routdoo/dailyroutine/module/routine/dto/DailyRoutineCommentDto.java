@@ -38,7 +38,6 @@ public class DailyRoutineCommentDto extends BaseVo {
     
     /**회원아이디*/
     @Schema(description = "유저 아이디", defaultValue = "")
-    @NotBlank
     private String memberId = "";
     
     /**일정 일련번호*/

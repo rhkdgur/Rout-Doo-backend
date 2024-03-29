@@ -40,23 +40,23 @@ public class DailyRoutineLikeUserController extends BaseModuleController {
 
     /**
      * 좋아요 등록
-     * @param dailyRoutineLikeDto
      * @return
      * @throws Exception
      */
     @Operation(summary = "좋아요 등록")
-//    @Parameters(value={
-//            @Parameter(name = "dailyIdx", description = "일정 일련번호"),
-//            @Parameter(name = "memberId", description = "회원 아이디")
-//    })
+    @Parameters(value={
+            @Parameter(name = "dailyIdx", description = "일정 일련번호")
+    })
     @ApiResponses(value={
             @ApiResponse(responseCode = "200", description = "좋아요 추가 완료"),
             @ApiResponse(responseCode = "422", description = "좋아요 추가 오류")
     })
     @PostMapping(API_URL+"/daily/routine/like/ins")
-    public ResponseEntity<String> insertDailyRoutineLike(final @Valid @RequestBody DailyRoutineLikeDto dailyRoutineLikeDto) throws Exception {
+    public ResponseEntity<String> insertDailyRoutineLike(@RequestParam("dailyIdx") Long dailyIdx) throws Exception {
 
         try{
+            DailyRoutineLikeDto dailyRoutineLikeDto = new DailyRoutineLikeDto();
+            dailyRoutineLikeDto.setDailyIdx(dailyIdx);
             dailyRoutineLikeDto.setMemberId(memberSession.getMemberSession().getId());
             dailyRoutineService.insertDailyRoutineLike(dailyRoutineLikeDto);
         }catch(Exception e){

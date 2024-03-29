@@ -7,6 +7,7 @@ import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.routine.dto.*;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineCommentService;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
+import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.ss.usermodel.ConditionalFormattingThreshold;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -80,6 +82,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
         DailyRoutineDefaultDto searchDto = new DailyRoutineDefaultDto();
         searchDto.setSstring(sstring);
         searchDto.setPage(page);
+        searchDto.setRangeType(RoutineRangeConfigType.PUBLIC.name());
         searchDto.setCummunity(true);
 
         Page<DailyRoutineDto> resultList = dailyRoutineService.selectDailyRoutinePageList(searchDto);
@@ -183,11 +186,10 @@ public class DailyRoutineCummunityController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "댓글 등록")
-//    @Parameters(value= {
-//            @Parameter(name = "memberId", description = "회원 아이디"),
-//            @Parameter(name = "dailyIdx", description = "일정 일련번호"),
-//            @Parameter(name = "context", description = "내용")
-//    })
+    @Parameters(value= {
+            @Parameter(name = "dailyIdx", description = "일정 일련번호"),
+            @Parameter(name = "context", description = "내용")
+    })
     @ApiResponses(value={
             @ApiResponse(responseCode = "200", description = "등록 완료"),
             @ApiResponse(responseCode = "400", description = "등록 오류"),
@@ -197,6 +199,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     public ResponseEntity<String> insertDailyRoutineComment(final @Valid @RequestBody  DailyRoutineCommentDto dailyRoutineCommentDto) throws Exception {
 
         try{
+            dailyRoutineCommentDto.setMemberId(memberSession.getMemberSession().getId());
             boolean result = dailyRoutineCommentService.insertDailyRoutineComment(dailyRoutineCommentDto);
             if(!result){
                 return new ResponseEntity<>("등록에 실패하였습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
@@ -211,17 +214,15 @@ public class DailyRoutineCummunityController extends BaseModuleController {
 
     /**
      * 댓글 수정
-     * @param commentDto
      * @return
      * @throws Exception
      */
     @Operation(summary = "댓글 수정")
-//    @Parameters(value= {
-//            @Parameter(name= "idx", description = "댓글 일련번호"),
-//            @Parameter(name = "memberId", description = "회원 아이디"),
-//            @Parameter(name = "dailyIdx", description = "일정 일련번호"),
-//            @Parameter(name = "context", description = "내용")
-//    })
+    @Parameters(value= {
+            @Parameter(name= "idx", description = "댓글 일련번호"),
+            @Parameter(name = "dailyIdx", description = "일정 일련번호"),
+            @Parameter(name = "context", description = "내용")
+    })
     @ApiResponses(value={
             @ApiResponse(responseCode = "200", description = "수정 완료"),
             @ApiResponse(responseCode = "422", description = "수정 실패"),
@@ -231,6 +232,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     public ResponseEntity<String> updateDailyRoutineComment(final @Valid @RequestBody DailyRoutineCommentDto dailyRoutineCommentDto) throws Exception {
 
         try{
+            dailyRoutineCommentDto.setMemberId(memberSession.getMemberSession().getId());
             boolean result = dailyRoutineCommentService.updateDailyRoutineComment(dailyRoutineCommentDto);
             if(!result){
                 return new ResponseEntity<>("수정에 실패하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
@@ -281,11 +283,10 @@ public class DailyRoutineCummunityController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "답글 등록")
-//    @Parameters(value={
-//            @Parameter(name = "memberId", description = "회원 아이디"),
-//            @Parameter(name = "commentIdx", description = "댓글 일련번호"),
-//            @Parameter(name = "context", description = "내용")
-//    })
+    @Parameters(value={
+            @Parameter(name = "commentIdx", description = "댓글 일련번호"),
+            @Parameter(name = "context", description = "내용")
+    })
     @ApiResponses(value={
             @ApiResponse(responseCode = "200", description = "등록 완료"),
             @ApiResponse(responseCode = "422", description = "등록 실패"),
@@ -295,6 +296,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     public ResponseEntity<String> insertDailyRoutineReplyComment(final @Valid @RequestBody DailyRoutineReplyCommentDto dailyRoutineReplyCommentDto) throws Exception {
 
         try{
+            dailyRoutineReplyCommentDto.setMemberId(memberSession.getMemberSession().getId());
             boolean result = dailyRoutineCommentService.insertDailyRoutineReplyComment(dailyRoutineReplyCommentDto);
             if(!result){
                 return new ResponseEntity<>("등록에 실패하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
@@ -314,12 +316,11 @@ public class DailyRoutineCummunityController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "답글 수정")
-//    @Parameters(value={
-//            @Parameter(name = "idx", description = "답글 일련번호"),
-//            @Parameter(name = "memberId", description = "회원 아이디"),
-//            @Parameter(name = "commentIdx", description = "댓글 일련번호"),
-//            @Parameter(name = "context", description = "내용")
-//    })
+    @Parameters(value={
+            @Parameter(name = "idx", description = "답글 일련번호"),
+            @Parameter(name = "commentIdx", description = "댓글 일련번호"),
+            @Parameter(name = "context", description = "내용")
+    })
     @ApiResponses(value={
             @ApiResponse(responseCode = "200", description = "수정 완료"),
             @ApiResponse(responseCode = "422", description = "수정 실패"),
@@ -329,6 +330,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     public ResponseEntity<String> updateDailyRoutineReplyComment(final @Valid @RequestBody DailyRoutineReplyCommentDto dailyRoutineReplyCommentDto) throws Exception {
 
         try{
+            dailyRoutineReplyCommentDto.setMemberId(memberSession.getMemberSession().getId());
             boolean result = dailyRoutineCommentService.updateDailyRoutineReplyComment(dailyRoutineReplyCommentDto);
             if(!result){
                 return new ResponseEntity<>("수정에 실패하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);

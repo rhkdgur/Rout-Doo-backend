@@ -4,6 +4,7 @@ import com.routdoo.dailyroutine.common.vo.BaseVo;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineLike;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -37,7 +38,6 @@ public class DailyRoutineLikeDto {
 
     /**회원 아이디*/
     @Schema( description = "회원아이디", defaultValue = "")
-    @NotBlank
     private String memberId = "";
     
     /**등록일자*/

@@ -223,7 +223,7 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 		QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
 
 		List<DailyRoutine> list = jpaQueryFactory.selectFrom(qDailyRoutine)
-				.join(qDailyRoutineLike).fetchJoin()
+				.join(qDailyRoutineLike).on(qDailyRoutineLike.dailyRoutine.idx.eq(qDailyRoutine.idx)).fetchJoin()
 				.where(qDailyRoutineLike.member.id.eq(searchDto.getMemberId()))
 				.offset(searchDto.getPageable().getOffset())
 				.limit(searchDto.getPageable().getPageSize())
@@ -231,7 +231,7 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 
 		long cnt = jpaQueryFactory.select(qDailyRoutine.count())
 				.from(qDailyRoutine)
-				.join(qDailyRoutineLike)
+				.join(qDailyRoutineLike).on(qDailyRoutineLike.dailyRoutine.idx.eq(qDailyRoutine.idx)).fetchJoin()
 				.where(qDailyRoutineLike.member.id.eq(searchDto.getMemberId()))
 				.fetchFirst();
 
