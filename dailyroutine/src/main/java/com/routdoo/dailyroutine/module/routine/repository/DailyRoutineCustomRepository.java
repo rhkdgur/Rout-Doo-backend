@@ -88,7 +88,7 @@ public interface DailyRoutineCustomRepository {
 	 * @return
 	 * @throws Exception
 	 */
-	Long insertDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception;
+	boolean insertDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception;
 
 	/**
 	 * 일정 좋아요 삭제

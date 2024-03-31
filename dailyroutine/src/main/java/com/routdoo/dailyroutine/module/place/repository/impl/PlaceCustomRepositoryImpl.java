@@ -306,19 +306,15 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 
 	@Override
 	public Long insertPlaceLike(PlaceLikeDto dto) throws Exception {
-		QPlaceLike qPlaceLike = QPlaceLike.placeLike;
-		return jpaQueryFactory.insert(qPlaceLike)
-				.columns(
-						qPlaceLike.place.placeNum,
-						qPlaceLike.member.id,
-						qPlaceLike.createDate,
-						qPlaceLike.modifyDate
-				).values(
-						dto.getPlaceDto().getPlaceNum(),
-						dto.getMemberId(),
-						LocalDateTime.now(),
-						LocalDateTime.now()
-				).execute();
+
+		int result = entityManager.createNativeQuery("insert into place_like (place_num,member_id,create_date,modify_date) values (?,?,?,?)")
+				.setParameter(1,dto.getPlaceNum())
+				.setParameter(2,dto.getMemberId())
+				.setParameter(3,LocalDateTime.now())
+				.setParameter(4,LocalDateTime.now())
+				.executeUpdate();
+
+		return (long) result;
 	}
 
 	@Override
@@ -349,21 +345,15 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 	@Override
 	public Long insertPlaceComment(PlaceCommentDto dto) throws Exception {
 
-		QPlaceComment qPlaceComment = QPlaceComment.placeComment;
-		return jpaQueryFactory.insert(qPlaceComment)
-				.columns(
-						qPlaceComment.place.placeNum,
-						qPlaceComment.member.id,
-						qPlaceComment.context,
-						qPlaceComment.createDate,
-						qPlaceComment.modifyDate
-				).values(
-						dto.getPlaceNum(),
-						dto.getMemberDto().getId(),
-						dto.getContext(),
-						LocalDateTime.now(),
-						LocalDateTime.now()
-				).execute();
+		int result = entityManager.createNativeQuery("insert into place_comment (place_num, member_id, content, create_date,modify_date) values(?,?,?,?,?)")
+				.setParameter(1,dto.getPlaceNum())
+				.setParameter(2,dto.getMemberDto().getId())
+				.setParameter(3,dto.getContent())
+				.setParameter(4,LocalDateTime.now())
+				.setParameter(5,LocalDateTime.now())
+				.executeUpdate() ;
+
+		return (long) result;
 
 	}
 
@@ -371,7 +361,7 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 	public Long updatePlaceComment(PlaceCommentDto dto) throws Exception {
 		QPlaceComment qPlaceComment = QPlaceComment.placeComment;
 		return jpaQueryFactory.update(qPlaceComment)
-				.set(qPlaceComment.context, dto.getContext())
+				.set(qPlaceComment.content, dto.getContent())
 				.where(qPlaceComment.idx.eq(dto.getIdx())).execute();
 	}
 
@@ -446,24 +436,17 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 	 */
 	@Override
 	public Long insertPlaceReplyComment(PlaceReplyCommentDto dto) throws Exception {
-		QPlaceReplyComment qPlaceReplyComment = QPlaceReplyComment.placeReplyComment;
 
-		return jpaQueryFactory.insert(qPlaceReplyComment)
-				.columns(
-							qPlaceReplyComment.placeComment.idx
-						, 	qPlaceReplyComment.place.placeNum
-						,	qPlaceReplyComment.member.id
-						, 	qPlaceReplyComment.context
-						,	qPlaceReplyComment.createDate
-						,   qPlaceReplyComment.modifyDate
-				).values(
-						dto.getCommentIdx()
-						,dto.getPlaceNum()
-						,dto.getMemberDto().getId()
-						,dto.getContext()
-						,LocalDateTime.now()
-						,LocalDateTime.now()
-				).execute();
+		int result = entityManager.createNativeQuery("insert into place_comment_reply(member_id,comment_idx,place_num , content,create_date,modify_date) values (?,?,?,?,?,?)")
+				.setParameter(1,dto.getMemberDto().getId())
+				.setParameter(2,dto.getCommentIdx())
+				.setParameter(3,dto.getPlaceNum())
+				.setParameter(4,dto.getContent())
+				.setParameter(5,LocalDateTime.now())
+				.setParameter(6,LocalDateTime.now())
+				.executeUpdate() ;
+
+		return (long)result;
 	}
 
 	/**
@@ -476,7 +459,7 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 	public Long updatePlaceReplyComment(PlaceReplyCommentDto dto) throws Exception {
 		QPlaceReplyComment qPlaceReplyComment = QPlaceReplyComment.placeReplyComment;
 		return jpaQueryFactory.update(qPlaceReplyComment)
-				.set(qPlaceReplyComment.context,dto.getContext())
+				.set(qPlaceReplyComment.content,dto.getContent())
 				.set(qPlaceReplyComment.modifyDate, LocalDateTime.now())
 				.where(qPlaceReplyComment.idx.eq(dto.getIdx())).execute();
 	}

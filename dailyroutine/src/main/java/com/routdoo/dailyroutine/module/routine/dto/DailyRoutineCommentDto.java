@@ -49,7 +49,7 @@ public class DailyRoutineCommentDto {
     /**내용*/
     @Schema(description = "내용", defaultValue = "")
     @NotEmpty
-    private String context = "";
+    private String content = "";
     
     /**등록일자*/
     @Schema(description = "등록일자")
@@ -76,7 +76,7 @@ public class DailyRoutineCommentDto {
         this.memberId = entity.getMember().getId();
         this.memberDto = new MemberDto(entity.getMember());
         this.dailyIdx = entity.getDailyRoutine().getIdx();
-        this.context = entity.getContext();
+        this.content = entity.getContent();
         this.createDate = entity.getCreateDate();
         this.modifyDate = entity.getModifyDate();
     }
@@ -86,7 +86,7 @@ public class DailyRoutineCommentDto {
         map.put("idx",this.idx);
         map.put("memberId",this.memberId);
         map.put("dailyIdx",this.dailyIdx);
-        map.put("context",this.context);
+        map.put("context",this.content);
         map.put("createDate",this.createDate);
         map.put("modifyDate",this.modifyDate);
         return map;
@@ -100,7 +100,7 @@ public class DailyRoutineCommentDto {
         map.put("idx",this.idx);
         map.put("memberId",this.memberId);
         map.put("dailyIdx",this.dailyIdx);
-        map.put("context",this.context);
+        map.put("context",this.content);
         map.put("isUser",isCorrect);
         map.put("createDate",this.createDate);
         map.put("modifyDate",this.modifyDate);

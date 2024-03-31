@@ -63,7 +63,7 @@ public class PlaceComment {
 	
 	@Comment("내용")
 	@Lob
-	private String context;
+	private String content;
 	
 	@Comment("등록일자")
 	@CreatedDate
@@ -82,7 +82,7 @@ public class PlaceComment {
 		PlaceDto p = new PlaceDto();
 		p.setPlaceNum(dto.getPlaceNum());
 		this.place = Place.builder().dto(p).build();
-		this.context = dto.getContext();
+		this.content = dto.getContent();
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();
 	}

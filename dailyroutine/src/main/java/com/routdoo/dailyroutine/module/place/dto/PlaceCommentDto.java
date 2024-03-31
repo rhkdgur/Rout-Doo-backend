@@ -47,7 +47,7 @@ public class PlaceCommentDto {
 	@Schema(description = "내용", example = "라라라라")
 	@NotBlank
 	/**내용*/
-	private String context;
+	private String content;
 
 	@Schema(description = "등록일자", example = "2023-01-01 00:00:00 ")
 	/**등록일자*/
@@ -65,7 +65,7 @@ public class PlaceCommentDto {
 		this.idx = entity.getIdx();
 		this.memberDto = new MemberDto(entity.getMember());
 		this.placeNum = entity.getPlace().getPlaceNum();
-		this.context = entity.getContext();
+		this.content = entity.getContent();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
 	}
@@ -83,7 +83,7 @@ public class PlaceCommentDto {
 		Map<String,Object> map = new LinkedHashMap<>();
 		map.put("idx",this.idx);
 		map.put("placeNum",this.placeNum);
-		map.put("context",context);
+		map.put("content",content);
 		map.put("nickname",this.memberDto.getNickname());
 		map.put("isUser",isCorrect);
 		map.put("createDate", this.createDate);

@@ -78,7 +78,7 @@ public class DailyRoutineCommentService {
      */
     @Transactional
     public boolean insertDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception {
-        return dailyRoutineCommentRepository.insertDailyRoutineComment(dto) > 0;
+        return dailyRoutineCommentRepository.insertDailyRoutineComment(dto);
     }
 
     /**

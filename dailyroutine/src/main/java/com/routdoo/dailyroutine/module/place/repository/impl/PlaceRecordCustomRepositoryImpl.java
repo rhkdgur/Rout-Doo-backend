@@ -71,34 +71,20 @@ public class PlaceRecordCustomRepositoryImpl extends BaseAbstractRepositoryImpl 
 
     @Override
     public boolean insertPlaceRecord(PlaceRecordDto dto) throws Exception {
-        QPlaceRecord qPlaceRecord = QPlaceRecord.placeRecord;
 
-        return jpaQueryFactory.insert(qPlaceRecord)
-                .columns(
-                        qPlaceRecord.member.id,
-                        qPlaceRecord.place.placeNum,
-                        qPlaceRecord.tel,
-                        qPlaceRecord.addr,
-                        qPlaceRecord.mapx,
-                        qPlaceRecord.mapy,
-                        qPlaceRecord.useInfo,
-                        qPlaceRecord.detailText,
-                        qPlaceRecord.useType,
-                        qPlaceRecord.createDate,
-                        qPlaceRecord.modifyDate
-                ).values(
-                        dto.getMemberId(),
-                        dto.getPlaceNum(),
-                        dto.getTel(),
-                        dto.getAddr(),
-                        dto.getMapx(),
-                        dto.getMapy(),
-                        dto.getUseInfo(),
-                        dto.getDetailText(),
-                        PlaceStatusType.valueOf(dto.getUseType()),
-                        LocalDateTime.now(),
-                        LocalDateTime.now()
-                ).execute() > 0;
+        return entityManager.createNativeQuery("insert into place_record (member_id,place_num,tel,addr,mapx,mapy,use_info,detail_text,use_type,create_date,modify_date) values(?,?,?,?,?,?,?,?,?,?,?)")
+                .setParameter(1,dto.getMemberId())
+                .setParameter(2,dto.getPlaceNum())
+                .setParameter(3,dto.getTel())
+                .setParameter(4,dto.getAddr())
+                .setParameter(5,dto.getMapx())
+                .setParameter(6,dto.getMapy())
+                .setParameter(7,dto.getUseInfo())
+                .setParameter(8,dto.getDetailText())
+                .setParameter(9,PlaceStatusType.valueOf(dto.getUseType()))
+                .setParameter(10,LocalDateTime.now())
+                .setParameter(11,LocalDateTime.now())
+                .executeUpdate() > 0;
     }
 
     @Override

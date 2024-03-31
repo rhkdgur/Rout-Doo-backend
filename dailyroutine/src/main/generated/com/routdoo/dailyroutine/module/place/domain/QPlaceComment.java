@@ -22,7 +22,7 @@ public class QPlaceComment extends EntityPathBase<PlaceComment> {
 
     public static final QPlaceComment placeComment = new QPlaceComment("placeComment");
 
-    public final StringPath context = createString("context");
+    public final StringPath content = createString("content");
 
     public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);
 

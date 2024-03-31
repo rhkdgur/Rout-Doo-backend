@@ -41,7 +41,7 @@ public class PlaceReplyComment {
 
     @Comment("내용")
     @Lob
-    private String context;
+    private String content;
 
     @Comment("등록일자")
     @CreatedDate
@@ -62,7 +62,7 @@ public class PlaceReplyComment {
         this.member.addId(dto.getMemberDto().getId());
         this.place = new Place();
         this.place.addPlaceNum(dto.getPlaceNum());
-        this.context = dto.getContext();
+        this.content = dto.getContent();
     }
 
 }

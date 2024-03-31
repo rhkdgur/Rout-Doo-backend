@@ -98,20 +98,16 @@ public class PlaceRecordRemoveRepositoryImpl extends BaseAbstractRepositoryImpl 
     @Override
     public boolean insertPlaceRemove(PlaceRecordRemoveDto dto) throws Exception {
         QPlaceRecordRemove qPlaceRemove = QPlaceRecordRemove.placeRecordRemove;
-        return jpaQueryFactory.insert(qPlaceRemove)
-                .columns(
-                        qPlaceRemove.member.id,
-                        qPlaceRemove.place.placeNum,
-                        qPlaceRemove.deleteReason,
-                        qPlaceRemove.createDate,
-                        qPlaceRemove.modifyDate
-                ).values(
-                        dto.getMemberId(),
-                        dto.getPlaceNum(),
-                        dto.getDeleteReason(),
-                        LocalDateTime.now(),
-                        LocalDateTime.now()
-                ).execute() > 0;
+
+        return entityManager.createNativeQuery("insert into place_remove (member_id,place_num,approve_type,delete_reason,reject_reason,create_date,modify_date) values (?,?,?,?,?,?,?)")
+                .setParameter(1,dto.getMemberId())
+                .setParameter(2,dto.getPlaceNum())
+                .setParameter(3,dto.getApproveType())
+                .setParameter(4,dto.getDeleteReason())
+                .setParameter(5,dto.getRejectReason())
+                .setParameter(6,LocalDateTime.now())
+                .setParameter(7,LocalDateTime.now())
+                .executeUpdate() > 0;
     }
 
     @Override

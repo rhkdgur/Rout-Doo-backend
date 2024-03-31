@@ -37,7 +37,7 @@ public class PlaceReplyCommentDto {
     /**내용*/
     @Schema(description = "내용")
     @NotBlank
-    private String context = "";
+    private String content = "";
     
     /**등록일자*/
     @Schema(description = "등록일자")
@@ -60,7 +60,7 @@ public class PlaceReplyCommentDto {
         this.commentIdx = entity.getPlaceComment().getIdx();
         this.placeNum = entity.getPlace().getPlaceNum();
         this.memberDto = new MemberDto(entity.getMember());
-        this.context = entity.getContext();
+        this.content = entity.getContent();
         this.createDate = entity.getCreateDate();
         this.modifyDate = entity.getModifyDate();
     }
@@ -77,7 +77,7 @@ public class PlaceReplyCommentDto {
         map.put("idx", this.idx);
         map.put("commentIdx",this.commentIdx);
         map.put("placeNum",this.placeNum);
-        map.put("context",this.context);
+        map.put("content",this.content);
         map.put("nickname",this.memberDto.getNickname());
         map.put("isUser",isCorrect);
         map.put("createDate", this.createDate);

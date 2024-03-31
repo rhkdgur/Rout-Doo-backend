@@ -47,7 +47,7 @@ public class DailyRoutineReplyCommentDto extends BaseVo {
     /**내용*/
     @Schema(description = "내용")
     @NotEmpty
-    private String context = "";
+    private String content = "";
     
     /**등록일자*/
     @Schema(description = "등록일자")
@@ -69,7 +69,7 @@ public class DailyRoutineReplyCommentDto extends BaseVo {
         this.idx = entity.getIdx();
         this.memberId = entity.getMember().getId();
         this.commentIdx = entity.getDailyRoutineComment().getIdx();
-        this.context = entity.getContext();
+        this.content = entity.getContent();
         this.createDate = entity.getCreateDate();
         this.modifyDate = entity.getModifyDate();
         this.memberDto = new MemberDto(entity.getMember());

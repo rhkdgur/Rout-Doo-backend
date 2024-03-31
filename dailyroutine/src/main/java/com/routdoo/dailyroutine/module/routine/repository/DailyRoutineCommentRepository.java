@@ -60,7 +60,7 @@ public interface DailyRoutineCommentRepository  {
      * @return
      * @throws Exception
      */
-    Long insertDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception;
+    boolean insertDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception;
 
     /**
      * 공개 일정 댓글 수정

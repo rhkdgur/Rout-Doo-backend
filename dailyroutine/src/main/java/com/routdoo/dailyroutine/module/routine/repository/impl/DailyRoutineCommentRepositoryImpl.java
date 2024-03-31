@@ -10,6 +10,7 @@ import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCommentRepository;
 import org.qlrm.mapper.JpaResultMapper;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -45,7 +46,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
                 " id as memberId," +
                 " daily_idx as dailyIdx," +
                 " nickname," +
-                " context," +
+                " content," +
                 " mbti," +
                 " IFNULL(replyCnt,0) as replyCnt" +
                 " FROM (");
@@ -84,7 +85,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
                 " m.id as memberId," +
                 " drc.daily_idx as dailyIdx," +
                 " m.nickname as nickname," +
-                " drc.context as context," +
+                " drc.content as content," +
                 " m.mbti as mbti," +
                 " IFNULL(drcr.replyCnt,0) as replyCnt" +
                 " FROM (");
@@ -136,24 +137,14 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
     }
 
     @Override
-    public Long insertDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception {
-
-        QDailyRoutineComment qDailyRoutineComment = QDailyRoutineComment.dailyRoutineComment;
-
-        return jpaQueryFactory.insert(qDailyRoutineComment).columns(
-                qDailyRoutineComment.member.id,
-                qDailyRoutineComment.dailyRoutine.idx,
-                qDailyRoutineComment.context,
-                qDailyRoutineComment.createDate,
-                qDailyRoutineComment.modifyDate
-        ).values(
-                dto.getMemberId(),
-                dto.getDailyIdx(),
-                dto.getContext(),
-                LocalDateTime.now(),
-                LocalDateTime.now()
-        ).execute();
-
+    public boolean insertDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception {
+        return entityManager.createNativeQuery("insert into daily_routine_comment (member_id,daily_idx,content,create_date,modify_date) values (?,?,?,?,?)")
+                .setParameter(1,dto.getMemberId())
+                .setParameter(2,dto.getDailyIdx())
+                .setParameter(3,dto.getContent())
+                .setParameter(4,LocalDateTime.now())
+                .setParameter(5,LocalDateTime.now())
+                .executeUpdate() > 0;
     }
 
     @Override
@@ -162,7 +153,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
         QDailyRoutineComment qDailyRoutineComment = QDailyRoutineComment.dailyRoutineComment;
 
         return jpaQueryFactory.update(qDailyRoutineComment)
-                .set(qDailyRoutineComment.context,dto.getContext())
+                .set(qDailyRoutineComment.content,dto.getContent())
                 .where(new BooleanBuilder().and(qDailyRoutineComment.idx.eq(dto.getIdx()))).execute() > 0;
     }
 
@@ -299,22 +290,15 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
 
     @Override
     public boolean insertDailyRoutineReplyComment(DailyRoutineReplyCommentDto dto) throws Exception {
-        QDailyRoutineReplyComment qDailyRoutineReplyComment = QDailyRoutineReplyComment.dailyRoutineReplyComment;
 
-        return jpaQueryFactory.insert(qDailyRoutineReplyComment)
-                .columns(
-                        qDailyRoutineReplyComment.dailyRoutineComment.idx,
-                        qDailyRoutineReplyComment.member.id,
-                        qDailyRoutineReplyComment.context,
-                        qDailyRoutineReplyComment.createDate,
-                        qDailyRoutineReplyComment.modifyDate
-                ).values(
-                        dto.getCommentIdx(),
-                        dto.getMemberId(),
-                        dto.getContext(),
-                        dto.getCreateDate(),
-                        dto.getModifyDate()
-                ).execute() > 0;
+        return entityManager.createNativeQuery("insert into daily_routine_reply_comment(member_id,comment_idx,content,create_date,modify_date) values (?,?,?,?,?)")
+                .setParameter(1,dto.getMemberId())
+                .setParameter(2,dto.getCommentIdx())
+                .setParameter(3,dto.getContent())
+                .setParameter(4,LocalDateTime.now())
+                .setParameter(5,LocalDateTime.now())
+                .executeUpdate() > 0;
+
     }
 
     @Override
@@ -322,7 +306,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
         QDailyRoutineReplyComment qDailyRoutineReplyComment = QDailyRoutineReplyComment.dailyRoutineReplyComment;
 
         return jpaQueryFactory.update(qDailyRoutineReplyComment)
-                .set(qDailyRoutineReplyComment.context,dto.getContext())
+                .set(qDailyRoutineReplyComment.content,dto.getContent())
                 .where(new BooleanBuilder().and(qDailyRoutineReplyComment.idx.eq(dto.getIdx())))
                 .execute() > 0;
     }
@@ -343,12 +327,12 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
         int totalPage = 10;
 
         StringBuffer sql = new StringBuffer();
-        sql.append(" select idx ,context, parentIdx, member_id as memberId , nickname, create_date as createDate , gubun from (");
-        sql.append(" select idx, context, place_num as parentIdx, member_id , nickname , create_date , '놀거리' as gubun ");
+        sql.append(" select idx ,content, parentIdx, member_id as memberId , nickname, create_date as createDate , gubun from (");
+        sql.append(" select idx, content, place_num as parentIdx, member_id , nickname , create_date , '놀거리' as gubun ");
         sql.append(" from place_comment ");
         sql.append(" left join ( select id,nickname from member ) b ON place_comment.member_id = b.id ");
         sql.append(" union all ");
-        sql.append(" select idx, context, daily_idx as parentIdx, member_id , nickname , create_date , '일정' as gubun ");
+        sql.append(" select idx, content, daily_idx as parentIdx, member_id , nickname , create_date , '일정' as gubun ");
         sql.append(" from daily_routine_comment ");
         sql.append(" left join ( select id,nickname from member ) c ON daily_routine_comment.member_id = c.id ");
         sql.append(" ) T ");
@@ -359,10 +343,10 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
 
         sql = new StringBuffer();
         sql.append(" select count(*) cnt (");
-        sql.append(" select idx, context, place_num as parentIdx, member_id , create_date , '놀거리' as gubun ");
+        sql.append(" select idx, content, place_num as parentIdx, member_id , create_date , '놀거리' as gubun ");
         sql.append(" from place_comment ");
         sql.append(" union all ");
-        sql.append(" select idx, context, daily_idx as parentIdx, member_id , create_date , '일정' as gubun ");
+        sql.append(" select idx, content, daily_idx as parentIdx, member_id , create_date , '일정' as gubun ");
         sql.append(" from daily_routine_comment ");
         sql.append(" ) T ");
 

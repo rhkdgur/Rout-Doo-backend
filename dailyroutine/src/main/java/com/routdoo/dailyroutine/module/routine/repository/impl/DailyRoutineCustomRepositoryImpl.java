@@ -264,22 +264,14 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 
 
 	@Override
-	public Long insertDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception {
-		QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
-		return jpaQueryFactory.insert(qDailyRoutineLike)
-				.columns(
-						qDailyRoutineLike.dailyRoutine.idx,
-						qDailyRoutineLike.member.id,
-						qDailyRoutineLike.createDate,
-						qDailyRoutineLike.modifyDate
-				)
-				.values(
-						dto.getDailyRoutineDto().getIdx(),
-						dto.getMemberId(),
-						LocalDateTime.now(),
-						LocalDateTime.now()
-				)
-				.execute();
+	public boolean insertDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception {
+
+		return  entityManager.createNativeQuery("insert into daily_routine_like (daily_idx,member_id,create_date,modify_date) values (?,?,?,?)")
+				.setParameter(1,dto.getDailyIdx())
+				.setParameter(2,dto.getMemberId())
+				.setParameter(3,LocalDateTime.now())
+				.setParameter(4,LocalDateTime.now())
+				.executeUpdate() > 0;
 	}
 
 	@Override

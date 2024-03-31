@@ -46,7 +46,7 @@ public class DailyRoutineComment {
     
     @Comment("내용")
     @Lob
-    private String context;
+    private String content;
 
     @Comment("등록일자")
     @CreatedDate
@@ -63,7 +63,7 @@ public class DailyRoutineComment {
         member.addId(dto.getMemberId());
         this.dailyRoutine = new DailyRoutine();
         dailyRoutine.addIdx(dto.getDailyIdx());
-        this.context = dto.getContext();
+        this.content = dto.getContent();
         this.createDate = dto.getCreateDate();
         this.modifyDate = dto.getModifyDate();
     }

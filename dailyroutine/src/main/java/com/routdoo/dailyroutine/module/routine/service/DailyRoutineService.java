@@ -401,8 +401,7 @@ public class DailyRoutineService {
 	 */
 	@Transactional
 	public boolean insertDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception {
-		Long result = dailyRoutineRepository.insertDailyRoutineLike(dto);
-		return result > 0;
+		return dailyRoutineRepository.insertDailyRoutineLike(dto);
 	}
 
 	/**

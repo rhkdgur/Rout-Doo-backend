@@ -22,7 +22,7 @@ public class QDailyRoutineComment extends EntityPathBase<DailyRoutineComment> {
 
     public static final QDailyRoutineComment dailyRoutineComment = new QDailyRoutineComment("dailyRoutineComment");
 
-    public final StringPath context = createString("context");
+    public final StringPath content = createString("content");
 
     public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);
 
