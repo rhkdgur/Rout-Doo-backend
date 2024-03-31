@@ -7,6 +7,7 @@ import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineReplyComment;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,7 +31,7 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DailyRoutineCommentDto extends BaseVo {
+public class DailyRoutineCommentDto {
     
     /**일련번호*/
     @Schema(description = "일련번호", defaultValue = "0")
@@ -42,7 +43,7 @@ public class DailyRoutineCommentDto extends BaseVo {
     
     /**일정 일련번호*/
     @Schema(description = "일정 일련번호", defaultValue = "0")
-    @NotBlank
+    @NotNull
     private Long dailyIdx = 0L;
     
     /**내용*/

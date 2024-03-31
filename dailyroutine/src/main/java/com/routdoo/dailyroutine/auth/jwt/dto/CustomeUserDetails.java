@@ -12,69 +12,69 @@ import org.springframework.security.core.userdetails.UserDetails;
 import lombok.Getter;
 import lombok.Setter;
 
-public class CustomeUserDetails implements UserDetails{
-	
-	private static final long serialVersionUID = 1L;
+public class CustomeUserDetails implements UserDetails {
 
-	@Getter
-	@Setter
-	private Map<String,String> element;
+    private static final long serialVersionUID = 1L;
 
-	@Getter
-	@Setter
-	private String auth = "";
+    @Getter
+    @Setter
+    private Map<String, String> element;
 
-	private final User user = null;
+    @Getter
+    @Setter
+    private String auth = "";
 
-	public User getUser(){
-		if(element == null){
-			return null;
-		}
-		return new User(element.get("username"),element.get("password"),getAuthorities());
-	}
-	
-	public CustomeUserDetails(Map<String,String> element,String auth){
-		this.element = element;
-		this.auth = auth;
-	}
+    private final User user = null;
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return List.of(new SimpleGrantedAuthority(this.auth));
-	}
+    public User getUser() {
+        if (element == null) {
+            return null;
+        }
+        return new User(element.get("username"), element.get("password"), getAuthorities());
+    }
 
-	@Override
-	public String getPassword() {
-		return element.get("password");
-	}
+    public CustomeUserDetails(Map<String, String> element, String auth) {
+        this.element = element;
+        this.auth = auth;
+    }
 
-	@Override
-	public String getUsername() {	
-		return element.get("username");
-	}
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(this.auth));
+    }
 
-	@Override
-	public boolean isAccountNonExpired() {
-		// TODO Auto-generated method stub
-		return true;
-	}
+    @Override
+    public String getPassword() {
+        return element.get("password");
+    }
 
-	@Override
-	public boolean isAccountNonLocked() {
-		// TODO Auto-generated method stub
-		return true;
-	}
+    @Override
+    public String getUsername() {
+        return element.get("username");
+    }
 
-	@Override
-	public boolean isCredentialsNonExpired() {
-		// TODO Auto-generated method stub
-		return true;
-	}
+    @Override
+    public boolean isAccountNonExpired() {
+        // TODO Auto-generated method stub
+        return true;
+    }
 
-	@Override
-	public boolean isEnabled() {
-		// TODO Auto-generated method stub
-		return true;
-	}
+    @Override
+    public boolean isAccountNonLocked() {
+        // TODO Auto-generated method stub
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        // TODO Auto-generated method stub
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        // TODO Auto-generated method stub
+        return true;
+    }
 
 }

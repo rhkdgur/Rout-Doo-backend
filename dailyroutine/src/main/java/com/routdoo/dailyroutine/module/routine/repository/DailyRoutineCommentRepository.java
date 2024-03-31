@@ -1,5 +1,6 @@
 package com.routdoo.dailyroutine.module.routine.repository;
 
+import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDefaultDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
 import org.springframework.data.domain.Page;
@@ -26,7 +27,7 @@ public interface DailyRoutineCommentRepository  {
      * @return
      * @throws Exception
      */
-    Page<DailyRoutineCommentDto> selectDailyRoutineCommentPageList(DailyRoutineCommentDto dto) throws Exception;
+    Page<DailyRoutineCommentDto> selectDailyRoutineCommentPageList(DailyRoutineCommentDefaultDto dto) throws Exception;
 
     /**
      * 공개 일정에 대한 목록( 페이징 x)
@@ -34,7 +35,7 @@ public interface DailyRoutineCommentRepository  {
      * @return
      * @throws Exception
      */
-    List<DailyRoutineCommentDto> selectDailyRoutineCommentList(DailyRoutineCommentDto dto) throws Exception;
+    List<DailyRoutineCommentDto> selectDailyRoutineCommentList(DailyRoutineCommentDefaultDto dto) throws Exception;
 
     /**
      * 공개 일정에 대한 전체 개수
@@ -42,7 +43,7 @@ public interface DailyRoutineCommentRepository  {
      * @return
      * @throws Exception
      */
-    long selectDailyRoutineCommentTotalCount(DailyRoutineCommentDto dto) throws Exception;
+    long selectDailyRoutineCommentTotalCount(DailyRoutineCommentDefaultDto dto) throws Exception;
 
     /**
      * 공개 일정에 대한 상세 조회
@@ -59,7 +60,7 @@ public interface DailyRoutineCommentRepository  {
      * @return
      * @throws Exception
      */
-    boolean insertDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception;
+    Long insertDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception;
 
     /**
      * 공개 일정 댓글 수정

@@ -81,8 +81,6 @@ public class DailyRoutineUserController extends BaseModuleController{
 													@RequestParam(value="page",defaultValue = "1") int page
 													) throws Exception {
 		
-		modelMap = new LinkedHashMap<String, Object>();
-		
 		DailyRoutineDefaultDto searchDto = new DailyRoutineDefaultDto();
 		searchDto.setMemberId(memberSession.getMemberSession().getId());
 		searchDto.setPage(page);
@@ -114,8 +112,6 @@ public class DailyRoutineUserController extends BaseModuleController{
 	@GetMapping(API_URL+"/daily/routine/view")
 	public Map<String,Object> selectDailyRoutineList(@RequestParam("idx") Long dailyIdx,
 													 @RequestParam(value="page", defaultValue = "1") int page ) throws Exception {
-		
-		modelMap = new LinkedHashMap<String, Object>();
 
 		//초대인원
 		DailyRoutineInviteDto inviteDto = new DailyRoutineInviteDto();
@@ -146,8 +142,6 @@ public class DailyRoutineUserController extends BaseModuleController{
 	@Parameter(name = "idx", description = "스케줄 자식 idx")
 	@GetMapping(API_URL+"/daily/routine/time/line/view")
 	public Map<String,Object> selectDailyRoutineTimelineView(@RequestParam("idx") Long idx) throws Exception {
-		
-		modelMap = new LinkedHashMap<String, Object>();
 		
 		DailyRoutineTimeLineDto dto = new DailyRoutineTimeLineDto();
 		dto.setIdx(idx);
@@ -402,7 +396,6 @@ public class DailyRoutineUserController extends BaseModuleController{
 												@RequestParam(value="name",required = false) String name,
 												@RequestParam("idx") Long dailyIdx,
 												@RequestParam(value="page",defaultValue = "1") int page) throws Exception {
-		modelMap = new LinkedHashMap<>();
 		
 		//회원목록  
 		MemberDefaultDto searchDto = new MemberDefaultDto();

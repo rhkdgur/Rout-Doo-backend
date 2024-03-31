@@ -2,22 +2,21 @@ package com.routdoo.dailyroutine.module.routine.repository.impl;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.routdoo.dailyroutine.auth.member.domain.QMember;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 import com.routdoo.dailyroutine.module.routine.domain.*;
 import com.routdoo.dailyroutine.module.routine.dto.*;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCustomRepository;
-import com.routdoo.dailyroutine.module.routine.service.RoutineDayType;
 import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
@@ -64,6 +63,18 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 		}
 		return sql;
 	}
+
+    private OrderSpecifier[] commonOrderBy(DailyRoutineDefaultDto searchDto) {
+        List<OrderSpecifier> orderSpecifierList  = new ArrayList<>();
+        QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
+        //공개 커뮤니티 일경우 정렬 처리
+        if(searchDto.isCummunity()){
+            orderSpecifierList.add(new OrderSpecifier(Order.DESC,qDailyRoutine.createDate));
+        }else{
+            orderSpecifierList.add(new OrderSpecifier(Order.DESC,qDailyRoutine.idx));
+        }
+        return orderSpecifierList.toArray(new OrderSpecifier[orderSpecifierList.size()]);
+    }
 	
 	private BooleanBuilder commonTimeQuery(DailyRoutineTimeLineDefaultDto searchDto) {
 		BooleanBuilder sql = new BooleanBuilder();
@@ -107,6 +118,7 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 				.leftJoin(qDailyRoutine.member,qMember)
 				.where(commonQuery(searchDto))
 				.offset(searchDto.getPageable().getOffset())
+                .orderBy(commonOrderBy(searchDto))
 				.limit(searchDto.getPageable().getPageSize())
 				.fetch();
 

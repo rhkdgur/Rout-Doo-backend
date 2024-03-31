@@ -5,6 +5,7 @@ import com.querydsl.core.Tuple;
 import com.routdoo.dailyroutine.auth.member.domain.QMember;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 import com.routdoo.dailyroutine.module.routine.domain.*;
+import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDefaultDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCommentRepository;
@@ -36,7 +37,7 @@ import java.util.Map;
 public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImpl implements DailyRoutineCommentRepository {
 
     @Override
-    public Page<DailyRoutineCommentDto> selectDailyRoutineCommentPageList(DailyRoutineCommentDto dto) throws Exception {
+    public Page<DailyRoutineCommentDto> selectDailyRoutineCommentPageList(DailyRoutineCommentDefaultDto dto) throws Exception {
         StringBuffer sql = new StringBuffer();
 
         sql.append("SELECT  " +
@@ -74,7 +75,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
     }
 
     @Override
-    public List<DailyRoutineCommentDto> selectDailyRoutineCommentList(DailyRoutineCommentDto dto) throws Exception {
+    public List<DailyRoutineCommentDto> selectDailyRoutineCommentList(DailyRoutineCommentDefaultDto dto) throws Exception {
 
         StringBuffer sql = new StringBuffer();
 
@@ -98,7 +99,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
     }
 
     @Override
-    public long selectDailyRoutineCommentTotalCount(DailyRoutineCommentDto dto) throws Exception {
+    public long selectDailyRoutineCommentTotalCount(DailyRoutineCommentDefaultDto dto) throws Exception {
         QDailyRoutineComment qDailyRoutineComment = QDailyRoutineComment.dailyRoutineComment;
         QMember qMember = QMember.member;
         QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
@@ -135,7 +136,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
     }
 
     @Override
-    public boolean insertDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception {
+    public Long insertDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception {
 
         QDailyRoutineComment qDailyRoutineComment = QDailyRoutineComment.dailyRoutineComment;
 
@@ -146,12 +147,13 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
                 qDailyRoutineComment.createDate,
                 qDailyRoutineComment.modifyDate
         ).values(
-            dto.getMemberId(),
+                dto.getMemberId(),
                 dto.getDailyIdx(),
                 dto.getContext(),
                 LocalDateTime.now(),
                 LocalDateTime.now()
-        ).execute() > 0;
+        ).execute();
+
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.routdoo.dailyroutine.module.routine.service;
 
+import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDefaultDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCommentRepository;
@@ -35,7 +36,7 @@ public class DailyRoutineCommentService {
      * @return
      * @throws Exception
      */
-    public Page<DailyRoutineCommentDto> selectDailyRoutineCommentPageList(DailyRoutineCommentDto dto) throws Exception {
+    public Page<DailyRoutineCommentDto> selectDailyRoutineCommentPageList(DailyRoutineCommentDefaultDto dto) throws Exception {
         return dailyRoutineCommentRepository.selectDailyRoutineCommentPageList(dto);
     }
 
@@ -45,7 +46,7 @@ public class DailyRoutineCommentService {
      * @return
      * @throws Exception
      */
-    public List<DailyRoutineCommentDto> selectDailyRoutineCommentList(DailyRoutineCommentDto dto) throws Exception {
+    public List<DailyRoutineCommentDto> selectDailyRoutineCommentList(DailyRoutineCommentDefaultDto dto) throws Exception {
         return dailyRoutineCommentRepository.selectDailyRoutineCommentList(dto);
     }
 
@@ -55,7 +56,7 @@ public class DailyRoutineCommentService {
      * @return
      * @throws Exception
      */
-    public long selectDailyRoutineCommentTotalCount(DailyRoutineCommentDto dto) throws Exception {
+    public long selectDailyRoutineCommentTotalCount(DailyRoutineCommentDefaultDto dto) throws Exception {
         return dailyRoutineCommentRepository.selectDailyRoutineCommentTotalCount(dto);
     }
 
@@ -77,7 +78,7 @@ public class DailyRoutineCommentService {
      */
     @Transactional
     public boolean insertDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception {
-        return dailyRoutineCommentRepository.insertDailyRoutineComment(dto);
+        return dailyRoutineCommentRepository.insertDailyRoutineComment(dto) > 0;
     }
 
     /**

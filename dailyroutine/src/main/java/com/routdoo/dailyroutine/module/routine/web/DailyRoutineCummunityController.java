@@ -61,9 +61,10 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     @Operation(summary = "일정 중 제일 많은 태그 목록 조회",description = "파라미터 따로 요청안함")
     @GetMapping(API_URL+"/daily/routine/most/tag/list")
     public Map<String,Object> selectDailyRoutineTagMostList() throws Exception {
-        modelMap = new LinkedHashMap<>();
+
         List<Map<String,Object>> resultList = dailyRoutineService.selectDailyRoutineTagMostList();
         modelMap.put("tagList",resultList);
+
         return modelMap;
     }
 
@@ -120,7 +121,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
         modelMap.put("dailyRoutineTimes",dailyRoutineDto.getTimeList().stream().map(DailyRoutineTimeLineDto::toSummaryMap).toList());
         
         //코멘트 조회
-        DailyRoutineCommentDto commentDto = new DailyRoutineCommentDto();
+        DailyRoutineCommentDefaultDto commentDto = new DailyRoutineCommentDefaultDto();
         commentDto.setDailyIdx(dailyRoutineDto.getIdx());
         Page<DailyRoutineCommentDto> commentDtos = dailyRoutineCommentService.selectDailyRoutineCommentPageList(commentDto);
 
@@ -158,8 +159,6 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     @GetMapping(API_URL+"/daily/routine/reply/comment")
     public Map<String,Object> selectDailyRoutineReplyComment(@RequestParam("commentIdx") Long idx,
                                                              @RequestParam(value="cpage",defaultValue = "1") int page) throws Exception {
-
-        modelMap = new LinkedHashMap<>();
 
         DailyRoutineReplyCommentDto replyCommentDto = new DailyRoutineReplyCommentDto();
         replyCommentDto.setCommentIdx(idx);
@@ -205,6 +204,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
                 return new ResponseEntity<>("등록에 실패하였습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
             }
         }catch (Exception e) {
+            e.printStackTrace();
             logger.error("### insert daily routine comment error : {}",e.getMessage());
             return new ResponseEntity<>("등록시 오류가 발생했습니다.", HttpStatus.BAD_REQUEST);
         }

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
  * 
@@ -23,7 +24,13 @@ public class BaseController {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	/**결과 처리 Map*/
-	protected Map<String,Object> modelMap = new LinkedHashMap<>();
+	protected Map<String,Object> modelMap = null;
 
 	protected final String MGN_URL = "/mgn";
+
+	//modelMap 초기화
+	@ModelAttribute
+	protected void initModelMap(){
+		modelMap = new LinkedHashMap<>();
+	}
 }
