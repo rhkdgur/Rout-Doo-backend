@@ -124,10 +124,18 @@ public class DailyRoutineUserController extends BaseModuleController{
 		dailyRoutineDto.setIdx(dailyIdx);
 		dailyRoutineDto = dailyRoutineService.selectDailyRoutineView(dailyRoutineDto);
 
+		List<Map<String,Object>> resultList = dailyRoutineDto.getTimeList().stream().map(DailyRoutineTimeLineDto::toMap).toList();
+
+		int totalCost = 0;
+		for(Map<String,Object> map : resultList) {
+			totalCost += Integer.parseInt((String)map.get("cost"));
+		}
+
 		//일정 대표 정보
 		modelMap.put("dailyRoutineDto", dailyRoutineDto.toSummaryMap());
 		//일정 타임라인 정보
-		modelMap.put("resultList", dailyRoutineDto.getTimeList().stream().map(DailyRoutineTimeLineDto::toMap).toList());
+		modelMap.put("resultList", resultList);
+		modelMap.put("totalCost",totalCost);
 		
 		return modelMap;
 	}

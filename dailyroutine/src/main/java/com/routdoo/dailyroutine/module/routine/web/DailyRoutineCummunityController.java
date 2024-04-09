@@ -118,8 +118,15 @@ public class DailyRoutineCummunityController extends BaseModuleController {
 
         modelMap.put("memberDto",memberDto.getSummaryInfo());
         modelMap.put("dailyRoutine",dailyRoutineDto.toSummaryMap());
-        modelMap.put("dailyRoutineTimes",dailyRoutineDto.getTimeList().stream().map(DailyRoutineTimeLineDto::toSummaryMap).toList());
-        
+
+        List<Map<String,Object>> timeList = dailyRoutineDto.getTimeList().stream().map(DailyRoutineTimeLineDto::toSummaryMap).toList();
+        int totalCost = 0;
+        for(Map<String,Object> map : timeList) {
+            totalCost += Integer.parseInt((String)map.get("cost"));
+        }
+        modelMap.put("dailyRoutineTimes",timeList);
+        modelMap.put("totalCost",totalCost);
+
         //코멘트 조회
         DailyRoutineCommentDefaultDto commentDto = new DailyRoutineCommentDefaultDto();
         commentDto.setDailyIdx(dailyRoutineDto.getIdx());
@@ -127,6 +134,34 @@ public class DailyRoutineCummunityController extends BaseModuleController {
 
         Map<String,Object> commentMap = new LinkedHashMap<>();
 
+        String memberId = memberSession.isAuthenticated() ? memberSession.getMemberSession().getId() : "";
+
+        List<Map<String,Object>> commentDtoList = new ArrayList<>();
+        for(DailyRoutineCommentDto dto : commentDtos){
+            commentDtoList.add(dto.toSummaryMap(memberId));
+        }
+
+        commentMap.put("content",commentDtoList);
+        commentMap.put("totalElements",commentDtos.getTotalElements());
+        commentMap.put("totalPages",commentDtos.getTotalPages());
+        commentMap.put("pageable",commentDtos.getPageable());
+
+        modelMap.put("commentList",commentMap);
+
+        return modelMap;
+    }
+
+    @Operation(summary = "공개 일정 댓글 목록" , description = "일정에 대한 댓글 정보 목록을 가져옵니다.")
+    @Parameter(name="dailyIdx" ,description = "일정 일련번호")
+    @GetMapping(API_URL+"/daily/routine/comment/list")
+    public Map<String,Object> selectDailyRoutineCommentList(@RequestParam("dailyIdx") Long idx) throws Exception {
+
+        //코멘트 조회
+        DailyRoutineCommentDefaultDto commentDto = new DailyRoutineCommentDefaultDto();
+        commentDto.setDailyIdx(idx);
+        Page<DailyRoutineCommentDto> commentDtos = dailyRoutineCommentService.selectDailyRoutineCommentPageList(commentDto);
+
+        Map<String,Object> commentMap = new LinkedHashMap<>();
         String memberId = memberSession.isAuthenticated() ? memberSession.getMemberSession().getId() : "";
 
         List<Map<String,Object>> commentDtoList = new ArrayList<>();
