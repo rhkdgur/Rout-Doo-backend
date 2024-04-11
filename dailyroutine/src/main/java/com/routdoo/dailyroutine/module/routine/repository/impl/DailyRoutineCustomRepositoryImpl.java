@@ -4,6 +4,9 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringPath;
 import com.routdoo.dailyroutine.auth.member.domain.QMember;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 import com.routdoo.dailyroutine.module.routine.domain.*;
@@ -37,31 +40,40 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 	private BooleanBuilder commonQuery(DailyRoutineDefaultDto searchDto) {
 		BooleanBuilder sql = new BooleanBuilder();
 		QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
-		QDailyRoutineTimeLine qDailyRoutineTimeLine = QDailyRoutineTimeLine.dailyRoutineTimeLine;
 
-		if(searchDto.getSstring() != null && !searchDto.getSstring().isEmpty()) {
+		if (searchDto.getSstring() != null && !searchDto.getSstring().isEmpty()) {
 			//커뮤니티 검색
-			if(searchDto.isCummunity()){
+			if (searchDto.isCummunity() && !searchDto.isFullTextSearch()) {
 				sql.and(
-						qDailyRoutineTimeLine.addr.like("%"+searchDto.getSstring()+"%")
-								.or(qDailyRoutineTimeLine.placeName.like("%"+searchDto.getSstring()+"%"))
-										.or(qDailyRoutine.tag.like("%"+searchDto.getSstring()+"%"))
+						qDailyRoutine.title.like("%" + searchDto.getSstring() + "%")
+								.or(qDailyRoutine.member.nickname.like("%" + searchDto.getSstring() + "%"))
+								.or(qDailyRoutine.tag.like("%" + searchDto.getSstring() + "%"))
 				);
 			}
 		}
-		if(searchDto.getMemberId() != null && !searchDto.getMemberId().isEmpty()) {
+		if (searchDto.getMemberId() != null && !searchDto.getMemberId().isEmpty()) {
 			sql.and(qDailyRoutine.member.id.eq(searchDto.getMemberId()));
 		}
-		if(searchDto.getIdx() != 0L) {
+		if (searchDto.getIdx() != 0L) {
 			sql.and(qDailyRoutine.idx.eq(searchDto.getIdx()));
 		}
-		if(searchDto.getToDate() != null && !searchDto.getToDate().isEmpty()) {
+		if (searchDto.getToDate() != null && !searchDto.getToDate().isEmpty()) {
 			sql.and(qDailyRoutine.startDate.loe(searchDto.getToDate()).and(qDailyRoutine.endDate.goe(searchDto.getToDate())));
 		}
-		if(searchDto.getRangeType() != null && !searchDto.getRangeType().isEmpty()){
+		if (searchDto.getRangeType() != null && !searchDto.getRangeType().isEmpty()) {
 			sql.and(qDailyRoutine.rangeType.eq(RoutineRangeConfigType.valueOf(searchDto.getRangeType())));
 		}
 		return sql;
+	}
+
+	public BooleanExpression cummunitySearch(StringPath target,StringPath target2, String keyword){
+		if(!keyword.isEmpty()) {
+			final String formattedSearchWord = "\"" + keyword + "\"";
+			return Expressions.numberTemplate(Double.class, "function('match_daily_routine_community', {0},{1},{2})",
+					target,target2, formattedSearchWord).gt(0);
+		}else{
+			return null;
+		}
 	}
 
     private OrderSpecifier[] commonOrderBy(DailyRoutineDefaultDto searchDto) {
@@ -98,9 +110,9 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 	public Page<DailyRoutineDto> selectDailyRoutinePageList(DailyRoutineDefaultDto searchDto) {
 		QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
 		QMember qMember = QMember.member;
-		
-		long cnt = jpaQueryFactory.select(qDailyRoutine.count()).from(qDailyRoutine)
-				.where(commonQuery(searchDto)).fetchFirst();
+		long cnt = 0L;
+		cnt = jpaQueryFactory.select(qDailyRoutine.count()).from(qDailyRoutine)
+				.where(cummunitySearch(qDailyRoutine.title,qDailyRoutine.tag,searchDto.getSstring()),commonQuery(searchDto)).fetchFirst();
 		
 		List<Tuple> list = jpaQueryFactory
 				.select(qDailyRoutine.idx,
@@ -116,7 +128,7 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 						qDailyRoutine.modifyDate)
 				.from(qDailyRoutine)
 				.leftJoin(qDailyRoutine.member,qMember)
-				.where(commonQuery(searchDto))
+				.where(cummunitySearch(qDailyRoutine.title,qDailyRoutine.tag,searchDto.getSstring()),commonQuery(searchDto))
 				.offset(searchDto.getPageable().getOffset())
                 .orderBy(commonOrderBy(searchDto))
 				.limit(searchDto.getPageable().getPageSize())

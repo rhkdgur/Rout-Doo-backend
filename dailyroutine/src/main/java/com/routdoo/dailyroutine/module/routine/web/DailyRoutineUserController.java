@@ -128,7 +128,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 
 		int totalCost = 0;
 		for(Map<String,Object> map : resultList) {
-			totalCost += Integer.parseInt((String)map.get("cost"));
+			totalCost += (int)map.get("cost");
 		}
 
 		//일정 대표 정보

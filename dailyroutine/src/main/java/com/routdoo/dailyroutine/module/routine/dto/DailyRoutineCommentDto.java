@@ -81,6 +81,17 @@ public class DailyRoutineCommentDto {
         this.modifyDate = entity.getModifyDate();
     }
 
+    public DailyRoutineCommentDto(long idx, String memberId, long dailyIdx, String nickname, String content, String mbti,
+                                  long replyCnt){
+        this.idx = idx;
+        this.memberId = memberId;
+        this.dailyIdx = dailyIdx;
+        this.memberDto.setNickname(nickname);
+        this.content = content;
+        this.memberDto.setMbti(mbti);
+        this.replyCnt = (int) replyCnt;
+    }
+
     public Map<String,Object> toSummaryMap(){
         Map<String,Object> map = new LinkedHashMap<>();
         map.put("idx",this.idx);

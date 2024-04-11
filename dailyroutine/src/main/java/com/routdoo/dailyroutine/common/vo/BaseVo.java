@@ -27,6 +27,8 @@ import lombok.Setter;
 public class BaseVo implements Serializable{
 
 	protected static final long serialVersionUID = 1L;
+
+	protected boolean fullTextSearch = false;
 	
 	/**공통 입력*/
 	protected String sstring = "";

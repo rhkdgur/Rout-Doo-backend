@@ -84,7 +84,8 @@ public class DailyRoutineCummunityController extends BaseModuleController {
         searchDto.setSstring(sstring);
         searchDto.setPage(page);
         searchDto.setRangeType(RoutineRangeConfigType.PUBLIC.name());
-        searchDto.setCummunity(true);
+//        searchDto.setCummunity(true);
+        searchDto.setFullTextSearch(true);
 
         Page<DailyRoutineDto> resultList = dailyRoutineService.selectDailyRoutinePageList(searchDto);
 
@@ -119,10 +120,10 @@ public class DailyRoutineCummunityController extends BaseModuleController {
         modelMap.put("memberDto",memberDto.getSummaryInfo());
         modelMap.put("dailyRoutine",dailyRoutineDto.toSummaryMap());
 
-        List<Map<String,Object>> timeList = dailyRoutineDto.getTimeList().stream().map(DailyRoutineTimeLineDto::toSummaryMap).toList();
+        List<Map<String,Object>> timeList = dailyRoutineDto.getTimeList().stream().map(DailyRoutineTimeLineDto::toMap).toList();
         int totalCost = 0;
         for(Map<String,Object> map : timeList) {
-            totalCost += Integer.parseInt((String)map.get("cost"));
+            totalCost +=  (int)map.get("cost");
         }
         modelMap.put("dailyRoutineTimes",timeList);
         modelMap.put("totalCost",totalCost);
