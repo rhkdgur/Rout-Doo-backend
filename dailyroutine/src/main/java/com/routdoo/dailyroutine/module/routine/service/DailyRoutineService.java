@@ -97,11 +97,11 @@ public class DailyRoutineService {
 
 		DailyRoutine dr = dailyRoutineRepository.findById(dto.getIdx()).orElse(null);
 		if(dr != null) {
-			DailyRoutineTimeLineDefaultDto searchDto = new DailyRoutineTimeLineDefaultDto();
-			searchDto.setDailyIdx(dto.getIdx());
-			List<DailyRoutineTimeLineDto> list = this.selectDailyRoutineTimeLineList(searchDto);
+//			DailyRoutineTimeLineDefaultDto searchDto = new DailyRoutineTimeLineDefaultDto();
+//			searchDto.setDailyIdx(dto.getIdx());
+//			List<DailyRoutineTimeLineDto> list = this.selectDailyRoutineTimeLineList(searchDto);
 			dto = new DailyRoutineDto(dr);
-			dto.setTimeList(list);
+//			dto.setTimeList(list);
 		}else {
 			return null;
 		}

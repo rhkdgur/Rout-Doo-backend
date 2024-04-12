@@ -31,5 +31,16 @@ public class DailyRoutineTimeLineDefaultDto extends BaseVo{
 	/**일상 일련번호*/
 	@Schema(description = "일정 일련번호")
 	private Long dailyIdx = 0L;
+
+	@Schema(description = "적용일자")
+	private String applyDate = "";
+	
+	@Schema(description = "시작일자")
+	/**시작일자*/
+	private String startDate = "";
+	
+	@Schema(description = "마지막일자")
+	/**마지막일자*/
+	private String endDate = "";
 	
 }

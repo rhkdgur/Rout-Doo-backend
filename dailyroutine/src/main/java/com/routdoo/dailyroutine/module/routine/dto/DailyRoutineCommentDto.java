@@ -110,6 +110,8 @@ public class DailyRoutineCommentDto {
 
         map.put("idx",this.idx);
         map.put("memberId",this.memberId);
+        map.put("nickname",this.memberDto.getNickname());
+        map.put("mbti",this.memberDto.getMbti());
         map.put("dailyIdx",this.dailyIdx);
         map.put("context",this.content);
         map.put("isUser",isCorrect);

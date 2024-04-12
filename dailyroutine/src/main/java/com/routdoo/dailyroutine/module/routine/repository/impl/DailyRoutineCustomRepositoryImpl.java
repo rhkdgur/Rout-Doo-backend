@@ -8,6 +8,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringPath;
 import com.routdoo.dailyroutine.auth.member.domain.QMember;
+import com.routdoo.dailyroutine.cms.publiccode.domain.QPublicCode;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 import com.routdoo.dailyroutine.module.routine.domain.*;
 import com.routdoo.dailyroutine.module.routine.dto.*;
@@ -87,6 +88,14 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
         }
         return orderSpecifierList.toArray(new OrderSpecifier[orderSpecifierList.size()]);
     }
+
+	private OrderSpecifier[] commonTimeOrderBy(DailyRoutineTimeLineDefaultDto searchDto) {
+		List<OrderSpecifier> list = new ArrayList<>();
+		QDailyRoutineTimeLine qDailyRoutineTimeLine = QDailyRoutineTimeLine.dailyRoutineTimeLine;
+		list.add(new OrderSpecifier(Order.ASC,qDailyRoutineTimeLine.shour));
+		list.add(new OrderSpecifier(Order.ASC,qDailyRoutineTimeLine.smin));
+		return list.toArray(new OrderSpecifier[list.size()]);
+	}
 	
 	private BooleanBuilder commonTimeQuery(DailyRoutineTimeLineDefaultDto searchDto) {
 		BooleanBuilder sql = new BooleanBuilder();
@@ -101,6 +110,9 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 		if(searchDto.getDailyIdx() != 0) {
 			sql.and(qDailyRoutineTimeLine.dailyRoutine.idx.eq(searchDto.getDailyIdx()));
 		}
+		if(searchDto.getApplyDate() != null && !searchDto.getApplyDate().isEmpty()){
+			sql.and(qDailyRoutineTimeLine.applyDate.eq(searchDto.getApplyDate()));
+		}
 		
 		return sql;
 	}
@@ -110,6 +122,7 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 	public Page<DailyRoutineDto> selectDailyRoutinePageList(DailyRoutineDefaultDto searchDto) {
 		QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
 		QMember qMember = QMember.member;
+		QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
 		long cnt = 0L;
 		cnt = jpaQueryFactory.select(qDailyRoutine.count()).from(qDailyRoutine)
 				.where(cummunitySearch(qDailyRoutine.title,qDailyRoutine.tag,searchDto.getSstring()),commonQuery(searchDto)).fetchFirst();
@@ -125,9 +138,11 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 						qDailyRoutine.dayType.stringValue(),
 						qDailyRoutine.rangeType.stringValue(),
 						qDailyRoutine.createDate,
-						qDailyRoutine.modifyDate)
+						qDailyRoutine.modifyDate,
+						qDailyRoutineLike.idx)
 				.from(qDailyRoutine)
 				.leftJoin(qDailyRoutine.member,qMember)
+				.leftJoin(qDailyRoutineLike).on(qMember.id.eq(qDailyRoutineLike.member.id))
 				.where(cummunitySearch(qDailyRoutine.title,qDailyRoutine.tag,searchDto.getSstring()),commonQuery(searchDto))
 				.offset(searchDto.getPageable().getOffset())
                 .orderBy(commonOrderBy(searchDto))
@@ -150,6 +165,7 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 			dto.setRangeType(tuple.get(qDailyRoutine.rangeType.stringValue()));
 			dto.setCreateDate(tuple.get(qDailyRoutine.createDate));
 			dto.setModifyDate(tuple.get(qDailyRoutine.modifyDate));
+			dto.setLikeYn(tuple.get(qDailyRoutineLike.idx) == 0 ? "N" : "Y");
 			dtos.add(dto);
 		}
 		
@@ -211,7 +227,7 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 	public List<DailyRoutineTimeLineDto> selectDailyRoutineTimeLineList(DailyRoutineTimeLineDefaultDto searchDto) {
 		QDailyRoutineTimeLine qDailyRoutineTimeLine = QDailyRoutineTimeLine.dailyRoutineTimeLine;
 		List<DailyRoutineTimeLine> list = jpaQueryFactory.selectFrom(qDailyRoutineTimeLine).
-				where(commonTimeQuery(searchDto)).fetch();
+				where(commonTimeQuery(searchDto)).orderBy(commonTimeOrderBy(searchDto)).fetch();
 		return list.stream().map(DailyRoutineTimeLineDto::new).collect(Collectors.toList());
 	}
 
@@ -231,7 +247,7 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 				.where(commonTimeQuery(searchDto)).fetchOne();
 		
 		List<DailyRoutineTimeLine> list = jpaQueryFactory.selectFrom(qDailyRoutineTimeLine).
-		where(commonTimeQuery(searchDto))
+		where(commonTimeQuery(searchDto)).orderBy(commonTimeOrderBy(searchDto))
 		.offset(searchDto.getPageable().getOffset())
 		.limit(searchDto.getPageable().getPageSize())
 		.fetch();

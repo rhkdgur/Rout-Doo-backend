@@ -2,12 +2,15 @@ package com.routdoo.dailyroutine.module.routine.web;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
+import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineTimeLine;
 import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import org.antlr.v4.runtime.tree.Tree;
 import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -124,19 +127,47 @@ public class DailyRoutineUserController extends BaseModuleController{
 		dailyRoutineDto.setIdx(dailyIdx);
 		dailyRoutineDto = dailyRoutineService.selectDailyRoutineView(dailyRoutineDto);
 
-		List<Map<String,Object>> resultList = dailyRoutineDto.getTimeList().stream().map(DailyRoutineTimeLineDto::toMap).toList();
+//		List<Map<String,Object>> resultList = dailyRoutineDto.getTimeList().stream().map(DailyRoutineTimeLineDto::toMap).toList();
+//
+//		int totalCost = 0;
+//		for(Map<String,Object> map : resultList) {
+//			totalCost += (int)map.get("cost");
+//		}
+
+		//일정 대표 정보
+		modelMap.put("dailyRoutineDto", dailyRoutineDto.toSummaryMap());
+//		//일정 타임라인 정보
+//		modelMap.put("resultList", resultList);
+//		modelMap.put("totalCost",totalCost);
+		
+		return modelMap;
+	}
+
+	@Operation(summary="사용자 스케줄 타임라인 목록 조회")
+	@Parameter(name = "dailyIdx", description = "스케줄 부모 idx")
+	@GetMapping(API_URL+"/daily/routine/time/line/list")
+	public Map<String,Object> selectDailyRoutineTimeLineList(@RequestParam("dailyIdx") Long dailyIdx) throws Exception {
+
+		//일정 타임라인 정보 조회
+		DailyRoutineTimeLineDefaultDto searchDto = new DailyRoutineTimeLineDefaultDto();
+		searchDto.setDailyIdx(dailyIdx);
+		List<DailyRoutineTimeLineDto> list = dailyRoutineService.selectDailyRoutineTimeLineList(searchDto);
+		List<Map<String,Object>> resultList = list.stream().map(DailyRoutineTimeLineDto::toMap).toList();
 
 		int totalCost = 0;
 		for(Map<String,Object> map : resultList) {
 			totalCost += (int)map.get("cost");
 		}
 
-		//일정 대표 정보
-		modelMap.put("dailyRoutineDto", dailyRoutineDto.toSummaryMap());
+		//날짜별 정렬하여 전달
+		TreeMap<String,List<Map<String,Object>>> resultMap = resultList.stream().collect(Collectors.groupingBy(x-> x.get("applyDate").toString(),
+				TreeMap::new,
+				Collectors.toList()));
+
 		//일정 타임라인 정보
-		modelMap.put("resultList", resultList);
+		modelMap.put("timeList", resultMap);
 		modelMap.put("totalCost",totalCost);
-		
+
 		return modelMap;
 	}
 	
@@ -446,15 +477,16 @@ public class DailyRoutineUserController extends BaseModuleController{
 	 */
 	@Operation(summary="친구 초대")
 	@Parameters(value={
-		@Parameter(name = "dailyIdx", description="부모 일련번호"),
+		@Parameter(name = "dailyIdx", description="부모 일련번호"), @Parameter(name = "memberId", description="초대 아이디"),
 	})
 	@PostMapping(value=API_URL+"/daily/routine/invite/ins")
-	public ResponseEntity<String> insertDailyRoutineInvite(@RequestParam(value = "dailyIdx") Long dailyIdx) throws Exception {
+	public ResponseEntity<String> insertDailyRoutineInvite(@RequestParam(value = "dailyIdx") Long dailyIdx,
+														   @RequestParam(value = "memberId") String memberId) throws Exception {
 		RoutineServiceResult<?> result = null;
 		try {
 			DailyRoutineInviteDto dto = new DailyRoutineInviteDto();
 			dto.setDailyIdx(dailyIdx);
-			dto.setMemberId(memberSession.getMemberSession().getId());
+			dto.setMemberId(memberId);
 			result = dailyRoutineService.insertDailyRoutineInvite(dto);
 			if(!RoutineResultCodeType.OK.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<String>(result.getMessage(),HttpStatus.UNPROCESSABLE_ENTITY);
@@ -500,16 +532,20 @@ public class DailyRoutineUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
-	@Operation(summary = "일정 지도")
+	@Operation(summary = "일정 지도 보기")
 	@Parameter(name="dailyIdx", description = "일정 일련번호")
 	@GetMapping(API_URL+"/daily/routine/plan/map")
-	public Map<String, Object> selectDailyRoutinePlanMap(@RequestParam("dailyIdx") Long idx) throws Exception {
+	public Map<String, Object> selectDailyRoutinePlanMap(@RequestParam("dailyIdx") Long idx,
+														 @RequestParam(value = "applyDate", defaultValue = "") String applyDate) throws Exception {
 
 		DailyRoutineTimeLineDefaultDto searchDto = new DailyRoutineTimeLineDefaultDto();
+		searchDto.setDailyIdx(idx);
+		searchDto.setApplyDate(applyDate);
 
 		List<DailyRoutineTimeLineDto> resultList = dailyRoutineService.selectDailyRoutineTimeLineList(searchDto);
+		List<Map<String,Object>> resultMap = resultList.stream().map(DailyRoutineTimeLineDto::toMap).toList();
 
-		modelMap.put("mapList", resultList);
+		modelMap.put("mapList", resultMap);
 
 		return modelMap;
 	}

@@ -23,10 +23,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * packageName    : com.routdoo.dailyroutine.module.routine.web
@@ -125,29 +123,11 @@ public class DailyRoutineCummunityController extends BaseModuleController {
         for(Map<String,Object> map : timeList) {
             totalCost +=  (int)map.get("cost");
         }
-        modelMap.put("dailyRoutineTimes",timeList);
+
+        TreeMap<String,List<Map<String,Object>>> resultMap = timeList.stream().collect(Collectors.groupingBy(x-> x.get("applyDate").toString(),TreeMap::new , Collectors.toList()));
+
+        modelMap.put("timeList",resultMap);
         modelMap.put("totalCost",totalCost);
-
-        //코멘트 조회
-        DailyRoutineCommentDefaultDto commentDto = new DailyRoutineCommentDefaultDto();
-        commentDto.setDailyIdx(dailyRoutineDto.getIdx());
-        Page<DailyRoutineCommentDto> commentDtos = dailyRoutineCommentService.selectDailyRoutineCommentPageList(commentDto);
-
-        Map<String,Object> commentMap = new LinkedHashMap<>();
-
-        String memberId = memberSession.isAuthenticated() ? memberSession.getMemberSession().getId() : "";
-
-        List<Map<String,Object>> commentDtoList = new ArrayList<>();
-        for(DailyRoutineCommentDto dto : commentDtos){
-            commentDtoList.add(dto.toSummaryMap(memberId));
-        }
-
-        commentMap.put("content",commentDtoList);
-        commentMap.put("totalElements",commentDtos.getTotalElements());
-        commentMap.put("totalPages",commentDtos.getTotalPages());
-        commentMap.put("pageable",commentDtos.getPageable());
-
-        modelMap.put("commentList",commentMap);
 
         return modelMap;
     }

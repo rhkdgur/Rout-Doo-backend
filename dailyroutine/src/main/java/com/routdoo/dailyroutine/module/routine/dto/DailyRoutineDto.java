@@ -84,6 +84,9 @@ public class DailyRoutineDto {
 	@Schema(description = "닉네임")
 	private String nickname = "";
 
+	@Schema(description = "좋아요 여부")
+	private String likeYn = "";
+
 	@Schema(description = "타임라인 리스트")
 	private List<DailyRoutineTimeLineDto> timeList = new ArrayList<DailyRoutineTimeLineDto>();
 	
@@ -132,6 +135,7 @@ public class DailyRoutineDto {
 	}
 
 	// 일자별 타임라인 map 처리
+	//현재는 사용안함.... 분리를 해버림..
 	public Map<String,Object> getGroupTimeMap() {
 		Map<String,Object> groupMap = new LinkedHashMap<>();
 
