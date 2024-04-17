@@ -76,7 +76,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     @Parameter(name="sstring", description = "검색어")
     @GetMapping(API_URL+"/daily/routine/plan/list")
     public Map<String,Object> selectDailyRoutinePlanList(@RequestParam(value = "sstring",defaultValue = "") String sstring,
-                                                         @RequestParam(value = "page",defaultValue =  "1") int page) throws Exception{
+                                                         @RequestParam(value = "cpage",defaultValue =  "1") int page) throws Exception{
 
         DailyRoutineDefaultDto searchDto = new DailyRoutineDefaultDto();
         searchDto.setSstring(sstring);
@@ -135,11 +135,13 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     @Operation(summary = "공개 일정 댓글 목록" , description = "일정에 대한 댓글 정보 목록을 가져옵니다.")
     @Parameter(name="dailyIdx" ,description = "일정 일련번호")
     @GetMapping(API_URL+"/daily/routine/comment/list")
-    public Map<String,Object> selectDailyRoutineCommentList(@RequestParam("dailyIdx") Long idx) throws Exception {
+    public Map<String,Object> selectDailyRoutineCommentList(@RequestParam("dailyIdx") Long idx,
+                                                            @RequestParam(value="cpage",defaultValue = "1") int page) throws Exception {
 
         //코멘트 조회
         DailyRoutineCommentDefaultDto commentDto = new DailyRoutineCommentDefaultDto();
         commentDto.setDailyIdx(idx);
+        commentDto.setPage(page);
         Page<DailyRoutineCommentDto> commentDtos = dailyRoutineCommentService.selectDailyRoutineCommentPageList(commentDto);
 
         Map<String,Object> commentMap = new LinkedHashMap<>();

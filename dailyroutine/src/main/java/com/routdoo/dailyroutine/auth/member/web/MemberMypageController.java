@@ -99,7 +99,7 @@ public class MemberMypageController extends BaseModuleController {
     @Operation(summary = "마이페이지 일정 보관 목록")
     @Parameter(name = "page", description = "페이지 번호")
     @GetMapping(API_URL+"/mypage/daily/like/list")
-    public Map<String,Object> selectMypageDailyLikeList(@RequestParam("page") int page) throws Exception {
+    public Map<String,Object> selectMypageDailyLikeList(@RequestParam(value="page",defaultValue = "1") int page) throws Exception {
 
         modelMap = new LinkedHashMap<>();
 
@@ -123,7 +123,7 @@ public class MemberMypageController extends BaseModuleController {
     @Operation(summary = "마이페이지 장소 보관 목록")
     @Parameter(name = "page", description = "페이지 번호")
     @GetMapping(API_URL+"/mypage/place/like/list")
-    public Map<String,Object> selectMypagePlaceLikeList(@RequestParam("page") int page) throws Exception {
+    public Map<String,Object> selectMypagePlaceLikeList(@RequestParam(value="page",defaultValue = "1") int page) throws Exception {
 
         modelMap = new LinkedHashMap<>();
 
@@ -152,7 +152,7 @@ public class MemberMypageController extends BaseModuleController {
     @GetMapping(API_URL+"/mypage/friends/block/list")
     public Map<String,Object> selectMypageFriendsBlockList(
                                             @RequestParam("blockYn") String blockYn,
-                                            @RequestParam("page") int page) throws Exception {
+                                            @RequestParam(value="page",defaultValue = "1") int page) throws Exception {
         modelMap = new LinkedHashMap<>();
 
         MemberDefaultDto searchDto = new MemberDefaultDto();

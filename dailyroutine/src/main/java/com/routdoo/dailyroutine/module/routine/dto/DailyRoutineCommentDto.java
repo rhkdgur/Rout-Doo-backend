@@ -106,7 +106,7 @@ public class DailyRoutineCommentDto {
     public Map<String,Object> toSummaryMap(String id){
         Map<String,Object> map = new LinkedHashMap<>();
 
-        boolean isCorrect = id.equals(this.memberDto.getId());
+        boolean isCorrect = id.equals(this.memberId);
 
         map.put("idx",this.idx);
         map.put("memberId",this.memberId);

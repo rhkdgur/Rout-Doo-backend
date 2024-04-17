@@ -187,12 +187,14 @@ public class PlaceUserCommentController extends BaseModuleController {
     @Operation(summary = "댓글에 대한 답글 조회")
     @Parameter(name = "idx", description = "댓글에 대한 답글 일련번호")
     @GetMapping(API_URL+"/place/comment/reply/{idx}")
-    public Map<String,Object> selectCommentReplyList(@PathVariable("idx") Long idx) throws Exception {
+    public Map<String,Object> selectCommentReplyList(@PathVariable("idx") Long idx,
+                                                     @RequestParam(value="page",defaultValue = "1") int page) throws Exception {
 
         modelMap = new LinkedHashMap<>();
 
         PlaceDefaultDto searchDto = new PlaceDefaultDto();
         searchDto.setCommentIdx(idx);
+        searchDto.setPage(page);
 
         List<PlaceReplyCommentDto> list = placeService.selectPlaceReplyCommentList(searchDto);
         List<Map<String,Object>> resultList = new ArrayList<>();

@@ -96,7 +96,7 @@ public class PlaceUserController extends BaseModuleController{
 		@Parameter(name = "addr", description="주소"),
 		@Parameter(name = "mapx", description="경도"),
 		@Parameter(name = "mapy", description="위도"),
-			@Parameter(name="cpage", description = "페이지 번호")
+			@Parameter(name="page", description = "페이지 번호")
 	})
 	public Map<String,Object> selectPlaceList(PlaceDefaultDto searchDto) throws Exception {
 

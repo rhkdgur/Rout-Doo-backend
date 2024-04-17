@@ -88,9 +88,10 @@ public class DailyRoutineLikeUserController extends BaseModuleController {
             DailyRoutineLikeDto dto = new DailyRoutineLikeDto();
             dto.setIdx(idx);
             dto = dailyRoutineService.selectDailyRoutineLike(dto);
-            if(!dto.getMemberId().equals(memberId)){
+            if(dto == null || !dto.getMemberId().equals(memberId)){
                 return new ResponseEntity<>("좋아요 삭제시 회원정보가 일치하지않습니다.",HttpStatus.NOT_FOUND);
             }
+            dailyRoutineService.deleteDailyRoutineLike(dto);
         }catch (Exception e){
             logger.error("### delete daily routine error : {}",e.getMessage());
             return new ResponseEntity<>("좋아요 삭제시 이슈가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
