@@ -127,6 +127,7 @@ public class DailyRoutineDto {
 		map.put("endDate",this.endDate);
 		map.put("rangeType",this.rangeType);
 		map.put("rangeTypeDisplay", this.getRangeTypeDisplay());
+		map.put("likeYn",likeYn);
 		return map;
 	}
 

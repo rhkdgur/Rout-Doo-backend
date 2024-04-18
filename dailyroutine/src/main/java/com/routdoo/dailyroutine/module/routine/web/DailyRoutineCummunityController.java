@@ -1,6 +1,7 @@
 package com.routdoo.dailyroutine.module.routine.web;
 
 import com.routdoo.dailyroutine.auth.member.MemberSession;
+import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
@@ -82,7 +83,8 @@ public class DailyRoutineCummunityController extends BaseModuleController {
         searchDto.setSstring(sstring);
         searchDto.setPage(page);
         searchDto.setRangeType(RoutineRangeConfigType.PUBLIC.name());
-//        searchDto.setCummunity(true);
+        searchDto.setMemberId(memberSession.isAuthenticated() ? memberSession.getMemberSession().getId() : "");
+        searchDto.setCummunity(true);
         searchDto.setFullTextSearch(true);
 
         Page<DailyRoutineDto> resultList = dailyRoutineService.selectDailyRoutinePageList(searchDto);
@@ -102,9 +104,9 @@ public class DailyRoutineCummunityController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "일정 상세 정보" , description = "회원 요약 정보, 일정 정보, 일정 타임라인, 댓글 정보 가져옵니다.")
-    @Parameter(name="dailyIdx" ,description = "일정 일련번호")
+    @Parameter(name="idx" ,description = "일정 일련번호")
     @GetMapping(API_URL+"/daily/routine/plan/view")
-    public Map<String,Object> selectDailyRoutinePlanView(@RequestParam("dailyIdx") Long idx ) throws Exception {
+    public Map<String,Object> selectDailyRoutinePlanView(@RequestParam("idx") Long idx ) throws Exception {
 
         DailyRoutineDto dailyRoutineDto = new DailyRoutineDto();
         dailyRoutineDto.setIdx(idx);
@@ -115,18 +117,46 @@ public class DailyRoutineCummunityController extends BaseModuleController {
         memberDto.setId(dailyRoutineDto.getMemberId());
         memberDto = memberService.selectMember(memberDto);
 
-        modelMap.put("memberDto",memberDto.getSummaryInfo());
-        modelMap.put("dailyRoutine",dailyRoutineDto.toSummaryMap());
-
-        List<Map<String,Object>> timeList = dailyRoutineDto.getTimeList().stream().map(DailyRoutineTimeLineDto::toMap).toList();
-        int totalCost = 0;
-        for(Map<String,Object> map : timeList) {
-            totalCost +=  (int)map.get("cost");
+        //좋아요 여부 확인
+        DailyRoutineLikeDefaultDto likeDto = new DailyRoutineLikeDefaultDto();
+        likeDto.setDailyIdx(idx);
+        likeDto.setMemberId(memberSession.getMemberSession().getId());
+        Page<Map<String,Object>> likeList = dailyRoutineService.selectDailyRoutineLikePageList(likeDto);
+        String likeYn = "N";
+        if(likeList.getTotalElements() > 0){
+            likeYn = "Y";
         }
 
-        TreeMap<String,List<Map<String,Object>>> resultMap = timeList.stream().collect(Collectors.groupingBy(x-> x.get("applyDate").toString(),TreeMap::new , Collectors.toList()));
+        modelMap.put("memberDto",memberDto.getSummaryInfo());
+        modelMap.put("dailyRoutine",dailyRoutineDto.toSummaryMap());
+        modelMap.put("likeYn",likeYn);
 
-        modelMap.put("timeList",resultMap);
+        return modelMap;
+    }
+
+    @Operation(summary="일정 상세 정보 타임라인 목록 조회")
+    @Parameter(name = "dailyIdx", description = "스케줄 부모 idx")
+    @GetMapping(API_URL+"/daily/routine/plan/time/line/list")
+    public Map<String,Object> selectDailyRoutinePlanTimeLineList(@RequestParam("dailyIdx") Long dailyIdx) throws Exception {
+
+        //일정 타임라인 정보 조회
+        DailyRoutineTimeLineDefaultDto searchDto = new DailyRoutineTimeLineDefaultDto();
+        searchDto.setDailyIdx(dailyIdx);
+        List<DailyRoutineTimeLineDto> list = dailyRoutineService.selectDailyRoutineTimeLineList(searchDto);
+        List<Map<String,Object>> resultList = list.stream().map(DailyRoutineTimeLineDto::toMap).toList();
+
+        int totalCost = 0;
+        for(Map<String,Object> map : resultList) {
+            totalCost += (int)map.get("cost");
+        }
+
+        //날짜별 정렬하여 전달
+        TreeMap<String,List<Map<String,Object>>> resultMap = resultList.stream().collect(Collectors.groupingBy(x-> x.get("applyDate").toString(),
+                TreeMap::new,
+                Collectors.toList()));
+
+        //일정 타임라인 정보
+        modelMap.put("timeList", resultMap);
         modelMap.put("totalCost",totalCost);
 
         return modelMap;

@@ -151,7 +151,7 @@ public class MemberMypageController extends BaseModuleController {
     })
     @GetMapping(API_URL+"/mypage/friends/block/list")
     public Map<String,Object> selectMypageFriendsBlockList(
-                                            @RequestParam("blockYn") String blockYn,
+                                            @RequestParam(value="blockYn",defaultValue = "") String blockYn,
                                             @RequestParam(value="page",defaultValue = "1") int page) throws Exception {
         modelMap = new LinkedHashMap<>();
 

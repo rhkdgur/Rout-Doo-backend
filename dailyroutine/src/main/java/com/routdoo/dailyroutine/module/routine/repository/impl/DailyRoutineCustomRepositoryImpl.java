@@ -53,7 +53,9 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 			}
 		}
 		if (searchDto.getMemberId() != null && !searchDto.getMemberId().isEmpty()) {
-			sql.and(qDailyRoutine.member.id.eq(searchDto.getMemberId()));
+			if(!searchDto.isCummunity()) {
+				sql.and(qDailyRoutine.member.id.eq(searchDto.getMemberId()));
+			}
 		}
 		if (searchDto.getIdx() != 0L) {
 			sql.and(qDailyRoutine.idx.eq(searchDto.getIdx()));
@@ -142,7 +144,7 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 						qDailyRoutineLike.idx)
 				.from(qDailyRoutine)
 				.leftJoin(qDailyRoutine.member,qMember)
-				.leftJoin(qDailyRoutineLike).on(qMember.id.eq(qDailyRoutineLike.member.id))
+				.leftJoin(qDailyRoutineLike).on(qDailyRoutineLike.member.id.eq(searchDto.getMemberId()).and(qDailyRoutine.idx.eq(qDailyRoutineLike.dailyRoutine.idx)))
 				.where(cummunitySearch(qDailyRoutine.title,qDailyRoutine.tag,searchDto.getSstring()),commonQuery(searchDto))
 				.offset(searchDto.getPageable().getOffset())
                 .orderBy(commonOrderBy(searchDto))
@@ -165,7 +167,7 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 			dto.setRangeType(tuple.get(qDailyRoutine.rangeType.stringValue()));
 			dto.setCreateDate(tuple.get(qDailyRoutine.createDate));
 			dto.setModifyDate(tuple.get(qDailyRoutine.modifyDate));
-			dto.setLikeYn(tuple.get(qDailyRoutineLike.idx) == 0 ? "N" : "Y");
+			dto.setLikeYn(tuple.get(qDailyRoutineLike.idx) == null ? "N" : "Y");
 			dtos.add(dto);
 		}
 		
@@ -257,14 +259,34 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 	}
 
 
+	/**
+	 * 좋아요 공통 where 쿼리
+	 * @param searchDto
+	 * @return
+	 */
+	private BooleanBuilder commonLikeQuery(DailyRoutineLikeDefaultDto searchDto) {
+		BooleanBuilder sql = new BooleanBuilder();
+		QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
+
+		if(searchDto.getDailyIdx() != 0) {
+			sql.and(qDailyRoutineLike.dailyRoutine.idx.eq(searchDto.getDailyIdx()));
+		}
+		if(searchDto.getMemberId() != null && !searchDto.getMemberId().isEmpty()){
+			sql.and(qDailyRoutineLike.member.id.eq(searchDto.getMemberId()));
+		}
+
+		return sql;
+	}
+
 	@Override
 	public Page<DailyRoutineDto> selectDailyRoutineLikePageList(DailyRoutineLikeDefaultDto searchDto) throws Exception {
 		QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
 		QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
 
+
 		List<DailyRoutine> list = jpaQueryFactory.selectFrom(qDailyRoutine)
 				.join(qDailyRoutineLike).on(qDailyRoutineLike.dailyRoutine.idx.eq(qDailyRoutine.idx)).fetchJoin()
-				.where(qDailyRoutineLike.member.id.eq(searchDto.getMemberId()))
+				.where(commonLikeQuery(searchDto))
 				.offset(searchDto.getPageable().getOffset())
 				.limit(searchDto.getPageable().getPageSize())
 				.fetch();
@@ -272,7 +294,7 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
 		long cnt = jpaQueryFactory.select(qDailyRoutine.count())
 				.from(qDailyRoutine)
 				.join(qDailyRoutineLike).on(qDailyRoutineLike.dailyRoutine.idx.eq(qDailyRoutine.idx)).fetchJoin()
-				.where(qDailyRoutineLike.member.id.eq(searchDto.getMemberId()))
+				.where(commonLikeQuery(searchDto))
 				.fetchFirst();
 
 		return new PageImpl<>(list.stream().map(DailyRoutineDto::new).toList(),searchDto.getPageable(),cnt);

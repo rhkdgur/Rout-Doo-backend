@@ -23,5 +23,7 @@ public class DailyRoutineLikeDefaultDto extends BaseVo {
     
     /**회원 아이디*/
     private String memberId = "";
+
+    private Long dailyIdx = 0L;
     
 }
