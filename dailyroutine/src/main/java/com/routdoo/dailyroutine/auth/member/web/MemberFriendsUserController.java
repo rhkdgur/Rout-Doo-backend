@@ -94,7 +94,7 @@ public class MemberFriendsUserController extends BaseModuleController {
      */
     @Operation(summary = "친구 삭제")
     @Parameter(name="idx", description = "친구정보 일련번호")
-    @PostMapping(API_URL+"/member/friends/del")
+    @DeleteMapping(API_URL+"/member/friends/del")
     public ResponseEntity<String> deleteMemberFriends(@RequestParam("idx") Long idx) throws  Exception {
 
         try{
@@ -121,7 +121,7 @@ public class MemberFriendsUserController extends BaseModuleController {
             @Parameter(name = "blockYn", description = "차단상태 업데이트"),
             @Parameter(name = "idx", description = "친구정보 일련번호")
     })
-    @PostMapping(API_URL+"/member/friends/block")
+    @PutMapping(API_URL+"/member/friends/block")
     public ResponseEntity<String> updateFriendsBlock(@RequestParam("blockYn") String blockYn,
                                                      @RequestParam("idx") Long idx) throws Exception {
 

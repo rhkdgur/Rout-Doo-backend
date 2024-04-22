@@ -228,6 +228,29 @@ public class DailyRoutineUserController extends BaseModuleController{
 		
 		return new ResponseEntity<String>(result.getMessage(),HttpStatus.OK);
 	}
+
+	@Operation(summary="일정 수정" ,description = "타임라인 등록전 대표일정 수정")
+	@ApiResponses(value={
+			@ApiResponse(responseCode = "200", description = "수정 완료"),
+			@ApiResponse(responseCode = "422", description = "수정이 이루어지지 않음"),
+			@ApiResponse(responseCode = "400", description = "수정 오류 발생")
+	})
+	@PutMapping(API_URL+"/daily/routine/upd")
+	public ResponseEntity<String> updateDailyRoutineBatch(final @Valid @RequestBody DailyRoutineDto dailyRoutineDto) throws Exception {
+		RoutineServiceResult<?> result = null;
+		try {
+			dailyRoutineDto.setMemberId(memberSession.getMemberSession().getId());
+			result = dailyRoutineService.insertDailyRoutine(dailyRoutineDto);
+			if(!RoutineResultCodeType.OK.name().equals(result.getCodeType().name())) {
+				return new ResponseEntity<String>(result.getMessage(),HttpStatus.UNPROCESSABLE_ENTITY);
+			}
+		}catch (Exception e) {
+			logger.error("update daily routine info and timeline error : {}",e.getMessage());
+			return new ResponseEntity<String>("수정시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<String>(result.getMessage(),HttpStatus.OK);
+	}
 	
 	/**
 	 * 스케줄 삭제 및 타임라인 삭제
@@ -242,7 +265,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "422", description = "삭제가 이루어지지 않음"),
 			@ApiResponse(responseCode = "400", description = "삭제 오류"),
 	})
-	@PostMapping(API_URL+"/daily/routine/del")
+	@DeleteMapping(API_URL+"/daily/routine/del")
 	public ResponseEntity<String> deleteDailyRoutine(@RequestParam("idx") Long idx) throws Exception {
 		
 		RoutineServiceResult<?> result = null;
@@ -268,23 +291,6 @@ public class DailyRoutineUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@Operation(summary="타임라인별 등록")
-//	@Parameters( value = {
-//		@Parameter(name = "dailyIdx", description ="부모 일련번호"),
-//		@Parameter(name = "writeType", description ="작성타입"),
-//		@Parameter(name = "applyDate", description ="적용일자"),
-//		@Parameter(name = "title", description ="제목"),
-//			@Parameter(name = "placeName", description="장소명"),
-//			@Parameter(name="addr", description = "주소"),
-//			@Parameter(name="mapx", description = "경도"),
-//			@Parameter(name="mapy", description = "위도"),
-//		@Parameter(name = "ord", description ="순서"),
-//		@Parameter(name = "context", description ="내용"),
-//		@Parameter(name = "shour", description ="시작시간"),
-//		@Parameter(name = "smin", description ="시작분"),
-//		@Parameter(name = "ehour", description ="마지막시간"),
-//		@Parameter(name = "emin", description ="마지막분"),
-//		@Parameter(name = "cost", description ="비용")
-//	})
 	@ApiResponses(value={
 			@ApiResponse(responseCode = "200", description = "등록 완료"),
 			@ApiResponse(responseCode = "422", description = "등록 이루어지지 않음"),
@@ -313,30 +319,12 @@ public class DailyRoutineUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@Operation(summary="타임라인별 수정")
-//	@Parameters(value={
-//		@Parameter(name = "idx", description = "일련번호"),
-//		@Parameter(name = "dailyIdx", description="부모 일련번호"),
-//		@Parameter(name = "writeType", description="작성타입"),
-//		@Parameter(name = "applyDate", description="적용일자"),
-//		@Parameter(name = "title", description="제목"),
-//		@Parameter(name = "placeName", description="장소명"),
-//			@Parameter(name="addr", description = "주소"),
-//			@Parameter(name="mapx", description = "경도"),
-//			@Parameter(name="mapy", description = "위도"),
-//		@Parameter(name = "ord", description="순서"),
-//		@Parameter(name = "context", description="내용"),
-//		@Parameter(name = "shour", description="시작시간"),
-//		@Parameter(name = "smin", description="시작분"),
-//		@Parameter(name = "ehour", description="마지막시간"),
-//		@Parameter(name = "emin", description="마지막분"),
-//		@Parameter(name = "cost", description="비용")
-//	})
 	@ApiResponses(value={
 			@ApiResponse(responseCode = "200", description = "수정 완료"),
 			@ApiResponse(responseCode = "422", description = "수정이 이루어지지 않음"),
 			@ApiResponse(responseCode = "400", description = "수정 오류")
 	})
-	@PostMapping(value=API_URL+"/daily/routine/time/line/act/upd")
+	@PutMapping(value=API_URL+"/daily/routine/time/line/act/upd")
 	public ResponseEntity<String> updateDailyRoutineTimeLine(final @Valid @RequestBody DailyRoutineTimeLineDto dailyRoutineTimeLineDto) throws Exception {
 		
 		RoutineServiceResult<?> result = null;
@@ -366,7 +354,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "200", description = "삭제 완료"),
 			@ApiResponse(responseCode = "422", description = "삭제 오류")
 	})
-	@PostMapping(value=API_URL+"/daily/routine/time/line/act/del")
+	@DeleteMapping(value=API_URL+"/daily/routine/time/line/act/del")
 	public ResponseEntity<String> deleteDailyRoutineTimeLine(@RequestParam("idx") Long idx) throws Exception {
 		
 		try {		
@@ -397,7 +385,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "422", description = "공개 범위 설정 실패"),
 			@ApiResponse(responseCode = "400", description = "공개 범위 설정 오류")
 	})
-	@PostMapping(API_URL+"/daily/routine/config/range/change")
+	@PutMapping(API_URL+"/daily/routine/config/range/change")
 	public ResponseEntity<String> updateDailyRoutineConfigRangeChange(
 											@RequestParam("idx") Long idx,
 											@RequestParam("rangeType") String rangeType) throws Exception {
@@ -511,7 +499,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "200", description = "친구 초대 삭제 완료"),
 			@ApiResponse(responseCode = "422", description = "친구 삭제 오류")
 	})
-	@PostMapping(value=API_URL+"/daily/routine/invite/del")
+	@DeleteMapping(value=API_URL+"/daily/routine/invite/del")
 	public ResponseEntity<?> deleteDailyRoutineInvite(@RequestParam("idx") Long idx) throws Exception {
 		
 		try {

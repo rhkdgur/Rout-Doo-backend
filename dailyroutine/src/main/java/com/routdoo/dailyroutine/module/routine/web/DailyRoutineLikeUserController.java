@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -80,7 +79,7 @@ public class DailyRoutineLikeUserController extends BaseModuleController {
             @ApiResponse(responseCode = "404", description = "좋아요 삭제시 회원정보 일치 x"),
             @ApiResponse(responseCode = "422", description = "좋아요 삭제 오류")
     })
-    @PostMapping(API_URL+"/daily/routine/like/del")
+    @DeleteMapping(API_URL+"/daily/routine/like/del")
     public ResponseEntity<String>  deleteDailyRoutineLike(@RequestParam("idx") Long idx) throws Exception {
 
         try{

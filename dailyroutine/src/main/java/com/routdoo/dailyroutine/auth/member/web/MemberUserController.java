@@ -144,17 +144,6 @@ public class MemberUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@Operation(summary="사용자 회원가입 ", description = "요청하는 파라미터는 모두 입력할 수 있도록 할 것")
-//	@Parameters({
-//		@Parameter(name = "id", description ="아이디 "),
-//		@Parameter(name = "pw", description ="비밀번호 "),
-//		@Parameter(name = "email", description ="이메일"),
-//		@Parameter(name = "nickname", description ="닉네임"),
-//		@Parameter(name = "phonenumber", description ="휴대전화번호"),
-//		@Parameter(name = "gender", description ="성별"),
-//		@Parameter(name = "age", description ="나이"),
-//		@Parameter(name = "birth", description ="생년월일"),
-//		@Parameter(name = "mbti", description ="MBTI")
-//	})
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "가입 완료"),
 			@ApiResponse(responseCode = "208", description = "이미 존재하는 회원 아이디"),
@@ -221,23 +210,12 @@ public class MemberUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@Operation(summary="사용자 회원 정보 업데이트 ")
-//	@Parameters(value={
-//		@Parameter(name = "id", description="아이디 "),
-//		@Parameter(name = "pw", description="비밀번호 "),
-//		@Parameter(name = "email", description="이메일"),
-//		@Parameter(name = "nickname", description="닉네임"),
-//		@Parameter(name = "phonenumber", description="휴대전화번호"),
-//		@Parameter(name = "gender", description="성별"),
-//		@Parameter(name = "age", description="나이"),
-//		@Parameter(name = "birth", description="생년월일"),
-//		@Parameter(name = "mbti", description = "MBTI")
-//	})
 	@ApiResponses(value={
 			@ApiResponse(responseCode = "200", description = "수정 완료"),
 			@ApiResponse(responseCode = "304", description = "회원정보 업데이트에 실패"),
 			@ApiResponse(responseCode = "422", description = "회원정보 업데이트시 오류")
 	})
-	@PostMapping(API_URL+"/member/act/upd")
+	@PutMapping(API_URL+"/member/act/upd")
 	public ResponseEntity<?> updateMember(final @Valid @RequestBody MemberDto memberDto) throws Exception {
 		try {
 			AuthServiceResult<MemberDto> result =  memberService.saveMember(memberDto);

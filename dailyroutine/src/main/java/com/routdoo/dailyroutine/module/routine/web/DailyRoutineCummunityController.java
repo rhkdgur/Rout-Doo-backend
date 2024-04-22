@@ -276,7 +276,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "수정 실패"),
             @ApiResponse(responseCode = "400", description = "수정 오류")
     })
-    @PostMapping(API_URL+"/daily/routine/comment/upd")
+    @PutMapping(API_URL+"/daily/routine/comment/upd")
     public ResponseEntity<String> updateDailyRoutineComment(final @Valid @RequestBody DailyRoutineCommentDto dailyRoutineCommentDto) throws Exception {
 
         try{
@@ -306,7 +306,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
             @ApiResponse(responseCode = "400", description = "삭제 오류"),
             @ApiResponse(responseCode = "422", description = "삭제 실패")
     })
-    @PostMapping(API_URL+"/daily/routine/comment/del")
+    @DeleteMapping(API_URL+"/daily/routine/comment/del")
     public ResponseEntity<String> deleteDailyRoutineComment(@RequestParam("idx") Long idx) throws Exception {
 
         try{
@@ -374,7 +374,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "수정 실패"),
             @ApiResponse(responseCode = "400", description = "수정 오류")
     })
-    @PostMapping(API_URL+"/daily/routine/reply/upd")
+    @PutMapping(API_URL+"/daily/routine/reply/upd")
     public ResponseEntity<String> updateDailyRoutineReplyComment(final @Valid @RequestBody DailyRoutineReplyCommentDto dailyRoutineReplyCommentDto) throws Exception {
 
         try{
@@ -404,7 +404,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "삭제 실패"),
             @ApiResponse(responseCode = "400", description = "삭제 오류")
     })
-    @PostMapping(API_URL+"/daily/routine/reply/del")
+    @DeleteMapping(API_URL+"/daily/routine/reply/del")
     public ResponseEntity<String> deleteDailyRoutineReplyComment(@RequestParam("idx") Long idx) throws Exception {
 
         try{

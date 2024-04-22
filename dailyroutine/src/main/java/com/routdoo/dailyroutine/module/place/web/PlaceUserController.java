@@ -160,17 +160,6 @@ public class PlaceUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@Operation(summary = "장소 등록")
-//	@Parameters(value={
-//			@Parameter(name = "title", description = "제목"),
-//			@Parameter(name = "tel", description = "연락처"),
-//			@Parameter(name = "categCd", description = "카테고리코드"),
-//			@Parameter(name = "addr", description = "주소"),
-//			@Parameter(name = "mapx", description = "경도"),
-//			@Parameter(name = "mapy", description = "위도"),
-//			@Parameter(name = "useInfo", description = "이용아내"),
-//			@Parameter(name = "detailText", description = "상세정보"),
-//			@Parameter(name = "pstatus", description = "사용여부 ex) Y, N ")
-//	})
 	@ApiResponses(value={
 			@ApiResponse(responseCode = "200", description = "등록 완료"),
 			@ApiResponse(responseCode = "422", description = "등록 오류")
@@ -194,23 +183,11 @@ public class PlaceUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@Operation(summary = "장소 수정")
-	/*@Parameters(value={
-			@Parameter(name = "placeNum", description = "장소 일련번호"),
-			@Parameter(name = "title", description = "제목"),
-			@Parameter(name = "tel", description = "연락처"),
-			@Parameter(name = "categCd", description = "카테고리코드"),
-			@Parameter(name = "addr", description = "주소"),
-			@Parameter(name = "mapx", description = "경도"),
-			@Parameter(name = "mapy", description = "위도"),
-			@Parameter(name = "useInfo", description = "이용아내"),
-			@Parameter(name = "detailText", description = "상세정보"),
-			@Parameter(name = "pstatus", description = "사용여부 ex) Y, N ")
-	})*/
 	@ApiResponses(value={
 			@ApiResponse(responseCode = "200", description = "수정 완료"),
 			@ApiResponse(responseCode = "422", description = "수정 오류")
 	})
-	@PostMapping(API_URL+"/place/act/upd")
+	@PutMapping(API_URL+"/place/act/upd")
 	public ResponseEntity<String> updatePlace(final @Valid @RequestBody  PlaceDto placeDto) throws Exception {
 		try{
 			placeDto.setMemberId(memberSession.getMemberSession().getId());
@@ -234,7 +211,7 @@ public class PlaceUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "200", description = "삭제 완료"),
 			@ApiResponse(responseCode = "422", description = "삭제 오류")
 	})
-	@PostMapping(API_URL+"/place/act/del")
+	@DeleteMapping(API_URL+"/place/act/del")
 	public ResponseEntity<String> deletePlace(@RequestParam("placeNum") String placeNum) throws Exception {
 
 		try{

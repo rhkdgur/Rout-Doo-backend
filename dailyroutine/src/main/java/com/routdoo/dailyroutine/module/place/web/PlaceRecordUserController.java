@@ -48,17 +48,6 @@ public class PlaceRecordUserController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "정보 수정 제안 (등록)")
-//    @Parameters(value={
-//            @Parameter(name = "memberId", description = "회원 아이디"),
-//            @Parameter(name = "placeNum", description = "장소 일련번호"),
-//            @Parameter(name = "tel", description = "연락처"),
-//            @Parameter(name = "addr", description = "주소"),
-//            @Parameter(name = "mapx", description = "경도"),
-//            @Parameter(name = "mapy", description = "위도"),
-//            @Parameter(name = "useInfo", description = "이용안내"),
-//            @Parameter(name = "detailText", description = "상세 내용"),
-//            @Parameter(name = "useType", description = "사용여부 ex) Y, N")
-//    })
     @ApiResponses(value={
             @ApiResponse(responseCode = "200", description = "정보 수정 제안 신청 완료"),
             @ApiResponse(responseCode = "400", description = "정보 수정 제안 신청 오류"),
@@ -88,24 +77,12 @@ public class PlaceRecordUserController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "정보 수정 제안 (수정)")
-//    @Parameters(value={
-//            @Parameter(name = "idx", description = "장소 정보 수정 일련번호"),
-//            @Parameter(name = "memberId", description = "회원 아이디"),
-//            @Parameter(name = "placeNum", description = "장소 일련번호"),
-//            @Parameter(name = "tel", description = "연락처"),
-//            @Parameter(name = "addr", description = "주소"),
-//            @Parameter(name = "mapx", description = "경도"),
-//            @Parameter(name = "mapy", description = "위도"),
-//            @Parameter(name = "useInfo", description = "이용안내"),
-//            @Parameter(name = "detailText", description = "상세 내용"),
-//            @Parameter(name = "useType", description = "사용여부 ex) Y, N")
-//    })
     @ApiResponses(value={
             @ApiResponse(responseCode = "200", description = "정보 수정 제안 신청 수정 완료"),
             @ApiResponse(responseCode = "400", description = "정보 수정 제안 신청 수정 오류"),
             @ApiResponse(responseCode = "422", description = "정보 수정 제안 신청 수정 실패")
     })
-    @PostMapping(API_URL+"/place/record/upd")
+    @PutMapping(API_URL+"/place/record/upd")
     public ResponseEntity<String> updatePlaceRecord(final @Valid @RequestBody PlaceRecordDto placeRecordDto) throws Exception {
         try{
             placeRecordDto.setMemberId(memberSession.getMemberSession().getId());
@@ -133,7 +110,7 @@ public class PlaceRecordUserController extends BaseModuleController {
             @ApiResponse(responseCode = "400", description = "삭제 요청 오류"),
             @ApiResponse(responseCode = "422", description = "삭제 요청 실패")
     })
-    @GetMapping(API_URL+"/place/record/remove")
+    @DeleteMapping(API_URL+"/place/record/remove")
     public ResponseEntity<String> selectPlaceRecordView(@RequestParam("idx") Long idx) throws Exception {
         try{
             PlaceRecordRemoveDto placeRecordRemoveDto = new PlaceRecordRemoveDto();

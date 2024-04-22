@@ -46,10 +46,6 @@ public class PlaceLikeUserController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "장소 좋아요 등록")
-//    @Parameters(value={
-//            @Parameter(name = "placeNum", description = "장소 일련번호"),
-//            @Parameter(name = "memberId", description = "회원 아이디")
-//    })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "좋아요 추가 완료"),
             @ApiResponse(responseCode = "400", description = "좋아요 추가 오류"),
@@ -85,7 +81,7 @@ public class PlaceLikeUserController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "좋아요 삭제 오류"),
             @ApiResponse(responseCode = "404", description = "좋아요 삭제시 회원 정보 불일치")
     })
-    @PostMapping(API_URL+"/place/like/del")
+    @DeleteMapping(API_URL+"/place/like/del")
     public ResponseEntity<String> deletePlaceLike(@RequestParam("idx") Long idx) throws Exception {
         
         try{

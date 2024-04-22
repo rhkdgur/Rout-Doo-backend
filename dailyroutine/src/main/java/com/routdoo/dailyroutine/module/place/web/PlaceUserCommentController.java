@@ -84,11 +84,6 @@ public class PlaceUserCommentController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "댓글 등록")
-    /*@Parameters(value = {
-            @Parameter(name = "memberId", description = "회원 아이디"),
-            @Parameter(name = "placeNum", description = "장소 일련번호"),
-            @Parameter(name = "context", description = "내용")
-    })*/
     @ApiResponses(value ={
             @ApiResponse(responseCode = "200", description = "등록 완료"),
             @ApiResponse(responseCode = "400", description = "등록 오류"),
@@ -119,18 +114,12 @@ public class PlaceUserCommentController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "댓글 수정")
-//    @Parameters(value = {
-//            @Parameter(name = "idx", description = "댓글 일련번호"),
-//            @Parameter(name = "memberId", description = "회원 아이디"),
-//            @Parameter(name = "placeNum", description = "장소 일련번호"),
-//            @Parameter(name = "context", description = "내용")
-//    })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "수정 완료"),
             @ApiResponse(responseCode = "400", description = "수정 오류"),
             @ApiResponse(responseCode = "422", description = "수정 실패")
     })
-    @PostMapping(API_URL+"/place/comment/upd")
+    @PutMapping(API_URL+"/place/comment/upd")
     public ResponseEntity<String> updatePlaceComment(final @Valid @RequestBody PlaceCommentDto dto) throws Exception {
         try{
             dto.getMemberDto().setId(memberSession.getMemberSession().getId());
@@ -159,7 +148,7 @@ public class PlaceUserCommentController extends BaseModuleController {
             @ApiResponse(responseCode = "400", description = "삭제 오류"),
             @ApiResponse(responseCode = "422", description = "삭제 실패")
     })
-    @PostMapping(API_URL+"/place/comment/del")
+    @DeleteMapping(API_URL+"/place/comment/del")
     public ResponseEntity<String> deletePlaceComment(@RequestParam("idx") Long idx) throws Exception {
         try{
             PlaceCommentDto dto = new PlaceCommentDto();
@@ -246,12 +235,6 @@ public class PlaceUserCommentController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "답글 등록")
-//    @Parameters(value={
-//        @Parameter(name = "commentIdx", description = "댓글 일련번호"),
-//            @Parameter(name = "placeNum", description = "장소 일련번호"),
-//            @Parameter(name = "memberId", description = "회원 아이디"),
-//            @Parameter(name = "context", description = "내용")
-//    })
     @ApiResponses(value={
             @ApiResponse(responseCode = "200", description = "답글 등록 완료"),
             @ApiResponse(responseCode = "400", description = "답글 등록 오류"),
@@ -281,19 +264,12 @@ public class PlaceUserCommentController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "답글 수정")
-//    @Parameters(value={
-//            @Parameter(name = "idx", description = "답글 일련번호"),
-//            @Parameter(name = "commentIdx", description = "댓글 일련번호"),
-//            @Parameter(name = "placeNum", description = "장소 일련번호"),
-//            @Parameter(name = "memberId", description = "회원 아이디"),
-//            @Parameter(name = "context", description = "내용")
-//    })
     @ApiResponses(value={
             @ApiResponse(responseCode = "200", description = "답글 수정 완료"),
             @ApiResponse(responseCode = "400", description = "답글 수정 오류"),
             @ApiResponse(responseCode = "422", description = "답글 수정 실패")
     })
-    @PostMapping(API_URL+"/place/comment/reply/upd")
+    @PutMapping(API_URL+"/place/comment/reply/upd")
     public ResponseEntity<String> updateReplyComment(final @Valid @RequestBody PlaceReplyCommentDto dto) throws Exception {
         
         try{
@@ -323,7 +299,7 @@ public class PlaceUserCommentController extends BaseModuleController {
             @ApiResponse(responseCode = "400", description = "답글 삭제 오류"),
             @ApiResponse(responseCode = "422", description = "답글 삭제 실패")
     })
-    @PostMapping(API_URL+"/place/comment/reply/del")
+    @DeleteMapping(API_URL+"/place/comment/reply/del")
     public ResponseEntity<String> deleteReplyComment(@RequestParam("idx") Long idx) throws Exception {
 
         try{
