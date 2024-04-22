@@ -22,7 +22,7 @@ public class CorsFilterConfig {
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(true);
 		config.setAllowedOriginPatterns(List.of("http://localhost:3000","http://localhost:8080","http://routidoo.store","https://routidoo.store","https://routidoo001.cafe24.com"));
-		config.setAllowedMethods(List.of(HttpMethod.POST.name(),HttpMethod.GET.name()));
+		config.setAllowedMethods(List.of(HttpMethod.POST.name(),HttpMethod.GET.name(),HttpMethod.PUT.name(),HttpMethod.DELETE.name()));
 		config.addAllowedHeader("*");
 		config.setMaxAge(3000L); //캐싱 시간
 
