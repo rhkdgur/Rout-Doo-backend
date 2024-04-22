@@ -1,5 +1,6 @@
 package com.routdoo.dailyroutine.cms.upload.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,21 +25,25 @@ public class FileUploadRequest {
     /**
      * 파일경로 코드
      */
+    @NotNull(message = "파일경로 일련코드값은 필수입력입니다.")
     private String code = "";
 
     /**
      * 제목
      */
+    @NotNull(message = "파일경로 제목은 필수입력입니다. ")
     private String title = "";
 
     /**
      * 짧은 경로
      */
+    @NotNull(message = "파일경로 짧은경로는 필수입력입니다.")
     private String shortPath = "";
 
     /**
      * 전체 경로
      */
+    @NotNull(message = "파일경로 전체경로는 필수입력입니다.")
     private String path = "";
 
     /**
