@@ -78,4 +78,15 @@ public class FileUploadDto {
         this.useYn = useYn;
     }
 
+    public static FileUploadDto requestOf(FileUploadRequest fileUploadRequest) {
+        FileUploadDto fileUploadDto = new FileUploadDto();
+        fileUploadDto.setCode(fileUploadRequest.getCode());
+        fileUploadDto.setTitle(fileUploadDto.getTitle());
+        fileUploadDto.setPath(fileUploadDto.getPath());
+        fileUploadDto.setShortPath(fileUploadRequest.getShortPath());
+        fileUploadDto.setCreateDate(fileUploadRequest.getCreateDate());
+        fileUploadDto.setModifyDate(fileUploadRequest.getModifyDate());
+        return fileUploadDto;
+    }
+
 }
