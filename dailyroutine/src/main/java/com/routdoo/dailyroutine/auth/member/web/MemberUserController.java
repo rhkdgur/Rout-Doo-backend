@@ -3,8 +3,10 @@ package com.routdoo.dailyroutine.auth.member.web;
 import com.routdoo.dailyroutine.auth.AuthResultCodeType;
 import com.routdoo.dailyroutine.auth.AuthServiceResult;
 import com.routdoo.dailyroutine.auth.member.MemberSession;
+import com.routdoo.dailyroutine.auth.member.dto.MemberActionRequest;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import io.swagger.v3.oas.annotations.Operation;
@@ -125,7 +127,7 @@ public class MemberUserController extends BaseModuleController{
 	
 	/**
 	 * 로그아웃
-	 * @param dto
+	 * @param
 	 * @return
 	 * @throws Exception
 	 */
@@ -139,7 +141,7 @@ public class MemberUserController extends BaseModuleController{
 	
 	/**
 	 * 회원 가입
-	 * @param memberDto
+	 * @param memberCreateRequest
 	 * @return
 	 * @throws Exception
 	 */
@@ -151,14 +153,14 @@ public class MemberUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "400", description = "회원 가입시 오류가 발생")
 	})
 	@PostMapping(API_URL+"/member/signup")
-	public ResponseEntity<?> createMember(final @Valid @RequestBody MemberDto memberDto) throws Exception {
+	public ResponseEntity<?> createMember(final @Valid @RequestBody MemberActionRequest memberCreateRequest) throws Exception {
 
 		try {
-			MemberDto checkDto = memberService.selectMember(memberDto);
+			MemberDto checkDto = memberService.selectMember(MemberDto.createOf(memberCreateRequest));
 			if(checkDto != null) {
 				return new ResponseEntity<>("이미 존재하는 회원 아이디 입니다.",HttpStatus.ALREADY_REPORTED);
 			}
-			AuthServiceResult<?> result = memberService.saveMember(memberDto);
+			AuthServiceResult<?> result = memberService.saveMember(memberCreateRequest);
 			if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<>("회원 가입이 진행되지 않았습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 			}
@@ -205,7 +207,7 @@ public class MemberUserController extends BaseModuleController{
 	
 	/**
 	 * 회원 정보 업데이트
-	 * @param memberDto
+	 * @param memberCreateRequest
 	 * @return
 	 * @throws Exception
 	 */
@@ -216,9 +218,9 @@ public class MemberUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "422", description = "회원정보 업데이트시 오류")
 	})
 	@PutMapping(API_URL+"/member/act/upd")
-	public ResponseEntity<?> updateMember(final @Valid @RequestBody MemberDto memberDto) throws Exception {
+	public ResponseEntity<?> updateMember(final @Valid @RequestBody MemberActionRequest memberCreateRequest) throws Exception {
 		try {
-			AuthServiceResult<MemberDto> result =  memberService.saveMember(memberDto);
+			AuthServiceResult<MemberDto> result =  memberService.saveMember(memberCreateRequest);
 			if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<>(result.getMessage(),HttpStatus.NOT_MODIFIED);
 			}
@@ -240,19 +242,16 @@ public class MemberUserController extends BaseModuleController{
 	@Operation(summary = "회원 목록 조회(친구리스트 닉네임 조회)")
 	@Parameter(name="sstring", description="검색어")
 	@GetMapping(API_URL+"/member/nickname/list")
-	public Map<String,Object> selectMemberList(@RequestParam("sstring") String sstring) throws Exception {
-
-		modelMap = new LinkedHashMap<>();
+	public Page<MemberSummaryResponse> selectMemberList(@RequestParam("sstring") String sstring) throws Exception {
 
 		MemberDefaultDto searchDto = new MemberDefaultDto();
 		searchDto.setStype("nickname");
 		searchDto.setSstring(sstring);
 		searchDto.setSize(20);
 
-		Page<MemberDto> resultList = memberService.selectMemberPageList(searchDto);
-		modelMap.put("memberList",resultList);
+		Page<MemberSummaryResponse> memberList = memberService.selectMemberPageList(searchDto);
 
-		return modelMap;
+		return memberList;
 	}
 
 }

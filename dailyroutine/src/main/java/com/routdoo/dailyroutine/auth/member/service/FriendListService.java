@@ -1,20 +1,18 @@
 package com.routdoo.dailyroutine.auth.member.service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import com.routdoo.dailyroutine.auth.member.domain.MemberFriends;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsResponse;
+import com.routdoo.dailyroutine.auth.member.repository.FriendListRepository;
 import com.routdoo.dailyroutine.auth.member.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
-import com.routdoo.dailyroutine.auth.member.domain.MemberFriends;
-import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
-import com.routdoo.dailyroutine.auth.member.repository.FriendListRepository;
-
-import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -30,9 +28,9 @@ public class FriendListService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<MemberFriendsDto> selectFriendListResultList(MemberFriendsDto dto) throws Exception {
-		List<MemberFriends> list = friendListRepository.findByBlockYnAndMember_Id(dto.getBlockYn(),dto.getMemberId());
-		return list.stream().map(x-> new MemberFriendsDto(x)).collect(Collectors.toList());
+	public List<MemberFriendsResponse> selectFriendListResultList(MemberFriendsDto dto) throws Exception {
+		List<MemberFriendsResponse> list = friendListRepository.findByBlockYnAndMember_Id(dto.getBlockYn(),dto.getMemberId());
+		return list;
 	}
 	
 	/***

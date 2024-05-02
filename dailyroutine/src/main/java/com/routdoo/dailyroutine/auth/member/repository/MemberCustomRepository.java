@@ -1,15 +1,13 @@
 package com.routdoo.dailyroutine.auth.member.repository;
 
-import java.util.List;
-import java.util.Map;
-
-import com.routdoo.dailyroutine.auth.member.domain.Member;
-import com.routdoo.dailyroutine.auth.member.domain.MemberFriends;
-import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
-import org.springframework.data.domain.Page;
-
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
+import java.util.Map;
 
 public interface MemberCustomRepository {
 
@@ -19,7 +17,7 @@ public interface MemberCustomRepository {
 	 * @return
 	 * @throws Exception
 	 */
-	Page<MemberDto> selectMemberPageList(MemberDefaultDto searchDto) throws Exception;
+	Page<MemberSummaryResponse> selectMemberPageList(MemberDefaultDto searchDto) throws Exception;
 	
 	/**
 	 * 회원 리스트

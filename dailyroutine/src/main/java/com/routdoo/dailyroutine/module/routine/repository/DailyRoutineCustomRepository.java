@@ -1,10 +1,9 @@
 package com.routdoo.dailyroutine.module.routine.repository;
 
-import java.util.List;
-
-import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineLike;
 import com.routdoo.dailyroutine.module.routine.dto.*;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 /**
  * 
@@ -25,7 +24,7 @@ public interface DailyRoutineCustomRepository {
 	 * @param searchDto
 	 * @return
 	 */
-	Page<DailyRoutineDto> selectDailyRoutinePageList(DailyRoutineDefaultDto searchDto);
+	Page<DailyRoutineSummaryResponse> selectDailyRoutinePageList(DailyRoutineDefaultDto searchDto);
 	
 	/**
 	 * 일상 목록 조회(페이징 x)

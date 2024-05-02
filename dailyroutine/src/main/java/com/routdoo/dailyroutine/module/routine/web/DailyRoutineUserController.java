@@ -1,44 +1,31 @@
 package com.routdoo.dailyroutine.module.routine.web;
 
-import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
-import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineTimeLine;
-import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
-import org.antlr.v4.runtime.tree.Tree;
-import org.apache.coyote.Response;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
-import org.springframework.web.bind.annotation.*;
-
 import com.routdoo.dailyroutine.auth.member.MemberSession;
-import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
+import com.routdoo.dailyroutine.auth.member.dto.*;
 import com.routdoo.dailyroutine.auth.member.service.FriendListService;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.routine.RoutineResultCodeType;
 import com.routdoo.dailyroutine.module.routine.RoutineServiceResult;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDefaultDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineInviteDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineTimeLineDefaultDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineTimeLineDto;
+import com.routdoo.dailyroutine.module.routine.dto.*;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
-
+import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 
@@ -79,7 +66,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 	@Operation(summary="사용자 스케줄 목록 조회")
 	@Parameter(name = "date", description = "날짜 ex) yyyy-MM-dd, 만약 date에 빈값일 경우 오늘 날짜 기준으로 조회해옴")
 	@GetMapping(API_URL+"/daily/routine/list")
-	public Map<String,Object> selectDailyRoutineList(
+	public DailyRoutineListWithCalendarListResponse selectDailyRoutineList(
 													@RequestParam(value="date",defaultValue = "") String date,
 													@RequestParam(value="page",defaultValue = "1") int page
 													) throws Exception {
@@ -96,12 +83,9 @@ public class DailyRoutineUserController extends BaseModuleController{
 		
 		//캘린더에 일정 정보가 존재하는지 표시할 데이터
 		List<Map<String,Object>> calendarList = dailyRoutineService.selectDailyRoutineCalendarDataExistList(searchDto);
-		modelMap.put("calendarList",calendarList);
+		Page<DailyRoutineSummaryResponse> list = dailyRoutineService.selectDailyRoutinePageList(searchDto);
 		
-		Page<DailyRoutineDto> list = dailyRoutineService.selectDailyRoutinePageList(searchDto);
-		modelMap.put("resultList", list);
-		
-		return modelMap;
+		return DailyRoutineListWithCalendarListResponse.of(list,calendarList);
 	}
 	
 	/**
@@ -113,34 +97,20 @@ public class DailyRoutineUserController extends BaseModuleController{
 	@Operation(summary="사용자 스케줄 기본 상세정보 및 타임라인 목록 조회")
 	@Parameter(name = "idx", description = "스케줄 부모 idx")
 	@GetMapping(API_URL+"/daily/routine/view")
-	public Map<String,Object> selectDailyRoutineList(@RequestParam("idx") Long dailyIdx,
+	public DailyRoutineViewWithInviteListResponse selectDailyRoutineList(@RequestParam("idx") Long dailyIdx,
 													 @RequestParam(value="page", defaultValue = "1") int page ) throws Exception {
 
 		//초대인원
 		DailyRoutineInviteDto inviteDto = new DailyRoutineInviteDto();
 		inviteDto.setDailyIdx(dailyIdx);
-		List<DailyRoutineInviteDto> invites = dailyRoutineService.selectDailyRoutineInviteList(inviteDto);
-		modelMap.put("inviteList",invites);
+		List<DailyRoutineInviteResponse> invites = dailyRoutineService.selectDailyRoutineInviteList(inviteDto);
 
 		//일정 정보
 		DailyRoutineDto dailyRoutineDto = new DailyRoutineDto();
 		dailyRoutineDto.setIdx(dailyIdx);
 		dailyRoutineDto = dailyRoutineService.selectDailyRoutineView(dailyRoutineDto);
 
-//		List<Map<String,Object>> resultList = dailyRoutineDto.getTimeList().stream().map(DailyRoutineTimeLineDto::toMap).toList();
-//
-//		int totalCost = 0;
-//		for(Map<String,Object> map : resultList) {
-//			totalCost += (int)map.get("cost");
-//		}
-
-		//일정 대표 정보
-		modelMap.put("dailyRoutineDto", dailyRoutineDto.toSummaryMap());
-//		//일정 타임라인 정보
-//		modelMap.put("resultList", resultList);
-//		modelMap.put("totalCost",totalCost);
-		
-		return modelMap;
+		return DailyRoutineViewWithInviteListResponse.responseViewWithInvites(dailyRoutineDto,invites);
 	}
 
 	@Operation(summary="사용자 스케줄 타임라인 목록 조회")
@@ -180,16 +150,11 @@ public class DailyRoutineUserController extends BaseModuleController{
 	@Operation(summary="사용자 스케줄 타임라인 상세 조회")
 	@Parameter(name = "idx", description = "스케줄 자식 idx")
 	@GetMapping(API_URL+"/daily/routine/time/line/view")
-	public Map<String,Object> selectDailyRoutineTimelineView(@RequestParam("idx") Long idx) throws Exception {
-		
-		DailyRoutineTimeLineDto dto = new DailyRoutineTimeLineDto();
-		dto.setIdx(idx);
-		
-		dto = dailyRoutineService.selectDailyRoutineTimeLineView(dto);
-		
-		modelMap.put("timeLineDto", dto);
-		
-		return modelMap;
+	public DailyRoutineTimeLineDto selectDailyRoutineTimelineView(@RequestParam("idx") Long idx) throws Exception {
+		DailyRoutineTimeLineDto timeLineDto = new DailyRoutineTimeLineDto();
+		timeLineDto.setIdx(idx);
+		timeLineDto = dailyRoutineService.selectDailyRoutineTimeLineView(timeLineDto);
+		return timeLineDto;
 	}
 
 
@@ -200,13 +165,6 @@ public class DailyRoutineUserController extends BaseModuleController{
 	 * @throws Exception
 	 */
 	@Operation(summary="일정 등록" ,description = "타임라인 등록전 대표일정 등록")
-	/*@Parameters( value = {
-		@Parameter(name = "title", description ="제목"),
-		@Parameter(name = "startdate", description ="시작일자"),
-		@Parameter(name = "endDate", description ="제목(장소)"),
-			@Parameter(name = "tag", description ="태그"),
-		@Parameter(name = "dayType", description ="일정 타입")
-	})*/
 	@ApiResponses(value={
 			@ApiResponse(responseCode = "200", description = "등록 완료"),
 			@ApiResponse(responseCode = "422", description = "등록이 이루어지지 않음"),
@@ -419,7 +377,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 		@Parameter(name = "page", description="페이지")
 	})
 	@GetMapping(value=API_URL+"/daily/routine/invite/list")
-	public Map<String,Object> selectInviteList(
+	public MemberListAndFriendListResponse selectInviteList(
 												@RequestParam(value="name",required = false) String name,
 												@RequestParam("idx") Long dailyIdx,
 												@RequestParam(value="page",defaultValue = "1") int page) throws Exception {
@@ -429,32 +387,15 @@ public class DailyRoutineUserController extends BaseModuleController{
 		searchDto.setStype("name");
 		searchDto.setSstring(name);
 		searchDto.setPage(page);
-		Page<MemberDto> memberList = memberService.selectMemberPageList(searchDto);
-		List<Map<String,Object>> members = memberList.stream().map(MemberDto :: getSummaryInfo).toList();
-;
-		modelMap.put("memberList", members);
-		modelMap.put("pageable", memberList.getPageable());
-		modelMap.put("totalPages", memberList.getTotalPages());
-		modelMap.put("totalElements",memberList.getTotalElements());
+		Page<MemberSummaryResponse> memberList = memberService.selectMemberPageList(searchDto);
 		
 		//친구목록
 		MemberFriendsDto friendsDto = new MemberFriendsDto();
 		friendsDto.setMemberId("");
 		friendsDto.setBlockYn("N");
-		List<MemberFriendsDto> friendList = friendListService.selectFriendListResultList(friendsDto);
-		List<Map<String,String>> freinds = new ArrayList<>();
-		for(MemberFriendsDto dto : friendList) {
-			Map<String,String> map = new LinkedHashMap<>();
-			map.put("idx", dto.getIdx()+"");
-			map.put("nickname",dto.getMemberDto().getNickname());
-			map.put("gender", dto.getMemberDto().getGender());
-			map.put("age",dto.getMemberDto().getAge()+"");
-			map.put("mbti",dto.getMemberDto().getMbti()+"");
-			freinds.add(map);
-		}
-		modelMap.put("friendList", freinds);
+		List<MemberFriendsResponse> friendList = friendListService.selectFriendListResultList(friendsDto);
 		
-		return modelMap;
+		return new MemberListAndFriendListResponse(memberList,friendList);
 	}
 	
 	/**

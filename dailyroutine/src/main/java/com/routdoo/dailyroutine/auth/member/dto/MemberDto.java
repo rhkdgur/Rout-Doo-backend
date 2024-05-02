@@ -1,12 +1,6 @@
 package com.routdoo.dailyroutine.auth.member.dto;
 
-import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.routdoo.dailyroutine.auth.member.domain.Member;
-
 import com.routdoo.dailyroutine.common.exception.validate.annotation.date.Date;
 import com.routdoo.dailyroutine.common.exception.validate.annotation.phone.Phone;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,6 +10,11 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -112,6 +111,22 @@ public class MemberDto {
 		this.useStatus = entity.getUseStatus();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
+	}
+
+	public static MemberDto createOf(MemberActionRequest request){
+		MemberDto dto = new MemberDto();
+		dto.setId(request.getId());
+		dto.setPw(request.getPw());
+		dto.setEmail(request.getEmail());
+		dto.setNickname(request.getNickname());
+		dto.setPhonenumber(request.getPhonenumber());
+		dto.setGender(request.getGender());
+		dto.setAge(request.getAge());
+		dto.setBirth(request.getBirth());
+		dto.setMbti(request.getMbti());
+		dto.setIntroText(request.getIntroText());
+		dto.setUseStatus(request.getUseStatus());
+		return dto;
 	}
 	
 	/**

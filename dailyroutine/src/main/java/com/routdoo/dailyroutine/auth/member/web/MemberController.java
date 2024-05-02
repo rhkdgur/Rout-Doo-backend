@@ -1,19 +1,19 @@
 package com.routdoo.dailyroutine.auth.member.web;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import com.routdoo.dailyroutine.auth.AuthResultCodeType;
+import com.routdoo.dailyroutine.auth.AuthServiceResult;
+import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
 import com.routdoo.dailyroutine.auth.member.service.FriendListService;
-import com.routdoo.dailyroutine.module.place.domain.PlaceIntro;
-import com.routdoo.dailyroutine.module.place.dto.PlaceDefaultDto;
+import com.routdoo.dailyroutine.auth.member.service.MemberService;
+import com.routdoo.dailyroutine.common.web.BaseController;
 import com.routdoo.dailyroutine.module.place.dto.PlaceIntroDto;
-import com.routdoo.dailyroutine.module.place.service.PlaceRecordService;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
-import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDefaultDto;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
 import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.support.SessionStatus;
 
-import com.routdoo.dailyroutine.auth.AuthResultCodeType;
-import com.routdoo.dailyroutine.auth.AuthServiceResult;
-import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
-import com.routdoo.dailyroutine.auth.member.service.MemberService;
-import com.routdoo.dailyroutine.common.web.BaseController;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.Map;
 
 /**
 * @packageName   : com.routdoo.dailyroutine.auth.member.web
@@ -70,7 +64,7 @@ public class MemberController extends BaseController{
 	public Map<String,Object> selectMemberList(MemberDefaultDto searchDto) throws Exception {
 
 		//회원 목록 조회
-		Page<MemberDto> resultList = memberService.selectMemberPageList(searchDto);
+		Page<MemberSummaryResponse> resultList = memberService.selectMemberPageList(searchDto);
 		modelMap.put("resultList", resultList);
 		modelMap.put("searchDto",searchDto);
 		

@@ -4,11 +4,11 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringPath;
 import com.routdoo.dailyroutine.auth.member.domain.QMember;
-import com.routdoo.dailyroutine.cms.publiccode.domain.QPublicCode;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 import com.routdoo.dailyroutine.module.routine.domain.*;
 import com.routdoo.dailyroutine.module.routine.dto.*;
@@ -24,321 +24,306 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 
-* @packageName   : com.routdoo.dailyroutine.module.routine.repository.impl
-* @fileName      : DailyRoutineCustomRepositoryImpl.java
-* @author        : Gwang hyeok Go
-* @date          : 2023.08.16
-* @description   : 스케줄(일상) custom repostiroy impl
-* ===========================================================
-* DATE              AUTHOR             NOTE
-* -----------------------------------------------------------
-* 2023.08.16        ghgo       최초 생성
+ * @author : Gwang hyeok Go
+ * @packageName : com.routdoo.dailyroutine.module.routine.repository.impl
+ * @fileName : DailyRoutineCustomRepositoryImpl.java
+ * @date : 2023.08.16
+ * @description : 스케줄(일상) custom repostiroy impl
+ * ===========================================================
+ * DATE              AUTHOR             NOTE
+ * -----------------------------------------------------------
+ * 2023.08.16        ghgo       최초 생성
  */
 @Repository
-public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl implements DailyRoutineCustomRepository{
+public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl implements DailyRoutineCustomRepository {
 
-	private BooleanBuilder commonQuery(DailyRoutineDefaultDto searchDto) {
-		BooleanBuilder sql = new BooleanBuilder();
-		QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
+    private BooleanBuilder commonQuery(DailyRoutineDefaultDto searchDto) {
+        BooleanBuilder sql = new BooleanBuilder();
+        QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
 
-		if (searchDto.getSstring() != null && !searchDto.getSstring().isEmpty()) {
-			//커뮤니티 검색
-			if (searchDto.isCummunity() && !searchDto.isFullTextSearch()) {
-				sql.and(
-						qDailyRoutine.title.like("%" + searchDto.getSstring() + "%")
-								.or(qDailyRoutine.member.nickname.like("%" + searchDto.getSstring() + "%"))
-								.or(qDailyRoutine.tag.like("%" + searchDto.getSstring() + "%"))
-				);
-			}
-		}
-		if (searchDto.getMemberId() != null && !searchDto.getMemberId().isEmpty()) {
-			if(!searchDto.isCummunity()) {
-				sql.and(qDailyRoutine.member.id.eq(searchDto.getMemberId()));
-			}
-		}
-		if (searchDto.getIdx() != 0L) {
-			sql.and(qDailyRoutine.idx.eq(searchDto.getIdx()));
-		}
-		if (searchDto.getToDate() != null && !searchDto.getToDate().isEmpty()) {
-			sql.and(qDailyRoutine.startDate.loe(searchDto.getToDate()).and(qDailyRoutine.endDate.goe(searchDto.getToDate())));
-		}
-		if (searchDto.getRangeType() != null && !searchDto.getRangeType().isEmpty()) {
-			sql.and(qDailyRoutine.rangeType.eq(RoutineRangeConfigType.valueOf(searchDto.getRangeType())));
-		}
-		return sql;
-	}
+        if (searchDto.getSstring() != null && !searchDto.getSstring().isEmpty()) {
+            //커뮤니티 검색
+            if (searchDto.isCummunity() && !searchDto.isFullTextSearch()) {
+                sql.and(
+                        qDailyRoutine.title.like("%" + searchDto.getSstring() + "%")
+                                .or(qDailyRoutine.member.nickname.like("%" + searchDto.getSstring() + "%"))
+                                .or(qDailyRoutine.tag.like("%" + searchDto.getSstring() + "%"))
+                );
+            }
+        }
+        if (searchDto.getMemberId() != null && !searchDto.getMemberId().isEmpty()) {
+            if (!searchDto.isCummunity()) {
+                sql.and(qDailyRoutine.member.id.eq(searchDto.getMemberId()));
+            }
+        }
+        if (searchDto.getIdx() != 0L) {
+            sql.and(qDailyRoutine.idx.eq(searchDto.getIdx()));
+        }
+        if (searchDto.getToDate() != null && !searchDto.getToDate().isEmpty()) {
+            sql.and(qDailyRoutine.startDate.loe(searchDto.getToDate()).and(qDailyRoutine.endDate.goe(searchDto.getToDate())));
+        }
+        if (searchDto.getRangeType() != null && !searchDto.getRangeType().isEmpty()) {
+            sql.and(qDailyRoutine.rangeType.eq(RoutineRangeConfigType.valueOf(searchDto.getRangeType())));
+        }
+        return sql;
+    }
 
-	public BooleanExpression cummunitySearch(StringPath target,StringPath target2, String keyword){
-		if(!keyword.isEmpty()) {
-			final String formattedSearchWord = "\"" + keyword + "\"";
-			return Expressions.numberTemplate(Double.class, "function('match_daily_routine_community', {0},{1},{2})",
-					target,target2, formattedSearchWord).gt(0);
-		}else{
-			return null;
-		}
-	}
+    public BooleanExpression cummunitySearch(StringPath target, StringPath target2, String keyword) {
+        if (!keyword.isEmpty()) {
+            final String formattedSearchWord = "\"" + keyword + "\"";
+            return Expressions.numberTemplate(Double.class, "function('match_daily_routine_community', {0},{1},{2})",
+                    target, target2, formattedSearchWord).gt(0);
+        } else {
+            return null;
+        }
+    }
 
     private OrderSpecifier[] commonOrderBy(DailyRoutineDefaultDto searchDto) {
-        List<OrderSpecifier> orderSpecifierList  = new ArrayList<>();
+        List<OrderSpecifier> orderSpecifierList = new ArrayList<>();
         QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
         //공개 커뮤니티 일경우 정렬 처리
-        if(searchDto.isCummunity()){
-            orderSpecifierList.add(new OrderSpecifier(Order.DESC,qDailyRoutine.createDate));
-        }else{
-            orderSpecifierList.add(new OrderSpecifier(Order.DESC,qDailyRoutine.idx));
+        if (searchDto.isCummunity()) {
+            orderSpecifierList.add(new OrderSpecifier(Order.DESC, qDailyRoutine.createDate));
+        } else {
+            orderSpecifierList.add(new OrderSpecifier(Order.DESC, qDailyRoutine.idx));
         }
         return orderSpecifierList.toArray(new OrderSpecifier[orderSpecifierList.size()]);
     }
 
-	private OrderSpecifier[] commonTimeOrderBy(DailyRoutineTimeLineDefaultDto searchDto) {
-		List<OrderSpecifier> list = new ArrayList<>();
-		QDailyRoutineTimeLine qDailyRoutineTimeLine = QDailyRoutineTimeLine.dailyRoutineTimeLine;
-		list.add(new OrderSpecifier(Order.ASC,qDailyRoutineTimeLine.shour));
-		list.add(new OrderSpecifier(Order.ASC,qDailyRoutineTimeLine.smin));
-		return list.toArray(new OrderSpecifier[list.size()]);
-	}
-	
-	private BooleanBuilder commonTimeQuery(DailyRoutineTimeLineDefaultDto searchDto) {
-		BooleanBuilder sql = new BooleanBuilder();
-		QDailyRoutineTimeLine qDailyRoutineTimeLine = QDailyRoutineTimeLine.dailyRoutineTimeLine;
-		
-		if(searchDto.getSstring() != null && !searchDto.getSstring().isEmpty()) {
-			
-		}
-		if(searchDto.getIdx() != 0) {
-			sql.and(qDailyRoutineTimeLine.idx.eq(searchDto.getIdx()));
-		}	
-		if(searchDto.getDailyIdx() != 0) {
-			sql.and(qDailyRoutineTimeLine.dailyRoutine.idx.eq(searchDto.getDailyIdx()));
-		}
-		if(searchDto.getApplyDate() != null && !searchDto.getApplyDate().isEmpty()){
-			sql.and(qDailyRoutineTimeLine.applyDate.eq(searchDto.getApplyDate()));
-		}
-		
-		return sql;
-	}
-	
+    private OrderSpecifier[] commonTimeOrderBy(DailyRoutineTimeLineDefaultDto searchDto) {
+        List<OrderSpecifier> list = new ArrayList<>();
+        QDailyRoutineTimeLine qDailyRoutineTimeLine = QDailyRoutineTimeLine.dailyRoutineTimeLine;
+        list.add(new OrderSpecifier(Order.ASC, qDailyRoutineTimeLine.shour));
+        list.add(new OrderSpecifier(Order.ASC, qDailyRoutineTimeLine.smin));
+        return list.toArray(new OrderSpecifier[list.size()]);
+    }
 
-	@Override
-	public Page<DailyRoutineDto> selectDailyRoutinePageList(DailyRoutineDefaultDto searchDto) {
-		QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
-		QMember qMember = QMember.member;
-		QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
-		long cnt = 0L;
-		cnt = jpaQueryFactory.select(qDailyRoutine.count()).from(qDailyRoutine)
-				.where(cummunitySearch(qDailyRoutine.title,qDailyRoutine.tag,searchDto.getSstring()),commonQuery(searchDto)).fetchFirst();
-		
-		List<Tuple> list = jpaQueryFactory
-				.select(qDailyRoutine.idx,
-						qDailyRoutine.title,
-						qDailyRoutine.tag,
-						qMember.id,
-						qMember.nickname,
-						qDailyRoutine.startDate,
-						qDailyRoutine.endDate,
-						qDailyRoutine.dayType.stringValue(),
-						qDailyRoutine.rangeType.stringValue(),
-						qDailyRoutine.createDate,
-						qDailyRoutine.modifyDate,
-						qDailyRoutineLike.idx)
-				.from(qDailyRoutine)
-				.leftJoin(qDailyRoutine.member,qMember)
-				.leftJoin(qDailyRoutineLike).on(qDailyRoutineLike.member.id.eq(searchDto.getMemberId()).and(qDailyRoutine.idx.eq(qDailyRoutineLike.dailyRoutine.idx)))
-				.where(cummunitySearch(qDailyRoutine.title,qDailyRoutine.tag,searchDto.getSstring()),commonQuery(searchDto))
-				.offset(searchDto.getPageable().getOffset())
+    private BooleanBuilder commonTimeQuery(DailyRoutineTimeLineDefaultDto searchDto) {
+        BooleanBuilder sql = new BooleanBuilder();
+        QDailyRoutineTimeLine qDailyRoutineTimeLine = QDailyRoutineTimeLine.dailyRoutineTimeLine;
+
+        if (searchDto.getSstring() != null && !searchDto.getSstring().isEmpty()) {
+
+        }
+        if (searchDto.getIdx() != 0) {
+            sql.and(qDailyRoutineTimeLine.idx.eq(searchDto.getIdx()));
+        }
+        if (searchDto.getDailyIdx() != 0) {
+            sql.and(qDailyRoutineTimeLine.dailyRoutine.idx.eq(searchDto.getDailyIdx()));
+        }
+        if (searchDto.getApplyDate() != null && !searchDto.getApplyDate().isEmpty()) {
+            sql.and(qDailyRoutineTimeLine.applyDate.eq(searchDto.getApplyDate()));
+        }
+
+        return sql;
+    }
+
+
+    @Override
+    public Page<DailyRoutineSummaryResponse> selectDailyRoutinePageList(DailyRoutineDefaultDto searchDto) {
+        QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
+        QMember qMember = QMember.member;
+        QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
+        long cnt = 0L;
+        cnt = jpaQueryFactory.select(qDailyRoutine.count()).from(qDailyRoutine)
+                .where(cummunitySearch(qDailyRoutine.title, qDailyRoutine.tag, searchDto.getSstring()), commonQuery(searchDto)).fetchFirst();
+
+        List<DailyRoutineSummaryResponse> list = jpaQueryFactory
+                .select(
+                        Projections.constructor(
+                                DailyRoutineSummaryResponse.class,
+                                qDailyRoutine.idx,
+                                qMember.id,
+                                qMember.nickname,
+								qDailyRoutine.tag,
+                                qDailyRoutine.title,
+                                qDailyRoutine.startDate,
+                                qDailyRoutine.endDate,
+                                qDailyRoutine.dayType.stringValue(),
+                                qDailyRoutine.rangeType.stringValue(),
+                                qDailyRoutine.createDate,
+                                qDailyRoutine.modifyDate,
+                                qDailyRoutineLike.idx
+                        )
+                )
+                .from(qDailyRoutine)
+                .leftJoin(qDailyRoutine.member, qMember)
+                .leftJoin(qDailyRoutineLike).on(qDailyRoutineLike.member.id.eq(searchDto.getMemberId()).and(qDailyRoutine.idx.eq(qDailyRoutineLike.dailyRoutine.idx)))
+                .where(cummunitySearch(qDailyRoutine.title, qDailyRoutine.tag, searchDto.getSstring()), commonQuery(searchDto))
+                .offset(searchDto.getPageable().getOffset())
                 .orderBy(commonOrderBy(searchDto))
-				.limit(searchDto.getPageable().getPageSize())
-				.fetch();
+                .limit(searchDto.getPageable().getPageSize())
+                .fetch();
 
-		List<DailyRoutineDto> dtos = new ArrayList<>();
+        return new PageImpl<>(list, searchDto.getPageable(), cnt);
+    }
 
+    @Override
+    public List<DailyRoutineDto> selectDailyRoutineList(DailyRoutineDefaultDto searchDto) {
+        QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
+        QMember qMember = QMember.member;
 
-		for(Tuple tuple : list){
-			DailyRoutineDto dto = new DailyRoutineDto();
-			dto.setIdx(tuple.get(qDailyRoutine.idx));
-			dto.setTitle(tuple.get(qDailyRoutine.title));
-			dto.setTag(tuple.get(qDailyRoutine.tag));
-			dto.setMemberId(tuple.get(qMember.id));
-			dto.setNickname(tuple.get(qMember.nickname));
-			dto.setStartDate(tuple.get(qDailyRoutine.startDate));
-			dto.setEndDate(tuple.get(qDailyRoutine.endDate));
-			dto.setDayType(tuple.get(qDailyRoutine.dayType.stringValue()));
-			dto.setRangeType(tuple.get(qDailyRoutine.rangeType.stringValue()));
-			dto.setCreateDate(tuple.get(qDailyRoutine.createDate));
-			dto.setModifyDate(tuple.get(qDailyRoutine.modifyDate));
-			dto.setLikeYn(tuple.get(qDailyRoutineLike.idx) == null ? "N" : "Y");
-			dtos.add(dto);
-		}
-		
-		return new PageImpl<>(dtos, searchDto.getPageable(),cnt);
-	}
+        List<Tuple> list = jpaQueryFactory
+                .select(qDailyRoutine.idx,
+                        qDailyRoutine.title,
+                        qDailyRoutine.tag,
+                        qMember.id,
+                        qMember.nickname,
+                        qDailyRoutine.startDate,
+                        qDailyRoutine.endDate,
+                        qDailyRoutine.dayType.stringValue(),
+                        qDailyRoutine.rangeType.stringValue(),
+                        qDailyRoutine.createDate,
+                        qDailyRoutine.modifyDate)
+                .from(qDailyRoutine)
+                .leftJoin(qDailyRoutine.member, qMember)
+                .where(commonQuery(searchDto))
+                .fetch();
 
-	@Override
-	public List<DailyRoutineDto> selectDailyRoutineList(DailyRoutineDefaultDto searchDto) {
-		QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
-		QMember qMember = QMember.member;
+        List<DailyRoutineDto> dtos = new ArrayList<>();
 
-		List<Tuple> list = jpaQueryFactory
-				.select(qDailyRoutine.idx,
-						qDailyRoutine.title,
-						qDailyRoutine.tag,
-						qMember.id,
-						qMember.nickname,
-						qDailyRoutine.startDate,
-						qDailyRoutine.endDate,
-						qDailyRoutine.dayType.stringValue(),
-						qDailyRoutine.rangeType.stringValue(),
-						qDailyRoutine.createDate,
-						qDailyRoutine.modifyDate)
-				.from(qDailyRoutine)
-				.leftJoin(qDailyRoutine.member,qMember)
-				.where(commonQuery(searchDto))
-				.fetch();
+        for (Tuple tuple : list) {
+            DailyRoutineDto dto = new DailyRoutineDto();
+            dto.setIdx(tuple.get(qDailyRoutine.idx));
+            dto.setTitle(tuple.get(qDailyRoutine.title));
+            dto.setTag(tuple.get(qDailyRoutine.tag));
+            dto.setMemberId(tuple.get(qMember.id));
+            dto.setNickname(tuple.get(qMember.nickname));
+            dto.setStartDate(tuple.get(qDailyRoutine.startDate));
+            dto.setEndDate(tuple.get(qDailyRoutine.endDate));
+            dto.setDayType(tuple.get(qDailyRoutine.dayType.stringValue()));
+            dto.setRangeType(tuple.get(qDailyRoutine.rangeType.stringValue()));
+            dto.setCreateDate(tuple.get(qDailyRoutine.createDate));
+            dto.setModifyDate(tuple.get(qDailyRoutine.modifyDate));
+            dtos.add(dto);
+        }
 
-		List<DailyRoutineDto> dtos = new ArrayList<>();
+        return dtos;
+    }
 
-		for(Tuple tuple : list){
-			DailyRoutineDto dto = new DailyRoutineDto();
-			dto.setIdx(tuple.get(qDailyRoutine.idx));
-			dto.setTitle(tuple.get(qDailyRoutine.title));
-			dto.setTag(tuple.get(qDailyRoutine.tag));
-			dto.setMemberId(tuple.get(qMember.id));
-			dto.setNickname(tuple.get(qMember.nickname));
-			dto.setStartDate(tuple.get(qDailyRoutine.startDate));
-			dto.setEndDate(tuple.get(qDailyRoutine.endDate));
-			dto.setDayType(tuple.get(qDailyRoutine.dayType.stringValue()));
-			dto.setRangeType(tuple.get(qDailyRoutine.rangeType.stringValue()));
-			dto.setCreateDate(tuple.get(qDailyRoutine.createDate));
-			dto.setModifyDate(tuple.get(qDailyRoutine.modifyDate));
-			dtos.add(dto);
-		}
+    @Override
+    public Long selectDailyRoutineTotalCount(DailyRoutineDefaultDto searchDto) {
+        QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
+        Long cnt = jpaQueryFactory.select(qDailyRoutine.count()).from(qDailyRoutine)
+                .where(commonQuery(searchDto)).fetchOne();
+        return cnt;
+    }
 
-		return dtos;
-	}
+    @Override
+    public List<DailyRoutineTimeLineDto> selectDailyRoutineTimeLineList(DailyRoutineTimeLineDefaultDto searchDto) {
+        QDailyRoutineTimeLine qDailyRoutineTimeLine = QDailyRoutineTimeLine.dailyRoutineTimeLine;
+        List<DailyRoutineTimeLine> list = jpaQueryFactory.selectFrom(qDailyRoutineTimeLine).
+                where(commonTimeQuery(searchDto)).orderBy(commonTimeOrderBy(searchDto)).fetch();
+        return list.stream().map(DailyRoutineTimeLineDto::new).collect(Collectors.toList());
+    }
 
-	@Override
-	public Long selectDailyRoutineTotalCount(DailyRoutineDefaultDto searchDto) {
-		QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
-		Long cnt = jpaQueryFactory.select(qDailyRoutine.count()).from(qDailyRoutine)
-				.where(commonQuery(searchDto)).fetchOne();
-		return cnt;
-	}
+    @Override
+    public boolean updateDailyRoutineRangeChange(DailyRoutineDto dailyRoutineDto) throws Exception {
+        QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
+        return jpaQueryFactory.update(qDailyRoutine)
+                .set(qDailyRoutine.rangeType, RoutineRangeConfigType.valueOf(dailyRoutineDto.getRangeType()))
+                .where(new BooleanBuilder().and(qDailyRoutine.idx.eq(dailyRoutineDto.getIdx()))).execute() > 0;
+    }
 
-	@Override
-	public List<DailyRoutineTimeLineDto> selectDailyRoutineTimeLineList(DailyRoutineTimeLineDefaultDto searchDto) {
-		QDailyRoutineTimeLine qDailyRoutineTimeLine = QDailyRoutineTimeLine.dailyRoutineTimeLine;
-		List<DailyRoutineTimeLine> list = jpaQueryFactory.selectFrom(qDailyRoutineTimeLine).
-				where(commonTimeQuery(searchDto)).orderBy(commonTimeOrderBy(searchDto)).fetch();
-		return list.stream().map(DailyRoutineTimeLineDto::new).collect(Collectors.toList());
-	}
+    @Override
+    public Page<DailyRoutineTimeLineDto> selectDailyRoutineTimePageList(DailyRoutineTimeLineDefaultDto searchDto) {
+        QDailyRoutineTimeLine qDailyRoutineTimeLine = QDailyRoutineTimeLine.dailyRoutineTimeLine;
 
-	@Override
-	public boolean updateDailyRoutineRangeChange(DailyRoutineDto dailyRoutineDto) throws Exception {
-		QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
-		return jpaQueryFactory.update(qDailyRoutine)
-				.set(qDailyRoutine.rangeType, RoutineRangeConfigType.valueOf(dailyRoutineDto.getRangeType()))
-				.where(new BooleanBuilder().and(qDailyRoutine.idx.eq(dailyRoutineDto.getIdx()))).execute() > 0;
-	}
+        Long cnt = jpaQueryFactory.select(qDailyRoutineTimeLine.count()).from(qDailyRoutineTimeLine)
+                .where(commonTimeQuery(searchDto)).fetchOne();
 
-	@Override
-	public Page<DailyRoutineTimeLineDto> selectDailyRoutineTimePageList(DailyRoutineTimeLineDefaultDto searchDto) {
-		QDailyRoutineTimeLine qDailyRoutineTimeLine = QDailyRoutineTimeLine.dailyRoutineTimeLine;
-		
-		Long cnt = jpaQueryFactory.select(qDailyRoutineTimeLine.count()).from(qDailyRoutineTimeLine)
-				.where(commonTimeQuery(searchDto)).fetchOne();
-		
-		List<DailyRoutineTimeLine> list = jpaQueryFactory.selectFrom(qDailyRoutineTimeLine).
-		where(commonTimeQuery(searchDto)).orderBy(commonTimeOrderBy(searchDto))
-		.offset(searchDto.getPageable().getOffset())
-		.limit(searchDto.getPageable().getPageSize())
-		.fetch();
-		
-		return new PageImpl<>(list.stream().map(DailyRoutineTimeLineDto::new).collect(Collectors.toList()),
-				searchDto.getPageable(),cnt);
-	}
+        List<DailyRoutineTimeLine> list = jpaQueryFactory.selectFrom(qDailyRoutineTimeLine).
+                where(commonTimeQuery(searchDto)).orderBy(commonTimeOrderBy(searchDto))
+                .offset(searchDto.getPageable().getOffset())
+                .limit(searchDto.getPageable().getPageSize())
+                .fetch();
+
+        return new PageImpl<>(list.stream().map(DailyRoutineTimeLineDto::new).collect(Collectors.toList()),
+                searchDto.getPageable(), cnt);
+    }
 
 
-	/**
-	 * 좋아요 공통 where 쿼리
-	 * @param searchDto
-	 * @return
-	 */
-	private BooleanBuilder commonLikeQuery(DailyRoutineLikeDefaultDto searchDto) {
-		BooleanBuilder sql = new BooleanBuilder();
-		QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
+    /**
+     * 좋아요 공통 where 쿼리
+     *
+     * @param searchDto
+     * @return
+     */
+    private BooleanBuilder commonLikeQuery(DailyRoutineLikeDefaultDto searchDto) {
+        BooleanBuilder sql = new BooleanBuilder();
+        QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
 
-		if(searchDto.getDailyIdx() != 0) {
-			sql.and(qDailyRoutineLike.dailyRoutine.idx.eq(searchDto.getDailyIdx()));
-		}
-		if(searchDto.getMemberId() != null && !searchDto.getMemberId().isEmpty()){
-			sql.and(qDailyRoutineLike.member.id.eq(searchDto.getMemberId()));
-		}
+        if (searchDto.getDailyIdx() != 0) {
+            sql.and(qDailyRoutineLike.dailyRoutine.idx.eq(searchDto.getDailyIdx()));
+        }
+        if (searchDto.getMemberId() != null && !searchDto.getMemberId().isEmpty()) {
+            sql.and(qDailyRoutineLike.member.id.eq(searchDto.getMemberId()));
+        }
 
-		return sql;
-	}
+        return sql;
+    }
 
-	@Override
-	public Page<DailyRoutineDto> selectDailyRoutineLikePageList(DailyRoutineLikeDefaultDto searchDto) throws Exception {
-		QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
-		QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
-
-
-		List<DailyRoutine> list = jpaQueryFactory.selectFrom(qDailyRoutine)
-				.join(qDailyRoutineLike).on(qDailyRoutineLike.dailyRoutine.idx.eq(qDailyRoutine.idx)).fetchJoin()
-				.where(commonLikeQuery(searchDto))
-				.offset(searchDto.getPageable().getOffset())
-				.limit(searchDto.getPageable().getPageSize())
-				.fetch();
-
-		long cnt = jpaQueryFactory.select(qDailyRoutine.count())
-				.from(qDailyRoutine)
-				.join(qDailyRoutineLike).on(qDailyRoutineLike.dailyRoutine.idx.eq(qDailyRoutine.idx)).fetchJoin()
-				.where(commonLikeQuery(searchDto))
-				.fetchFirst();
-
-		return new PageImpl<>(list.stream().map(DailyRoutineDto::new).toList(),searchDto.getPageable(),cnt);
-	}
-
-	@Override
-	public DailyRoutineLikeDto selectDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception {
-		QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
-		DailyRoutineLike dailyRoutineLike = jpaQueryFactory.selectFrom(qDailyRoutineLike)
-				.where(new BooleanBuilder().and(qDailyRoutineLike.idx.eq(dto.getIdx()))).fetchFirst();
-
-		if(dailyRoutineLike == null){
-			return null;
-		}
-		return new DailyRoutineLikeDto(dailyRoutineLike);
-	}
+    @Override
+    public Page<DailyRoutineDto> selectDailyRoutineLikePageList(DailyRoutineLikeDefaultDto searchDto) throws Exception {
+        QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
+        QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
 
 
-	@Override
-	public boolean insertDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception {
+        List<DailyRoutine> list = jpaQueryFactory.selectFrom(qDailyRoutine)
+                .join(qDailyRoutineLike).on(qDailyRoutineLike.dailyRoutine.idx.eq(qDailyRoutine.idx)).fetchJoin()
+                .where(commonLikeQuery(searchDto))
+                .offset(searchDto.getPageable().getOffset())
+                .limit(searchDto.getPageable().getPageSize())
+                .fetch();
 
-		return  entityManager.createNativeQuery("insert into daily_routine_like (daily_idx,member_id,create_date,modify_date) values (?,?,?,?)")
-				.setParameter(1,dto.getDailyIdx())
-				.setParameter(2,dto.getMemberId())
-				.setParameter(3,LocalDateTime.now())
-				.setParameter(4,LocalDateTime.now())
-				.executeUpdate() > 0;
-	}
+        long cnt = jpaQueryFactory.select(qDailyRoutine.count())
+                .from(qDailyRoutine)
+                .join(qDailyRoutineLike).on(qDailyRoutineLike.dailyRoutine.idx.eq(qDailyRoutine.idx)).fetchJoin()
+                .where(commonLikeQuery(searchDto))
+                .fetchFirst();
 
-	@Override
-	public Long deleteDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception {
-		QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
-		return jpaQueryFactory.delete(qDailyRoutineLike)
-				.where(qDailyRoutineLike.idx.eq(dto.getIdx()))
-				.execute();
-	}
+        return new PageImpl<>(list.stream().map(DailyRoutineDto::new).toList(), searchDto.getPageable(), cnt);
+    }
 
-	@Override
-	public boolean updateDailyRoutinePublicYn(DailyRoutineDto dto) throws Exception {
-		QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
-		return jpaQueryFactory.update(qDailyRoutine).
-				set(qDailyRoutine.rangeType,RoutineRangeConfigType.valueOf(dto.getRangeType()))
-				.where(qDailyRoutine.idx.eq(dto.getIdx()))
-				.execute() > 0;
-	}
+    @Override
+    public DailyRoutineLikeDto selectDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception {
+        QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
+        DailyRoutineLike dailyRoutineLike = jpaQueryFactory.selectFrom(qDailyRoutineLike)
+                .where(new BooleanBuilder().and(qDailyRoutineLike.idx.eq(dto.getIdx()))).fetchFirst();
+
+        if (dailyRoutineLike == null) {
+            return null;
+        }
+        return new DailyRoutineLikeDto(dailyRoutineLike);
+    }
+
+
+    @Override
+    public boolean insertDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception {
+
+        return entityManager.createNativeQuery("insert into daily_routine_like (daily_idx,member_id,create_date,modify_date) values (?,?,?,?)")
+                .setParameter(1, dto.getDailyIdx())
+                .setParameter(2, dto.getMemberId())
+                .setParameter(3, LocalDateTime.now())
+                .setParameter(4, LocalDateTime.now())
+                .executeUpdate() > 0;
+    }
+
+    @Override
+    public Long deleteDailyRoutineLike(DailyRoutineLikeDto dto) throws Exception {
+        QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
+        return jpaQueryFactory.delete(qDailyRoutineLike)
+                .where(qDailyRoutineLike.idx.eq(dto.getIdx()))
+                .execute();
+    }
+
+    @Override
+    public boolean updateDailyRoutinePublicYn(DailyRoutineDto dto) throws Exception {
+        QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
+        return jpaQueryFactory.update(qDailyRoutine).
+                set(qDailyRoutine.rangeType, RoutineRangeConfigType.valueOf(dto.getRangeType()))
+                .where(qDailyRoutine.idx.eq(dto.getIdx()))
+                .execute() > 0;
+    }
 
 }

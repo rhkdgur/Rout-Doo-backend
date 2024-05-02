@@ -1,15 +1,13 @@
 package com.routdoo.dailyroutine.module.routine.dto;
 
-import java.time.LocalDateTime;
-
-import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineInvite;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 /**
  * 
@@ -50,10 +48,6 @@ public class DailyRoutineInviteDto {
 	/**수정일자*/
 	@Schema(description = "수정일자")
 	private LocalDateTime modifyDate;
-	
-	/**회원 정보*/
-	@Schema(description = "회원 정보")
-	private MemberDto member = new MemberDto();
 	
 	public DailyRoutineInvite toEntity() {
 		return DailyRoutineInvite.builder().dto(this).build();

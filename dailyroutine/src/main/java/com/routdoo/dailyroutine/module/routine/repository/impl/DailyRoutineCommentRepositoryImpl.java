@@ -7,17 +7,16 @@ import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 import com.routdoo.dailyroutine.module.routine.domain.*;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDefaultDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
+import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentResponse;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCommentRepository;
 import org.qlrm.mapper.JpaResultMapper;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import javax.management.Query;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +37,7 @@ import java.util.Map;
 public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImpl implements DailyRoutineCommentRepository {
 
     @Override
-    public Page<DailyRoutineCommentDto> selectDailyRoutineCommentPageList(DailyRoutineCommentDefaultDto dto) throws Exception {
+    public Page<DailyRoutineCommentResponse> selectDailyRoutineCommentPageList(DailyRoutineCommentDefaultDto dto) throws Exception {
         StringBuffer sql = new StringBuffer();
 
         sql.append("SELECT  " +
@@ -58,7 +57,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
                 .append(" LIMIT ").append(dto.getPageable().getOffset()).append(",").append(dto.getPageable().getPageSize());
 
         JpaResultMapper jpaResultMapper = new JpaResultMapper();
-        List<DailyRoutineCommentDto> resultList = jpaResultMapper.list(entityManager.createNativeQuery(sql.toString()),DailyRoutineCommentDto.class);
+        List<DailyRoutineCommentResponse> resultList = jpaResultMapper.list(entityManager.createNativeQuery(sql.toString()),DailyRoutineCommentResponse.class);
 
         QMember qMember = QMember.member;
         QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;

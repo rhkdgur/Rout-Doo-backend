@@ -1,6 +1,7 @@
 package com.routdoo.dailyroutine.module.routine.repository;
 
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineInviteDto;
+import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineInviteResponse;
 
 import java.util.List;
 
@@ -22,6 +23,6 @@ public interface DailyRoutineInviteCustomRepository {
      * @param dto
      * @return
      */
-    List<DailyRoutineInviteDto> selectDailyRoutineInviteDtoList(DailyRoutineInviteDto dto);
+    List<DailyRoutineInviteResponse> selectDailyRoutineInviteDtoList(DailyRoutineInviteDto dto);
 
 }

@@ -3,10 +3,7 @@ package com.routdoo.dailyroutine.module.routine.web;
 import com.routdoo.dailyroutine.common.web.BaseController;
 import com.routdoo.dailyroutine.module.routine.RoutineResultCodeType;
 import com.routdoo.dailyroutine.module.routine.RoutineServiceResult;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDefaultDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineInviteDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineTimeLineDto;
+import com.routdoo.dailyroutine.module.routine.dto.*;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -50,7 +47,7 @@ public class DailyRoutineController extends BaseController {
     @GetMapping(MGN_URL+"/daily/routine/list")
     public Map<String,Object> selectDailyRoutinePageList(DailyRoutineDefaultDto searchDto) throws Exception {
 
-            Page<DailyRoutineDto> resultList = dailyRoutineService.selectDailyRoutinePageList(searchDto);
+            Page<DailyRoutineSummaryResponse> resultList = dailyRoutineService.selectDailyRoutinePageList(searchDto);
             modelMap.put("searchDto", searchDto);
             modelMap.put("resultList", resultList);
 
@@ -73,7 +70,7 @@ public class DailyRoutineController extends BaseController {
 
         DailyRoutineInviteDto inviteDto = new DailyRoutineInviteDto();
         inviteDto.setDailyIdx(idx);
-        List<DailyRoutineInviteDto> inviteDtoList = dailyRoutineService.selectDailyRoutineInviteList(inviteDto);
+        List<DailyRoutineInviteResponse> inviteDtoList = dailyRoutineService.selectDailyRoutineInviteList(inviteDto);
         modelMap.put("inviteList",inviteDtoList);
 
         return modelMap;

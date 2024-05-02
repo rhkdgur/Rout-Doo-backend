@@ -1,21 +1,20 @@
 package com.routdoo.dailyroutine.auth.member.domain;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.routdoo.dailyroutine.auth.member.dto.MemberActionRequest;
+import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
-
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -113,11 +112,8 @@ public class Member implements Persistable<String> {
 		this.modifyDate = dto.getModifyDate();
 	}
 
-	/**
-	 * 전체 정보 업데이트 처리 메소드
-	 * @param dto
-	 */
-	public void changeMember(MemberDto dto) {
+	@Builder(builderMethodName = "createMember")
+	public Member (MemberActionRequest dto) {
 		this.id = dto.getId();
 		this.pw = dto.getPw();
 		this.email = dto.getEmail();
@@ -129,8 +125,24 @@ public class Member implements Persistable<String> {
 		this.mbti = dto.getMbti();
 		this.introText = dto.getIntroText();
 		this.useStatus = dto.getUseStatus();
-		this.createDate = dto.getCreateDate();
-		this.modifyDate = dto.getModifyDate();
+	}
+
+	/**
+	 * 전체 정보 업데이트 처리 메소드
+	 * @param dto
+	 */
+	public void changeMember(MemberActionRequest dto) {
+		this.id = dto.getId();
+		this.pw = dto.getPw();
+		this.email = dto.getEmail();
+		this.nickname = dto.getNickname();
+		this.phonenumber = dto.getPhonenumber();
+		this.gender = dto.getGender();
+		this.age = dto.getAge();
+		this.birth = dto.getBirth();
+		this.mbti = dto.getMbti();
+		this.introText = dto.getIntroText();
+		this.useStatus = dto.getUseStatus();
 	}
 	
 	public void addFriendList(List<MemberFriends> list) {

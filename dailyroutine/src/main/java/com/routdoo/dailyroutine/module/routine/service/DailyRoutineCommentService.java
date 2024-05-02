@@ -2,6 +2,7 @@ package com.routdoo.dailyroutine.module.routine.service;
 
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDefaultDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
+import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentResponse;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCommentRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +37,7 @@ public class DailyRoutineCommentService {
      * @return
      * @throws Exception
      */
-    public Page<DailyRoutineCommentDto> selectDailyRoutineCommentPageList(DailyRoutineCommentDefaultDto dto) throws Exception {
+    public Page<DailyRoutineCommentResponse> selectDailyRoutineCommentPageList(DailyRoutineCommentDefaultDto dto) throws Exception {
         return dailyRoutineCommentRepository.selectDailyRoutineCommentPageList(dto);
     }
 

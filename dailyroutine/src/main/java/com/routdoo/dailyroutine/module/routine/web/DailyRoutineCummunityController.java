@@ -1,7 +1,6 @@
 package com.routdoo.dailyroutine.module.routine.web;
 
 import com.routdoo.dailyroutine.auth.member.MemberSession;
-import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
@@ -17,11 +16,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.poi.ss.usermodel.ConditionalFormattingThreshold;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -76,9 +73,8 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     @Operation(summary = "공개 일정 목록 조회")
     @Parameter(name="sstring", description = "검색어")
     @GetMapping(API_URL+"/daily/routine/plan/list")
-    public Map<String,Object> selectDailyRoutinePlanList(@RequestParam(value = "sstring",defaultValue = "") String sstring,
+    public Page<DailyRoutineSummaryResponse> selectDailyRoutinePlanList(@RequestParam(value = "sstring",defaultValue = "") String sstring,
                                                          @RequestParam(value = "cpage",defaultValue =  "1") int page) throws Exception{
-
         DailyRoutineDefaultDto searchDto = new DailyRoutineDefaultDto();
         searchDto.setSstring(sstring);
         searchDto.setPage(page);
@@ -86,15 +82,8 @@ public class DailyRoutineCummunityController extends BaseModuleController {
         searchDto.setMemberId(memberSession.isAuthenticated() ? memberSession.getMemberSession().getId() : "");
         searchDto.setCummunity(true);
         searchDto.setFullTextSearch(true);
-
-        Page<DailyRoutineDto> resultList = dailyRoutineService.selectDailyRoutinePageList(searchDto);
-
-        modelMap.put("dailyList",resultList.getContent().stream().map(DailyRoutineDto::toSummaryMap).toList());
-        modelMap.put("pageable",resultList.getPageable());
-        modelMap.put("totalElements",resultList.getTotalElements());
-        modelMap.put("totalPages",resultList.getTotalPages());
-
-        return modelMap;
+        Page<DailyRoutineSummaryResponse> dailyList = dailyRoutineService.selectDailyRoutinePageList(searchDto);
+        return dailyList;
     }
 
     /**
@@ -165,31 +154,19 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     @Operation(summary = "공개 일정 댓글 목록" , description = "일정에 대한 댓글 정보 목록을 가져옵니다.")
     @Parameter(name="dailyIdx" ,description = "일정 일련번호")
     @GetMapping(API_URL+"/daily/routine/comment/list")
-    public Map<String,Object> selectDailyRoutineCommentList(@RequestParam("dailyIdx") Long idx,
+    public Page<DailyRoutineCommentResponse> selectDailyRoutineCommentList(@RequestParam("dailyIdx") Long idx,
                                                             @RequestParam(value="cpage",defaultValue = "1") int page) throws Exception {
 
         //코멘트 조회
         DailyRoutineCommentDefaultDto commentDto = new DailyRoutineCommentDefaultDto();
         commentDto.setDailyIdx(idx);
         commentDto.setPage(page);
-        Page<DailyRoutineCommentDto> commentDtos = dailyRoutineCommentService.selectDailyRoutineCommentPageList(commentDto);
-
-        Map<String,Object> commentMap = new LinkedHashMap<>();
+        Page<DailyRoutineCommentResponse> commentList = dailyRoutineCommentService.selectDailyRoutineCommentPageList(commentDto);
         String memberId = memberSession.isAuthenticated() ? memberSession.getMemberSession().getId() : "";
-
-        List<Map<String,Object>> commentDtoList = new ArrayList<>();
-        for(DailyRoutineCommentDto dto : commentDtos){
-            commentDtoList.add(dto.toSummaryMap(memberId));
+        for(DailyRoutineCommentResponse dto : commentList){
+            dto.addIsUser(memberId);
         }
-
-        commentMap.put("content",commentDtoList);
-        commentMap.put("totalElements",commentDtos.getTotalElements());
-        commentMap.put("totalPages",commentDtos.getTotalPages());
-        commentMap.put("pageable",commentDtos.getPageable());
-
-        modelMap.put("commentList",commentMap);
-
-        return modelMap;
+        return commentList;
     }
 
     /**
@@ -205,24 +182,18 @@ public class DailyRoutineCummunityController extends BaseModuleController {
             @Parameter(name="cpage", description = "페이지 번호")
     })
     @GetMapping(API_URL+"/daily/routine/reply/comment")
-    public Map<String,Object> selectDailyRoutineReplyComment(@RequestParam("commentIdx") Long idx,
+    public Page<DailyRoutineReplyCommentDto> selectDailyRoutineReplyComment(@RequestParam("commentIdx") Long idx,
                                                              @RequestParam(value="cpage",defaultValue = "1") int page) throws Exception {
 
         DailyRoutineReplyCommentDto replyCommentDto = new DailyRoutineReplyCommentDto();
         replyCommentDto.setCommentIdx(idx);
         replyCommentDto.setPage(page);
-
-        Page<DailyRoutineReplyCommentDto> replyCommentDtos = dailyRoutineCommentService.selectDailyRoutineReplyCommentPageList(replyCommentDto);
-
+        Page<DailyRoutineReplyCommentDto> replayList = dailyRoutineCommentService.selectDailyRoutineReplyCommentPageList(replyCommentDto);
         String memberId = memberSession.isAuthenticated() ? memberSession.getMemberSession().getId() : "";
-
-        for(DailyRoutineReplyCommentDto tmp : replyCommentDtos){
+        for(DailyRoutineReplyCommentDto tmp : replayList){
             tmp.addCheckUser(memberId);
         }
-
-        modelMap.put("replayList",replyCommentDtos);
-
-        return modelMap;
+        return replayList;
     }
 
 

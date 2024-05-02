@@ -1,26 +1,21 @@
 package com.routdoo.dailyroutine.auth.member.service;
 
-import java.util.List;
-
+import com.routdoo.dailyroutine.auth.AuthResultCodeType;
+import com.routdoo.dailyroutine.auth.AuthServiceResult;
+import com.routdoo.dailyroutine.auth.Typehandler.PasswordEncoderTypeHandler;
+import com.routdoo.dailyroutine.auth.member.domain.Member;
+import com.routdoo.dailyroutine.auth.member.domain.MemberMyspot;
+import com.routdoo.dailyroutine.auth.member.dto.*;
+import com.routdoo.dailyroutine.auth.member.repository.MemberMyspotRepository;
+import com.routdoo.dailyroutine.auth.member.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.routdoo.dailyroutine.auth.AuthResultCodeType;
-import com.routdoo.dailyroutine.auth.AuthServiceResult;
-import com.routdoo.dailyroutine.auth.Typehandler.PasswordEncoderTypeHandler;
-import com.routdoo.dailyroutine.auth.member.domain.Member;
-import com.routdoo.dailyroutine.auth.member.domain.MemberMyspot;
-import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberMyspotDefaultDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberMyspotDto;
-import com.routdoo.dailyroutine.auth.member.repository.MemberMyspotRepository;
-import com.routdoo.dailyroutine.auth.member.repository.MemberRepository;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 /**
  * 
@@ -85,7 +80,7 @@ public class MemberService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Page<MemberDto> selectMemberPageList(MemberDefaultDto searchDto) throws Exception {
+	public Page<MemberSummaryResponse> selectMemberPageList(MemberDefaultDto searchDto) throws Exception {
 		return memberRepository.selectMemberPageList(searchDto);
 	}
 	
@@ -134,23 +129,24 @@ public class MemberService {
 	 * @throws Exception
 	 */
 	@Transactional
-	public AuthServiceResult<MemberDto> saveMember(MemberDto dto) throws Exception {
-		Member member = memberRepository.findById(dto.getId()).orElse(null);
+	public AuthServiceResult<MemberDto> saveMember(MemberActionRequest request) throws Exception {
+		Member member = memberRepository.findById(request.getId()).orElse(null);
 		if(member == null) {
-			String pw = dto.getPw();
-			dto.setPw(PasswordEncoderTypeHandler.encode(pw));
-			member = memberRepository.save(dto.toEntity());
+			String pw = request.getPw();
+			request.setPw(PasswordEncoderTypeHandler.encode(pw));
+			member = memberRepository.save(request.toCreateEntity());
 			if(member != null) {
 				return new AuthServiceResult<>(AuthResultCodeType.INFO_OK,new MemberDto(member));
 			}else {
 				return new AuthServiceResult<>(AuthResultCodeType.INFO_FAIL,"등록에 실패하였습니다.");
 			}
 		}else {
-			member.changeMember(dto);
+			member.changeMember(request);
 			return new AuthServiceResult<>(AuthResultCodeType.INFO_OK,"업데이트 되었습니다.",new MemberDto(member));
 		}
 	}
-	
+
+
 	/**
 	 * 회원 삭제
 	 * @param dto

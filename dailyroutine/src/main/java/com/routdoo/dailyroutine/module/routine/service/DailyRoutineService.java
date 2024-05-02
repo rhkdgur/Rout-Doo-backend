@@ -13,7 +13,6 @@ import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineInviteRepo
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineRepository;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineTimeLineRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -63,7 +61,7 @@ public class DailyRoutineService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Page<DailyRoutineDto> selectDailyRoutinePageList(DailyRoutineDefaultDto searchDto) throws Exception {
+	public Page<DailyRoutineSummaryResponse> selectDailyRoutinePageList(DailyRoutineDefaultDto searchDto) throws Exception {
 		return dailyRoutineRepository.selectDailyRoutinePageList(searchDto);
 	}
 	
@@ -324,7 +322,7 @@ public class DailyRoutineService {
 	 * @param dto
 	 * @return
 	 */
-	public List<DailyRoutineInviteDto> selectDailyRoutineInviteList(DailyRoutineInviteDto dto) throws Exception {
+	public List<DailyRoutineInviteResponse> selectDailyRoutineInviteList(DailyRoutineInviteDto dto) throws Exception {
 		return dailyRoutineInviteRepository.selectDailyRoutineInviteDtoList(dto);
 	}
 	

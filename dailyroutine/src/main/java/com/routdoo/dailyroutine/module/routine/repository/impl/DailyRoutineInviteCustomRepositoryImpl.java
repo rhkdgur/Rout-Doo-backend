@@ -1,15 +1,12 @@
 package com.routdoo.dailyroutine.module.routine.repository.impl;
 
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
 import com.routdoo.dailyroutine.auth.member.domain.QMember;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
-import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineInvite;
-import com.routdoo.dailyroutine.module.routine.domain.QDailyRoutine;
 import com.routdoo.dailyroutine.module.routine.domain.QDailyRoutineInvite;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineInviteDto;
+import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineInviteResponse;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineInviteCustomRepository;
-import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineInviteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -33,38 +30,32 @@ public class DailyRoutineInviteCustomRepositoryImpl extends BaseAbstractReposito
 
     /**
      * 일정 초대인원 목록 조회
+     *
      * @param dto
      * @return
      */
     @Override
-    public List<DailyRoutineInviteDto> selectDailyRoutineInviteDtoList(DailyRoutineInviteDto dto) {
+    public List<DailyRoutineInviteResponse> selectDailyRoutineInviteDtoList(DailyRoutineInviteDto dto) {
         QDailyRoutineInvite qDailyRoutineInvite = QDailyRoutineInvite.dailyRoutineInvite;
         QMember qMember = QMember.member;
 
-        List<DailyRoutineInviteDto> resultList = new ArrayList<>();
-
-        List<Tuple> list = jpaQueryFactory.select(
-                    qDailyRoutineInvite.idx,
-                    qDailyRoutineInvite.dailyRoutine.idx,
-                    qMember.id,
-                    qMember.nickname,
-                    qMember.gender
+        List<DailyRoutineInviteResponse> list = jpaQueryFactory.select(
+                        Projections.constructor(
+                                DailyRoutineInviteResponse.class,
+                                qDailyRoutineInvite.idx,
+                                qDailyRoutineInvite.dailyRoutine.idx,
+                                qMember.id,
+                                qMember.nickname,
+                                qMember.gender,
+                                qDailyRoutineInvite.createDate,
+                                qDailyRoutineInvite.modifyDate
+                        )
                 )
                 .from(qDailyRoutineInvite)
                 .join(qMember).on(qMember.id.eq(qDailyRoutineInvite.member.id)).fetchJoin()
                 .where(qDailyRoutineInvite.dailyRoutine.idx.eq(dto.getDailyIdx()))
                 .fetch();
 
-        for(Tuple tp : list){
-            DailyRoutineInviteDto inviteDto = new DailyRoutineInviteDto();
-            inviteDto.setIdx(tp.get(qDailyRoutineInvite.idx));
-            inviteDto.setDailyIdx(tp.get(qDailyRoutineInvite.dailyRoutine.idx));
-            inviteDto.getMember().setId(tp.get(qMember.id));
-            inviteDto.getMember().setNickname(tp.get(qMember.nickname));
-            inviteDto.getMember().setGender(tp.get(qMember.gender));
-            resultList.add(inviteDto);
-        }
-
-        return resultList;
+        return list;
     }
 }

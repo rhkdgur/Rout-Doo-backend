@@ -2,6 +2,7 @@ package com.routdoo.dailyroutine.module.routine.repository;
 
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDefaultDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
+import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentResponse;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
 import org.springframework.data.domain.Page;
 
@@ -27,7 +28,7 @@ public interface DailyRoutineCommentRepository  {
      * @return
      * @throws Exception
      */
-    Page<DailyRoutineCommentDto> selectDailyRoutineCommentPageList(DailyRoutineCommentDefaultDto dto) throws Exception;
+    Page<DailyRoutineCommentResponse> selectDailyRoutineCommentPageList(DailyRoutineCommentDefaultDto dto) throws Exception;
 
     /**
      * 공개 일정에 대한 목록( 페이징 x)
