@@ -1,14 +1,15 @@
 package com.routdoo.dailyroutine.module.place.web;
 
 import com.routdoo.dailyroutine.auth.member.MemberSession;
+import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.place.dto.PlaceRecordDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceRecordRemoveDto;
+import com.routdoo.dailyroutine.module.place.dto.action.PlaceRecordActionRequest;
 import com.routdoo.dailyroutine.module.place.service.PlaceRecordService;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,7 +44,7 @@ public class PlaceRecordUserController extends BaseModuleController {
 
     /**
      * 정보 수정 제안 처리( 등록)
-     * @param placeRecordDto
+     * @param placeRecordActionRequest
      * @return
      * @throws Exception
      */
@@ -54,25 +55,26 @@ public class PlaceRecordUserController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "정보 수정 제안 신청 실패")
     })
     @PostMapping(API_URL+"/place/record/ins")
-    public ResponseEntity<String> insertPlaceRecord(final @Valid @RequestBody  PlaceRecordDto placeRecordDto) throws Exception {
+    public ResponseEntity<?> insertPlaceRecord(final @Valid @RequestBody PlaceRecordActionRequest placeRecordActionRequest) throws Exception {
 
         try{
+            PlaceRecordDto placeRecordDto = PlaceRecordDto.createOf(placeRecordActionRequest);
             placeRecordDto.setMemberId(memberSession.getMemberSession().getId());
             boolean result = placeRecordService.insertPlaceRecord(placeRecordDto);
             if(!result){
-                return new ResponseEntity<>("정보 수정 제안에 실패하였습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
+                return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("정보 수정 제안에 실패하였습니다."), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         }catch (Exception e) {
             logger.error("### place record insert error : {}",e.getMessage());
-            return new ResponseEntity<>("정보 수정 제안시 오류가 발생하였습니다.",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("정보 수정 제안시 오류가 발생하였습니다."),HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>("정보 수정 제안 신청되었습니다.",HttpStatus.OK);
+        return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("정보 수정 제안 신청되었습니다."),HttpStatus.OK);
     }
 
     /**
      * 정보 수정 제안 처리 (수정)
-     * @param placeRecordDto
+     * @param placeRecordActionRequest
      * @return
      * @throws Exception
      */
@@ -83,18 +85,19 @@ public class PlaceRecordUserController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "정보 수정 제안 신청 수정 실패")
     })
     @PutMapping(API_URL+"/place/record/upd")
-    public ResponseEntity<String> updatePlaceRecord(final @Valid @RequestBody PlaceRecordDto placeRecordDto) throws Exception {
+    public ResponseEntity<?> updatePlaceRecord(final @Valid @RequestBody PlaceRecordActionRequest placeRecordActionRequest) throws Exception {
         try{
+            PlaceRecordDto placeRecordDto = PlaceRecordDto.updateOf(placeRecordActionRequest);
             placeRecordDto.setMemberId(memberSession.getMemberSession().getId());
             boolean result = placeRecordService.updatePlaceRecord(placeRecordDto);
             if(!result){
-                return new ResponseEntity<>("정보 수정 제안에 실패하였습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
+                return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("정보 수정 제안에 실패하였습니다."), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         }catch (Exception e){
             logger.error("### place record update error : {}",e.getMessage());
-            return new ResponseEntity<>("정보 수정 제안시 오류가 발생하였습니다.",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("정보 수정 제안시 오류가 발생하였습니다."),HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("정보 수정 제안 신청되었습니다.",HttpStatus.OK);
+        return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("정보 수정 제안 신청되었습니다."),HttpStatus.OK);
     }
 
     /**
@@ -111,19 +114,19 @@ public class PlaceRecordUserController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "삭제 요청 실패")
     })
     @DeleteMapping(API_URL+"/place/record/remove")
-    public ResponseEntity<String> selectPlaceRecordView(@RequestParam("idx") Long idx) throws Exception {
+    public ResponseEntity<?> selectPlaceRecordView(@RequestParam("idx") Long idx) throws Exception {
         try{
             PlaceRecordRemoveDto placeRecordRemoveDto = new PlaceRecordRemoveDto();
             placeRecordRemoveDto.setIdx(idx);
             placeRecordRemoveDto.setMemberId(memberSession.getMemberSession().getId());
             boolean result = placeRecordService.deletePlaceRecordRemove(placeRecordRemoveDto);
             if(!result){
-                return new ResponseEntity<>("삭제 요청에 실패하였습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
+                return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제 요청에 실패하였습니다."), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         }catch (Exception e ){
             logger.error("### place record remove request error : {}",e.getMessage());
-            return new ResponseEntity<>("삭제 요청시 오류가 발생하였습니다.",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제 요청시 오류가 발생하였습니다."),HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("삭제 요청 되었습니다.",HttpStatus.OK);
+        return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제 요청 되었습니다."),HttpStatus.OK);
     }
 }

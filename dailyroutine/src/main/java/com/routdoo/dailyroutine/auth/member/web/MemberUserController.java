@@ -8,6 +8,7 @@ import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
+import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -22,9 +23,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * 
@@ -57,15 +55,12 @@ public class MemberUserController extends BaseModuleController{
 	 */
 	@Operation(summary="사용자 상세 정보")
 	@GetMapping(API_URL+"/member/view")
-	public Map<String,Object> selectMemberView() throws Exception {
+	public MemberDto selectMemberView() throws Exception {
+
+		MemberDto memberDto = memberSession.getMemberSession();
+		memberDto = memberService.selectMember(memberDto);
 		
-		modelMap = new LinkedHashMap<>();
-		
-		MemberDto dto = memberSession.getMemberSession();
-		dto = memberService.selectMember(dto);
-		modelMap.put("member", dto);
-		
-		return modelMap;
+		return MemberDto.of(memberDto);
 	}
 	
 	/**
@@ -73,14 +68,11 @@ public class MemberUserController extends BaseModuleController{
 	 */
 	@Operation(summary="사용자 상세 정보(요약정보)")
 	@GetMapping(API_URL+"/member/summary/view")
-	public Map<String,Object> summaryMemberView() throws Exception {
-		
-		modelMap = new LinkedHashMap<>();
-		
+	public MemberSummaryResponse summaryMemberView() throws Exception {
+
 		MemberDto dto = memberSession.getMemberSession();
 		dto = memberService.selectMember(dto);
-		modelMap.put("member", dto.getSummaryInfo());
-		return modelMap;
+		return MemberSummaryResponse.dtoResponseOf(dto);
 		
 	}
 	
@@ -111,9 +103,10 @@ public class MemberUserController extends BaseModuleController{
 		AuthServiceResult<MemberDto> result = memberService.loginMember(dto);
 		if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
 			if(AuthResultCodeType.INFO_NOMATCH.name().equals(result.getCodeType().name())) {
-				return new ResponseEntity<>(result.getMessage(),HttpStatus.NOT_MODIFIED);
+				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf(result.getMessage()),HttpStatus.NOT_MODIFIED);
 			}else {
-				return new ResponseEntity<>("로그인시 이슈가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+
+				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("로그인시 이슈가 발생하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}
 		
@@ -122,7 +115,7 @@ public class MemberUserController extends BaseModuleController{
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.add("Authorization", "Bearer " + token);
 
-		return new ResponseEntity<>(token,httpHeaders,HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("로그인에 성공하였습니다."),httpHeaders,HttpStatus.OK);
 	}
 	
 	/**
@@ -136,7 +129,7 @@ public class MemberUserController extends BaseModuleController{
 	@PostMapping(API_URL+"/member/logout")
 	public ResponseEntity<?> logoutMember() throws Exception {
 		memberSession.clearMemberSession();
-		return new ResponseEntity<>("로그아웃 되었습니다.",HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("로그아웃 되었습니다."),HttpStatus.OK);
 	}
 	
 	/**
@@ -158,18 +151,18 @@ public class MemberUserController extends BaseModuleController{
 		try {
 			MemberDto checkDto = memberService.selectMember(MemberDto.createOf(memberCreateRequest));
 			if(checkDto != null) {
-				return new ResponseEntity<>("이미 존재하는 회원 아이디 입니다.",HttpStatus.ALREADY_REPORTED);
+				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("이미 존재하는 회원 아이디 입니다."),HttpStatus.ALREADY_REPORTED);
 			}
 			AuthServiceResult<?> result = memberService.saveMember(memberCreateRequest);
 			if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
-				return new ResponseEntity<>("회원 가입이 진행되지 않았습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("회원 가입이 진행되지 않았습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}catch (Exception e) {
 			logger.error("### member create error {}",e.getMessage());
-			return new ResponseEntity<>("회원 가입시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("회원 가입시 오류가 발생했습니다."),HttpStatus.BAD_REQUEST);
 		}
 		
-		return new ResponseEntity<>("가입 되었습니다.",HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("가입 되었습니다."),HttpStatus.OK);
 	}
 
 	/**
@@ -188,21 +181,21 @@ public class MemberUserController extends BaseModuleController{
 			}
 	)
 	@PostMapping(API_URL+"/member/signup/idcheck")
-	public ResponseEntity<String>  createMemberIdCheck(@RequestParam("id") String id) throws Exception {
+	public ResponseEntity<?>  createMemberIdCheck(@RequestParam("id") String id) throws Exception {
 
 		try{
 				MemberDto memberDto = new MemberDto();
 				memberDto.setId(id);
 				memberDto = memberService.selectMember(memberDto);
 				if(memberDto != null ){
-					return new ResponseEntity<>("이미 존재하는 회원 아이디 입니다.", HttpStatus.ALREADY_REPORTED);
+					return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("이미 존재하는 회원 아이디 입니다."), HttpStatus.ALREADY_REPORTED);
 				}
 		}catch (Exception e) {
 			logger.error("### member id check error : {}",e.getMessage());
-			return new ResponseEntity<>("중복아이디 체크시 에러가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+			return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("중복아이디 체크시 에러가 발생하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 
-		return new ResponseEntity<>("사용가능한 아이디입니다.",HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("사용가능한 아이디입니다."),HttpStatus.OK);
 	}
 	
 	/**
@@ -222,14 +215,14 @@ public class MemberUserController extends BaseModuleController{
 		try {
 			AuthServiceResult<MemberDto> result =  memberService.saveMember(memberCreateRequest);
 			if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
-				return new ResponseEntity<>(result.getMessage(),HttpStatus.NOT_MODIFIED);
+				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf(result.getMessage()),HttpStatus.NOT_MODIFIED);
 			}
 		}catch (Exception e) {
  			logger.error("### update member info error ");
- 			return new ResponseEntity<>("회원 정보 업데이트시 이슈가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+ 			return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("회원 정보 업데이트시 이슈가 발생하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		
-		return new ResponseEntity<>("수정 되었습니다.",HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("수정 되었습니다."),HttpStatus.OK);
 	}
 
 
@@ -249,9 +242,7 @@ public class MemberUserController extends BaseModuleController{
 		searchDto.setSstring(sstring);
 		searchDto.setSize(20);
 
-		Page<MemberSummaryResponse> memberList = memberService.selectMemberPageList(searchDto);
-
-		return memberList;
+		return  memberService.selectMemberPageList(searchDto);
 	}
 
 }

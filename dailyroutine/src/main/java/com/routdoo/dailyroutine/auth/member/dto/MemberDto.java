@@ -128,6 +128,23 @@ public class MemberDto {
 		dto.setUseStatus(request.getUseStatus());
 		return dto;
 	}
+
+	public static MemberDto of(MemberDto memberDto) {
+		MemberDto response = new MemberDto();
+		response.setId(memberDto.getId());
+		response.setEmail(memberDto.getEmail());
+		response.setNickname(memberDto.getNickname());
+		response.setPhonenumber(memberDto.getPhonenumber());
+		response.setGender(memberDto.getGender());
+		response.setAge(memberDto.getAge());
+		response.setBirth(memberDto.getBirth());
+		response.setMbti(memberDto.getMbti());
+		response.setIntroText(memberDto.getIntroText());
+		response.setUseStatus(memberDto.getUseStatus());
+		response.setCreateDate(memberDto.getCreateDate());
+		response.setModifyDate(memberDto.getModifyDate());
+		return response;
+	}
 	
 	/**
 	 * 요약 정보 조회

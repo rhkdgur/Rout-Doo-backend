@@ -57,4 +57,6 @@ public class DailyRoutineInviteResponse {
         this.createDate = createDate;
         this.modifyDate = modifyDate;
     }
+
+
 }

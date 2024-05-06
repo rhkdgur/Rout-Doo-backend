@@ -1,17 +1,15 @@
 package com.routdoo.dailyroutine.auth.member.dto;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Map;
-
 import com.routdoo.dailyroutine.auth.member.domain.MemberFriends;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -23,10 +21,6 @@ public class MemberFriendsDto implements Serializable{
 	/**일련번호*/
 	@Schema(description = "일련번호")
 	private Long idx = 0L;
-
-	@Schema(description = "일정 일련번호")
-	@NotBlank
-	private Long dailyIdx = 0L;
 
 	/**회원아이디*/
 	@Schema(description = "회원아이디")

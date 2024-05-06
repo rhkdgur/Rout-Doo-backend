@@ -65,7 +65,7 @@ public class DailyRoutineSummaryResponse {
         this.likeYn = (likeIdx == null ? "N" : "Y");
     }
 
-    private static DailyRoutineSummaryResponse responseOf(DailyRoutineDto dto) {
+    public static DailyRoutineSummaryResponse responseOf(DailyRoutineDto dto) {
         DailyRoutineSummaryResponse response = new DailyRoutineSummaryResponse();
         response.setIdx(dto.getIdx());
         response.setMemberId(dto.getMemberId());

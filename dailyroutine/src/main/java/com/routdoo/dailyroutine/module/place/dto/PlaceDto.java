@@ -1,15 +1,8 @@
 package com.routdoo.dailyroutine.module.place.dto;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.module.place.domain.Place;
-
 import com.routdoo.dailyroutine.module.place.domain.PlaceIntro;
+import com.routdoo.dailyroutine.module.place.dto.action.PlaceActionRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -17,6 +10,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -120,6 +119,7 @@ public class PlaceDto {
 		return Place.builder().dto(this).build();
 	}
 
+
 	public PlaceDto(Place entity){
 		this.placeNum = entity.getPlaceNum();
 		this.title = entity.getTitle();
@@ -180,6 +180,45 @@ public class PlaceDto {
 		map.put("categNm",this.categNm);
 		map.put("placeScore",this.placeScore);
 		return map;
+	}
+
+	/**
+	 * 등록을 위한 action dto
+	 * @param placeActionRequest
+	 * @return
+	 */
+	public static PlaceDto createOf(PlaceActionRequest placeActionRequest){
+		PlaceDto create = new PlaceDto();
+		create.setTitle(placeActionRequest.getTitle());
+		create.setTel(placeActionRequest.getTel());
+		create.setCategCd(placeActionRequest.getCategCd());
+		create.setAddr(placeActionRequest.getAddr());
+		create.setMapx(placeActionRequest.getMapx());
+		create.setMapy(placeActionRequest.getMapy());
+		create.setUseInfo(placeActionRequest.getUseInfo());
+		create.setDetailText(placeActionRequest.getDetailText());
+		create.setPstatus(placeActionRequest.getPstatus());
+		return create;
+	}
+
+	/**
+	 * 수정
+	 * @param placeActionRequest
+	 * @return
+	 */
+	public static PlaceDto updateOf(PlaceActionRequest placeActionRequest){
+		PlaceDto update = new PlaceDto();
+		update.setPlaceNum(placeActionRequest.getPlaceNum());
+		update.setTitle(placeActionRequest.getTitle());
+		update.setTel(placeActionRequest.getTel());
+		update.setCategCd(placeActionRequest.getCategCd());
+		update.setAddr(placeActionRequest.getAddr());
+		update.setMapx(placeActionRequest.getMapx());
+		update.setMapy(placeActionRequest.getMapy());
+		update.setUseInfo(placeActionRequest.getUseInfo());
+		update.setDetailText(placeActionRequest.getDetailText());
+		update.setPstatus(placeActionRequest.getPstatus());
+		return update;
 	}
 	
 }

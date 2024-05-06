@@ -333,7 +333,7 @@ public class DailyRoutineService {
 	 * @throws Exception
 	 */
 	@Transactional
-	public RoutineServiceResult<?> insertDailyRoutineInvite(DailyRoutineInviteDto dto) throws Exception {
+	public RoutineServiceResult<?> insertDailyRoutineInvite(DailyRoutineInviteCreateRequest dto) throws Exception {
 		
 		//촌재 유무 확인
 		DailyRoutine dailyRoutine = dailyRoutineRepository.findById(dto.getDailyIdx()).orElse(null);
@@ -343,7 +343,7 @@ public class DailyRoutineService {
 			return new RoutineServiceResult<>(RoutineResultCodeType.FAIL,"잘못된 접근입니다.");
 		}
 		
-		DailyRoutineInvite invite = dto.toEntity();
+		DailyRoutineInvite invite = dto.toCreateEntity();
 		invite.addDailyRoutineAndMember(dailyRoutine, member);
 		invite = dailyRoutineInviteRepository.save(invite);
 		if(invite == null) {

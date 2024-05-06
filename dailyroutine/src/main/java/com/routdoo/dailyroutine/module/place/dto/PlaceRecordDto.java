@@ -3,8 +3,8 @@ package com.routdoo.dailyroutine.module.place.dto;
 import com.querydsl.core.annotations.QueryProjection;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.common.exception.validate.annotation.phone.Phone;
-import com.routdoo.dailyroutine.module.place.domain.Place;
 import com.routdoo.dailyroutine.module.place.domain.PlaceRecord;
+import com.routdoo.dailyroutine.module.place.dto.action.PlaceRecordActionRequest;
 import com.routdoo.dailyroutine.module.place.service.PlaceStatusType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -127,6 +127,43 @@ public class PlaceRecordDto {
         this.useType = useType.name();
         this.createDate = createDate;
         this.modifyDate = modifyDate;
+    }
+
+    /**
+     * 등록 action
+     * @param placeRecordActionRequest
+     * @return
+     */
+    public static PlaceRecordDto createOf(PlaceRecordActionRequest placeRecordActionRequest){
+        PlaceRecordDto placeRecordDto = new PlaceRecordDto();
+        placeRecordDto.setPlaceNum(placeRecordDto.getPlaceNum());
+        placeRecordDto.setTel(placeRecordDto.getTel());
+        placeRecordDto.setAddr(placeRecordDto.getAddr());
+        placeRecordDto.setMapx(placeRecordDto.getMapx());
+        placeRecordDto.setMapy(placeRecordDto.getMapy());
+        placeRecordDto.setUseInfo(placeRecordDto.getUseInfo());
+        placeRecordDto.setDetailText(placeRecordDto.getDetailText());
+        placeRecordDto.setUseType(placeRecordDto.getUseType());
+        return placeRecordDto;
+    }
+
+    /**
+     * 수정 action
+     * @param placeRecordActionRequest
+     * @return
+     */
+    public static PlaceRecordDto updateOf(PlaceRecordActionRequest placeRecordActionRequest){
+        PlaceRecordDto placeRecordDto = new PlaceRecordDto();
+        placeRecordDto.setIdx(placeRecordDto.getIdx());
+        placeRecordDto.setPlaceNum(placeRecordDto.getPlaceNum());
+        placeRecordDto.setTel(placeRecordDto.getTel());
+        placeRecordDto.setAddr(placeRecordDto.getAddr());
+        placeRecordDto.setMapx(placeRecordDto.getMapx());
+        placeRecordDto.setMapy(placeRecordDto.getMapy());
+        placeRecordDto.setUseInfo(placeRecordDto.getUseInfo());
+        placeRecordDto.setDetailText(placeRecordDto.getDetailText());
+        placeRecordDto.setUseType(placeRecordDto.getUseType());
+        return placeRecordDto;
     }
 
     public Map<String,Object> toSummaryMap(){

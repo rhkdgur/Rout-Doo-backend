@@ -1,16 +1,14 @@
 package com.routdoo.dailyroutine.module.place.web;
 
-import java.util.List;
-import java.util.Map;
-
-import com.routdoo.dailyroutine.module.place.domain.PlaceComment;
-import com.routdoo.dailyroutine.module.place.domain.PlaceIntro;
+import com.routdoo.dailyroutine.common.web.BaseController;
 import com.routdoo.dailyroutine.module.place.dto.*;
 import com.routdoo.dailyroutine.module.place.service.PlaceRecordService;
+import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.routdoo.dailyroutine.common.web.BaseController;
-import com.routdoo.dailyroutine.module.place.service.PlaceService;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 
@@ -54,13 +50,8 @@ public class PlaceController extends BaseController{
 	 */
 	@Operation(summary = "관리자 장소 목록 조회")
 	@GetMapping(MGN_URL+"/place/list")
-	public Map<String,Object> selectPlaceList(PlaceDefaultDto searchDto) throws Exception {
-		
-		Page<PlaceDto> places = placeService.selectPlacePageList(searchDto);
-		modelMap.put("resultList", places);
-		modelMap.put("searchDto", searchDto);
-		
-		return modelMap;
+	public Page<PlaceSummaryResponse> selectPlaceList(PlaceDefaultDto searchDto) throws Exception {
+		return placeService.selectPlacePageList(searchDto);
 	}
 	
 	/**

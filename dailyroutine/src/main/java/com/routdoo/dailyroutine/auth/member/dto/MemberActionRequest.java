@@ -7,7 +7,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -26,6 +28,8 @@ import java.io.Serializable;
 @Schema(description = "회원가입 request Dto")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberActionRequest implements Serializable {
 
     @Schema(description = "회원 아이디")
@@ -74,7 +78,7 @@ public class MemberActionRequest implements Serializable {
     private String useStatus = "";
 
     public Member toCreateEntity() {
-        return Member.createMember().dto(this).build();
+        return Member.createMember().memberActionRequest(this).build();
     }
 
 }

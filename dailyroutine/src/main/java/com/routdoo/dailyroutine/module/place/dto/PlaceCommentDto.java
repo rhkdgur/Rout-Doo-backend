@@ -61,6 +61,31 @@ public class PlaceCommentDto {
 		return PlaceComment.builder().dto(this).build();
 	}
 
+	/**
+	 * 등록
+	 * @param placeCommentActionRequest
+	 * @return
+	 */
+	public static PlaceCommentDto createOf(PlaceCommentActionRequest placeCommentActionRequest){
+		PlaceCommentDto commentDto = new PlaceCommentDto();
+		commentDto.setPlaceNum(placeCommentActionRequest.getPlaceNum());
+		commentDto.setContent(placeCommentActionRequest.getContent());
+		return commentDto;
+	}
+
+	/**
+	 * 수정
+	 * @param placeCommentActionRequest
+	 * @return
+	 */
+	public static PlaceCommentDto updateOf(PlaceCommentActionRequest placeCommentActionRequest){
+		PlaceCommentDto commentDto = new PlaceCommentDto();
+		commentDto.setIdx(placeCommentActionRequest.getIdx());
+		commentDto.setPlaceNum(placeCommentActionRequest.getPlaceNum());
+		commentDto.setContent(placeCommentActionRequest.getContent());
+		return commentDto;
+	}
+
 	public PlaceCommentDto(PlaceComment entity) {
 		this.idx = entity.getIdx();
 		this.memberDto = new MemberDto(entity.getMember());

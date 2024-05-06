@@ -32,6 +32,17 @@ public class MemberSummaryResponse {
 
     private String mbti = "";
 
+    public static MemberSummaryResponse dtoResponseOf(MemberDto dto ){
+        MemberSummaryResponse response = new MemberSummaryResponse();
+        response.setId(dto.getId());
+        response.setNickname(dto.getNickname());
+        response.setGender(dto.getGender());
+        response.setAge(dto.getAge());
+        response.setIntroText(dto.getIntroText());
+        response.setMbti(dto.getMbti());
+        return response;
+    }
+
     public MemberSummaryResponse(String id, String nickname, String gender) {
         this.id = id;
         this.nickname = nickname;
@@ -46,4 +57,6 @@ public class MemberSummaryResponse {
         this.introText = introText;
         this.mbti = mbti;
     }
+
+
 }

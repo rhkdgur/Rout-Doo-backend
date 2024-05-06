@@ -1,19 +1,15 @@
 package com.routdoo.dailyroutine.module.place.service;
 
 import com.routdoo.dailyroutine.auth.member.domain.Member;
-import com.routdoo.dailyroutine.common.PostResultCodeType;
-import com.routdoo.dailyroutine.common.PostServiceResult;
 import com.routdoo.dailyroutine.module.place.domain.Place;
 import com.routdoo.dailyroutine.module.place.domain.PlaceComment;
 import com.routdoo.dailyroutine.module.place.domain.PlaceIntro;
-import com.routdoo.dailyroutine.module.place.domain.PlaceLike;
 import com.routdoo.dailyroutine.module.place.dto.*;
 import com.routdoo.dailyroutine.module.place.repository.PlaceCommentRepository;
 import com.routdoo.dailyroutine.module.place.repository.PlaceLikeRepository;
 import com.routdoo.dailyroutine.module.place.repository.PlaceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +46,7 @@ public class PlaceService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Page<PlaceDto> selectPlacePageList(PlaceDefaultDto searchDto) throws Exception {
+	public Page<PlaceSummaryResponse> selectPlacePageList(PlaceDefaultDto searchDto) throws Exception {
 		return placeRepository.selectPlacePageList(searchDto);
 	}
 	
@@ -89,6 +85,8 @@ public class PlaceService {
 			 String placeNum = placeRepository.selectPlaceNumMax();
 			 dto.setPlaceNum(placeNum);
 			 place = new Place(dto);
+		 }else{
+			 place.chagnePlace(dto);
 		 }
 
 		 //회원 정보 확인
@@ -269,7 +267,7 @@ public class PlaceService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<PlaceReplyCommentDto> selectPlaceReplyCommentList(PlaceDefaultDto searchDto) throws Exception {
+	public List<PlaceReplyCommentResponse> selectPlaceReplyCommentList(PlaceDefaultDto searchDto) throws Exception {
 		return placeRepository.selectPlaceReplyCommentList(searchDto);
 	}
 

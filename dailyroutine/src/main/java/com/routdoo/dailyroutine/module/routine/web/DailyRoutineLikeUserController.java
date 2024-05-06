@@ -1,6 +1,7 @@
 package com.routdoo.dailyroutine.module.routine.web;
 
 import com.routdoo.dailyroutine.auth.member.MemberSession;
+import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineLikeDto;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
@@ -51,24 +52,22 @@ public class DailyRoutineLikeUserController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "좋아요 추가 오류")
     })
     @PostMapping(API_URL+"/daily/routine/like/ins")
-    public ResponseEntity<String> insertDailyRoutineLike(@RequestParam("dailyIdx") Long dailyIdx) throws Exception {
+    public ResponseEntity<?> insertDailyRoutineLike(@Parameter(hidden = true) @RequestParam DailyRoutineLikeDto dailyRoutineLikeDto) throws Exception {
 
         try{
-            DailyRoutineLikeDto dailyRoutineLikeDto = new DailyRoutineLikeDto();
-            dailyRoutineLikeDto.setDailyIdx(dailyIdx);
             dailyRoutineLikeDto.setMemberId(memberSession.getMemberSession().getId());
             dailyRoutineService.insertDailyRoutineLike(dailyRoutineLikeDto);
         }catch(Exception e){
             logger.error("### insert daily routine like error : {}",e.getMessage());
-            return new ResponseEntity<>("좋아요 추가시 이슈가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("좋아요 추가시 이슈가 발생하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        return new ResponseEntity<>("좋아요 추가하였습니다.", HttpStatus.OK);
+        return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("좋아요 추가하였습니다."), HttpStatus.OK);
     }
 
     /**
      * 좋아요 삭제
-     * @param idx
+     * @param dailyRoutineLikeDto
      * @return
      * @throws Exception
      */
@@ -80,23 +79,21 @@ public class DailyRoutineLikeUserController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "좋아요 삭제 오류")
     })
     @DeleteMapping(API_URL+"/daily/routine/like/del")
-    public ResponseEntity<String>  deleteDailyRoutineLike(@RequestParam("idx") Long idx) throws Exception {
+    public ResponseEntity<?>  deleteDailyRoutineLike(@Parameter(hidden = true) @RequestParam DailyRoutineLikeDto dailyRoutineLikeDto) throws Exception {
 
         try{
             String memberId = memberSession.getMemberSession().getId();
-            DailyRoutineLikeDto dto = new DailyRoutineLikeDto();
-            dto.setIdx(idx);
-            dto = dailyRoutineService.selectDailyRoutineLike(dto);
-            if(dto == null || !dto.getMemberId().equals(memberId)){
-                return new ResponseEntity<>("좋아요 삭제시 회원정보가 일치하지않습니다.",HttpStatus.NOT_FOUND);
+            dailyRoutineLikeDto = dailyRoutineService.selectDailyRoutineLike(dailyRoutineLikeDto);
+            if(dailyRoutineLikeDto == null || !dailyRoutineLikeDto.getMemberId().equals(memberId)){
+                return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("좋아요 삭제시 회원정보가 일치하지않습니다."),HttpStatus.NOT_FOUND);
             }
-            dailyRoutineService.deleteDailyRoutineLike(dto);
+            dailyRoutineService.deleteDailyRoutineLike(dailyRoutineLikeDto);
         }catch (Exception e){
             logger.error("### delete daily routine error : {}",e.getMessage());
-            return new ResponseEntity<>("좋아요 삭제시 이슈가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+            return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("좋아요 삭제시 이슈가 발생하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        return new ResponseEntity<>("좋아요 삭제하였습니다.",HttpStatus.OK);
+        return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("좋아요 삭제하였습니다."),HttpStatus.OK);
     }
 
 }

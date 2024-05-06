@@ -1,10 +1,11 @@
 package com.routdoo.dailyroutine.module.place.web;
 
 import com.routdoo.dailyroutine.auth.member.MemberSession;
+import com.routdoo.dailyroutine.common.exception.handler.NoMatchDataException;
+import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
-import com.routdoo.dailyroutine.module.place.dto.PlaceCommentDto;
-import com.routdoo.dailyroutine.module.place.dto.PlaceDefaultDto;
-import com.routdoo.dailyroutine.module.place.dto.PlaceReplyCommentDto;
+import com.routdoo.dailyroutine.module.place.dto.*;
+import com.routdoo.dailyroutine.module.place.dto.action.PlaceReplyActionRequest;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,16 +15,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * packageName    : com.routdoo.dailyroutine.module.place.web
@@ -55,9 +51,7 @@ public class PlaceUserCommentController extends BaseModuleController {
     @Operation(summary = "댓글 상세 조회")
     @Parameter(name = "idx", description = "댓글 일련번호")
     @GetMapping(API_URL+"/place/comment/view/{idx}")
-    public Map<String,Object> selectCommentView(@PathVariable("idx") Long idx) throws Exception {
-
-        modelMap = new LinkedHashMap<>();
+    public PlaceCommentResponse selectCommentView(@PathVariable("idx") Long idx) throws Exception {
 
         PlaceCommentDto beforeDto = new PlaceCommentDto();
         beforeDto.setIdx(idx);
@@ -65,21 +59,16 @@ public class PlaceUserCommentController extends BaseModuleController {
         
         //만약에 해당 조회결과 회원과 일치하지 않는 경우 404를 던짐
         if(!beforeDto.getMemberDto().getId().equals(memberSession.getMemberSession().getId())){
-            modelMap.put("status",HttpStatus.NOT_FOUND);
-            modelMap.put("commentDto","");
-            return modelMap;
+            throw new NoMatchDataException("해당 댓글은 회원 정보와 불일치 합니다.");
         }
 
-        modelMap.put("status",HttpStatus.OK);
-        modelMap.put("commentDto",beforeDto);
-        
-        return modelMap;
+        return PlaceCommentResponse.of(beforeDto);
     }
 
 
     /**
      * 댓글 등록
-     * @param dto
+     * @param placeCommentActionRequest
      * @return
      * @throws Exception
      */
@@ -90,26 +79,27 @@ public class PlaceUserCommentController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "등록 실패")
     })
     @PostMapping(API_URL+"/place/comment/ins")
-    public ResponseEntity<String> insertPlaceComment(final @Valid @RequestBody PlaceCommentDto dto) throws Exception {
+    public ResponseEntity<?> insertPlaceComment(final @Valid @RequestBody PlaceCommentActionRequest placeCommentActionRequest) throws Exception {
 
 
         try{
+            PlaceCommentDto dto = PlaceCommentDto.createOf(placeCommentActionRequest);
             dto.getMemberDto().setId(memberSession.getMemberSession().getId());
             boolean result = placeService.insertPlaceComment(dto);
             if(!result){
-                return new ResponseEntity<>("등록이 진행되지 않았습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
+                return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("등록이 진행되지 않았습니다."), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         }catch (Exception e){
             logger.error("## insert place comment error : {}",e.getMessage());
-            return new ResponseEntity<>("등록시 이슈가 발생하였습니다.",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("등록시 이슈가 발생하였습니다."),HttpStatus.BAD_REQUEST);
         }
         
-        return new ResponseEntity<>("등록 되었습니다.",HttpStatus.OK);
+        return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("등록 되었습니다."),HttpStatus.OK);
     }
 
     /**
      * 댓글 수정
-     * @param dto
+     * @param placeCommentActionRequest
      * @return
      * @throws Exception
      */
@@ -120,19 +110,20 @@ public class PlaceUserCommentController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "수정 실패")
     })
     @PutMapping(API_URL+"/place/comment/upd")
-    public ResponseEntity<String> updatePlaceComment(final @Valid @RequestBody PlaceCommentDto dto) throws Exception {
+    public ResponseEntity<?> updatePlaceComment(final @Valid @RequestBody PlaceCommentActionRequest placeCommentActionRequest) throws Exception {
         try{
+            PlaceCommentDto dto = PlaceCommentDto.updateOf(placeCommentActionRequest);
             dto.getMemberDto().setId(memberSession.getMemberSession().getId());
             boolean result = placeService.updatePlaceComment(dto);
             if(!result){
-                return new ResponseEntity<>("수정이 진행되지않았습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
+                return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("수정이 진행되지않았습니다."), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         }catch (Exception e){
             logger.error("## insert place comment error : {}",e.getMessage());
-            return new ResponseEntity<>("수정시 이슈가 발생하였습니다.",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("수정시 이슈가 발생하였습니다."),HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>("수정 되었습니다.",HttpStatus.OK);
+        return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("수정 되었습니다."),HttpStatus.OK);
     }
 
     /**
@@ -149,53 +140,44 @@ public class PlaceUserCommentController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "삭제 실패")
     })
     @DeleteMapping(API_URL+"/place/comment/del")
-    public ResponseEntity<String> deletePlaceComment(@RequestParam("idx") Long idx) throws Exception {
+    public ResponseEntity<?> deletePlaceComment(@RequestParam("idx") Long idx) throws Exception {
         try{
             PlaceCommentDto dto = new PlaceCommentDto();
             dto.setIdx(idx);
             dto.getMemberDto().setId(memberSession.getMemberSession().getId());
             boolean result = placeService.deletePlaceComment(dto);
             if(!result){
-                return new ResponseEntity<>("삭제 진행되지않았습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
+                return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제 진행되지않았습니다."), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         }catch (Exception e){
             logger.error("## insert place comment error : {}",e.getMessage());
-            return new ResponseEntity<>("삭제시 이슈가 발생하였습니다.",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제시 이슈가 발생하였습니다."),HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>("삭제 되었습니다.",HttpStatus.OK);
+        return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제 되었습니다."),HttpStatus.OK);
     }
 
 
     /**
      * 댓글에 대한 답글 조회
-     * @param idx
+     * @param searchDto
      * @return
      * @throws Exception
      */
     @Operation(summary = "댓글에 대한 답글 조회")
-    @Parameter(name = "idx", description = "댓글에 대한 답글 일련번호")
+    @Parameters({
+            @Parameter(name = "commentIdx", description = "댓글에 대한 답글 일련번호"),
+            @Parameter(name = "page", description = "페이지 번호")
+    })
     @GetMapping(API_URL+"/place/comment/reply/{idx}")
-    public Map<String,Object> selectCommentReplyList(@PathVariable("idx") Long idx,
-                                                     @RequestParam(value="page",defaultValue = "1") int page) throws Exception {
+    public List<PlaceReplyCommentResponse> selectCommentReplyList(@Parameter(hidden = true) @RequestParam PlaceDefaultDto searchDto) throws Exception {
 
-        modelMap = new LinkedHashMap<>();
-
-        PlaceDefaultDto searchDto = new PlaceDefaultDto();
-        searchDto.setCommentIdx(idx);
-        searchDto.setPage(page);
-
-        List<PlaceReplyCommentDto> list = placeService.selectPlaceReplyCommentList(searchDto);
-        List<Map<String,Object>> resultList = new ArrayList<>();
-
+        List<PlaceReplyCommentResponse> list = placeService.selectPlaceReplyCommentList(searchDto);
         String memberId = memberSession.isAuthenticated() ? memberSession.getMemberSession().getId() : "";
-        for(PlaceReplyCommentDto dto : list){
-            resultList.add(dto.toSummaryMap(memberId));
+        for(PlaceReplyCommentResponse dto : list){
+            dto.checkIsUser(memberId);
         }
-
-        modelMap.put("replyList", resultList);
-
-        return modelMap;
+        return list;
     }
 
 
@@ -208,29 +190,19 @@ public class PlaceUserCommentController extends BaseModuleController {
     @Operation(summary = "답글 상세 조회")
     @Parameter(name = "idx", description = "답글 일련번호")
     @GetMapping(API_URL+"/place/comment/reply/view/{idx}")
-    public Map<String,Object> selectCommentReplyView(@PathVariable("idx") Long idx) throws Exception {
-
-        modelMap = new LinkedHashMap<>();
-
+    public PlaceReplyCommentDto selectCommentReplyView(@PathVariable("idx") Long idx) throws Exception {
         PlaceReplyCommentDto dto = new PlaceReplyCommentDto();
         dto.setIdx(idx);
         dto = placeService.selectPlaceReplyComment(dto);
-
-        if(!dto.getMemberDto().getId().equals(memberSession.getMemberSession().getId())){
-            modelMap.put("status",HttpStatus.NOT_FOUND);
-            modelMap.put("replyDto","");
-            return modelMap;
+        if(!dto.getMemberSummaryResponse().getId().equals(memberSession.getMemberSession().getId())){
+            throw new NoMatchDataException("해당 답글에 대한 회원 정보가 일치하지 않습니다.");
         }
-
-        modelMap.put("status",HttpStatus.OK);
-        modelMap.put("replyDto",dto);
-
-        return modelMap;
+        return dto;
     }
 
     /**
      * 답글 등록
-     * @param placeReplyCommentDto
+     * @param placeReplyActionRequest
      * @return
      * @throws Exception
      */
@@ -241,25 +213,26 @@ public class PlaceUserCommentController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "답글 등록 실패")
     })
     @PostMapping(API_URL+"/place/comment/reply/ins")
-    public ResponseEntity<String> insertReplyComment(final @Valid @RequestBody PlaceReplyCommentDto placeReplyCommentDto) throws Exception {
+    public ResponseEntity<?> insertReplyComment(final @Valid @RequestBody PlaceReplyActionRequest placeReplyActionRequest) throws Exception {
 
         try{
-            placeReplyCommentDto.getMemberDto().setId(memberSession.getMemberSession().getId());
+            PlaceReplyCommentDto placeReplyCommentDto = PlaceReplyCommentDto.createOf(placeReplyActionRequest);
+            placeReplyCommentDto.getMemberSummaryResponse().setId(memberSession.getMemberSession().getId());
             boolean result = placeService.insertPlaceReplyComment(placeReplyCommentDto);
             if(result){
-                return new ResponseEntity<>("답글등록요청이 진행되지않았습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
+                return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("답글등록요청이 진행되지않았습니다."), HttpStatus.UNPROCESSABLE_ENTITY);
             }
         }catch (Exception e){
             logger.error("### insert place comment reply error : {}",e.getMessage());
-            return new ResponseEntity<>("답글등록요청시 이슈가발생했습니다.",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("답글등록요청시 이슈가발생했습니다."),HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>("등록 되었습니다.",HttpStatus.OK);
+        return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("등록 되었습니다."),HttpStatus.OK);
     }
 
     /**
      * 답글 수정
-     * @param dto
+     * @param placeReplyActionRequest
      * @return
      * @throws Exception
      */
@@ -270,20 +243,21 @@ public class PlaceUserCommentController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "답글 수정 실패")
     })
     @PutMapping(API_URL+"/place/comment/reply/upd")
-    public ResponseEntity<String> updateReplyComment(final @Valid @RequestBody PlaceReplyCommentDto dto) throws Exception {
+    public ResponseEntity<?> updateReplyComment(final @Valid @RequestBody PlaceReplyActionRequest placeReplyActionRequest) throws Exception {
         
         try{
-            dto.getMemberDto().setId(memberSession.getMemberSession().getId());    
+            PlaceReplyCommentDto dto = new PlaceReplyCommentDto();
+            dto.getMemberSummaryResponse().setId(memberSession.getMemberSession().getId());
             boolean result = placeService.updatePlaceReplyComment(dto);
             if(result){
-                return new ResponseEntity<>("답글수정요청이 진행되지않았습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+                return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("답글수정요청이 진행되지않았습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
             }
         }catch (Exception e){
             logger.error("### update place comment reply error : {}",e.getMessage());
-            return new ResponseEntity<>("답글수정요청시 이슈가발생했습니다.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("답글수정요청시 이슈가발생했습니다."), HttpStatus.BAD_REQUEST);
         }
         
-        return new ResponseEntity<>("수정 되었습니다.",HttpStatus.OK);
+        return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("수정 되었습니다."),HttpStatus.OK);
     }
 
     /**
@@ -300,19 +274,19 @@ public class PlaceUserCommentController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "답글 삭제 실패")
     })
     @DeleteMapping(API_URL+"/place/comment/reply/del")
-    public ResponseEntity<String> deleteReplyComment(@RequestParam("idx") Long idx) throws Exception {
+    public ResponseEntity<?> deleteReplyComment(@RequestParam("idx") Long idx) throws Exception {
 
         try{
             PlaceReplyCommentDto dto = new PlaceReplyCommentDto();
             dto.setIdx(idx);
-            dto.getMemberDto().setId(memberSession.getMemberSession().getId());
+            dto.getMemberSummaryResponse().setId(memberSession.getMemberSession().getId());
             boolean result = placeService.deletePlaceReplyComment(dto);
             if(result){
-                return new ResponseEntity<>("답글삭제요청이 진행되지않았습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+                return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("답글삭제요청이 진행되지않았습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
             }
         }catch(Exception e){
             logger.error("### delete place comment reply error : {}",e.getMessage());
-            return new ResponseEntity<>("답글삭제요청시 이슈가발생했습니다.",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("답글삭제요청시 이슈가발생했습니다."),HttpStatus.BAD_REQUEST);
         }
 
         return new ResponseEntity<>("삭제 되었습니다.",HttpStatus.OK);

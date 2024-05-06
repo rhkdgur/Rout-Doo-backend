@@ -113,18 +113,18 @@ public class Member implements Persistable<String> {
 	}
 
 	@Builder(builderMethodName = "createMember")
-	public Member (MemberActionRequest dto) {
-		this.id = dto.getId();
-		this.pw = dto.getPw();
-		this.email = dto.getEmail();
-		this.nickname = dto.getNickname();
-		this.phonenumber = dto.getPhonenumber();
-		this.gender = dto.getGender();
-		this.age = dto.getAge();
-		this.birth = dto.getBirth();
-		this.mbti = dto.getMbti();
-		this.introText = dto.getIntroText();
-		this.useStatus = dto.getUseStatus();
+	public Member (MemberActionRequest memberActionRequest) {
+		this.id = memberActionRequest.getId();
+		this.pw = memberActionRequest.getPw();
+		this.email = memberActionRequest.getEmail();
+		this.nickname = memberActionRequest.getNickname();
+		this.phonenumber = memberActionRequest.getPhonenumber();
+		this.gender = memberActionRequest.getGender();
+		this.age = memberActionRequest.getAge();
+		this.birth = memberActionRequest.getBirth();
+		this.mbti = memberActionRequest.getMbti();
+		this.introText = memberActionRequest.getIntroText();
+		this.useStatus = memberActionRequest.getUseStatus();
 	}
 
 	/**
