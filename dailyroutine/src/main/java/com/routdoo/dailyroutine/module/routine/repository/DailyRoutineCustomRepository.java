@@ -69,7 +69,7 @@ public interface DailyRoutineCustomRepository {
 	 * @return
 	 * @throws Exception
 	 */
-	Page<DailyRoutineDto> selectDailyRoutineLikePageList(DailyRoutineLikeDefaultDto searchDto) throws Exception;
+	Page<DailyRoutineSummaryResponse> selectDailyRoutineLikePageList(DailyRoutineLikeDefaultDto searchDto) throws Exception;
 
 
 	/**

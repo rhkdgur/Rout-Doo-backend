@@ -7,7 +7,6 @@ import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
-import java.util.Map;
 
 public interface MemberCustomRepository {
 
@@ -59,7 +58,7 @@ public interface MemberCustomRepository {
 	 * @return
 	 * @throws Exception
 	 */
-	Page<Map<String,Object>> selectMemberFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception;
+	Page<MemberDto> selectMemberFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception;
 
 	/**
 	 * 차단 목록( no paging)
@@ -67,7 +66,7 @@ public interface MemberCustomRepository {
 	 * @return
 	 * @throws Exception
 	 */
-	List<Map<String,Object>> selectMemberFriendsBlockList(MemberDefaultDto searchDto) throws Exception;
+	List<MemberDto> selectMemberFriendsBlockList(MemberDefaultDto searchDto) throws Exception;
 
 	/**
 	 *  친구목록 조회
@@ -75,7 +74,7 @@ public interface MemberCustomRepository {
 	 * @return
 	 * @throws Exception
 	 */
-	Page<Map<String,Object>> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception;
+	Page<MemberDto> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception;
 
 	/**
 	 * 친구목록 paging x
@@ -83,6 +82,6 @@ public interface MemberCustomRepository {
 	 * @return
 	 * @throws Exception
 	 */
-	List<Map<String,Object>> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception;
+	List<MemberDto> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception;
 
 }

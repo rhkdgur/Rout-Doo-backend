@@ -2,32 +2,29 @@ package com.routdoo.dailyroutine.auth.member.web;
 
 import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberMypageSummaryResponse;
 import com.routdoo.dailyroutine.auth.member.service.FriendListService;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
-import com.routdoo.dailyroutine.module.place.domain.PlaceLike;
 import com.routdoo.dailyroutine.module.place.dto.PlaceLikeDefaultDto;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDefaultDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineLikeDefaultDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineLikeDto;
+import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineSummaryResponse;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
 import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -64,8 +61,7 @@ public class MemberMypageController extends BaseModuleController {
      */
     @Operation(summary = "마이페이지 최상단 회원 요약 정보")
     @GetMapping(API_URL+"/mypage/app/summary")
-    public Map<String,Object> selectMypageAppSummary() throws Exception {
-        modelMap = new LinkedHashMap<>();
+    public MemberMypageSummaryResponse selectMypageAppSummary() throws Exception {
 
         //공개설정 되어있는 일정 조회
         DailyRoutineDefaultDto drDto = new DailyRoutineDefaultDto();
@@ -73,22 +69,13 @@ public class MemberMypageController extends BaseModuleController {
         drDto.setMemberId(memberSession.getMemberSession().getId());
         List<DailyRoutineDto> drList = dailyRoutineService.selectDailyRoutineList(drDto);
 
-        //공개일정
-        modelMap.put("publicCnt",drList.size());
-
         //친구목록 조회
         MemberFriendsDto friendsDto = new MemberFriendsDto();
         friendsDto.setMemberId(memberSession.getMemberSession().getId());
         friendsDto.setBlockYn("N");
         int friendsCnt = friendListService.selectFriendListResultList(friendsDto).size();
 
-        //친구 수
-        modelMap.put("friendCnt",friendsCnt);
-
-        //나만의 장소 수
-        modelMap.put("placeCnt",0);
-
-        return modelMap;
+        return new MemberMypageSummaryResponse(drList.size(),friendsCnt,0);
     }
 
     /**
@@ -97,73 +84,41 @@ public class MemberMypageController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "마이페이지 일정 보관 목록")
-    @Parameter(name = "page", description = "페이지 번호")
+    @Parameter(name = "page", description = "페이지 번호", required = false)
     @GetMapping(API_URL+"/mypage/daily/like/list")
-    public Map<String,Object> selectMypageDailyLikeList(@RequestParam(value="page",defaultValue = "1") int page) throws Exception {
-
-        modelMap = new LinkedHashMap<>();
-
-        DailyRoutineLikeDefaultDto searchDto = new DailyRoutineLikeDefaultDto();
-        searchDto.setPage(page);
+    public Page<DailyRoutineSummaryResponse> selectMypageDailyLikeList(@Parameter(hidden = true) DailyRoutineLikeDefaultDto searchDto) throws Exception {
         searchDto.setMemberId(memberSession.getMemberSession().getId());
-
-        Page<Map<String,Object>> resultList = dailyRoutineService.selectDailyRoutineLikePageList(searchDto);
-
-        modelMap.put("dailyList",resultList);
-
-        return modelMap;
+        return dailyRoutineService.selectDailyRoutineLikePageList(searchDto);
     }
 
     /**
      * 마이페이지 장소 보관 목록
-     * @param page
+     * @param searchDto
      * @return
      * @throws Exception
      */
     @Operation(summary = "마이페이지 장소 보관 목록")
-    @Parameter(name = "page", description = "페이지 번호")
+    @Parameter(name = "page", description = "페이지 번호", required = false)
     @GetMapping(API_URL+"/mypage/place/like/list")
-    public Map<String,Object> selectMypagePlaceLikeList(@RequestParam(value="page",defaultValue = "1") int page) throws Exception {
-
-        modelMap = new LinkedHashMap<>();
-
-        PlaceLikeDefaultDto searchDto = new PlaceLikeDefaultDto();
+    public Page<Map<String,Object>> selectMypagePlaceLikeList(@Parameter(hidden = true) PlaceLikeDefaultDto searchDto) throws Exception {
         searchDto.setMemberId(memberSession.getMemberSession().getId());
-        searchDto.setPage(page);
-
-        Page<Map<String,Object>> placeList = placeService.selectMypagePlaceLikePageList(searchDto);
-        modelMap.put("placeList",placeList);
-
-        return modelMap;
+        return placeService.selectMypagePlaceLikePageList(searchDto);
     }
 
     /**
      * 마이페이지 친구 목록( 차단 상태 조회)
-     * @param blockYn
-     * @param page
+     * @param searchDto
      * @return
      * @throws Exception
      */
     @Operation(summary = "마이페이지 친구 차단상태별 목록")
     @Parameters({
-            @Parameter(name = "blockYn",description = "차단여부 ex) Y, N"),
-            @Parameter(name = "page" , description = "페이지 번호")
+            @Parameter(name = "blockYn",description = "차단여부 ex) Y, N", required = false),
+            @Parameter(name = "page" , description = "페이지 번호", required = false)
     })
     @GetMapping(API_URL+"/mypage/friends/block/list")
-    public Map<String,Object> selectMypageFriendsBlockList(
-                                            @RequestParam(value="blockYn",defaultValue = "") String blockYn,
-                                            @RequestParam(value="page",defaultValue = "1") int page) throws Exception {
-        modelMap = new LinkedHashMap<>();
-
-        MemberDefaultDto searchDto = new MemberDefaultDto();
-        searchDto.setBlockYn(blockYn);
-        searchDto.setPage(page);
-
-        Page<Map<String,Object>> resultList = friendListService.selectMypageFriendsBlockPageList(searchDto);
-        modelMap.put("blockList",resultList);
-        modelMap.put("blockYn", blockYn);
-
-        return modelMap;
+    public Page<MemberDto> selectMypageFriendsBlockList(@Parameter(hidden = true) MemberDefaultDto searchDto) throws Exception {
+        return friendListService.selectMypageFriendsBlockPageList(searchDto);
     }
 
 }

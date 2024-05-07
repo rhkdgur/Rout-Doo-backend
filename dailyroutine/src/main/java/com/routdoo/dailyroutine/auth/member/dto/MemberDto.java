@@ -1,6 +1,7 @@
 package com.routdoo.dailyroutine.auth.member.dto;
 
 import com.routdoo.dailyroutine.auth.member.domain.Member;
+import com.routdoo.dailyroutine.auth.member.dto.action.MemberActionRequest;
 import com.routdoo.dailyroutine.common.exception.validate.annotation.date.Date;
 import com.routdoo.dailyroutine.common.exception.validate.annotation.phone.Phone;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,8 +14,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 
@@ -128,20 +127,22 @@ public class MemberDto {
 		dto.setUseStatus(request.getUseStatus());
 		return dto;
 	}
-	
-	/**
-	 * 요약 정보 조회
-	 * @return
-	 */
-	public Map<String,Object> getSummaryInfo(){
-		Map<String,Object> map = new HashMap<String, Object>();
-		map.put("id", this.id);
-		map.put("nickname", this.nickname);
-		map.put("gender", this.gender);
-		map.put("age", this.age);
-		map.put("introText", this.introText);
-		map.put("mbti", this.mbti);
-		return map;
+
+	public static MemberDto of(MemberDto memberDto) {
+		MemberDto response = new MemberDto();
+		response.setId(memberDto.getId());
+		response.setEmail(memberDto.getEmail());
+		response.setNickname(memberDto.getNickname());
+		response.setPhonenumber(memberDto.getPhonenumber());
+		response.setGender(memberDto.getGender());
+		response.setAge(memberDto.getAge());
+		response.setBirth(memberDto.getBirth());
+		response.setMbti(memberDto.getMbti());
+		response.setIntroText(memberDto.getIntroText());
+		response.setUseStatus(memberDto.getUseStatus());
+		response.setCreateDate(memberDto.getCreateDate());
+		response.setModifyDate(memberDto.getModifyDate());
+		return response;
 	}
 	
 	/**

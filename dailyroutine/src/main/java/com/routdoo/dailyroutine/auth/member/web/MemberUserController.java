@@ -3,15 +3,17 @@ package com.routdoo.dailyroutine.auth.member.web;
 import com.routdoo.dailyroutine.auth.AuthResultCodeType;
 import com.routdoo.dailyroutine.auth.AuthServiceResult;
 import com.routdoo.dailyroutine.auth.member.MemberSession;
-import com.routdoo.dailyroutine.auth.member.dto.MemberActionRequest;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
+import com.routdoo.dailyroutine.auth.member.dto.action.MemberActionRequest;
+import com.routdoo.dailyroutine.auth.member.dto.action.MemberCheckIdRequest;
+import com.routdoo.dailyroutine.auth.member.dto.action.MemberLoginRequest;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
+import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,9 +24,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * 
@@ -57,15 +56,12 @@ public class MemberUserController extends BaseModuleController{
 	 */
 	@Operation(summary="사용자 상세 정보")
 	@GetMapping(API_URL+"/member/view")
-	public Map<String,Object> selectMemberView() throws Exception {
+	public MemberDto selectMemberView() throws Exception {
+
+		MemberDto memberDto = memberSession.getMemberSession();
+		memberDto = memberService.selectMember(memberDto);
 		
-		modelMap = new LinkedHashMap<>();
-		
-		MemberDto dto = memberSession.getMemberSession();
-		dto = memberService.selectMember(dto);
-		modelMap.put("member", dto);
-		
-		return modelMap;
+		return MemberDto.of(memberDto);
 	}
 	
 	/**
@@ -73,47 +69,39 @@ public class MemberUserController extends BaseModuleController{
 	 */
 	@Operation(summary="사용자 상세 정보(요약정보)")
 	@GetMapping(API_URL+"/member/summary/view")
-	public Map<String,Object> summaryMemberView() throws Exception {
-		
-		modelMap = new LinkedHashMap<>();
-		
+	public MemberSummaryResponse summaryMemberView() throws Exception {
+
 		MemberDto dto = memberSession.getMemberSession();
 		dto = memberService.selectMember(dto);
-		modelMap.put("member", dto.getSummaryInfo());
-		return modelMap;
+		return MemberSummaryResponse.dtoResponseOf(dto);
 		
 	}
 	
 	/**
 	 * 로그인 처리
-	 * @param id
-	 * @param pw
+	 * @param memberLoginRequest
 	 * @return
 	 * @throws Exception
 	 */
 	@Operation(summary="사용자 로그인")
-	@Parameters(value={
-		@Parameter(name = "id", description ="아이디 "),
-		@Parameter(name = "pw", description="비밀번호 ")
-	})
 	@ApiResponses(value={
 			@ApiResponse(responseCode = "200", description = "token 전달"),
 			@ApiResponse(responseCode = "304", description = "아이디 또는 비밀번호가 일치하지 않는 상태"),
 			@ApiResponse(responseCode = "422", description = "로그인 접근시 이슈 발생")
 	})
 	@PostMapping(API_URL+"/member/login")
-	public ResponseEntity<?> loginMember(@RequestParam("id") String id,
-										 @RequestParam("pw") String pw) throws Exception {
+	public ResponseEntity<?> loginMember(final @Valid @RequestBody MemberLoginRequest memberLoginRequest) throws Exception {
 		
 		MemberDto dto = new MemberDto();
-		dto.setId(id);
-		dto.setPw(pw);
+		dto.setId(memberLoginRequest.getId());
+		dto.setPw(memberLoginRequest.getPw());
 		AuthServiceResult<MemberDto> result = memberService.loginMember(dto);
 		if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
 			if(AuthResultCodeType.INFO_NOMATCH.name().equals(result.getCodeType().name())) {
-				return new ResponseEntity<>(result.getMessage(),HttpStatus.NOT_MODIFIED);
+				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf(result.getMessage()),HttpStatus.NOT_MODIFIED);
 			}else {
-				return new ResponseEntity<>("로그인시 이슈가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+
+				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("로그인시 이슈가 발생하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}
 		
@@ -122,7 +110,7 @@ public class MemberUserController extends BaseModuleController{
 		HttpHeaders httpHeaders = new HttpHeaders();
 		httpHeaders.add("Authorization", "Bearer " + token);
 
-		return new ResponseEntity<>(token,httpHeaders,HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("로그인에 성공하였습니다."),httpHeaders,HttpStatus.OK);
 	}
 	
 	/**
@@ -136,7 +124,7 @@ public class MemberUserController extends BaseModuleController{
 	@PostMapping(API_URL+"/member/logout")
 	public ResponseEntity<?> logoutMember() throws Exception {
 		memberSession.clearMemberSession();
-		return new ResponseEntity<>("로그아웃 되었습니다.",HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("로그아웃 되었습니다."),HttpStatus.OK);
 	}
 	
 	/**
@@ -158,28 +146,28 @@ public class MemberUserController extends BaseModuleController{
 		try {
 			MemberDto checkDto = memberService.selectMember(MemberDto.createOf(memberCreateRequest));
 			if(checkDto != null) {
-				return new ResponseEntity<>("이미 존재하는 회원 아이디 입니다.",HttpStatus.ALREADY_REPORTED);
+				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("이미 존재하는 회원 아이디 입니다."),HttpStatus.ALREADY_REPORTED);
 			}
-			AuthServiceResult<?> result = memberService.saveMember(memberCreateRequest);
+			AuthServiceResult<?> result = memberService.saveMember(MemberDto.createOf(memberCreateRequest));
 			if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
-				return new ResponseEntity<>("회원 가입이 진행되지 않았습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("회원 가입이 진행되지 않았습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}catch (Exception e) {
+			e.printStackTrace();
 			logger.error("### member create error {}",e.getMessage());
-			return new ResponseEntity<>("회원 가입시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("회원 가입시 오류가 발생했습니다."),HttpStatus.BAD_REQUEST);
 		}
 		
-		return new ResponseEntity<>("가입 되었습니다.",HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("가입 되었습니다."),HttpStatus.OK);
 	}
 
 	/**
 	 * 중복아이디 체크
-	 * @param id
+	 * @param memberCheckIdRequest
 	 * @return
 	 * @throws Exception
 	 */
 	@Operation(summary = "중복아이디 체크",description = "id를 이용하여 중복체크합니다.")
-	@Parameter(name="id", description = "아이디")
 	@ApiResponses(
 			value = {
 					@ApiResponse(responseCode = "208", description = "중복되는 아이디"),
@@ -188,21 +176,21 @@ public class MemberUserController extends BaseModuleController{
 			}
 	)
 	@PostMapping(API_URL+"/member/signup/idcheck")
-	public ResponseEntity<String>  createMemberIdCheck(@RequestParam("id") String id) throws Exception {
+	public ResponseEntity<?>  createMemberIdCheck(final @Valid @RequestBody MemberCheckIdRequest memberCheckIdRequest) throws Exception {
 
 		try{
 				MemberDto memberDto = new MemberDto();
-				memberDto.setId(id);
+				memberDto.setId(memberCheckIdRequest.getId());
 				memberDto = memberService.selectMember(memberDto);
 				if(memberDto != null ){
-					return new ResponseEntity<>("이미 존재하는 회원 아이디 입니다.", HttpStatus.ALREADY_REPORTED);
+					return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("이미 존재하는 회원 아이디 입니다."), HttpStatus.ALREADY_REPORTED);
 				}
 		}catch (Exception e) {
 			logger.error("### member id check error : {}",e.getMessage());
-			return new ResponseEntity<>("중복아이디 체크시 에러가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+			return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("중복아이디 체크시 에러가 발생하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 
-		return new ResponseEntity<>("사용가능한 아이디입니다.",HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("사용가능한 아이디입니다."),HttpStatus.OK);
 	}
 	
 	/**
@@ -220,38 +208,32 @@ public class MemberUserController extends BaseModuleController{
 	@PutMapping(API_URL+"/member/act/upd")
 	public ResponseEntity<?> updateMember(final @Valid @RequestBody MemberActionRequest memberCreateRequest) throws Exception {
 		try {
-			AuthServiceResult<MemberDto> result =  memberService.saveMember(memberCreateRequest);
+			AuthServiceResult<MemberDto> result =  memberService.saveMember(MemberDto.createOf(memberCreateRequest));
 			if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
-				return new ResponseEntity<>(result.getMessage(),HttpStatus.NOT_MODIFIED);
+				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf(result.getMessage()),HttpStatus.NOT_MODIFIED);
 			}
 		}catch (Exception e) {
  			logger.error("### update member info error ");
- 			return new ResponseEntity<>("회원 정보 업데이트시 이슈가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+ 			return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("회원 정보 업데이트시 이슈가 발생하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		
-		return new ResponseEntity<>("수정 되었습니다.",HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("수정 되었습니다."),HttpStatus.OK);
 	}
 
 
 	/**
 	 * 회원 조회
-	 * @param sstring
+	 * @param searchDto
 	 * @return
 	 * @throws Exception
 	 */
 	@Operation(summary = "회원 목록 조회(친구리스트 닉네임 조회)")
-	@Parameter(name="sstring", description="검색어")
+	@Parameter(name="sstring", description="검색어" ,required = false)
 	@GetMapping(API_URL+"/member/nickname/list")
-	public Page<MemberSummaryResponse> selectMemberList(@RequestParam("sstring") String sstring) throws Exception {
-
-		MemberDefaultDto searchDto = new MemberDefaultDto();
+	public Page<MemberSummaryResponse> selectMemberList(@Parameter(hidden = true) MemberDefaultDto searchDto) throws Exception {
 		searchDto.setStype("nickname");
-		searchDto.setSstring(sstring);
 		searchDto.setSize(20);
-
-		Page<MemberSummaryResponse> memberList = memberService.selectMemberPageList(searchDto);
-
-		return memberList;
+		return  memberService.selectMemberPageList(searchDto);
 	}
 
 }

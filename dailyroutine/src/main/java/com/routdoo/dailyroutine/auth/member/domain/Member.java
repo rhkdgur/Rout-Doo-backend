@@ -1,6 +1,5 @@
 package com.routdoo.dailyroutine.auth.member.domain;
 
-import com.routdoo.dailyroutine.auth.member.dto.MemberActionRequest;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -112,26 +111,11 @@ public class Member implements Persistable<String> {
 		this.modifyDate = dto.getModifyDate();
 	}
 
-	@Builder(builderMethodName = "createMember")
-	public Member (MemberActionRequest dto) {
-		this.id = dto.getId();
-		this.pw = dto.getPw();
-		this.email = dto.getEmail();
-		this.nickname = dto.getNickname();
-		this.phonenumber = dto.getPhonenumber();
-		this.gender = dto.getGender();
-		this.age = dto.getAge();
-		this.birth = dto.getBirth();
-		this.mbti = dto.getMbti();
-		this.introText = dto.getIntroText();
-		this.useStatus = dto.getUseStatus();
-	}
-
 	/**
 	 * 전체 정보 업데이트 처리 메소드
 	 * @param dto
 	 */
-	public void changeMember(MemberActionRequest dto) {
+	public void changeMember(MemberDto dto) {
 		this.id = dto.getId();
 		this.pw = dto.getPw();
 		this.email = dto.getEmail();

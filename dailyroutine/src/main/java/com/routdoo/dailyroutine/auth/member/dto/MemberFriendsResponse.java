@@ -22,17 +22,15 @@ public class MemberFriendsResponse implements Serializable {
 
     private long idx = 0L;
 
-    private long dailyIdx = 0L;
-
     private String blockYn = "";
 
     private MemberSummaryResponse memberSummaryResponse = new MemberSummaryResponse();
 
-    public MemberFriendsResponse(long idx, long dailyIdx, String blockYn,
+    public MemberFriendsResponse(long idx, String memberId, String blockYn,
                                  String nickname, String gender, int age, String mbti) {
         this.idx = idx;
-        this.dailyIdx = dailyIdx;
         this.blockYn = blockYn;
+        this.memberSummaryResponse.setId(memberId);
         this.memberSummaryResponse.setNickname(nickname);
         this.memberSummaryResponse.setGender(gender);
         this.memberSummaryResponse.setAge(age);

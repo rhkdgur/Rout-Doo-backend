@@ -11,7 +11,7 @@ import lombok.Setter;
  * fileName       : DailyRoutineSummaryResponse
  * author         : rhkdg
  * date           : 2024-05-01
- * description    :
+ * description    : 일상 summary response
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
@@ -65,7 +65,7 @@ public class DailyRoutineSummaryResponse {
         this.likeYn = (likeIdx == null ? "N" : "Y");
     }
 
-    private static DailyRoutineSummaryResponse responseOf(DailyRoutineDto dto) {
+    public static DailyRoutineSummaryResponse responseOf(DailyRoutineDto dto) {
         DailyRoutineSummaryResponse response = new DailyRoutineSummaryResponse();
         response.setIdx(dto.getIdx());
         response.setMemberId(dto.getMemberId());

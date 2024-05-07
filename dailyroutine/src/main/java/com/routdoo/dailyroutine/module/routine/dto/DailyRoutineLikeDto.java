@@ -1,10 +1,8 @@
 package com.routdoo.dailyroutine.module.routine.dto;
 
-import com.routdoo.dailyroutine.common.vo.BaseVo;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineLike;
+import com.routdoo.dailyroutine.module.routine.dto.action.like.DailyRoutineLikeActionRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,7 +31,6 @@ public class DailyRoutineLikeDto {
     private Long idx = 0L;
 
     @Schema(description = "일정 일련번호" , defaultValue = "0")
-    @NotBlank
     private Long dailyIdx = 0L;
 
     /**회원 아이디*/
@@ -63,6 +60,19 @@ public class DailyRoutineLikeDto {
         this.memberId = entity.getMember().getId();
         this.createDate = entity.getCreateDate();
         this.modifyDate = entity.getModifyDate();
+    }
+
+    public static DailyRoutineLikeDto createOf(DailyRoutineLikeActionRequest dailyRoutineLikeActionRequest){
+        DailyRoutineLikeDto request = new DailyRoutineLikeDto();
+        request.setDailyIdx(dailyRoutineLikeActionRequest.getDailyIdx());
+        return request;
+    }
+
+    public static DailyRoutineLikeDto updateOf(DailyRoutineLikeActionRequest dailyRoutineLikeActionRequest){
+        DailyRoutineLikeDto request = new DailyRoutineLikeDto();
+        request.setIdx(dailyRoutineLikeActionRequest.getIdx());
+        request.setDailyIdx(dailyRoutineLikeActionRequest.getDailyIdx());
+        return request;
     }
 
 }

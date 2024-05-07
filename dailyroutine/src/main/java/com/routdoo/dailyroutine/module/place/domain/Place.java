@@ -1,6 +1,5 @@
 package com.routdoo.dailyroutine.module.place.domain;
 
-import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.module.place.dto.PlaceDto;
 import com.routdoo.dailyroutine.module.place.service.PlaceStatusType;
 import jakarta.persistence.*;
@@ -119,8 +118,6 @@ public class Place implements Persistable<String> {
 		this.useInfo = dto.getUseInfo();
 		this.pstatus = PlaceStatusType.valueOf(dto.getPstatus());
 		this.detailText = dto.getDetailText();
-		this.createDate = dto.getCreateDate();
-		this.modifyDate = dto.getModifyDate();
 	}
 
 	public Map<String,Object> toSummaryMap(){

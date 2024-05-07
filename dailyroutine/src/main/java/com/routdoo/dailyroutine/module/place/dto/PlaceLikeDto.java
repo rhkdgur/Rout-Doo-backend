@@ -1,15 +1,14 @@
 package com.routdoo.dailyroutine.module.place.dto;
 
-import java.time.LocalDateTime;
-
-import com.routdoo.dailyroutine.common.vo.BaseVo;
 import com.routdoo.dailyroutine.module.place.domain.PlaceLike;
-
+import com.routdoo.dailyroutine.module.place.dto.action.like.PlaceLikeActionRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 /**
  * 
@@ -62,6 +61,28 @@ public class PlaceLikeDto {
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
 	}
-	
-	
+
+	/**
+	 * 등록
+	 * @param placeLikeActionRequest
+	 * @return
+	 */
+	public static PlaceLikeDto createOf(PlaceLikeActionRequest placeLikeActionRequest) {
+		PlaceLikeDto placeLikeDto = new PlaceLikeDto();
+		placeLikeDto.setPlaceNum(placeLikeActionRequest.getPlaceNum());
+		return placeLikeDto;
+	}
+
+	/**
+	 * 수정
+	 * @param placeLikeActionRequest
+	 * @return
+	 */
+	public static PlaceLikeDto updateOf(PlaceLikeActionRequest placeLikeActionRequest){
+		PlaceLikeDto placeLikeDto = new PlaceLikeDto();
+		placeLikeDto.setIdx(placeLikeActionRequest.getIdx());
+		placeLikeDto.setPlaceNum(placeLikeActionRequest.getPlaceNum());
+		return placeLikeDto;
+	}
+
 }

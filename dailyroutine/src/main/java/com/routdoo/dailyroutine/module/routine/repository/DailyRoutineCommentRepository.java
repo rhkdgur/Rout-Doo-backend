@@ -1,9 +1,8 @@
 package com.routdoo.dailyroutine.module.routine.repository;
 
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDefaultDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentResponse;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
+import com.routdoo.dailyroutine.module.routine.dto.*;
+import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentActionRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentActionRequest;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -61,7 +60,7 @@ public interface DailyRoutineCommentRepository  {
      * @return
      * @throws Exception
      */
-    boolean insertDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception;
+    boolean insertDailyRoutineComment(DailyRoutineCommentActionRequest dto) throws Exception;
 
     /**
      * 공개 일정 댓글 수정
@@ -69,7 +68,7 @@ public interface DailyRoutineCommentRepository  {
      * @return
      * @throws Exception
      */
-    boolean updateDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception;
+    boolean updateDailyRoutineComment(DailyRoutineCommentActionRequest dto) throws Exception;
 
     /**
      * 공개 일정 댓글 삭제
@@ -77,7 +76,7 @@ public interface DailyRoutineCommentRepository  {
      * @return
      * @throws Exception
      */
-    boolean deleteDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception;
+    boolean deleteDailyRoutineComment(DailyRoutineCommentActionRequest dto) throws Exception;
 
 
     /**
@@ -118,7 +117,7 @@ public interface DailyRoutineCommentRepository  {
      * @return
      * @throws Exception
      */
-    boolean insertDailyRoutineReplyComment(DailyRoutineReplyCommentDto dto) throws Exception;
+    boolean insertDailyRoutineReplyComment(DailyRoutineReplyCommentActionRequest dto) throws Exception;
 
     /**
      * 공개 일정 댓글에 대한 답글 수정
@@ -126,7 +125,7 @@ public interface DailyRoutineCommentRepository  {
      * @return
      * @throws Exception
      */
-    boolean updateDailyRoutineReplyComment(DailyRoutineReplyCommentDto dto) throws Exception;
+    boolean updateDailyRoutineReplyComment(DailyRoutineReplyCommentActionRequest dto) throws Exception;
 
     /**
      * 공개 일정 댓글에 대한 답글 삭제
@@ -134,7 +133,7 @@ public interface DailyRoutineCommentRepository  {
      * @return
      * @throws Exception
      */
-    boolean deleteDailyRoutineReplyComment(DailyRoutineReplyCommentDto dto) throws Exception;
+    boolean deleteDailyRoutineReplyComment(DailyRoutineReplyCommentActionRequest dto) throws Exception;
 
     /**
      * 놀거리, 일정 댓글 정보 조회

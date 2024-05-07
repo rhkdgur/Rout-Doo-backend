@@ -2,17 +2,16 @@ package com.routdoo.dailyroutine.module.place.dto;
 
 
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
 import com.routdoo.dailyroutine.module.place.domain.PlaceReplyComment;
+import com.routdoo.dailyroutine.module.place.dto.action.reply.PlaceReplyActionRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @Schema(description = "장소 댓글에 대한 답글 DTO")
 @Getter
@@ -49,7 +48,7 @@ public class PlaceReplyCommentDto {
 
     /***회원 정보*/
     @Schema(description = "회원 정보(조회에 사용)")
-    private MemberDto memberDto = new MemberDto();
+    private MemberSummaryResponse memberSummaryResponse = new MemberSummaryResponse();
 
     public PlaceReplyComment toEntity(){
         return PlaceReplyComment.builder().dto(this).build();
@@ -59,31 +58,19 @@ public class PlaceReplyCommentDto {
         this.idx = entity.getIdx();
         this.commentIdx = entity.getPlaceComment().getIdx();
         this.placeNum = entity.getPlace().getPlaceNum();
-        this.memberDto = new MemberDto(entity.getMember());
+        this.memberSummaryResponse = MemberSummaryResponse.dtoResponseOf(new MemberDto(entity.getMember()));
         this.content = entity.getContent();
         this.createDate = entity.getCreateDate();
         this.modifyDate = entity.getModifyDate();
     }
 
-    /**
-     * dto -> summary map
-     * @return
-     */
-    public Map<String,Object> toSummaryMap(String id){
-
-        boolean isCorrect = id.equals(this.memberDto.getId());
-
-        Map<String,Object> map = new LinkedHashMap<>();
-        map.put("idx", this.idx);
-        map.put("commentIdx",this.commentIdx);
-        map.put("placeNum",this.placeNum);
-        map.put("content",this.content);
-        map.put("nickname",this.memberDto.getNickname());
-        map.put("isUser",isCorrect);
-        map.put("createDate", this.createDate);
-        map.put("modifyDate", this.modifyDate);
-
-        return map;
+    public static PlaceReplyCommentDto createOf(PlaceReplyActionRequest placeReplyActionRequest){
+        PlaceReplyCommentDto placeReplyCommentDto = new PlaceReplyCommentDto();
+        placeReplyCommentDto.setCommentIdx(placeReplyCommentDto.getCommentIdx());
+        placeReplyCommentDto.setPlaceNum(placeReplyCommentDto.getPlaceNum());
+        placeReplyCommentDto.setContent(placeReplyCommentDto.getContent());
+        return placeReplyCommentDto;
     }
+
 
 }

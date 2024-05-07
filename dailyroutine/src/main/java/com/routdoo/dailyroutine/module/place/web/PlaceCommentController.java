@@ -5,9 +5,10 @@ import com.routdoo.dailyroutine.common.web.BaseController;
 import com.routdoo.dailyroutine.module.place.dto.PlaceCommentDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceDefaultDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceReplyCommentDto;
+import com.routdoo.dailyroutine.module.place.dto.PlaceReplyCommentResponse;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
-import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineComment;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
+import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentActionRequest;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineCommentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -93,7 +94,7 @@ public class PlaceCommentController extends BaseController {
 
             PlaceDefaultDto placeDefaultDto = new PlaceDefaultDto();
             placeDefaultDto.setCommentIdx(commentDto.getIdx());
-            List<PlaceReplyCommentDto> replyList = placeService.selectPlaceReplyCommentList(placeDefaultDto);
+            List<PlaceReplyCommentResponse> replyList = placeService.selectPlaceReplyCommentList(placeDefaultDto);
 
             modelMap.put("commentDto", commentDto);
             modelMap.put("replyList", replyList);
@@ -114,7 +115,7 @@ public class PlaceCommentController extends BaseController {
 
         if(gubun.equals("일정")){
             try{
-                DailyRoutineReplyCommentDto replyCommentDto = new DailyRoutineReplyCommentDto();
+                DailyRoutineReplyCommentActionRequest replyCommentDto = new DailyRoutineReplyCommentActionRequest();
                 replyCommentDto.setIdx(idx);
                 boolean result = dailyRoutineCommentService.updateDailyRoutineReplyComment(replyCommentDto);
                 if(!result){
@@ -128,7 +129,7 @@ public class PlaceCommentController extends BaseController {
             try{
                 PlaceReplyCommentDto dto = new PlaceReplyCommentDto();
                 dto.setIdx(idx);
-                dto.getMemberDto().setId(memberSession.getMemberSession().getId());
+                dto.getMemberSummaryResponse().setId(memberSession.getMemberSession().getId());
                 boolean result = placeService.deletePlaceReplyComment(dto);
                 if(result){
                     return new ResponseEntity<>("답글삭제요청이 진행되지않았습니다.",HttpStatus.UNPROCESSABLE_ENTITY);

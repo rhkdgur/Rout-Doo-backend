@@ -1,27 +1,18 @@
 package com.routdoo.dailyroutine.module.routine.domain;
 
-import java.time.LocalDateTime;
-
+import com.routdoo.dailyroutine.auth.member.domain.Member;
+import com.routdoo.dailyroutine.module.routine.dto.action.invite.DailyRoutineInviteCreateRequest;
+import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineInviteDto;
+import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.routdoo.dailyroutine.auth.member.domain.Member;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineInviteDto;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="daily_routine_invite")
@@ -59,6 +50,12 @@ public class DailyRoutineInvite {
 		this.member.addId(dto.getMemberId());
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();
+	}
+
+	@Builder(builderMethodName = "createInvite")
+	public DailyRoutineInvite(DailyRoutineInviteCreateRequest dailyRoutineInviteCreateRequest){
+		this.dailyRoutine.addIdx(dailyRoutineInviteCreateRequest.getDailyIdx());
+		this.member.addId(dailyRoutineInviteCreateRequest.getMemberId());
 	}
 	
 	public void addDailyRoutineAndMember(DailyRoutine dailyRoutine, Member member) {

@@ -3,7 +3,6 @@ package com.routdoo.dailyroutine.module.place.repository;
 import com.routdoo.dailyroutine.module.place.dto.*;
 import org.springframework.data.domain.Page;
 
-import java.beans.ExceptionListener;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +26,7 @@ public interface PlaceCustomRepository {
 	 * @return
 	 * @throws Exception
 	 */
-	Page<PlaceDto> selectPlacePageList(PlaceDefaultDto searchDto) throws Exception;
+	Page<PlaceSummaryResponse> selectPlacePageList(PlaceDefaultDto searchDto) throws Exception;
 	
 	/**
 	 * 장소 목록(페이징 x)
@@ -152,7 +151,7 @@ public interface PlaceCustomRepository {
 	 * @return
 	 * @throws Exception
 	 */
-	List<PlaceReplyCommentDto> selectPlaceReplyCommentList(PlaceDefaultDto searchDto) throws Exception;
+	List<PlaceReplyCommentResponse> selectPlaceReplyCommentList(PlaceDefaultDto searchDto) throws Exception;
 
 	/**
 	 * 댓글에 대한 답글 상세 정보

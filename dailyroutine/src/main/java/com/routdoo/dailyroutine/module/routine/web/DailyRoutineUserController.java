@@ -4,10 +4,17 @@ import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.auth.member.dto.*;
 import com.routdoo.dailyroutine.auth.member.service.FriendListService;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
+import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.routine.RoutineResultCodeType;
 import com.routdoo.dailyroutine.module.routine.RoutineServiceResult;
 import com.routdoo.dailyroutine.module.routine.dto.*;
+import com.routdoo.dailyroutine.module.routine.dto.action.*;
+import com.routdoo.dailyroutine.module.routine.dto.action.invite.DailyRoutineInviteCreateRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.invite.DailyRoutineInviteDeleteRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.timeline.DailyRoutineTimeLineCreateRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.timeline.DailyRoutineTimeLineDeleteRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.timeline.DailyRoutineTimeLineUpdateRequest;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
 import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +31,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 /**
@@ -59,26 +68,22 @@ public class DailyRoutineUserController extends BaseModuleController{
 	
 	/**
 	 * 스케줄 목록 조회
-	 * @param date
+	 * @param
 	 * @return
 	 * @throws Exception
 	 */
 	@Operation(summary="사용자 스케줄 목록 조회")
-	@Parameter(name = "date", description = "날짜 ex) yyyy-MM-dd, 만약 date에 빈값일 경우 오늘 날짜 기준으로 조회해옴")
+	@Parameters({
+			@Parameter(name = "date", description = "날짜 ex) yyyy-MM-dd, 만약 date에 빈값일 경우 오늘 날짜 기준으로 조회해옴", required = false),
+			@Parameter(name = "page", description = "페이지 번호", required = false)
+	})
 	@GetMapping(API_URL+"/daily/routine/list")
-	public DailyRoutineListWithCalendarListResponse selectDailyRoutineList(
-													@RequestParam(value="date",defaultValue = "") String date,
-													@RequestParam(value="page",defaultValue = "1") int page
-													) throws Exception {
-		
-		DailyRoutineDefaultDto searchDto = new DailyRoutineDefaultDto();
+	public DailyRoutineListWithCalendarListResponse selectDailyRoutineList(@Parameter(hidden = true) DailyRoutineDefaultDto searchDto) throws Exception {
+
 		searchDto.setMemberId(memberSession.getMemberSession().getId());
-		searchDto.setPage(page);
 		//초기값 세팅 date가 0일경우
-		if(date.isEmpty()){
+		if(searchDto.getToDate().isEmpty()){
 			searchDto.setToDate(LocalDate.now().toString());
-		}else {
-			searchDto.setToDate(date);
 		}
 		
 		//캘린더에 일정 정보가 존재하는지 표시할 데이터
@@ -90,37 +95,35 @@ public class DailyRoutineUserController extends BaseModuleController{
 	
 	/**
 	 * 스케줄 상세 목록 조회
-	 * @param dailyIdx
+	 * @param
 	 * @return
 	 * @throws Exception
 	 */
 	@Operation(summary="사용자 스케줄 기본 상세정보 및 타임라인 목록 조회")
-	@Parameter(name = "idx", description = "스케줄 부모 idx")
+	@Parameters({
+			@Parameter(name = "dailyIdx", description = "스케줄 부모 idx", required = false),
+			@Parameter(name = "page", description = "페이지 번호", required = false)
+	})
 	@GetMapping(API_URL+"/daily/routine/view")
-	public DailyRoutineViewWithInviteListResponse selectDailyRoutineList(@RequestParam("idx") Long dailyIdx,
-													 @RequestParam(value="page", defaultValue = "1") int page ) throws Exception {
+	public DailyRoutineViewWithInviteListResponse selectDailyRoutineList(@Parameter(hidden = true) DailyRoutineInviteDto searchDto) throws Exception {
 
 		//초대인원
-		DailyRoutineInviteDto inviteDto = new DailyRoutineInviteDto();
-		inviteDto.setDailyIdx(dailyIdx);
-		List<DailyRoutineInviteResponse> invites = dailyRoutineService.selectDailyRoutineInviteList(inviteDto);
+		List<DailyRoutineInviteResponse> invites = dailyRoutineService.selectDailyRoutineInviteList(searchDto);
 
 		//일정 정보
 		DailyRoutineDto dailyRoutineDto = new DailyRoutineDto();
-		dailyRoutineDto.setIdx(dailyIdx);
+		dailyRoutineDto.setIdx(searchDto.getDailyIdx());
 		dailyRoutineDto = dailyRoutineService.selectDailyRoutineView(dailyRoutineDto);
 
 		return DailyRoutineViewWithInviteListResponse.responseViewWithInvites(dailyRoutineDto,invites);
 	}
 
 	@Operation(summary="사용자 스케줄 타임라인 목록 조회")
-	@Parameter(name = "dailyIdx", description = "스케줄 부모 idx")
+	@Parameter(name = "dailyIdx", description = "스케줄 부모 idx", required = false)
 	@GetMapping(API_URL+"/daily/routine/time/line/list")
-	public Map<String,Object> selectDailyRoutineTimeLineList(@RequestParam("dailyIdx") Long dailyIdx) throws Exception {
+	public Map<String,Object> selectDailyRoutineTimeLineList(@Parameter(hidden = true) DailyRoutineTimeLineDefaultDto searchDto) throws Exception {
 
 		//일정 타임라인 정보 조회
-		DailyRoutineTimeLineDefaultDto searchDto = new DailyRoutineTimeLineDefaultDto();
-		searchDto.setDailyIdx(dailyIdx);
 		List<DailyRoutineTimeLineDto> list = dailyRoutineService.selectDailyRoutineTimeLineList(searchDto);
 		List<Map<String,Object>> resultList = list.stream().map(DailyRoutineTimeLineDto::toMap).toList();
 
@@ -143,24 +146,21 @@ public class DailyRoutineUserController extends BaseModuleController{
 	
 	/**
 	 * 타임라인 상세 정보 조회
-	 * @param idx
+	 * @param timeLineDto
 	 * @return
 	 * @throws Exception
 	 */
 	@Operation(summary="사용자 스케줄 타임라인 상세 조회")
-	@Parameter(name = "idx", description = "스케줄 자식 idx")
+	@Parameter(name = "idx", description = "스케줄 자식 idx", required = false)
 	@GetMapping(API_URL+"/daily/routine/time/line/view")
-	public DailyRoutineTimeLineDto selectDailyRoutineTimelineView(@RequestParam("idx") Long idx) throws Exception {
-		DailyRoutineTimeLineDto timeLineDto = new DailyRoutineTimeLineDto();
-		timeLineDto.setIdx(idx);
-		timeLineDto = dailyRoutineService.selectDailyRoutineTimeLineView(timeLineDto);
-		return timeLineDto;
+	public DailyRoutineTimeLineDto selectDailyRoutineTimelineView(@Parameter(hidden = true) DailyRoutineTimeLineDto timeLineDto) throws Exception {
+		return dailyRoutineService.selectDailyRoutineTimeLineView(timeLineDto);
 	}
 
 
 	/**
 	 * 스케줄 명 
-	 * @param dailyRoutineDto
+	 * @param dailyRoutineCreateRequest
 	 * @return
 	 * @throws Exception
 	 */
@@ -171,20 +171,21 @@ public class DailyRoutineUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "400", description = "등록 오류 발생")
 	})
 	@PostMapping(API_URL+"/daily/routine/ins")
-	public ResponseEntity<String> insertDailyRoutineBatch(final @Valid @RequestBody  DailyRoutineDto dailyRoutineDto) throws Exception {
+	public ResponseEntity<?> insertDailyRoutineBatch(final @Valid @RequestBody DailyRoutineCreateRequest dailyRoutineCreateRequest) throws Exception {
 		RoutineServiceResult<?> result = null;
-		try {		
+		try {
+			DailyRoutineDto dailyRoutineDto = DailyRoutineDto.createOf(dailyRoutineCreateRequest);
 			dailyRoutineDto.setMemberId(memberSession.getMemberSession().getId());
 			result = dailyRoutineService.insertDailyRoutine(dailyRoutineDto);
 			if(!RoutineResultCodeType.OK.name().equals(result.getCodeType().name())) {
-				return new ResponseEntity<String>(result.getMessage(),HttpStatus.UNPROCESSABLE_ENTITY);
+				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf(result.getMessage()),HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}catch (Exception e) {
 			logger.error("insert daily routine info and timeline error : {}",e.getMessage());
-			return new ResponseEntity<String>("등록시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("등록시 오류가 발생했습니다."),HttpStatus.BAD_REQUEST);
 		}
 		
-		return new ResponseEntity<String>(result.getMessage(),HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf(result.getMessage()),HttpStatus.OK);
 	}
 
 	@Operation(summary="일정 수정" ,description = "타임라인 등록전 대표일정 수정")
@@ -194,25 +195,26 @@ public class DailyRoutineUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "400", description = "수정 오류 발생")
 	})
 	@PutMapping(API_URL+"/daily/routine/upd")
-	public ResponseEntity<String> updateDailyRoutineBatch(final @Valid @RequestBody DailyRoutineDto dailyRoutineDto) throws Exception {
+	public ResponseEntity<?> updateDailyRoutineBatch(final @Valid @RequestBody DailyRoutineUpdateRequest dailyRoutineUpdateRequest) throws Exception {
 		RoutineServiceResult<?> result = null;
 		try {
+			DailyRoutineDto dailyRoutineDto = DailyRoutineDto.updateOf(dailyRoutineUpdateRequest);
 			dailyRoutineDto.setMemberId(memberSession.getMemberSession().getId());
 			result = dailyRoutineService.insertDailyRoutine(dailyRoutineDto);
 			if(!RoutineResultCodeType.OK.name().equals(result.getCodeType().name())) {
-				return new ResponseEntity<String>(result.getMessage(),HttpStatus.UNPROCESSABLE_ENTITY);
+				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf(result.getMessage()),HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}catch (Exception e) {
 			logger.error("update daily routine info and timeline error : {}",e.getMessage());
-			return new ResponseEntity<String>("수정시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("수정시 오류가 발생했습니다."),HttpStatus.BAD_REQUEST);
 		}
 
-		return new ResponseEntity<String>(result.getMessage(),HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf(result.getMessage()),HttpStatus.OK);
 	}
 	
 	/**
 	 * 스케줄 삭제 및 타임라인 삭제
-	 * @param idx
+	 * @param
 	 * @return
 	 * @throws Exception
 	 */
@@ -224,23 +226,22 @@ public class DailyRoutineUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "400", description = "삭제 오류"),
 	})
 	@DeleteMapping(API_URL+"/daily/routine/del")
-	public ResponseEntity<String> deleteDailyRoutine(@RequestParam("idx") Long idx) throws Exception {
+	public ResponseEntity<?> deleteDailyRoutine(final @Valid @RequestBody DailyRoutineDeleteRequest dailyRoutineDeleteRequest) throws Exception {
 		
 		RoutineServiceResult<?> result = null;
 		try {
-			
 			DailyRoutineDto dto = new DailyRoutineDto();
-			dto.setIdx(idx);
+			dto.setIdx(dailyRoutineDeleteRequest.getIdx());
 			result = dailyRoutineService.deleteDailyRoutine(dto);
 			if(!RoutineResultCodeType.OK.name().equals(result.getCodeType().name())) {
-				return new ResponseEntity<String>(result.getMessage(),HttpStatus.UNPROCESSABLE_ENTITY);
+				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf(result.getMessage()),HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}catch (Exception e) {
 			logger.error("delete daily routine error : {}",e.getMessage());
-			return new ResponseEntity<String>("삭제시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제시 오류가 발생했습니다."),HttpStatus.BAD_REQUEST);
 		}
 		
-		return new ResponseEntity<String>(result.getMessage(),HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf(result.getMessage()),HttpStatus.OK);
 	}
 	
 	/**
@@ -255,24 +256,24 @@ public class DailyRoutineUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "400", description = "등록 오류 발생")
 	})
 	@PostMapping(value=API_URL+"/daily/routine/time/line/act/ins")
-	public ResponseEntity<String> insertDailyRoutineTimeLine(final @Valid @RequestBody DailyRoutineTimeLineDto dailyRoutineTimeLineDto) throws Exception {
+	public ResponseEntity<?> insertDailyRoutineTimeLine(final @Valid @RequestBody DailyRoutineTimeLineCreateRequest dailyRoutineTimeLineCreateRequest) throws Exception {
 		
 		try {
-			
+			DailyRoutineTimeLineDto dailyRoutineTimeLineDto = DailyRoutineTimeLineDto.createOf(dailyRoutineTimeLineCreateRequest);
 			if(!dailyRoutineService.insertDailyRoutineTimeLine(dailyRoutineTimeLineDto)) {
-				return new ResponseEntity<String>("등록 되지 않았습니다. 다시 진행해주시기 바랍니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("등록 되지 않았습니다. 다시 진행해주시기 바랍니다."),HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}catch (Exception e) {
 			logger.error("insert daily routine time line error : {}",e.getMessage());
-			return new ResponseEntity<String>("등록시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("등록시 오류가 발생했습니다."),HttpStatus.BAD_REQUEST);
 		}
 		
-		return new ResponseEntity<String>("등록 되었습니다.",HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("등록 되었습니다."),HttpStatus.OK);
 	}
 	
 	/**
 	 * 타임라인별 수정
-	 * @param dailyRoutineTimeLineDto
+	 * @param dailyRoutineTimeLineUpdateRequest
 	 * @return
 	 * @throws Exception
 	 */
@@ -283,26 +284,26 @@ public class DailyRoutineUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "400", description = "수정 오류")
 	})
 	@PutMapping(value=API_URL+"/daily/routine/time/line/act/upd")
-	public ResponseEntity<String> updateDailyRoutineTimeLine(final @Valid @RequestBody DailyRoutineTimeLineDto dailyRoutineTimeLineDto) throws Exception {
+	public ResponseEntity<?> updateDailyRoutineTimeLine(final @Valid @RequestBody DailyRoutineTimeLineUpdateRequest dailyRoutineTimeLineUpdateRequest) throws Exception {
 		
 		RoutineServiceResult<?> result = null;
 		try {
-
+			DailyRoutineTimeLineDto dailyRoutineTimeLineDto = DailyRoutineTimeLineDto.updateOf(dailyRoutineTimeLineUpdateRequest);
 			result = dailyRoutineService.updateDailyRoutineTimeLine(dailyRoutineTimeLineDto);
 			if(!RoutineResultCodeType.OK.name().equals(result.getCodeType().name())) {
-				return new ResponseEntity<String>(result.getMessage(),HttpStatus.UNPROCESSABLE_ENTITY);
+				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf(result.getMessage()),HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}catch (Exception e) {
 			logger.error("update daily routine timeline error : {}",e.getMessage());
-			return new ResponseEntity<String>("수정시 오류가 발생했습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("수정시 오류가 발생했습니다."),HttpStatus.BAD_REQUEST);
 		}
 		
-		return new ResponseEntity<String>(result.getMessage(),HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf(result.getMessage()),HttpStatus.OK);
 	}
 	
 	/**
 	 * 타임라인별 삭제
-	 * @param idx
+	 * @param dailyRoutineTimeLineDeleteRequest
 	 * @return
 	 * @throws Exception
 	 */
@@ -313,23 +314,23 @@ public class DailyRoutineUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "422", description = "삭제 오류")
 	})
 	@DeleteMapping(value=API_URL+"/daily/routine/time/line/act/del")
-	public ResponseEntity<String> deleteDailyRoutineTimeLine(@RequestParam("idx") Long idx) throws Exception {
+	public ResponseEntity<?> deleteDailyRoutineTimeLine(final @Valid @RequestBody DailyRoutineTimeLineDeleteRequest dailyRoutineTimeLineDeleteRequest) throws Exception {
 		
 		try {		
 			DailyRoutineTimeLineDto dto = new DailyRoutineTimeLineDto();
-			dto.setIdx(idx);
+			dto.setIdx(dailyRoutineTimeLineDeleteRequest.getIdx());
 			dailyRoutineService.deleteDailyRoutineTimeLine(dto);
 		}catch (Exception e) {
 			logger.error("delete daily timeline error : {}",e.getMessage());
-			return new ResponseEntity<String>("삭제시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+			return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제시 오류가 발생했습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		
-		return new ResponseEntity<String>("삭제 되었습니다.",HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제 되었습니다."),HttpStatus.OK);
 	}
 
 	/**
 	 * 공개 범위 설정
-	 * @param idx
+	 * @param
 	 * @return
 	 * @throws Exception
 	 */
@@ -344,49 +345,39 @@ public class DailyRoutineUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "400", description = "공개 범위 설정 오류")
 	})
 	@PutMapping(API_URL+"/daily/routine/config/range/change")
-	public ResponseEntity<String> updateDailyRoutineConfigRangeChange(
-											@RequestParam("idx") Long idx,
-											@RequestParam("rangeType") String rangeType) throws Exception {
+	public ResponseEntity<?> updateDailyRoutineConfigRangeChange(final @Valid @RequestBody DailyRoutineChangeRangeTypeRequest dailyRoutineChangeRangeTypeRequest) throws Exception {
 
 		try{
-			DailyRoutineDto dailyRoutineDto = new DailyRoutineDto();
-			dailyRoutineDto.setIdx(idx);
-			dailyRoutineDto.setRangeType(rangeType);
+			DailyRoutineDto dailyRoutineDto = DailyRoutineDto.changeRangeTypeOf(dailyRoutineChangeRangeTypeRequest);
 			boolean result = dailyRoutineService.dailyRoutineRangeTypeChange(dailyRoutineDto);
 			if(!result){
-				return new ResponseEntity<>("공개 범위 설정에 실패하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("공개 범위 설정에 실패하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}catch (Exception e) {
 			logger.error("### daily routine config range change error : {}",e.getMessage());
-			return new ResponseEntity<>("공개 범위 설정시 오류가 발생하였습니다.",HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("공개 범위 설정시 오류가 발생하였습니다."),HttpStatus.BAD_REQUEST);
 		}
 
-		return new ResponseEntity<>(RoutineRangeConfigType.valueOf(rangeType).getDisplay()+" 설정되었습니다.",HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf(RoutineRangeConfigType.valueOf(dailyRoutineChangeRangeTypeRequest.getRangeType()).getDisplay()+" 설정되었습니다."),HttpStatus.OK);
 	}
 	
 	/**
 	 * 멤버 리스트
-	 * @param dailyIdx
+	 * @param searchDto
 	 * @return
 	 * @throws Exception
 	 */
 	@Operation(summary="회원목록 및 친구목록")
 	@Parameters( value = {
-		@Parameter(name = "name", description="이름"),
+		@Parameter(name = "sstring", description="검색어", required = false),
 		@Parameter(name = "dailyIdx", description="부모 일련번호"),
-		@Parameter(name = "page", description="페이지")
+		@Parameter(name = "page", description="페이지", required = false)
 	})
 	@GetMapping(value=API_URL+"/daily/routine/invite/list")
-	public MemberListAndFriendListResponse selectInviteList(
-												@RequestParam(value="name",required = false) String name,
-												@RequestParam("idx") Long dailyIdx,
-												@RequestParam(value="page",defaultValue = "1") int page) throws Exception {
+	public MemberListAndFriendListResponse selectInviteList(@Parameter(hidden = true) MemberDefaultDto searchDto) throws Exception {
 		
-		//회원목록  
-		MemberDefaultDto searchDto = new MemberDefaultDto();
+		//회원목록
 		searchDto.setStype("name");
-		searchDto.setSstring(name);
-		searchDto.setPage(page);
 		Page<MemberSummaryResponse> memberList = memberService.selectMemberPageList(searchDto);
 		
 		//친구목록
@@ -400,37 +391,34 @@ public class DailyRoutineUserController extends BaseModuleController{
 	
 	/**
 	 * 친구 초대
-	 * @param dailyIdx
+	 * @param
 	 * @return
 	 * @throws Exception
 	 */
 	@Operation(summary="친구 초대")
 	@Parameters(value={
-		@Parameter(name = "dailyIdx", description="부모 일련번호"), @Parameter(name = "memberId", description="초대 아이디"),
+			@Parameter(name = "dailyIdx", description = "부모 일련번호"),
+			@Parameter(name = "memberId", description = "초대 아이디"),
 	})
 	@PostMapping(value=API_URL+"/daily/routine/invite/ins")
-	public ResponseEntity<String> insertDailyRoutineInvite(@RequestParam(value = "dailyIdx") Long dailyIdx,
-														   @RequestParam(value = "memberId") String memberId) throws Exception {
+	public ResponseEntity<?> insertDailyRoutineInvite(final @Valid @RequestBody DailyRoutineInviteCreateRequest dailyRoutineInviteCreateRequest) throws Exception {
 		RoutineServiceResult<?> result = null;
 		try {
-			DailyRoutineInviteDto dto = new DailyRoutineInviteDto();
-			dto.setDailyIdx(dailyIdx);
-			dto.setMemberId(memberId);
-			result = dailyRoutineService.insertDailyRoutineInvite(dto);
+			result = dailyRoutineService.insertDailyRoutineInvite(DailyRoutineInviteDto.createOf(dailyRoutineInviteCreateRequest));
 			if(!RoutineResultCodeType.OK.name().equals(result.getCodeType().name())) {
-				return new ResponseEntity<String>(result.getMessage(),HttpStatus.UNPROCESSABLE_ENTITY);
+				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf(result.getMessage()),HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}catch (Exception e) {
 			logger.error(" insert daily routine error : {}",e.getMessage());
-			return new ResponseEntity<String>("초대시 에러가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+			return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("초대시 에러가 발생했습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		
-		return new ResponseEntity<String>(result.getMessage(),HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf(result.getMessage()),HttpStatus.OK);
 	}
 	
 	/**
 	 * 친구 초대 삭제
-	 * @param idx
+	 * @param dailyRoutineInviteDeleteRequest
 	 * @return
 	 * @throws Exception
 	 */
@@ -441,41 +429,34 @@ public class DailyRoutineUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "422", description = "친구 삭제 오류")
 	})
 	@DeleteMapping(value=API_URL+"/daily/routine/invite/del")
-	public ResponseEntity<?> deleteDailyRoutineInvite(@RequestParam("idx") Long idx) throws Exception {
+	public ResponseEntity<?> deleteDailyRoutineInvite(final @Valid @RequestBody DailyRoutineInviteDeleteRequest dailyRoutineInviteDeleteRequest) throws Exception {
 		
 		try {
 			DailyRoutineInviteDto dto = new DailyRoutineInviteDto();
-			dto.setIdx(idx);
+			dto.setIdx(dailyRoutineInviteDeleteRequest.getIdx());
 			dailyRoutineService.deleteDailyRoutineInvite(dto);
 		}catch (Exception e) {
 			logger.error("delete daily routine invite error : {}",e.getMessage());
-			return new ResponseEntity<String>("초대 삭제시 에러가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
+			return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("초대 삭제시 에러가 발생했습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
 		}
 		
-		return new ResponseEntity<String>("삭제 되었습니다.",HttpStatus.OK);
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제 되었습니다."),HttpStatus.OK);
 	}
 
 	/**
 	 * 일정 지도
-	 * @param idx
+	 * @param searchDto
 	 * @return
 	 * @throws Exception
 	 */
 	@Operation(summary = "일정 지도 보기")
-	@Parameter(name="dailyIdx", description = "일정 일련번호")
+	@Parameters({
+			@Parameter(name="dailyIdx", description = "일정 일련번호"),
+			@Parameter(name="applyDate", description = "일정 적용일자")
+	})
 	@GetMapping(API_URL+"/daily/routine/plan/map")
-	public Map<String, Object> selectDailyRoutinePlanMap(@RequestParam("dailyIdx") Long idx,
-														 @RequestParam(value = "applyDate", defaultValue = "") String applyDate) throws Exception {
-
-		DailyRoutineTimeLineDefaultDto searchDto = new DailyRoutineTimeLineDefaultDto();
-		searchDto.setDailyIdx(idx);
-		searchDto.setApplyDate(applyDate);
-
+	public List<Map<String,Object>> selectDailyRoutinePlanMap(@Parameter(hidden = true) DailyRoutineTimeLineDefaultDto searchDto) throws Exception {
 		List<DailyRoutineTimeLineDto> resultList = dailyRoutineService.selectDailyRoutineTimeLineList(searchDto);
-		List<Map<String,Object>> resultMap = resultList.stream().map(DailyRoutineTimeLineDto::toMap).toList();
-
-		modelMap.put("mapList", resultMap);
-
-		return modelMap;
+		return resultList.stream().map(DailyRoutineTimeLineDto::toMap).toList();
 	}
 }

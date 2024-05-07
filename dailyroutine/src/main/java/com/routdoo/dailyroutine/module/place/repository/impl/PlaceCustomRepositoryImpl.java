@@ -2,6 +2,7 @@ package com.routdoo.dailyroutine.module.place.repository.impl;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Projections;
 import com.routdoo.dailyroutine.auth.member.domain.QMember;
 import com.routdoo.dailyroutine.cms.publiccode.domain.QPublicCode;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -66,33 +66,35 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 	}
 
 	@Override
-	public Page<PlaceDto> selectPlacePageList(PlaceDefaultDto searchDto) throws Exception {
+	public Page<PlaceSummaryResponse> selectPlacePageList(PlaceDefaultDto searchDto) throws Exception {
 		QPlace qPlace = QPlace.place;
 		QPlaceComment qPlaceComment = QPlaceComment.placeComment;
 		QPlaceLike qPlaceLike = QPlaceLike.placeLike;
 		QPublicCode qPublicCode = QPublicCode.publicCode;
-		List<PlaceDto> placesList = new ArrayList<PlaceDto>();
-		
+
 		Long cnt = jpaQueryFactory.select(qPlace.count()).from(qPlace)
 				.leftJoin(qPlaceComment).on(qPlace.placeNum.eq(qPlaceComment.place.placeNum)).fetchJoin()
 				.leftJoin(qPlaceLike).on(qPlace.placeNum.eq(qPlaceLike.place.placeNum)).fetchJoin()
 				.where(commonQuery(searchDto))
 				.fetchOne();
 		
-		List<Tuple> places = jpaQueryFactory.select(
-					qPlace.placeNum,
-					qPlace.title,
-					qPlace.tel,
-					qPlace.categCd,
-					qPublicCode.title,
-					qPlace.addr,
-					qPlace.mapx,
-					qPlace.mapy,
-					qPlace.useInfo,
-					qPlace.detailText,
-					qPlace.pstatus,
-					qPlace.createDate,
-					qPlace.modifyDate
+		List<PlaceSummaryResponse> places = jpaQueryFactory.select(
+						Projections.constructor(
+								PlaceSummaryResponse.class,
+								qPlace.placeNum,
+								qPlace.title,
+								qPlace.tel,
+								qPlace.categCd,
+								qPublicCode.title,
+								qPlace.addr,
+								qPlace.mapx,
+								qPlace.mapy,
+								qPlace.useInfo,
+								qPlace.detailText,
+								qPlace.pstatus,
+								qPlace.createDate,
+								qPlace.modifyDate
+						)
 				)
 					.from(qPlace)
 					.leftJoin(qPlaceComment).on(qPlace.placeNum.eq(qPlaceComment.place.placeNum)).fetchJoin()
@@ -103,25 +105,8 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 					.limit(searchDto.getPageable().getPageSize())
 					.fetch();
 
-		for(Tuple tp : places){
-			PlaceDto placeDto = new PlaceDto();
-			placeDto.setPlaceNum(tp.get(qPlace.placeNum));
-			placeDto.setTitle(tp.get(qPlace.title));
-			placeDto.setTel(tp.get(qPlace.tel));
-			placeDto.setCategCd(tp.get(qPlace.categCd));
-			placeDto.setCategNm(tp.get(qPublicCode.title));
-			placeDto.setAddr(tp.get(qPlace.addr));
-			placeDto.setMapx(tp.get(qPlace.mapx));
-			placeDto.setMapy(tp.get(qPlace.mapy));
-			placeDto.setUseInfo(tp.get(qPlace.useInfo));
-			placeDto.setDetailText(tp.get(qPlace.detailText));
-			placeDto.setPstatus(tp.get(qPlace.pstatus.stringValue()));
-			placeDto.setCreateDate(tp.get(qPlace.createDate));
-			placeDto.setModifyDate(tp.get(qPlace.modifyDate));
-			placesList.add(placeDto);
-		}
 		
-		return new PageImpl<>(placesList,searchDto.getPageable(),cnt);
+		return new PageImpl<>(places,searchDto.getPageable(),cnt);
 	}
 
 	@Override
@@ -386,20 +371,33 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 	 * @throws Exception
 	 */
 	@Override
-	public List<PlaceReplyCommentDto> selectPlaceReplyCommentList(PlaceDefaultDto searchDto) throws Exception {
+	public List<PlaceReplyCommentResponse> selectPlaceReplyCommentList(PlaceDefaultDto searchDto) throws Exception {
 
 		QPlaceReplyComment qPlaceReplyComment = QPlaceReplyComment.placeReplyComment;
 		QPlaceComment qPlaceComment = QPlaceComment.placeComment;
 		QMember qMember = QMember.member ;
 		QPlace qPlace = QPlace.place;
 
-		List<PlaceReplyComment> list = jpaQueryFactory.selectFrom(qPlaceReplyComment)
+		List<PlaceReplyCommentResponse> list = jpaQueryFactory.select(
+					Projections.constructor(
+							PlaceReplyCommentResponse.class,
+							qPlaceReplyComment.idx,
+							qPlaceComment.idx,
+							qPlace.placeNum,
+							qPlaceReplyComment.content,
+							qMember.id,
+							qMember.nickname,
+							qPlaceReplyComment.createDate,
+							qPlaceReplyComment.modifyDate
+					)
+				)
+				.from(qPlaceReplyComment)
 				.join(qPlaceComment).fetchJoin()
 				.join(qMember).fetchJoin()
 				.join(qPlaceComment).fetchJoin()
 				.where(commonQuery(searchDto)).fetch();
 
-		return list.stream().map(PlaceReplyCommentDto :: new).collect(Collectors.toList());
+		return list;
 	}
 
 	/**
@@ -438,7 +436,7 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 	public Long insertPlaceReplyComment(PlaceReplyCommentDto dto) throws Exception {
 
 		int result = entityManager.createNativeQuery("insert into place_comment_reply(member_id,comment_idx,place_num , content,create_date,modify_date) values (?,?,?,?,?,?)")
-				.setParameter(1,dto.getMemberDto().getId())
+				.setParameter(1,dto.getMemberSummaryResponse().getId())
 				.setParameter(2,dto.getCommentIdx())
 				.setParameter(3,dto.getPlaceNum())
 				.setParameter(4,dto.getContent())

@@ -59,7 +59,7 @@ public class PlaceReplyComment {
         this.placeComment = new PlaceComment();
         placeComment.addIdx(dto.getCommentIdx());
         this.member = new Member();
-        this.member.addId(dto.getMemberDto().getId());
+        this.member.addId(dto.getMemberSummaryResponse().getId());
         this.place = new Place();
         this.place.addPlaceNum(dto.getPlaceNum());
         this.content = dto.getContent();

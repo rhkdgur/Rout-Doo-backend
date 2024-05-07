@@ -2,6 +2,7 @@ package com.routdoo.dailyroutine.auth.member.web;
 
 import com.routdoo.dailyroutine.auth.AuthResultCodeType;
 import com.routdoo.dailyroutine.auth.AuthServiceResult;
+import com.routdoo.dailyroutine.auth.member.dto.action.MemberActionRequest;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
@@ -13,15 +14,12 @@ import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDefaultDto;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
 import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -74,7 +72,6 @@ public class MemberController extends BaseController{
 	
 	/**
 	 * 회원 상세 조회
-	 * @param dto
 	 * @return
 	 * @throws Exception
 	 */
@@ -91,10 +88,10 @@ public class MemberController extends BaseController{
 		searchDto.setMemberId(dto.getId());
 
 		//친구 목록
-		List<Map<String,Object>> friendsList = friendListService.selectMemberFriendsList(searchDto);
+		List<MemberDto> friendsList = friendListService.selectMemberFriendsList(searchDto);
 		
 		//차단 목록
-		List<Map<String,Object>> blockList = friendListService.selectMypageFriendsBlockList(searchDto);
+		List<MemberDto> blockList = friendListService.selectMypageFriendsBlockList(searchDto);
 
 		//공개일정 개수
 		DailyRoutineDefaultDto dailyRoutineDefaultDto = new DailyRoutineDefaultDto();
@@ -123,21 +120,20 @@ public class MemberController extends BaseController{
 	
 	/**
 	 * 회원 등록
-	 * @param dto
 	 * @return
 	 * @throws Exception
 	 */
 	@PostMapping(MGN_URL+"/member/act/ins")
-	public ResponseEntity<?> createMember(MemberDto dto,SessionStatus status) throws Exception {
+	public ResponseEntity<?> createMember(@RequestBody @Valid MemberActionRequest memberActionRequest) throws Exception {
 		
 		try{
-			MemberDto checkDto = memberService.selectMember(dto);
+			MemberDto checkDto = memberService.selectMember(MemberDto.createOf(memberActionRequest));
 			//아이디 존재 여부 확인
 			if(checkDto != null) {
 				return new ResponseEntity<>("이미 사용중인 아이디 입니다.",HttpStatus.ALREADY_REPORTED);
 			}
 			
-			AuthServiceResult<?> result = memberService.saveMember(dto);
+			AuthServiceResult<?> result = memberService.saveMember(MemberDto.createOf(memberActionRequest));
 			if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<>(result.getMessage(),HttpStatus.NOT_MODIFIED);
 			}
@@ -145,24 +141,20 @@ public class MemberController extends BaseController{
 			logger.error("### insert member error ");
 			return new ResponseEntity<>("회원 등록시 오류가 발생했습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 		}
-		
-		status.setComplete();
+
 		return new ResponseEntity<>("등록 되었습니다.",HttpStatus.OK);
 	}
 	
 	/**
 	 * 회원 수정
-	 * @param dto
-	 * @param status
 	 * @return
 	 * @throws Exception
 	 */
 	@PostMapping(MGN_URL+"/member/act/upd")
-	public ResponseEntity<?> updateMember(MemberDto dto, SessionStatus status) throws Exception {
+	public ResponseEntity<?> updateMember(@RequestBody @Valid MemberActionRequest memberActionRequest) throws Exception {
 		
-		AuthServiceResult<?> result = memberService.saveMember(dto);
-		
-		status.setComplete();
+		AuthServiceResult<?> result = memberService.saveMember(MemberDto.createOf(memberActionRequest));
+
 		return new ResponseEntity<>("수정 되었습니다.",HttpStatus.OK);
 	}
 	

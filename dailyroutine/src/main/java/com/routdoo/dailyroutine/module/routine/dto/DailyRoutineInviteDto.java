@@ -1,6 +1,7 @@
 package com.routdoo.dailyroutine.module.routine.dto;
 
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineInvite;
+import com.routdoo.dailyroutine.module.routine.dto.action.invite.DailyRoutineInviteCreateRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -59,6 +60,13 @@ public class DailyRoutineInviteDto {
 		this.memberId = entity.getMember().getId();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
+	}
+
+	public static DailyRoutineInviteDto createOf(DailyRoutineInviteCreateRequest dailyRoutineInviteCreateRequest){
+		DailyRoutineInviteDto request = new DailyRoutineInviteDto();
+		request.setDailyIdx(dailyRoutineInviteCreateRequest.getDailyIdx());
+		request.setMemberId(dailyRoutineInviteCreateRequest.getMemberId());
+		return request;
 	}
 	
 }

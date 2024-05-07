@@ -1,13 +1,14 @@
-package com.routdoo.dailyroutine.auth.member.dto;
+package com.routdoo.dailyroutine.auth.member.dto.action;
 
-import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.common.exception.validate.annotation.date.Date;
 import com.routdoo.dailyroutine.common.exception.validate.annotation.phone.Phone;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -26,6 +27,8 @@ import java.io.Serializable;
 @Schema(description = "회원가입 request Dto")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberActionRequest implements Serializable {
 
     @Schema(description = "회원 아이디")
@@ -72,9 +75,5 @@ public class MemberActionRequest implements Serializable {
     @Schema(description = "회원상태")
     @NotBlank
     private String useStatus = "";
-
-    public Member toCreateEntity() {
-        return Member.createMember().dto(this).build();
-    }
 
 }

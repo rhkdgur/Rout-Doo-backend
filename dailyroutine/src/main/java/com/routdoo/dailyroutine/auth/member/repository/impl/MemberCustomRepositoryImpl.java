@@ -92,7 +92,7 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
     }
 
     @Override
-    public Page<Map<String, Object>> selectMemberFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception {
+    public Page<MemberDto> selectMemberFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception {
         QMember qMember = QMember.member;
         QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
 
@@ -118,14 +118,11 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
                 .limit(searchDto.getPageable().getPageSize())
                 .fetch();
 
-        //Map 변환
-        List<Map<String, Object>> resultList = list.stream().map(MemberDto::getSummaryInfo).toList();
-
-        return new PageImpl<>(resultList, searchDto.getPageable(), cnt);
+        return new PageImpl<>(list, searchDto.getPageable(), cnt);
     }
 
     @Override
-    public List<Map<String, Object>> selectMemberFriendsBlockList(MemberDefaultDto searchDto) throws Exception {
+    public List<MemberDto> selectMemberFriendsBlockList(MemberDefaultDto searchDto) throws Exception {
         QMember qMember = QMember.member;
         QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
 
@@ -145,13 +142,12 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
                 .where(new BooleanBuilder().and(qMember.id.eq(searchDto.getMemberId())).and(qMemberFriends.blockYn.eq(searchDto.getBlockYn())))
                 .fetch();
 
-        //Map 변환
-        return list.stream().map(MemberDto::getSummaryInfo).toList();
+        return list;
     }
 
 
     @Override
-    public Page<Map<String, Object>> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception {
+    public Page<MemberDto> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception {
         QMember qMember = QMember.member;
         QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
 
@@ -176,14 +172,11 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
                 .limit(searchDto.getPageable().getPageSize())
                 .fetch();
 
-        //Map 변환
-        List<Map<String, Object>> resultList = list.stream().map(MemberDto::getSummaryInfo).toList();
-
-        return new PageImpl<>(resultList, searchDto.getPageable(), cnt);
+        return new PageImpl<>(list, searchDto.getPageable(), cnt);
     }
 
     @Override
-    public List<Map<String, Object>> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception {
+    public List<MemberDto> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception {
         QMember qMember = QMember.member;
         QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
 
@@ -201,7 +194,7 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
                 .join(qMemberFriends).on(qMember.id.eq(qMemberFriends.member.id)).fetchJoin()
                 .where(commonQuery(searchDto)).fetch();
 
-        return list.stream().map(MemberDto::getSummaryInfo).toList();
+        return list;
     }
 
     /**
