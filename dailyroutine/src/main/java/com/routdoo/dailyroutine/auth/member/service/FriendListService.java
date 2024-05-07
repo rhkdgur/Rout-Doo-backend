@@ -2,6 +2,7 @@ package com.routdoo.dailyroutine.auth.member.service;
 
 import com.routdoo.dailyroutine.auth.member.domain.MemberFriends;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsResponse;
 import com.routdoo.dailyroutine.auth.member.repository.FriendListRepository;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -76,7 +76,7 @@ public class FriendListService {
      * @return
      * @throws Exception
      */
-    public Page<Map<String, Object>> selectMypageFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception {
+    public Page<MemberDto> selectMypageFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception {
         return memberRepository.selectMemberFriendsBlockPageList(searchDto);
     }
 
@@ -87,7 +87,7 @@ public class FriendListService {
      * @return
      * @throws Exception
      */
-    public List<Map<String, Object>> selectMypageFriendsBlockList(MemberDefaultDto searchDto) throws Exception {
+    public List<MemberDto> selectMypageFriendsBlockList(MemberDefaultDto searchDto) throws Exception {
         return memberRepository.selectMemberFriendsBlockList(searchDto);
     }
 
@@ -98,7 +98,7 @@ public class FriendListService {
      * @return
      * @throws Exception
      */
-    public Page<Map<String, Object>> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception {
+    public Page<MemberDto> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception {
         return memberRepository.selectMemberFriendsPageList(searchDto);
     }
 
@@ -109,7 +109,7 @@ public class FriendListService {
      * @return
      * @throws Exception
      */
-    public List<Map<String, Object>> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception {
+    public List<MemberDto> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception {
         return memberRepository.selectMemberFriendsList(searchDto);
     }
 }

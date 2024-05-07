@@ -5,6 +5,7 @@ import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.place.dto.*;
 import com.routdoo.dailyroutine.module.place.dto.action.PlaceActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.PlaceDeleteRequest;
 import com.routdoo.dailyroutine.module.place.dto.with.PlaceViewWIthCommentListResponse;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,18 +57,18 @@ public class PlaceUserController extends BaseModuleController{
 	 */
 	@Operation(summary="사용자 위치 주변 목록 조회 (놀거리 ,일정 지도 검색 찾기 사용, 페이징 x)")
 	@Parameters( value = {
-			@Parameter(name = "pstatus", description = "사용상태"),
-			@Parameter(name = "placeNum", description = "장소번호"),
-			@Parameter(name = "title", description = "제목(장소)"),
-			@Parameter(name = "categCd", description = "카테고리 코드"),
-			@Parameter(name = "addr", description = "주소"),
-			@Parameter(name = "mapx", description = "경도"),
-			@Parameter(name = "mapy", description = "위도"),
-			@Parameter(name = "distance", description = "주변 사정거리 ( ex: default 값은 2km 이내 입니다)"),
-			@Parameter(name = "populFlag", description = "인기 정렬 일 경우 true, 아닐경우 false")
+			@Parameter(name = "pstatus", description = "사용상태", required = false),
+			@Parameter(name = "placeNum", description = "장소번호", required = false),
+			@Parameter(name = "title", description = "제목(장소)", required = false),
+			@Parameter(name = "categCd", description = "카테고리 코드", required = false),
+			@Parameter(name = "addr", description = "주소", required = false),
+			@Parameter(name = "mapx", description = "경도", required = false),
+			@Parameter(name = "mapy", description = "위도", required = false),
+			@Parameter(name = "distance", description = "주변 사정거리 ( ex: default 값은 2km 이내 입니다)", required = false),
+			@Parameter(name = "populFlag", description = "인기 정렬 일 경우 true, 아닐경우 false", required = false)
 	})
 	@GetMapping(API_URL+"/place/mylocation/list")
-	public List<PlaceSummaryInfo> selectPlaceMyLocationList(@Parameter(hidden = true) @RequestParam PlaceDefaultDto searchDto) throws Exception {
+	public List<PlaceSummaryInfo> selectPlaceMyLocationList(@Parameter(hidden = true) PlaceDefaultDto searchDto) throws Exception {
 		return placeService.selectPlaceSelfLocationList(searchDto);
 	}
 	
@@ -77,19 +78,19 @@ public class PlaceUserController extends BaseModuleController{
 	 * @return
 	 * @throws Exception
 	 */
-	@GetMapping(API_URL+"/place/list")
 	@Operation(summary="일반 장소 목록(페이징 o)")
 	@Parameters(value = {
-			@Parameter(name = "pstatus", description = "사용상태"),
-			@Parameter(name = "placeNum", description = "장소번호"),
-			@Parameter(name = "title", description = "제목(장소)"),
-			@Parameter(name = "categCd", description = "카테고리 코드"),
-			@Parameter(name = "addr", description = "주소"),
-			@Parameter(name = "mapx", description = "경도"),
-			@Parameter(name = "mapy", description = "위도"),
-			@Parameter(name = "page", description = "페이지 번호")
+			@Parameter(name = "pstatus", description = "사용상태", required = false),
+			@Parameter(name = "placeNum", description = "장소번호", required = false),
+			@Parameter(name = "title", description = "제목(장소)", required = false),
+			@Parameter(name = "categCd", description = "카테고리 코드", required = false),
+			@Parameter(name = "addr", description = "주소", required = false),
+			@Parameter(name = "mapx", description = "경도", required = false),
+			@Parameter(name = "mapy", description = "위도", required = false),
+			@Parameter(name = "page", description = "페이지 번호", required = false)
 	})
-	public Page<PlaceSummaryResponse> selectPlaceList(@Parameter(hidden = true) @RequestParam PlaceDefaultDto searchDto) throws Exception {
+	@GetMapping(API_URL+"/place/list")
+	public Page<PlaceSummaryResponse> selectPlaceList(@Parameter(hidden = true) PlaceDefaultDto searchDto) throws Exception {
 		return placeService.selectPlacePageList(searchDto);
 	}
 	
@@ -176,22 +177,21 @@ public class PlaceUserController extends BaseModuleController{
 
 	/**
 	 * 장소 삭제
-	 * @param placeNum
+	 * @param placeDeleteRequest
 	 * @return
 	 * @throws Exception
 	 */
 	@Operation(summary = "장소 삭제")
-	@Parameter(name="placeNum", description = "장소번호")
 	@ApiResponses(value={
 			@ApiResponse(responseCode = "200", description = "삭제 완료"),
 			@ApiResponse(responseCode = "422", description = "삭제 오류")
 	})
 	@DeleteMapping(API_URL+"/place/act/del")
-	public ResponseEntity<?> deletePlace(@RequestParam("placeNum") String placeNum) throws Exception {
+	public ResponseEntity<?> deletePlace(final @Valid @RequestBody PlaceDeleteRequest placeDeleteRequest) throws Exception {
 
 		try{
 			PlaceDto placeDto = new PlaceDto();
-			placeDto.setPlaceNum(placeNum);
+			placeDto.setPlaceNum(placeDeleteRequest.getPlaceNum());
 			placeService.deletePlace(placeDto);
 		}catch (Exception e){
 			logger.error("### delete place error : {}",e.getMessage());

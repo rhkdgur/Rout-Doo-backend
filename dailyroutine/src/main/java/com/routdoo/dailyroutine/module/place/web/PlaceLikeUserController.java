@@ -4,10 +4,10 @@ import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.place.dto.PlaceLikeDto;
-import com.routdoo.dailyroutine.module.place.dto.action.PlaceLikeActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.like.PlaceLikeActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.like.PlaceLikeDeleteRequest;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -71,24 +71,23 @@ public class PlaceLikeUserController extends BaseModuleController {
 
     /**
      * 좋아요 삭제
-     * @param idx
+     * @param placeLikeDeleteRequest
      * @return
      * @throws Exception
      */
     @Operation(summary = "장소 좋아요 삭제")
-    @Parameter(name = "idx" ,description = "장소 좋아요 일련번호")
     @ApiResponses(value={
             @ApiResponse(responseCode = "200" , description = "좋아요 삭제 완료"),
             @ApiResponse(responseCode = "422", description = "좋아요 삭제 오류"),
             @ApiResponse(responseCode = "404", description = "좋아요 삭제시 회원 정보 불일치")
     })
     @DeleteMapping(API_URL+"/place/like/del")
-    public ResponseEntity<?> deletePlaceLike(@RequestParam("idx") Long idx) throws Exception {
+    public ResponseEntity<?> deletePlaceLike(final @Valid @RequestBody PlaceLikeDeleteRequest placeLikeDeleteRequest) throws Exception {
         
         try{
             String memberId = memberSession.getMemberSession().getId();
             PlaceLikeDto dto = new PlaceLikeDto();
-            dto.setIdx(idx);
+            dto.setIdx(placeLikeDeleteRequest.getIdx());
             dto = placeService.selectPlaceLike(dto);
             if(!dto.getMemberId().equals(memberId)){
                 return new ResponseEntity<>("해당 회원정보가 일치하지않습니다.",HttpStatus.NOT_FOUND);

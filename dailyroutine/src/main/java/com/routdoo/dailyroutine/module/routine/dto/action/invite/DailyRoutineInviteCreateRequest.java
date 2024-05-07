@@ -1,6 +1,6 @@
-package com.routdoo.dailyroutine.module.routine.dto;
+package com.routdoo.dailyroutine.module.routine.dto.action.invite;
 
-import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineInvite;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,18 +19,10 @@ import lombok.Setter;
 @Setter
 public class DailyRoutineInviteCreateRequest {
 
+    @NotBlank(message = "일상 일련번호는 필수값입니다.")
     private long dailyIdx = 0L;
 
+    @NotBlank(message = "회원 아이디는 필수값입니다.")
     private String memberId = "";
 
-    public DailyRoutineInvite toCreateEntity() {
-        return DailyRoutineInvite.createInvite().dailyRoutineInviteCreateRequest(this).build();
-    }
-
-    public static DailyRoutineInviteCreateRequest of(DailyRoutineInviteCreateRequest request) {
-        DailyRoutineInviteCreateRequest dto = new DailyRoutineInviteCreateRequest();
-        dto.setDailyIdx(request.getDailyIdx());
-        dto.setMemberId(request.getMemberId());
-        return dto;
-    }
 }

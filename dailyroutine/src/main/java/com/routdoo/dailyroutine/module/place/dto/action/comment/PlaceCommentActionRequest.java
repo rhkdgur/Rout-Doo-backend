@@ -1,4 +1,4 @@
-package com.routdoo.dailyroutine.module.place.dto;
+package com.routdoo.dailyroutine.module.place.dto.action.comment;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

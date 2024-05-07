@@ -1,4 +1,4 @@
-package com.routdoo.dailyroutine.module.place.dto.action;
+package com.routdoo.dailyroutine.module.place.dto.action.record;
 
 import com.routdoo.dailyroutine.common.exception.validate.annotation.phone.Phone;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -2,6 +2,7 @@ package com.routdoo.dailyroutine.auth.member.web;
 
 import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberMypageSummaryResponse;
 import com.routdoo.dailyroutine.auth.member.service.FriendListService;
@@ -11,6 +12,7 @@ import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDefaultDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineLikeDefaultDto;
+import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineSummaryResponse;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
 import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -83,9 +84,9 @@ public class MemberMypageController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "마이페이지 일정 보관 목록")
-    @Parameter(name = "page", description = "페이지 번호")
+    @Parameter(name = "page", description = "페이지 번호", required = false)
     @GetMapping(API_URL+"/mypage/daily/like/list")
-    public Page<Map<String,Object>> selectMypageDailyLikeList(@Parameter(hidden = true) @RequestParam DailyRoutineLikeDefaultDto searchDto) throws Exception {
+    public Page<DailyRoutineSummaryResponse> selectMypageDailyLikeList(@Parameter(hidden = true) DailyRoutineLikeDefaultDto searchDto) throws Exception {
         searchDto.setMemberId(memberSession.getMemberSession().getId());
         return dailyRoutineService.selectDailyRoutineLikePageList(searchDto);
     }
@@ -97,9 +98,9 @@ public class MemberMypageController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "마이페이지 장소 보관 목록")
-    @Parameter(name = "page", description = "페이지 번호")
+    @Parameter(name = "page", description = "페이지 번호", required = false)
     @GetMapping(API_URL+"/mypage/place/like/list")
-    public Page<Map<String,Object>> selectMypagePlaceLikeList(@Parameter(hidden = true) @RequestParam PlaceLikeDefaultDto searchDto) throws Exception {
+    public Page<Map<String,Object>> selectMypagePlaceLikeList(@Parameter(hidden = true) PlaceLikeDefaultDto searchDto) throws Exception {
         searchDto.setMemberId(memberSession.getMemberSession().getId());
         return placeService.selectMypagePlaceLikePageList(searchDto);
     }
@@ -112,11 +113,11 @@ public class MemberMypageController extends BaseModuleController {
      */
     @Operation(summary = "마이페이지 친구 차단상태별 목록")
     @Parameters({
-            @Parameter(name = "blockYn",description = "차단여부 ex) Y, N"),
-            @Parameter(name = "page" , description = "페이지 번호")
+            @Parameter(name = "blockYn",description = "차단여부 ex) Y, N", required = false),
+            @Parameter(name = "page" , description = "페이지 번호", required = false)
     })
     @GetMapping(API_URL+"/mypage/friends/block/list")
-    public Page<Map<String,Object>> selectMypageFriendsBlockList(@Parameter(hidden = true) @RequestParam MemberDefaultDto searchDto) throws Exception {
+    public Page<MemberDto> selectMypageFriendsBlockList(@Parameter(hidden = true) MemberDefaultDto searchDto) throws Exception {
         return friendListService.selectMypageFriendsBlockPageList(searchDto);
     }
 

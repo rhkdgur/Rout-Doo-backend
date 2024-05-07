@@ -11,7 +11,7 @@ import lombok.Setter;
  * fileName       : DailyRoutineSummaryResponse
  * author         : rhkdg
  * date           : 2024-05-01
- * description    :
+ * description    : 일상 summary response
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------

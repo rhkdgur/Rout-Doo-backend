@@ -129,19 +129,19 @@ public class MemberService {
 	 * @throws Exception
 	 */
 	@Transactional
-	public AuthServiceResult<MemberDto> saveMember(MemberActionRequest request) throws Exception {
-		Member member = memberRepository.findById(request.getId()).orElse(null);
+	public AuthServiceResult<MemberDto> saveMember(MemberDto dto) throws Exception {
+		Member member = memberRepository.findById(dto.getId()).orElse(null);
 		if(member == null) {
-			String pw = request.getPw();
-			request.setPw(PasswordEncoderTypeHandler.encode(pw));
-			member = memberRepository.save(request.toCreateEntity());
+			String pw = dto.getPw();
+			dto.setPw(PasswordEncoderTypeHandler.encode(pw));
+			member = memberRepository.save(dto.toEntity());
 			if(member != null) {
 				return new AuthServiceResult<>(AuthResultCodeType.INFO_OK,new MemberDto(member));
 			}else {
 				return new AuthServiceResult<>(AuthResultCodeType.INFO_FAIL,"등록에 실패하였습니다.");
 			}
 		}else {
-			member.changeMember(request);
+			member.changeMember(dto);
 			return new AuthServiceResult<>(AuthResultCodeType.INFO_OK,"업데이트 되었습니다.",new MemberDto(member));
 		}
 	}

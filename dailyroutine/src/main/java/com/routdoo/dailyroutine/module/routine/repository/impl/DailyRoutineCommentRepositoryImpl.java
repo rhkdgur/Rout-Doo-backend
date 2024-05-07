@@ -6,6 +6,8 @@ import com.routdoo.dailyroutine.auth.member.domain.QMember;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 import com.routdoo.dailyroutine.module.routine.domain.*;
 import com.routdoo.dailyroutine.module.routine.dto.*;
+import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentActionRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentActionRequest;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCommentRepository;
 import org.qlrm.mapper.JpaResultMapper;
 import org.springframework.data.domain.Page;

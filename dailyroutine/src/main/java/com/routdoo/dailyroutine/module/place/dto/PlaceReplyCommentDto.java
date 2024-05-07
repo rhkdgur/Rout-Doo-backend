@@ -4,7 +4,7 @@ package com.routdoo.dailyroutine.module.place.dto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
 import com.routdoo.dailyroutine.module.place.domain.PlaceReplyComment;
-import com.routdoo.dailyroutine.module.place.dto.action.PlaceReplyActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.reply.PlaceReplyActionRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

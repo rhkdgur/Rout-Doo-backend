@@ -4,7 +4,7 @@ import com.querydsl.core.annotations.QueryProjection;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.common.exception.validate.annotation.phone.Phone;
 import com.routdoo.dailyroutine.module.place.domain.PlaceRecord;
-import com.routdoo.dailyroutine.module.place.dto.action.PlaceRecordActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.record.PlaceRecordActionRequest;
 import com.routdoo.dailyroutine.module.place.service.PlaceStatusType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

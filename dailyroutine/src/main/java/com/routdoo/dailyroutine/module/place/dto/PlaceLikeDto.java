@@ -1,7 +1,7 @@
 package com.routdoo.dailyroutine.module.place.dto;
 
 import com.routdoo.dailyroutine.module.place.domain.PlaceLike;
-import com.routdoo.dailyroutine.module.place.dto.action.PlaceLikeActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.like.PlaceLikeActionRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

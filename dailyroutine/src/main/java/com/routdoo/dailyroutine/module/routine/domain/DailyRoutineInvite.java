@@ -1,7 +1,7 @@
 package com.routdoo.dailyroutine.module.routine.domain;
 
 import com.routdoo.dailyroutine.auth.member.domain.Member;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineInviteCreateRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.invite.DailyRoutineInviteCreateRequest;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineInviteDto;
 import jakarta.persistence.*;
 import lombok.Builder;

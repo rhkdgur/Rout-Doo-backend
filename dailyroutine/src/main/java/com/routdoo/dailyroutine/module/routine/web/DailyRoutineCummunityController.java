@@ -7,6 +7,10 @@ import com.routdoo.dailyroutine.auth.member.service.MemberService;
 import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.routine.dto.*;
+import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentActionRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentDeleteRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentActionRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentDeleteRequest;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineCommentService;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
 import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
@@ -23,7 +27,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 /**
@@ -70,11 +76,11 @@ public class DailyRoutineCummunityController extends BaseModuleController {
      */
     @Operation(summary = "공개 일정 목록 조회")
     @Parameters({
-            @Parameter(name="sstring", description = "검색어"),
-            @Parameter(name="page", description = "검색어")
+            @Parameter(name="sstring", description = "검색어", required = false),
+            @Parameter(name="page", description = "검색어", required = false)
     })
     @GetMapping(API_URL+"/daily/routine/plan/list")
-    public Page<DailyRoutineSummaryResponse> selectDailyRoutinePlanList(@Parameter(hidden = true) @RequestParam DailyRoutineDefaultDto searchDto) throws Exception{
+    public Page<DailyRoutineSummaryResponse> selectDailyRoutinePlanList(@Parameter(hidden = true) DailyRoutineDefaultDto searchDto) throws Exception{
         searchDto.setRangeType(RoutineRangeConfigType.PUBLIC.name());
         searchDto.setMemberId(memberSession.isAuthenticated() ? memberSession.getMemberSession().getId() : "");
         searchDto.setCummunity(true);
@@ -106,7 +112,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
         DailyRoutineLikeDefaultDto likeDto = new DailyRoutineLikeDefaultDto();
         likeDto.setDailyIdx(idx);
         likeDto.setMemberId(memberSession.getMemberSession().getId());
-        Page<Map<String,Object>> likeList = dailyRoutineService.selectDailyRoutineLikePageList(likeDto);
+        Page<DailyRoutineSummaryResponse> likeList = dailyRoutineService.selectDailyRoutineLikePageList(likeDto);
         String likeYn = "N";
         if(likeList.getTotalElements() > 0){
             likeYn = "Y";
@@ -146,15 +152,13 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     }
 
     @Operation(summary = "공개 일정 댓글 목록" , description = "일정에 대한 댓글 정보 목록을 가져옵니다.")
-    @Parameter(name="dailyIdx" ,description = "일정 일련번호")
+    @Parameters({
+            @Parameter(name="dailyIdx" ,description = "일정 일련번호"),
+            @Parameter(name="page" ,description = "페이지 번호")
+    })
     @GetMapping(API_URL+"/daily/routine/comment/list")
-    public Page<DailyRoutineCommentResponse> selectDailyRoutineCommentList(@RequestParam("dailyIdx") Long idx,
-                                                            @RequestParam(value="cpage",defaultValue = "1") int page) throws Exception {
-
+    public Page<DailyRoutineCommentResponse> selectDailyRoutineCommentList(@Parameter(hidden = true) DailyRoutineCommentDefaultDto commentDto) throws Exception {
         //코멘트 조회
-        DailyRoutineCommentDefaultDto commentDto = new DailyRoutineCommentDefaultDto();
-        commentDto.setDailyIdx(idx);
-        commentDto.setPage(page);
         Page<DailyRoutineCommentResponse> commentList = dailyRoutineCommentService.selectDailyRoutineCommentPageList(commentDto);
         String memberId = memberSession.isAuthenticated() ? memberSession.getMemberSession().getId() : "";
         for(DailyRoutineCommentResponse dto : commentList){
@@ -165,23 +169,18 @@ public class DailyRoutineCummunityController extends BaseModuleController {
 
     /**
      * 답글 목록
-     * @param idx
-     * @param page
+     * @param replyCommentDto
      * @return
      * @throws Exception
      */
     @Operation(summary = "답글 목록 조회")
     @Parameters({
             @Parameter(name="commentIdx", description = "댓글 일련번호"),
-            @Parameter(name="cpage", description = "페이지 번호")
+            @Parameter(name="page", description = "페이지 번호",required = false)
     })
     @GetMapping(API_URL+"/daily/routine/reply/comment")
-    public Page<DailyRoutineReplyCommentDto> selectDailyRoutineReplyComment(@RequestParam("commentIdx") Long idx,
-                                                             @RequestParam(value="cpage",defaultValue = "1") int page) throws Exception {
+    public Page<DailyRoutineReplyCommentDto> selectDailyRoutineReplyComment(@Parameter(hidden = true) DailyRoutineReplyCommentDto replyCommentDto) throws Exception {
 
-        DailyRoutineReplyCommentDto replyCommentDto = new DailyRoutineReplyCommentDto();
-        replyCommentDto.setCommentIdx(idx);
-        replyCommentDto.setPage(page);
         Page<DailyRoutineReplyCommentDto> replayList = dailyRoutineCommentService.selectDailyRoutineReplyCommentPageList(replyCommentDto);
         String memberId = memberSession.isAuthenticated() ? memberSession.getMemberSession().getId() : "";
         for(DailyRoutineReplyCommentDto tmp : replayList){
@@ -208,7 +207,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "등록 실패")
     })
     @PostMapping(API_URL+"/daily/routine/comment/ins")
-    public ResponseEntity<?> insertDailyRoutineComment(final @Valid @RequestBody  DailyRoutineCommentActionRequest dailyRoutineCommentActionRequest) throws Exception {
+    public ResponseEntity<?> insertDailyRoutineComment(final @Valid @RequestBody DailyRoutineCommentActionRequest dailyRoutineCommentActionRequest) throws Exception {
 
         try{
             dailyRoutineCommentActionRequest.setMemberId(memberSession.getMemberSession().getId());
@@ -259,7 +258,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
 
     /**
      * 댓글 삭제
-     * @param idx
+     * @param dailyRoutineCommentDeleteRequest
      * @return
      * @throws Exception
      */
@@ -271,11 +270,11 @@ public class DailyRoutineCummunityController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "삭제 실패")
     })
     @DeleteMapping(API_URL+"/daily/routine/comment/del")
-    public ResponseEntity<?> deleteDailyRoutineComment(@RequestParam("idx") Long idx) throws Exception {
+    public ResponseEntity<?> deleteDailyRoutineComment(final @Valid @RequestBody DailyRoutineCommentDeleteRequest dailyRoutineCommentDeleteRequest) throws Exception {
 
         try{
             DailyRoutineCommentActionRequest dto = new DailyRoutineCommentActionRequest();
-            dto.setIdx(idx);
+            dto.setIdx(dailyRoutineCommentDeleteRequest.getIdx());
             boolean result = dailyRoutineCommentService.deleteDailyRoutineComment(dto);
             if(!result){
                 return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제에 실패하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
@@ -357,7 +356,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
 
     /**
      * 답글 삭제
-     * @param idx
+     * @param dailyRoutineReplyCommentDeleteRequest
      * @return
      * @throws Exception
      */
@@ -369,11 +368,11 @@ public class DailyRoutineCummunityController extends BaseModuleController {
             @ApiResponse(responseCode = "400", description = "삭제 오류")
     })
     @DeleteMapping(API_URL+"/daily/routine/reply/del")
-    public ResponseEntity<?> deleteDailyRoutineReplyComment(@RequestParam("idx") Long idx) throws Exception {
+    public ResponseEntity<?> deleteDailyRoutineReplyComment(final @Valid @RequestBody DailyRoutineReplyCommentDeleteRequest dailyRoutineReplyCommentDeleteRequest) throws Exception {
 
         try{
             DailyRoutineReplyCommentActionRequest replyCommentDto = new DailyRoutineReplyCommentActionRequest();
-            replyCommentDto.setIdx(idx);
+            replyCommentDto.setIdx(dailyRoutineReplyCommentDeleteRequest.getIdx());
             boolean result = dailyRoutineCommentService.updateDailyRoutineReplyComment(replyCommentDto);
             if(!result){
                 return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제에 실패하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);

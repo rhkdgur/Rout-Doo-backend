@@ -1,6 +1,5 @@
-package com.routdoo.dailyroutine.auth.member.dto;
+package com.routdoo.dailyroutine.auth.member.dto.action;
 
-import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.common.exception.validate.annotation.date.Date;
 import com.routdoo.dailyroutine.common.exception.validate.annotation.phone.Phone;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -76,9 +75,5 @@ public class MemberActionRequest implements Serializable {
     @Schema(description = "회원상태")
     @NotBlank
     private String useStatus = "";
-
-    public Member toCreateEntity() {
-        return Member.createMember().memberActionRequest(this).build();
-    }
 
 }

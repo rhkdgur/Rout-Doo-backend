@@ -1,20 +1,16 @@
 package com.routdoo.dailyroutine.module.routine.dto;
 
-import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.routdoo.dailyroutine.common.exception.validate.annotation.date.Date;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineTimeLine;
-
+import com.routdoo.dailyroutine.module.routine.dto.action.timeline.DailyRoutineTimeLineCreateRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.timeline.DailyRoutineTimeLineUpdateRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * 
@@ -40,23 +36,14 @@ public class DailyRoutineTimeLineDto {
 	
 	/**일정 메인 정보*/
 	@Schema(description = "잃정 일련번호")
-	@NotNull
 	private Long dailyIdx = 0L;
-	
-	/**작성타입*/
-//	@Schema(description = "작성타입", example = "직접입력 : DIRECT, 검색입력 : SEARCH ")
-//	@NotBlank
-//	private String writeType;
 	
 	/**적용일자*/
 	@Schema(description = "적용일자")
-	@NotBlank
-	@Date
 	private String applyDate;
 	
 	/**제목*/
 	@Schema(description = "제목")
-	@NotBlank
 	private String title;
 	
 	/**장소명*/
@@ -65,17 +52,14 @@ public class DailyRoutineTimeLineDto {
 
 	/**주소*/
 	@Schema(description = "주소")
-	@NotBlank
 	private String addr;
 	
 	/**경도*/
 	@Schema(description = "경도")
-	@NotBlank
 	private String mapx;
 	
 	/**위도*/
 	@Schema(description = "위도")
-	@NotBlank
 	private String mapy;
 
 	/**순서*/
@@ -84,32 +68,26 @@ public class DailyRoutineTimeLineDto {
 	
 	/**내용*/
 	@Schema(description = "내용")
-	@NotEmpty
 	private String context;
 	
 	/**시작시간*/
 	@Schema(description = "시작시간" , example = "01")
-	@NotNull
 	private String shour;
 	
 	/**시작분*/
 	@Schema(description = "시작분", example = "01")
-	@NotNull
 	private String smin;
 	
 	/**마지막시간*/
 	@Schema(description = "마지막시간", example = "01")
-	@NotNull
 	private String ehour;
 	
 	/**마지막분*/
 	@Schema(description = "마지막 분", example = "01")
-	@NotNull
 	private String emin;
 	
 	/**비용*/
 	@Schema(description = "비용", defaultValue = "0",example = "1000")
-	@NotNull
 	private int cost = 0;
 	
 	/**등록일자*/
@@ -119,10 +97,7 @@ public class DailyRoutineTimeLineDto {
 	/**수정일자*/
 	@Schema(description = "수정일자")
 	private LocalDateTime modifyDate;
-	
-	/**place 정보*/
-//	private PlaceDto placeDto = new PlaceDto();
-	
+
 	public DailyRoutineTimeLine toEntity() {
 		return DailyRoutineTimeLine.builder().dto(this).build();
 	}
@@ -130,7 +105,6 @@ public class DailyRoutineTimeLineDto {
 	public DailyRoutineTimeLineDto(DailyRoutineTimeLine entity) {
 		this.idx = entity.getIdx();
 		this.applyDate = entity.getApplyDate();
-//		this.writeType = entity.getWriteType().name();
 		this.title = entity.getTitle();
 		this.placeName = entity.getPlaceName();
 		this.addr = entity.getAddr();
@@ -146,24 +120,55 @@ public class DailyRoutineTimeLineDto {
 		this.creatDate = entity.getCreatDate();
 		this.modifyDate = entity.getModifyDate();
 		this.dailyIdx = entity.getDailyRoutine().getIdx();
-//		this.placeDto = new PlaceDto();
-//		placeDto.addPlaceSummaryInfo(entity.getPlace());
 	}
 
 	/**
-	 * dto -> summary map
+	 * 등록
+	 * @param dailyRoutineTimeLineCreateRequest
 	 * @return
 	 */
-	public Map<String,Object> toSummaryMap(){
-		Map<String,Object> map = new LinkedHashMap<String,Object>();
-		map.put("idx", this.idx);
-		map.put("dailyIdx", this.dailyIdx);
-		map.put("title", this.title);
-		map.put("applyDate",this.applyDate);
-		map.put("startTime", this.shour+":"+this.smin);
-		map.put("endTime", this.ehour+":"+this.emin);
-		map.put("ord", this.ord);
-		return map;
+	public static DailyRoutineTimeLineDto createOf(DailyRoutineTimeLineCreateRequest dailyRoutineTimeLineCreateRequest){
+		DailyRoutineTimeLineDto request = new DailyRoutineTimeLineDto();
+		request.setDailyIdx(dailyRoutineTimeLineCreateRequest.getDailyIdx());
+		request.setApplyDate(dailyRoutineTimeLineCreateRequest.getApplyDate());
+		request.setTitle(dailyRoutineTimeLineCreateRequest.getTitle());
+		request.setPlaceName(dailyRoutineTimeLineCreateRequest.getPlaceName());
+		request.setAddr(dailyRoutineTimeLineCreateRequest.getAddr());
+		request.setMapx(dailyRoutineTimeLineCreateRequest.getMapx());
+		request.setMapy(dailyRoutineTimeLineCreateRequest.getMapy());
+		request.setOrd(dailyRoutineTimeLineCreateRequest.getOrd());
+		request.setContext(dailyRoutineTimeLineCreateRequest.getContext());
+		request.setShour(dailyRoutineTimeLineCreateRequest.getShour());
+		request.setSmin(dailyRoutineTimeLineCreateRequest.getSmin());
+		request.setEhour(dailyRoutineTimeLineCreateRequest.getEhour());
+		request.setEmin(dailyRoutineTimeLineCreateRequest.getEmin());
+		request.setCost(dailyRoutineTimeLineCreateRequest.getCost());
+		return request;
+	}
+
+	/**
+	 * 수정
+	 * @param dailyRoutineTimeLineUpdateRequest
+	 * @return
+	 */
+	public static DailyRoutineTimeLineDto updateOf(DailyRoutineTimeLineUpdateRequest dailyRoutineTimeLineUpdateRequest){
+		DailyRoutineTimeLineDto request = new DailyRoutineTimeLineDto();
+		request.setIdx(dailyRoutineTimeLineUpdateRequest.getIdx());
+		request.setDailyIdx(dailyRoutineTimeLineUpdateRequest.getDailyIdx());
+		request.setApplyDate(dailyRoutineTimeLineUpdateRequest.getApplyDate());
+		request.setTitle(dailyRoutineTimeLineUpdateRequest.getTitle());
+		request.setPlaceName(dailyRoutineTimeLineUpdateRequest.getPlaceName());
+		request.setAddr(dailyRoutineTimeLineUpdateRequest.getAddr());
+		request.setMapx(dailyRoutineTimeLineUpdateRequest.getMapx());
+		request.setMapy(dailyRoutineTimeLineUpdateRequest.getMapy());
+		request.setOrd(dailyRoutineTimeLineUpdateRequest.getOrd());
+		request.setContext(dailyRoutineTimeLineUpdateRequest.getContext());
+		request.setShour(dailyRoutineTimeLineUpdateRequest.getShour());
+		request.setSmin(dailyRoutineTimeLineUpdateRequest.getSmin());
+		request.setEhour(dailyRoutineTimeLineUpdateRequest.getEhour());
+		request.setEmin(dailyRoutineTimeLineUpdateRequest.getEmin());
+		request.setCost(dailyRoutineTimeLineUpdateRequest.getCost());
+		return request;
 	}
 
 	public Map<String,Object> toMap(){
@@ -171,7 +176,6 @@ public class DailyRoutineTimeLineDto {
 		map.put("idx", this.idx);
 		map.put("dailyIdx", this.dailyIdx);
 		map.put("title", this.title);
-//		map.put("writeType", this.writeType);
 		map.put("applyDate",this.applyDate);
 		map.put("startTime", this.shour+":"+this.smin);
 		map.put("endTime", this.ehour+":"+this.emin);

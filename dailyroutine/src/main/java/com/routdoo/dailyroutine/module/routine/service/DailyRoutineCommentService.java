@@ -1,6 +1,8 @@
 package com.routdoo.dailyroutine.module.routine.service;
 
 import com.routdoo.dailyroutine.module.routine.dto.*;
+import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentActionRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentActionRequest;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

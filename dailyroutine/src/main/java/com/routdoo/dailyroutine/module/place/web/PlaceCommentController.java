@@ -8,7 +8,7 @@ import com.routdoo.dailyroutine.module.place.dto.PlaceReplyCommentDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceReplyCommentResponse;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentActionRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentActionRequest;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineCommentService;
 import io.swagger.v3.oas.annotations.Operation;

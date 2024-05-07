@@ -2,7 +2,7 @@ package com.routdoo.dailyroutine.auth.member.web;
 
 import com.routdoo.dailyroutine.auth.AuthResultCodeType;
 import com.routdoo.dailyroutine.auth.AuthServiceResult;
-import com.routdoo.dailyroutine.auth.member.dto.MemberActionRequest;
+import com.routdoo.dailyroutine.auth.member.dto.action.MemberActionRequest;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
@@ -88,10 +88,10 @@ public class MemberController extends BaseController{
 		searchDto.setMemberId(dto.getId());
 
 		//친구 목록
-		List<Map<String,Object>> friendsList = friendListService.selectMemberFriendsList(searchDto);
+		List<MemberDto> friendsList = friendListService.selectMemberFriendsList(searchDto);
 		
 		//차단 목록
-		List<Map<String,Object>> blockList = friendListService.selectMypageFriendsBlockList(searchDto);
+		List<MemberDto> blockList = friendListService.selectMypageFriendsBlockList(searchDto);
 
 		//공개일정 개수
 		DailyRoutineDefaultDto dailyRoutineDefaultDto = new DailyRoutineDefaultDto();
@@ -133,7 +133,7 @@ public class MemberController extends BaseController{
 				return new ResponseEntity<>("이미 사용중인 아이디 입니다.",HttpStatus.ALREADY_REPORTED);
 			}
 			
-			AuthServiceResult<?> result = memberService.saveMember(memberActionRequest);
+			AuthServiceResult<?> result = memberService.saveMember(MemberDto.createOf(memberActionRequest));
 			if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<>(result.getMessage(),HttpStatus.NOT_MODIFIED);
 			}
@@ -153,7 +153,7 @@ public class MemberController extends BaseController{
 	@PostMapping(MGN_URL+"/member/act/upd")
 	public ResponseEntity<?> updateMember(@RequestBody @Valid MemberActionRequest memberActionRequest) throws Exception {
 		
-		AuthServiceResult<?> result = memberService.saveMember(memberActionRequest);
+		AuthServiceResult<?> result = memberService.saveMember(MemberDto.createOf(memberActionRequest));
 
 		return new ResponseEntity<>("수정 되었습니다.",HttpStatus.OK);
 	}

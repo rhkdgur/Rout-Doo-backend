@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -204,7 +203,6 @@ public class DailyRoutineService {
 	public RoutineServiceResult<?> insertDailyRoutine(DailyRoutineDto dto) throws Exception {
 
 		DailyRoutine dailyRoutine = new DailyRoutine(dto);
-
 		//등록
 		DailyRoutine result = dailyRoutineRepository.save(dailyRoutine);
 		if(!result.equals(dailyRoutine)){
@@ -333,7 +331,7 @@ public class DailyRoutineService {
 	 * @throws Exception
 	 */
 	@Transactional
-	public RoutineServiceResult<?> insertDailyRoutineInvite(DailyRoutineInviteCreateRequest dto) throws Exception {
+	public RoutineServiceResult<?> insertDailyRoutineInvite(DailyRoutineInviteDto dto) throws Exception {
 		
 		//촌재 유무 확인
 		DailyRoutine dailyRoutine = dailyRoutineRepository.findById(dto.getDailyIdx()).orElse(null);
@@ -343,7 +341,7 @@ public class DailyRoutineService {
 			return new RoutineServiceResult<>(RoutineResultCodeType.FAIL,"잘못된 접근입니다.");
 		}
 		
-		DailyRoutineInvite invite = dto.toCreateEntity();
+		DailyRoutineInvite invite = dto.toEntity();
 		invite.addDailyRoutineAndMember(dailyRoutine, member);
 		invite = dailyRoutineInviteRepository.save(invite);
 		if(invite == null) {
@@ -370,13 +368,8 @@ public class DailyRoutineService {
 	 * @return
 	 * @throws Exception
 	 */
-	public Page<Map<String,Object>> selectDailyRoutineLikePageList(DailyRoutineLikeDefaultDto searchDto) throws Exception {
-
-		Page<DailyRoutineDto> list = dailyRoutineRepository.selectDailyRoutineLikePageList(searchDto);
-
-		List<Map<String,Object>> resultList = list.getContent().stream().map(DailyRoutineDto::toSummaryMap).toList();
-
-		return new PageImpl<>(resultList,searchDto.getPageable(),list.getTotalElements());
+	public Page<DailyRoutineSummaryResponse> selectDailyRoutineLikePageList(DailyRoutineLikeDefaultDto searchDto) throws Exception {
+		return dailyRoutineRepository.selectDailyRoutineLikePageList(searchDto);
 	}
 
 

@@ -5,7 +5,10 @@ import com.routdoo.dailyroutine.common.exception.handler.NoMatchDataException;
 import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.place.dto.*;
-import com.routdoo.dailyroutine.module.place.dto.action.PlaceReplyActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.comment.PlaceCommentActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.comment.PlaceCommentDeleteRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.reply.PlaceReplyActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.reply.PlaceReplyDeleteRequest;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -128,22 +131,21 @@ public class PlaceUserCommentController extends BaseModuleController {
 
     /**
      * 댓글 삭제
-     * @param idx
+     * @param placeCommentDeleteRequest
      * @return
      * @throws Exception
      */
     @Operation(summary = "댓글 삭제")
-    @Parameter(name = "idx", description = "댓글 일련번호")
     @ApiResponses(value={
             @ApiResponse(responseCode = "200", description = "삭제 완료"),
             @ApiResponse(responseCode = "400", description = "삭제 오류"),
             @ApiResponse(responseCode = "422", description = "삭제 실패")
     })
     @DeleteMapping(API_URL+"/place/comment/del")
-    public ResponseEntity<?> deletePlaceComment(@RequestParam("idx") Long idx) throws Exception {
+    public ResponseEntity<?> deletePlaceComment(final @Valid @RequestBody PlaceCommentDeleteRequest placeCommentDeleteRequest) throws Exception {
         try{
             PlaceCommentDto dto = new PlaceCommentDto();
-            dto.setIdx(idx);
+            dto.setIdx(placeCommentDeleteRequest.getIdx());
             dto.getMemberDto().setId(memberSession.getMemberSession().getId());
             boolean result = placeService.deletePlaceComment(dto);
             if(!result){
@@ -167,10 +169,10 @@ public class PlaceUserCommentController extends BaseModuleController {
     @Operation(summary = "댓글에 대한 답글 조회")
     @Parameters({
             @Parameter(name = "commentIdx", description = "댓글에 대한 답글 일련번호"),
-            @Parameter(name = "page", description = "페이지 번호")
+            @Parameter(name = "page", description = "페이지 번호", required = false)
     })
     @GetMapping(API_URL+"/place/comment/reply/{idx}")
-    public List<PlaceReplyCommentResponse> selectCommentReplyList(@Parameter(hidden = true) @RequestParam PlaceDefaultDto searchDto) throws Exception {
+    public List<PlaceReplyCommentResponse> selectCommentReplyList(@Parameter(hidden = true) PlaceDefaultDto searchDto) throws Exception {
 
         List<PlaceReplyCommentResponse> list = placeService.selectPlaceReplyCommentList(searchDto);
         String memberId = memberSession.isAuthenticated() ? memberSession.getMemberSession().getId() : "";
@@ -262,23 +264,22 @@ public class PlaceUserCommentController extends BaseModuleController {
 
     /**
      * 답글 삭제
-     * @param idx
+     * @param placeReplyDeleteRequest
      * @return
      * @throws Exception
      */
     @Operation(summary = "답글 삭제")
-    @Parameter(name = "idx", description = "답글 일련번호")
     @ApiResponses(value={
             @ApiResponse(responseCode = "200", description = "답글 삭제 완료"),
             @ApiResponse(responseCode = "400", description = "답글 삭제 오류"),
             @ApiResponse(responseCode = "422", description = "답글 삭제 실패")
     })
     @DeleteMapping(API_URL+"/place/comment/reply/del")
-    public ResponseEntity<?> deleteReplyComment(@RequestParam("idx") Long idx) throws Exception {
+    public ResponseEntity<?> deleteReplyComment(final @Valid @RequestBody PlaceReplyDeleteRequest placeReplyDeleteRequest) throws Exception {
 
         try{
             PlaceReplyCommentDto dto = new PlaceReplyCommentDto();
-            dto.setIdx(idx);
+            dto.setIdx(placeReplyDeleteRequest.getIdx());
             dto.getMemberSummaryResponse().setId(memberSession.getMemberSession().getId());
             boolean result = placeService.deletePlaceReplyComment(dto);
             if(result){

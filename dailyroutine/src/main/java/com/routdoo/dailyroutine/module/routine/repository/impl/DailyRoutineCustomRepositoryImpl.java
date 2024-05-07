@@ -264,13 +264,29 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
     }
 
     @Override
-    public Page<DailyRoutineDto> selectDailyRoutineLikePageList(DailyRoutineLikeDefaultDto searchDto) throws Exception {
+    public Page<DailyRoutineSummaryResponse> selectDailyRoutineLikePageList(DailyRoutineLikeDefaultDto searchDto) throws Exception {
         QDailyRoutineLike qDailyRoutineLike = QDailyRoutineLike.dailyRoutineLike;
         QDailyRoutine qDailyRoutine = QDailyRoutine.dailyRoutine;
+        QMember qMember = QMember.member;
 
-
-        List<DailyRoutine> list = jpaQueryFactory.selectFrom(qDailyRoutine)
+        List<DailyRoutineSummaryResponse> list = jpaQueryFactory.select(
+                    Projections.constructor(
+                            DailyRoutineSummaryResponse.class,
+                            qDailyRoutine.idx,
+                            qDailyRoutine.member.id,
+                            qMember.nickname,
+                            qDailyRoutine.tag,
+                            qDailyRoutine.title,
+                            qDailyRoutine.startDate,
+                            qDailyRoutine.endDate,
+                            qDailyRoutine.dayType,
+                            qDailyRoutine.rangeType,
+                            qDailyRoutineLike.idx
+                    )
+                )
+                .from(qDailyRoutine)
                 .join(qDailyRoutineLike).on(qDailyRoutineLike.dailyRoutine.idx.eq(qDailyRoutine.idx)).fetchJoin()
+                .leftJoin(qMember).on(qMember.id.eq(qDailyRoutine.member.id)).fetchJoin()
                 .where(commonLikeQuery(searchDto))
                 .offset(searchDto.getPageable().getOffset())
                 .limit(searchDto.getPageable().getPageSize())
@@ -282,7 +298,7 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
                 .where(commonLikeQuery(searchDto))
                 .fetchFirst();
 
-        return new PageImpl<>(list.stream().map(DailyRoutineDto::new).toList(), searchDto.getPageable(), cnt);
+        return new PageImpl<>(list, searchDto.getPageable(), cnt);
     }
 
     @Override

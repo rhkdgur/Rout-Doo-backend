@@ -1,44 +1,42 @@
-package com.routdoo.dailyroutine.module.place.dto.action;
+package com.routdoo.dailyroutine.module.routine.dto.action.reply;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * packageName    : com.routdoo.dailyroutine.module.place.dto.action
- * fileName       : PlaceReplyActionRequest
+ * packageName    : com.routdoo.dailyroutine.module.routine.dto
+ * fileName       : DailyRoutineReplyCommentActionRequest
  * author         : GAMJA
  * date           : 2024/05/06
- * description    : 댓글에 대한 답글 등록/수정 ㄱㄷ볃ㄴㅅ
+ * description    : 일정 댓글에 대한 답글 request
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2024/05/06        GAMJA       최초 생성
  */
+@Schema(description = "일정 답글 response dto")
 @Getter
 @Setter
-@NoArgsConstructor
-public class PlaceReplyActionRequest {
+public class DailyRoutineReplyCommentActionRequest {
 
-    /**일련번호*/
-    @Schema(description = "일련번호",defaultValue = "0")
+    @Schema(description = "일련번호")
     private Long idx = 0L;
 
+    /**회원 아이디*/
+    @Schema(description = "회원 아이디")
+    private String memberId = "";
+
     /**코멘트 일련번호*/
-    @Schema(description = "댓글 일련번호" ,defaultValue = "0")
+    @Schema(description = "댓글 일련번호")
     @NotBlank
     private Long commentIdx = 0L;
 
-    /**장소번호*/
-    @Schema(description = "장소 번호",defaultValue = "")
-    @NotBlank
-    private String placeNum = "";
-
     /**내용*/
     @Schema(description = "내용")
-    @NotBlank
+    @NotEmpty
     private String content = "";
 
 }

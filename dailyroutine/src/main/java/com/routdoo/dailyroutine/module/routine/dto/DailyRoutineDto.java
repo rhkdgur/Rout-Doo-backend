@@ -1,16 +1,20 @@
 package com.routdoo.dailyroutine.module.routine.dto;
 
-import com.routdoo.dailyroutine.common.exception.validate.annotation.date.Date;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
+import com.routdoo.dailyroutine.module.routine.dto.action.DailyRoutineChangeRangeTypeRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.DailyRoutineCreateRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.DailyRoutineUpdateRequest;
 import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -35,36 +39,26 @@ public class DailyRoutineDto {
 	private Long idx = 0L;
 	
 	/**제목*/
-	@NotNull
 	@Schema(description = "제목")
 	private String title ="";
 	
 	/**태그*/
-	@NotNull
 	@Schema(description = "태그")
 	private String tag = "";
 	
 	/**시작일자*/
-	@NotEmpty
 	@Schema(description = "시작일자")
-	@Date
-	@NotBlank
 	private String startDate = "";
 	
 	/**마지막일자*/
-	@NotNull
-	@Date
-	@NotBlank
 	@Schema(description = "마지막일자")
 	private String endDate = "";
 	
 	/**일정타입*/
-	@NotBlank
 	@Schema(description = "일정 타입", example = "DAY : 단기, LONG_DAY : 장기")
 	private String dayType = "";
 	
 	/**공개여부*/
-	@NotBlank
 	@Schema(description = "공개범위" ,example = "PUBLIC : 공개 , PRIVATE : 비공개")
 	private String rangeType = "";
 	
@@ -113,22 +107,48 @@ public class DailyRoutineDto {
 	}
 
 	/**
-	 * dto -> summary map
+	 * 등록 처리
+	 * @param dailyRoutineCreateRequest
 	 * @return
 	 */
-	public Map<String,Object> toSummaryMap (){
-		Map<String,Object> map = new LinkedHashMap<>();
-		map.put("idx",this.idx);
-		map.put("memberId", this.memberId);
-		map.put("nickname", this.nickname);
-		map.put("tag",this.tag);
-		map.put("title",this.title);
-		map.put("startDate",this.startDate);
-		map.put("endDate",this.endDate);
-		map.put("rangeType",this.rangeType);
-		map.put("rangeTypeDisplay", this.getRangeTypeDisplay());
-		map.put("likeYn",likeYn);
-		return map;
+	public static DailyRoutineDto createOf(DailyRoutineCreateRequest dailyRoutineCreateRequest){
+		DailyRoutineDto dto = new DailyRoutineDto();
+		dto.setTitle(dailyRoutineCreateRequest.getTitle());
+		dto.setTag(dailyRoutineCreateRequest.getTag());
+		dto.setStartDate(dailyRoutineCreateRequest.getStartDate());
+		dto.setEndDate(dailyRoutineCreateRequest.getEndDate());
+		dto.setDayType(dailyRoutineCreateRequest.getDayType());
+		dto.setRangeType(dailyRoutineCreateRequest.getRangeType());
+		return dto;
+	}
+
+	/**
+	 * 수정
+	 * @param dailyRoutineUpdateRequest
+	 * @return
+	 */
+	public static DailyRoutineDto updateOf(DailyRoutineUpdateRequest dailyRoutineUpdateRequest){
+		DailyRoutineDto dto = new DailyRoutineDto();
+		dto.setIdx(dailyRoutineUpdateRequest.getIdx());
+		dto.setTitle(dailyRoutineUpdateRequest.getTitle());
+		dto.setTag(dailyRoutineUpdateRequest.getTag());
+		dto.setStartDate(dailyRoutineUpdateRequest.getStartDate());
+		dto.setEndDate(dailyRoutineUpdateRequest.getEndDate());
+		dto.setDayType(dailyRoutineUpdateRequest.getDayType());
+		dto.setRangeType(dailyRoutineUpdateRequest.getRangeType());
+		return dto;
+	}
+
+	/**
+	 * 공개여부 변경 메소드
+	 * @param dailyRoutineChangeRangeTypeRequest
+	 * @return
+	 */
+	public static DailyRoutineDto changeRangeTypeOf(DailyRoutineChangeRangeTypeRequest dailyRoutineChangeRangeTypeRequest){
+		DailyRoutineDto dto = new DailyRoutineDto();
+		dto.setIdx(dailyRoutineChangeRangeTypeRequest.getIdx());
+		dto.setRangeType(dailyRoutineChangeRangeTypeRequest.getRangeType());
+		return dto;
 	}
 
 	public String getRangeTypeDisplay(){

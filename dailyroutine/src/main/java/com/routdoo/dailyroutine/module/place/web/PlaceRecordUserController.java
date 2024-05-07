@@ -5,11 +5,11 @@ import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.place.dto.PlaceRecordDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceRecordRemoveDto;
-import com.routdoo.dailyroutine.module.place.dto.action.PlaceRecordActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.record.PlaceRecordActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.record.PlaceRecordDeleteRequest;
 import com.routdoo.dailyroutine.module.place.service.PlaceRecordService;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -102,22 +102,21 @@ public class PlaceRecordUserController extends BaseModuleController {
 
     /**
      * 정보 삭제 요청
-     * @param idx
+     * @param placeRecordDeleteRequest
      * @return
      * @throws Exception
      */
     @Operation(summary = "장소 정보 삭제 요청")
-    @Parameter(name="idx", description = "장소 정보 일련번호")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "삭제 요청 완료"),
             @ApiResponse(responseCode = "400", description = "삭제 요청 오류"),
             @ApiResponse(responseCode = "422", description = "삭제 요청 실패")
     })
     @DeleteMapping(API_URL+"/place/record/remove")
-    public ResponseEntity<?> selectPlaceRecordView(@RequestParam("idx") Long idx) throws Exception {
+    public ResponseEntity<?> selectPlaceRecordView(final @Valid @RequestBody PlaceRecordDeleteRequest placeRecordDeleteRequest) throws Exception {
         try{
             PlaceRecordRemoveDto placeRecordRemoveDto = new PlaceRecordRemoveDto();
-            placeRecordRemoveDto.setIdx(idx);
+            placeRecordRemoveDto.setIdx(placeRecordDeleteRequest.getIdx());
             placeRecordRemoveDto.setMemberId(memberSession.getMemberSession().getId());
             boolean result = placeRecordService.deletePlaceRecordRemove(placeRecordRemoveDto);
             if(!result){

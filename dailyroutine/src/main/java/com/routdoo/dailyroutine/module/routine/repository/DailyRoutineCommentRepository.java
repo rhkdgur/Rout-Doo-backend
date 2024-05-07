@@ -1,6 +1,8 @@
 package com.routdoo.dailyroutine.module.routine.repository;
 
 import com.routdoo.dailyroutine.module.routine.dto.*;
+import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentActionRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentActionRequest;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
