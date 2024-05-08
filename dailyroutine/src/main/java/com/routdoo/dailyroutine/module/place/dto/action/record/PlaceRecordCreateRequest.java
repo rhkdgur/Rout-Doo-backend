@@ -21,10 +21,7 @@ import lombok.Setter;
 @Schema(description = "장소 정보 수정 제안 request")
 @Getter
 @Setter
-public class PlaceRecordActionRequest {
-
-    @Schema(description = "장소 정보 수정 일련번호", defaultValue = "0", example = "0")
-    private Long idx = 0L;
+public class PlaceRecordCreateRequest {
 
     /**일련번호*/
     @Schema(description = "장소번호", defaultValue = "", example = "P2020200001")

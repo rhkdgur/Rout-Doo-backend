@@ -2,7 +2,8 @@ package com.routdoo.dailyroutine.module.place.dto;
 
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.module.place.domain.PlaceComment;
-import com.routdoo.dailyroutine.module.place.dto.action.comment.PlaceCommentActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.comment.PlaceCommentCreateRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.comment.PlaceCommentUpdateRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -67,7 +68,7 @@ public class PlaceCommentDto {
 	 * @param placeCommentActionRequest
 	 * @return
 	 */
-	public static PlaceCommentDto createOf(PlaceCommentActionRequest placeCommentActionRequest){
+	public static PlaceCommentDto createOf(PlaceCommentCreateRequest placeCommentActionRequest){
 		PlaceCommentDto commentDto = new PlaceCommentDto();
 		commentDto.setPlaceNum(placeCommentActionRequest.getPlaceNum());
 		commentDto.setContent(placeCommentActionRequest.getContent());
@@ -79,7 +80,7 @@ public class PlaceCommentDto {
 	 * @param placeCommentActionRequest
 	 * @return
 	 */
-	public static PlaceCommentDto updateOf(PlaceCommentActionRequest placeCommentActionRequest){
+	public static PlaceCommentDto updateOf(PlaceCommentUpdateRequest placeCommentActionRequest){
 		PlaceCommentDto commentDto = new PlaceCommentDto();
 		commentDto.setIdx(placeCommentActionRequest.getIdx());
 		commentDto.setPlaceNum(placeCommentActionRequest.getPlaceNum());

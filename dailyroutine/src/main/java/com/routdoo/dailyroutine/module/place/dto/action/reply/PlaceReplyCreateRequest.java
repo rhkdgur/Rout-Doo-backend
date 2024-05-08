@@ -20,12 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PlaceReplyActionRequest {
-
-    /**일련번호*/
-    @Schema(description = "일련번호",defaultValue = "0")
-    private Long idx = 0L;
-
+public class PlaceReplyCreateRequest {
     /**코멘트 일련번호*/
     @Schema(description = "댓글 일련번호" ,defaultValue = "0")
     @NotBlank

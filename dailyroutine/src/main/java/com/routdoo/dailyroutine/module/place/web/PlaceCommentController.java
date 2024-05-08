@@ -8,8 +8,8 @@ import com.routdoo.dailyroutine.module.place.dto.PlaceReplyCommentDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceReplyCommentResponse;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
-import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentActionRequest;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
+import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentDeleteRequest;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineCommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -115,9 +115,9 @@ public class PlaceCommentController extends BaseController {
 
         if(gubun.equals("일정")){
             try{
-                DailyRoutineReplyCommentActionRequest replyCommentDto = new DailyRoutineReplyCommentActionRequest();
+                DailyRoutineReplyCommentDeleteRequest replyCommentDto = new DailyRoutineReplyCommentDeleteRequest();
                 replyCommentDto.setIdx(idx);
-                boolean result = dailyRoutineCommentService.updateDailyRoutineReplyComment(replyCommentDto);
+                boolean result = dailyRoutineCommentService.deleteDailyRoutineReplyComment(replyCommentDto);
                 if(!result){
                     return new ResponseEntity<>("삭제에 실패하였습니다.", HttpStatus.UNPROCESSABLE_ENTITY);
                 }

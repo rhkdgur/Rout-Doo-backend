@@ -6,9 +6,10 @@ import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
-import com.routdoo.dailyroutine.auth.member.dto.action.MemberActionRequest;
 import com.routdoo.dailyroutine.auth.member.dto.action.MemberCheckIdRequest;
+import com.routdoo.dailyroutine.auth.member.dto.action.MemberCreateRequest;
 import com.routdoo.dailyroutine.auth.member.dto.action.MemberLoginRequest;
+import com.routdoo.dailyroutine.auth.member.dto.action.MemberUpdateRequest;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
 import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
@@ -141,7 +142,7 @@ public class MemberUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "400", description = "회원 가입시 오류가 발생")
 	})
 	@PostMapping(API_URL+"/member/signup")
-	public ResponseEntity<?> createMember(final @Valid @RequestBody MemberActionRequest memberCreateRequest) throws Exception {
+	public ResponseEntity<?> createMember(final @Valid @RequestBody MemberCreateRequest memberCreateRequest) throws Exception {
 
 		try {
 			MemberDto checkDto = memberService.selectMember(MemberDto.createOf(memberCreateRequest));
@@ -195,7 +196,7 @@ public class MemberUserController extends BaseModuleController{
 	
 	/**
 	 * 회원 정보 업데이트
-	 * @param memberCreateRequest
+	 * @param memberUpdateRequest
 	 * @return
 	 * @throws Exception
 	 */
@@ -206,9 +207,9 @@ public class MemberUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "422", description = "회원정보 업데이트시 오류")
 	})
 	@PutMapping(API_URL+"/member/act/upd")
-	public ResponseEntity<?> updateMember(final @Valid @RequestBody MemberActionRequest memberCreateRequest) throws Exception {
+	public ResponseEntity<?> updateMember(final @Valid @RequestBody MemberUpdateRequest memberUpdateRequest) throws Exception {
 		try {
-			AuthServiceResult<MemberDto> result =  memberService.saveMember(MemberDto.createOf(memberCreateRequest));
+			AuthServiceResult<MemberDto> result =  memberService.saveMember(MemberDto.updateOf(memberUpdateRequest));
 			if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf(result.getMessage()),HttpStatus.NOT_MODIFIED);
 			}

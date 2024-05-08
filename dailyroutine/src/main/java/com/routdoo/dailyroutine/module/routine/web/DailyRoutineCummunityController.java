@@ -7,10 +7,12 @@ import com.routdoo.dailyroutine.auth.member.service.MemberService;
 import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.routine.dto.*;
-import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentActionRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentCreateRequest;
 import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentDeleteRequest;
-import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentActionRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentUpdateRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentCreateRequest;
 import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentDeleteRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentUpdateRequest;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineCommentService;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
 import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
@@ -207,7 +209,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "등록 실패")
     })
     @PostMapping(API_URL+"/daily/routine/comment/ins")
-    public ResponseEntity<?> insertDailyRoutineComment(final @Valid @RequestBody DailyRoutineCommentActionRequest dailyRoutineCommentActionRequest) throws Exception {
+    public ResponseEntity<?> insertDailyRoutineComment(final @Valid @RequestBody DailyRoutineCommentCreateRequest dailyRoutineCommentActionRequest) throws Exception {
 
         try{
             dailyRoutineCommentActionRequest.setMemberId(memberSession.getMemberSession().getId());
@@ -240,10 +242,9 @@ public class DailyRoutineCummunityController extends BaseModuleController {
             @ApiResponse(responseCode = "400", description = "수정 오류")
     })
     @PutMapping(API_URL+"/daily/routine/comment/upd")
-    public ResponseEntity<?> updateDailyRoutineComment(final @Valid @RequestBody DailyRoutineCommentActionRequest dailyRoutineCommentActionRequest) throws Exception {
+    public ResponseEntity<?> updateDailyRoutineComment(final @Valid @RequestBody DailyRoutineCommentUpdateRequest dailyRoutineCommentActionRequest) throws Exception {
 
         try{
-            dailyRoutineCommentActionRequest.setMemberId(memberSession.getMemberSession().getId());
             boolean result = dailyRoutineCommentService.updateDailyRoutineComment(dailyRoutineCommentActionRequest);
             if(!result){
                 return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("수정에 실패하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
@@ -273,9 +274,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     public ResponseEntity<?> deleteDailyRoutineComment(final @Valid @RequestBody DailyRoutineCommentDeleteRequest dailyRoutineCommentDeleteRequest) throws Exception {
 
         try{
-            DailyRoutineCommentActionRequest dto = new DailyRoutineCommentActionRequest();
-            dto.setIdx(dailyRoutineCommentDeleteRequest.getIdx());
-            boolean result = dailyRoutineCommentService.deleteDailyRoutineComment(dto);
+            boolean result = dailyRoutineCommentService.deleteDailyRoutineComment(dailyRoutineCommentDeleteRequest);
             if(!result){
                 return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제에 실패하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
             }
@@ -304,7 +303,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
             @ApiResponse(responseCode = "400", description = "등록 오류")
     })
     @PostMapping(API_URL+"/daily/routine/reply/ins")
-    public ResponseEntity<?> insertDailyRoutineReplyComment(final @Valid @RequestBody DailyRoutineReplyCommentActionRequest dailyRoutineReplyCommentActionRequest) throws Exception {
+    public ResponseEntity<?> insertDailyRoutineReplyComment(final @Valid @RequestBody DailyRoutineReplyCommentCreateRequest dailyRoutineReplyCommentActionRequest) throws Exception {
 
         try{
             dailyRoutineReplyCommentActionRequest.setMemberId(memberSession.getMemberSession().getId());
@@ -338,7 +337,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
             @ApiResponse(responseCode = "400", description = "수정 오류")
     })
     @PutMapping(API_URL+"/daily/routine/reply/upd")
-    public ResponseEntity<?> updateDailyRoutineReplyComment(final @Valid @RequestBody DailyRoutineReplyCommentActionRequest dailyRoutineReplyCommentActionRequest) throws Exception {
+    public ResponseEntity<?> updateDailyRoutineReplyComment(final @Valid @RequestBody DailyRoutineReplyCommentUpdateRequest dailyRoutineReplyCommentActionRequest) throws Exception {
 
         try{
             dailyRoutineReplyCommentActionRequest.setMemberId(memberSession.getMemberSession().getId());
@@ -371,9 +370,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     public ResponseEntity<?> deleteDailyRoutineReplyComment(final @Valid @RequestBody DailyRoutineReplyCommentDeleteRequest dailyRoutineReplyCommentDeleteRequest) throws Exception {
 
         try{
-            DailyRoutineReplyCommentActionRequest replyCommentDto = new DailyRoutineReplyCommentActionRequest();
-            replyCommentDto.setIdx(dailyRoutineReplyCommentDeleteRequest.getIdx());
-            boolean result = dailyRoutineCommentService.updateDailyRoutineReplyComment(replyCommentDto);
+            boolean result = dailyRoutineCommentService.deleteDailyRoutineReplyComment(dailyRoutineReplyCommentDeleteRequest);
             if(!result){
                 return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제에 실패하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
             }

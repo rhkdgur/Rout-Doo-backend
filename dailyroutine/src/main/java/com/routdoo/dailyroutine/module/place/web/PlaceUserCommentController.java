@@ -5,10 +5,12 @@ import com.routdoo.dailyroutine.common.exception.handler.NoMatchDataException;
 import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.place.dto.*;
-import com.routdoo.dailyroutine.module.place.dto.action.comment.PlaceCommentActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.comment.PlaceCommentCreateRequest;
 import com.routdoo.dailyroutine.module.place.dto.action.comment.PlaceCommentDeleteRequest;
-import com.routdoo.dailyroutine.module.place.dto.action.reply.PlaceReplyActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.comment.PlaceCommentUpdateRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.reply.PlaceReplyCreateRequest;
 import com.routdoo.dailyroutine.module.place.dto.action.reply.PlaceReplyDeleteRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.reply.PlaceReplyUpdateRequest;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -82,7 +84,7 @@ public class PlaceUserCommentController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "등록 실패")
     })
     @PostMapping(API_URL+"/place/comment/ins")
-    public ResponseEntity<?> insertPlaceComment(final @Valid @RequestBody PlaceCommentActionRequest placeCommentActionRequest) throws Exception {
+    public ResponseEntity<?> insertPlaceComment(final @Valid @RequestBody PlaceCommentCreateRequest placeCommentActionRequest) throws Exception {
 
 
         try{
@@ -113,7 +115,7 @@ public class PlaceUserCommentController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "수정 실패")
     })
     @PutMapping(API_URL+"/place/comment/upd")
-    public ResponseEntity<?> updatePlaceComment(final @Valid @RequestBody PlaceCommentActionRequest placeCommentActionRequest) throws Exception {
+    public ResponseEntity<?> updatePlaceComment(final @Valid @RequestBody PlaceCommentUpdateRequest placeCommentActionRequest) throws Exception {
         try{
             PlaceCommentDto dto = PlaceCommentDto.updateOf(placeCommentActionRequest);
             dto.getMemberDto().setId(memberSession.getMemberSession().getId());
@@ -215,7 +217,7 @@ public class PlaceUserCommentController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "답글 등록 실패")
     })
     @PostMapping(API_URL+"/place/comment/reply/ins")
-    public ResponseEntity<?> insertReplyComment(final @Valid @RequestBody PlaceReplyActionRequest placeReplyActionRequest) throws Exception {
+    public ResponseEntity<?> insertReplyComment(final @Valid @RequestBody PlaceReplyCreateRequest placeReplyActionRequest) throws Exception {
 
         try{
             PlaceReplyCommentDto placeReplyCommentDto = PlaceReplyCommentDto.createOf(placeReplyActionRequest);
@@ -245,10 +247,10 @@ public class PlaceUserCommentController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "답글 수정 실패")
     })
     @PutMapping(API_URL+"/place/comment/reply/upd")
-    public ResponseEntity<?> updateReplyComment(final @Valid @RequestBody PlaceReplyActionRequest placeReplyActionRequest) throws Exception {
+    public ResponseEntity<?> updateReplyComment(final @Valid @RequestBody PlaceReplyUpdateRequest placeReplyActionRequest) throws Exception {
         
         try{
-            PlaceReplyCommentDto dto = new PlaceReplyCommentDto();
+            PlaceReplyCommentDto dto = PlaceReplyCommentDto.updateOf(placeReplyActionRequest);
             dto.getMemberSummaryResponse().setId(memberSession.getMemberSession().getId());
             boolean result = placeService.updatePlaceReplyComment(dto);
             if(result){

@@ -5,8 +5,9 @@ import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.place.dto.PlaceRecordDto;
 import com.routdoo.dailyroutine.module.place.dto.PlaceRecordRemoveDto;
-import com.routdoo.dailyroutine.module.place.dto.action.record.PlaceRecordActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.record.PlaceRecordCreateRequest;
 import com.routdoo.dailyroutine.module.place.dto.action.record.PlaceRecordDeleteRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.record.PlaceRecordUpdateRequest;
 import com.routdoo.dailyroutine.module.place.service.PlaceRecordService;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -55,7 +56,7 @@ public class PlaceRecordUserController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "정보 수정 제안 신청 실패")
     })
     @PostMapping(API_URL+"/place/record/ins")
-    public ResponseEntity<?> insertPlaceRecord(final @Valid @RequestBody PlaceRecordActionRequest placeRecordActionRequest) throws Exception {
+    public ResponseEntity<?> insertPlaceRecord(final @Valid @RequestBody PlaceRecordCreateRequest placeRecordActionRequest) throws Exception {
 
         try{
             PlaceRecordDto placeRecordDto = PlaceRecordDto.createOf(placeRecordActionRequest);
@@ -85,7 +86,7 @@ public class PlaceRecordUserController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "정보 수정 제안 신청 수정 실패")
     })
     @PutMapping(API_URL+"/place/record/upd")
-    public ResponseEntity<?> updatePlaceRecord(final @Valid @RequestBody PlaceRecordActionRequest placeRecordActionRequest) throws Exception {
+    public ResponseEntity<?> updatePlaceRecord(final @Valid @RequestBody PlaceRecordUpdateRequest placeRecordActionRequest) throws Exception {
         try{
             PlaceRecordDto placeRecordDto = PlaceRecordDto.updateOf(placeRecordActionRequest);
             placeRecordDto.setMemberId(memberSession.getMemberSession().getId());

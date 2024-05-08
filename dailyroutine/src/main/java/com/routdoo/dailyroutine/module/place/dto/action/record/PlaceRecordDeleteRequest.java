@@ -1,7 +1,7 @@
 package com.routdoo.dailyroutine.module.place.dto.action.record;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +21,6 @@ import lombok.Setter;
 @Setter
 public class PlaceRecordDeleteRequest {
     @Schema(description = "장소 정보 삭제 요청 idx")
-    @NotBlank
+    @NotNull
     private long idx = 0L;
 }

@@ -1,6 +1,7 @@
 package com.routdoo.dailyroutine.module.routine.dto.action.reply;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,5 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DailyRoutineReplyCommentDeleteRequest {
-    private long idx = 0L;
+    @Schema(description = "일련번호")
+    @NotNull
+    private Long idx = 0L;
 }

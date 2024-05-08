@@ -1,7 +1,7 @@
 package com.routdoo.dailyroutine.module.place.dto.action.reply;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +20,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PlaceReplyDeleteRequest {
-    @NotBlank
+    @NotNull(message = "답글 일련번호는 필수값입니다.")
     private long idx = 0L;
 }

@@ -141,8 +141,6 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
                                 qDailyRoutine.endDate,
                                 qDailyRoutine.dayType.stringValue(),
                                 qDailyRoutine.rangeType.stringValue(),
-                                qDailyRoutine.createDate,
-                                qDailyRoutine.modifyDate,
                                 qDailyRoutineLike.idx
                         )
                 )

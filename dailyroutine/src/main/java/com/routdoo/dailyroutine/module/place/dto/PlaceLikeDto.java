@@ -1,7 +1,8 @@
 package com.routdoo.dailyroutine.module.place.dto;
 
 import com.routdoo.dailyroutine.module.place.domain.PlaceLike;
-import com.routdoo.dailyroutine.module.place.dto.action.like.PlaceLikeActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.like.PlaceLikeCreateRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.like.PlaceLikeUpdateRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -67,7 +68,7 @@ public class PlaceLikeDto {
 	 * @param placeLikeActionRequest
 	 * @return
 	 */
-	public static PlaceLikeDto createOf(PlaceLikeActionRequest placeLikeActionRequest) {
+	public static PlaceLikeDto createOf(PlaceLikeCreateRequest placeLikeActionRequest) {
 		PlaceLikeDto placeLikeDto = new PlaceLikeDto();
 		placeLikeDto.setPlaceNum(placeLikeActionRequest.getPlaceNum());
 		return placeLikeDto;
@@ -78,7 +79,7 @@ public class PlaceLikeDto {
 	 * @param placeLikeActionRequest
 	 * @return
 	 */
-	public static PlaceLikeDto updateOf(PlaceLikeActionRequest placeLikeActionRequest){
+	public static PlaceLikeDto updateOf(PlaceLikeUpdateRequest placeLikeActionRequest){
 		PlaceLikeDto placeLikeDto = new PlaceLikeDto();
 		placeLikeDto.setIdx(placeLikeActionRequest.getIdx());
 		placeLikeDto.setPlaceNum(placeLikeActionRequest.getPlaceNum());

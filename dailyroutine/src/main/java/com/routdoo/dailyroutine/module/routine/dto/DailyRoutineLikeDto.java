@@ -1,7 +1,8 @@
 package com.routdoo.dailyroutine.module.routine.dto;
 
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineLike;
-import com.routdoo.dailyroutine.module.routine.dto.action.like.DailyRoutineLikeActionRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.like.DailyRoutineLikeCreateRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.like.DailyRoutineLikeDeleteRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -62,16 +63,15 @@ public class DailyRoutineLikeDto {
         this.modifyDate = entity.getModifyDate();
     }
 
-    public static DailyRoutineLikeDto createOf(DailyRoutineLikeActionRequest dailyRoutineLikeActionRequest){
+    public static DailyRoutineLikeDto createOf(DailyRoutineLikeCreateRequest dailyRoutineLikeActionRequest){
         DailyRoutineLikeDto request = new DailyRoutineLikeDto();
         request.setDailyIdx(dailyRoutineLikeActionRequest.getDailyIdx());
         return request;
     }
 
-    public static DailyRoutineLikeDto updateOf(DailyRoutineLikeActionRequest dailyRoutineLikeActionRequest){
+    public static DailyRoutineLikeDto deleteOf(DailyRoutineLikeDeleteRequest dailyRoutineLikeActionRequest){
         DailyRoutineLikeDto request = new DailyRoutineLikeDto();
         request.setIdx(dailyRoutineLikeActionRequest.getIdx());
-        request.setDailyIdx(dailyRoutineLikeActionRequest.getDailyIdx());
         return request;
     }
 

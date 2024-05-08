@@ -2,7 +2,8 @@ package com.routdoo.dailyroutine.module.place.dto;
 
 import com.routdoo.dailyroutine.module.place.domain.Place;
 import com.routdoo.dailyroutine.module.place.domain.PlaceIntro;
-import com.routdoo.dailyroutine.module.place.dto.action.PlaceActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.PlaceCreateRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.PlaceUpdateRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -187,7 +188,7 @@ public class PlaceDto {
 	 * @param placeActionRequest
 	 * @return
 	 */
-	public static PlaceDto createOf(PlaceActionRequest placeActionRequest){
+	public static PlaceDto createOf(PlaceCreateRequest placeActionRequest){
 		PlaceDto create = new PlaceDto();
 		create.setTitle(placeActionRequest.getTitle());
 		create.setTel(placeActionRequest.getTel());
@@ -206,7 +207,7 @@ public class PlaceDto {
 	 * @param placeActionRequest
 	 * @return
 	 */
-	public static PlaceDto updateOf(PlaceActionRequest placeActionRequest){
+	public static PlaceDto updateOf(PlaceUpdateRequest placeActionRequest){
 		PlaceDto update = new PlaceDto();
 		update.setPlaceNum(placeActionRequest.getPlaceNum());
 		update.setTitle(placeActionRequest.getTitle());

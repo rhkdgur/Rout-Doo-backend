@@ -1,8 +1,15 @@
 package com.routdoo.dailyroutine.module.routine.service;
 
-import com.routdoo.dailyroutine.module.routine.dto.*;
-import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentActionRequest;
-import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentActionRequest;
+import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDefaultDto;
+import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
+import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentResponse;
+import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
+import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentCreateRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentDeleteRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentUpdateRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentCreateRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentDeleteRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentUpdateRequest;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -77,7 +84,7 @@ public class DailyRoutineCommentService {
      * @throws Exception
      */
     @Transactional
-    public boolean insertDailyRoutineComment(DailyRoutineCommentActionRequest dailyRoutineCommentActionRequest) throws Exception {
+    public boolean insertDailyRoutineComment(DailyRoutineCommentCreateRequest dailyRoutineCommentActionRequest) throws Exception {
         return dailyRoutineCommentRepository.insertDailyRoutineComment(dailyRoutineCommentActionRequest);
     }
 
@@ -88,7 +95,7 @@ public class DailyRoutineCommentService {
      * @throws Exception
      */
     @Transactional
-    public boolean updateDailyRoutineComment(DailyRoutineCommentActionRequest dailyRoutineCommentActionRequest) throws Exception {
+    public boolean updateDailyRoutineComment(DailyRoutineCommentUpdateRequest dailyRoutineCommentActionRequest) throws Exception {
         return dailyRoutineCommentRepository.updateDailyRoutineComment(dailyRoutineCommentActionRequest);
     }
 
@@ -99,7 +106,7 @@ public class DailyRoutineCommentService {
      * @throws Exception
      */
     @Transactional
-    public boolean deleteDailyRoutineComment(DailyRoutineCommentActionRequest dto) throws Exception {
+    public boolean deleteDailyRoutineComment(DailyRoutineCommentDeleteRequest dto) throws Exception {
         return dailyRoutineCommentRepository.deleteDailyRoutineComment(dto);
     }
 
@@ -150,7 +157,7 @@ public class DailyRoutineCommentService {
      * @throws Exception
      */
     @Transactional
-    public boolean insertDailyRoutineReplyComment(DailyRoutineReplyCommentActionRequest dto) throws Exception {
+    public boolean insertDailyRoutineReplyComment(DailyRoutineReplyCommentCreateRequest dto) throws Exception {
         return dailyRoutineCommentRepository.insertDailyRoutineReplyComment(dto);
     }
 
@@ -161,7 +168,7 @@ public class DailyRoutineCommentService {
      * @throws Exception
      */
     @Transactional
-    public boolean updateDailyRoutineReplyComment(DailyRoutineReplyCommentActionRequest dto) throws Exception {
+    public boolean updateDailyRoutineReplyComment(DailyRoutineReplyCommentUpdateRequest dto) throws Exception {
         return dailyRoutineCommentRepository.updateDailyRoutineReplyComment(dto);
     }
 
@@ -172,7 +179,7 @@ public class DailyRoutineCommentService {
      * @throws Exception
      */
     @Transactional
-    public boolean deleteDailyRoutineReplyComment(DailyRoutineReplyCommentActionRequest dto) throws Exception {
+    public boolean deleteDailyRoutineReplyComment(DailyRoutineReplyCommentDeleteRequest dto) throws Exception {
         return dailyRoutineCommentRepository.deleteDailyRoutineReplyComment(dto);
     }
 

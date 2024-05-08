@@ -3,8 +3,9 @@ package com.routdoo.dailyroutine.module.routine.web;
 import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
-import com.routdoo.dailyroutine.module.routine.dto.action.like.DailyRoutineLikeActionRequest;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineLikeDto;
+import com.routdoo.dailyroutine.module.routine.dto.action.like.DailyRoutineLikeCreateRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.like.DailyRoutineLikeDeleteRequest;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -54,7 +55,7 @@ public class DailyRoutineLikeUserController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "좋아요 추가 오류")
     })
     @PostMapping(API_URL+"/daily/routine/like/ins")
-    public ResponseEntity<?> insertDailyRoutineLike(final @Valid @RequestBody DailyRoutineLikeActionRequest dailyRoutineLikeActionRequest) throws Exception {
+    public ResponseEntity<?> insertDailyRoutineLike(final @Valid @RequestBody DailyRoutineLikeCreateRequest dailyRoutineLikeActionRequest) throws Exception {
 
         try{
             DailyRoutineLikeDto dailyRoutineLikeDto = DailyRoutineLikeDto.createOf(dailyRoutineLikeActionRequest);
@@ -82,11 +83,11 @@ public class DailyRoutineLikeUserController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "좋아요 삭제 오류")
     })
     @DeleteMapping(API_URL+"/daily/routine/like/del")
-    public ResponseEntity<?>  deleteDailyRoutineLike(final @Valid @RequestBody DailyRoutineLikeActionRequest dailyRoutineLikeActionRequest) throws Exception {
+    public ResponseEntity<?>  deleteDailyRoutineLike(final @Valid @RequestBody DailyRoutineLikeDeleteRequest dailyRoutineLikeActionRequest) throws Exception {
 
         try{
             String memberId = memberSession.getMemberSession().getId();
-            DailyRoutineLikeDto dailyRoutineLikeDto = DailyRoutineLikeDto.updateOf(dailyRoutineLikeActionRequest);
+            DailyRoutineLikeDto dailyRoutineLikeDto = DailyRoutineLikeDto.deleteOf(dailyRoutineLikeActionRequest);
             dailyRoutineLikeDto = dailyRoutineService.selectDailyRoutineLike(dailyRoutineLikeDto);
             if(dailyRoutineLikeDto == null || !dailyRoutineLikeDto.getMemberId().equals(memberId)){
                 return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("좋아요 삭제시 회원정보가 일치하지않습니다."),HttpStatus.NOT_FOUND);

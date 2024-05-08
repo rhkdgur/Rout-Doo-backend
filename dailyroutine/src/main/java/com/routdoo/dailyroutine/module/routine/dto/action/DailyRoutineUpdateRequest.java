@@ -24,8 +24,7 @@ import lombok.Setter;
 @Setter
 public class DailyRoutineUpdateRequest {
 
-    /**제목*/
-    @NotBlank
+    @NotNull
     @Schema(description = "일련번호")
     private long idx = 0L;
 

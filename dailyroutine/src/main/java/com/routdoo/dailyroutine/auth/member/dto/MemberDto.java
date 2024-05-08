@@ -1,7 +1,8 @@
 package com.routdoo.dailyroutine.auth.member.dto;
 
 import com.routdoo.dailyroutine.auth.member.domain.Member;
-import com.routdoo.dailyroutine.auth.member.dto.action.MemberActionRequest;
+import com.routdoo.dailyroutine.auth.member.dto.action.MemberCreateRequest;
+import com.routdoo.dailyroutine.auth.member.dto.action.MemberUpdateRequest;
 import com.routdoo.dailyroutine.common.exception.validate.annotation.date.Date;
 import com.routdoo.dailyroutine.common.exception.validate.annotation.phone.Phone;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -112,10 +113,24 @@ public class MemberDto {
 		this.modifyDate = entity.getModifyDate();
 	}
 
-	public static MemberDto createOf(MemberActionRequest request){
+	public static MemberDto createOf(MemberCreateRequest request){
 		MemberDto dto = new MemberDto();
 		dto.setId(request.getId());
 		dto.setPw(request.getPw());
+		dto.setEmail(request.getEmail());
+		dto.setNickname(request.getNickname());
+		dto.setPhonenumber(request.getPhonenumber());
+		dto.setGender(request.getGender());
+		dto.setAge(request.getAge());
+		dto.setBirth(request.getBirth());
+		dto.setMbti(request.getMbti());
+		dto.setIntroText(request.getIntroText());
+		dto.setUseStatus(request.getUseStatus());
+		return dto;
+	}
+
+	public static MemberDto updateOf(MemberUpdateRequest request){
+		MemberDto dto = new MemberDto();
 		dto.setEmail(request.getEmail());
 		dto.setNickname(request.getNickname());
 		dto.setPhonenumber(request.getPhonenumber());

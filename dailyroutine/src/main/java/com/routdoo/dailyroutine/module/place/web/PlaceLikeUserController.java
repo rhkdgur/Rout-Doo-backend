@@ -4,7 +4,7 @@ import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.place.dto.PlaceLikeDto;
-import com.routdoo.dailyroutine.module.place.dto.action.like.PlaceLikeActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.like.PlaceLikeCreateRequest;
 import com.routdoo.dailyroutine.module.place.dto.action.like.PlaceLikeDeleteRequest;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,7 +52,7 @@ public class PlaceLikeUserController extends BaseModuleController {
             @ApiResponse(responseCode = "422", description = "좋아요 추가 실패")
     })
     @PostMapping(API_URL+"/place/like/ins")
-    public ResponseEntity<?> insertPlaceLike(final @Valid @RequestBody PlaceLikeActionRequest placeLikeActionRequest) throws Exception {
+    public ResponseEntity<?> insertPlaceLike(final @Valid @RequestBody PlaceLikeCreateRequest placeLikeActionRequest) throws Exception {
 
         try{
             PlaceLikeDto placeLikeDto = PlaceLikeDto.createOf(placeLikeActionRequest);

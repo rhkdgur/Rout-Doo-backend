@@ -22,11 +22,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlaceCommentActionRequest {
-
-    @Schema(description = "댓글 일련번호", example = "1")
-    /**일련번호*/
-    private Long idx = 0L;
+public class PlaceCommentCreateRequest {
 
     @Schema(description = "장소번호" , example = "P20231212001")
     @NotBlank

@@ -6,38 +6,27 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
-
 /**
- * packageName    : com.routdoo.dailyroutine.auth.member.dto
- * fileName       : MemberActionRequest
+ * packageName    : com.routdoo.dailyroutine.auth.member.dto.action
+ * fileName       : MemberUpdateRequest
  * author         : rhkdg
- * date           : 2024-05-02
- * description    : 회원정보 등록/수정 request
+ * date           : 2024-05-08
+ * description    :
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
- * 2024-05-02        rhkdg       최초 생성
+ * 2024-05-08        rhkdg       최초 생성
  */
-@Schema(description = "회원가입 request Dto")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class MemberActionRequest implements Serializable {
+public class MemberUpdateRequest {
 
     @Schema(description = "회원 아이디")
     @NotBlank
     private String id = "";
-
-    @Schema(description = "회원 비밀번호")
-    @NotBlank
-    private String pw = "";
 
     @Schema(description = "회원 이메일")
     @Email
@@ -75,5 +64,4 @@ public class MemberActionRequest implements Serializable {
     @Schema(description = "회원상태")
     @NotBlank
     private String useStatus = "";
-
 }

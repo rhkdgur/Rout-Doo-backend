@@ -2,10 +2,11 @@ package com.routdoo.dailyroutine.auth.member.web;
 
 import com.routdoo.dailyroutine.auth.AuthResultCodeType;
 import com.routdoo.dailyroutine.auth.AuthServiceResult;
-import com.routdoo.dailyroutine.auth.member.dto.action.MemberActionRequest;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
+import com.routdoo.dailyroutine.auth.member.dto.action.MemberCreateRequest;
+import com.routdoo.dailyroutine.auth.member.dto.action.MemberUpdateRequest;
 import com.routdoo.dailyroutine.auth.member.service.FriendListService;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
 import com.routdoo.dailyroutine.common.web.BaseController;
@@ -124,7 +125,7 @@ public class MemberController extends BaseController{
 	 * @throws Exception
 	 */
 	@PostMapping(MGN_URL+"/member/act/ins")
-	public ResponseEntity<?> createMember(@RequestBody @Valid MemberActionRequest memberActionRequest) throws Exception {
+	public ResponseEntity<?> createMember(@RequestBody @Valid MemberCreateRequest memberActionRequest) throws Exception {
 		
 		try{
 			MemberDto checkDto = memberService.selectMember(MemberDto.createOf(memberActionRequest));
@@ -151,10 +152,8 @@ public class MemberController extends BaseController{
 	 * @throws Exception
 	 */
 	@PostMapping(MGN_URL+"/member/act/upd")
-	public ResponseEntity<?> updateMember(@RequestBody @Valid MemberActionRequest memberActionRequest) throws Exception {
-		
-		AuthServiceResult<?> result = memberService.saveMember(MemberDto.createOf(memberActionRequest));
-
+	public ResponseEntity<?> updateMember(@RequestBody @Valid MemberUpdateRequest memberActionRequest) throws Exception {
+		AuthServiceResult<?> result = memberService.saveMember(MemberDto.updateOf(memberActionRequest));
 		return new ResponseEntity<>("수정 되었습니다.",HttpStatus.OK);
 	}
 	

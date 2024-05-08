@@ -52,7 +52,7 @@ public class DailyRoutineSummaryResponse {
 
     public DailyRoutineSummaryResponse(long idx, String memberId, String nickname,
                                        String tag, String title, String startDate, String endDate,
-                                       String dayType, String rangType, String likeIdx) {
+                                       String dayType, String rangType, long likeIdx) {
         this.idx = idx;
         this.memberId = memberId;
         this.nickname = nickname;
@@ -62,7 +62,7 @@ public class DailyRoutineSummaryResponse {
         this.endDate = endDate;
         this.dayType = dayType;
         this.rangeType = rangType;
-        this.likeYn = (likeIdx == null ? "N" : "Y");
+        this.likeYn = (likeIdx == 0 ? "N" : "Y");
     }
 
     public static DailyRoutineSummaryResponse responseOf(DailyRoutineDto dto) {

@@ -1,4 +1,4 @@
-package com.routdoo.dailyroutine.module.place.dto.action.comment;
+package com.routdoo.dailyroutine.module.routine.dto.action.like;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -6,20 +6,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * packageName    : com.routdoo.dailyroutine.module.place.dto.action.comment
- * fileName       : PlaceCommentDeleteRequest
+ * packageName    : com.routdoo.dailyroutine.module.routine.dto.action.like
+ * fileName       : DailyRoutineLikeDeleteRequest
  * author         : rhkdg
  * date           : 2024-05-08
- * description    : 장소 댓글 삭제 request
+ * description    :
  * ===========================================================
  * DATE              AUTHOR             NOTE
  * -----------------------------------------------------------
  * 2024-05-08        rhkdg       최초 생성
  */
-@Schema(description = "장소 댓글 삭제 request")
 @Getter
 @Setter
-public class PlaceCommentDeleteRequest {
+public class DailyRoutineLikeDeleteRequest {
+    @Schema(description = "일련번호",defaultValue = "0")
     @NotNull
-    private long idx =0L;
+    private long idx = 0L;
 }

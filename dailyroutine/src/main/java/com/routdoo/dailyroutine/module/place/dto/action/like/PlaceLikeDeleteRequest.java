@@ -1,7 +1,7 @@
 package com.routdoo.dailyroutine.module.place.dto.action.like;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +22,6 @@ import lombok.Setter;
 public class PlaceLikeDeleteRequest {
     
     @Schema(description = "장소 좋아요 일련번호")
-    @NotBlank(message = "장소 좋아요 일련번호는 필수값입니다.")
+    @NotNull(message = "장소 좋아요 일련번호는 필수값입니다.")
     private long idx = 0L;
 }

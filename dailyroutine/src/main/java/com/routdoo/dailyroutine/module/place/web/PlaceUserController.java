@@ -4,8 +4,9 @@ import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.place.dto.*;
-import com.routdoo.dailyroutine.module.place.dto.action.PlaceActionRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.PlaceCreateRequest;
 import com.routdoo.dailyroutine.module.place.dto.action.PlaceDeleteRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.PlaceUpdateRequest;
 import com.routdoo.dailyroutine.module.place.dto.with.PlaceViewWIthCommentListResponse;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -139,7 +140,7 @@ public class PlaceUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "422", description = "등록 오류")
 	})
 	@PostMapping(API_URL+"/place/act/ins")
-	public ResponseEntity<?> insertPlace(final @Valid @RequestBody PlaceActionRequest placeActionRequest) throws Exception {
+	public ResponseEntity<?> insertPlace(final @Valid @RequestBody PlaceCreateRequest placeActionRequest) throws Exception {
 		try{
 			PlaceDto dto = PlaceDto.createOf(placeActionRequest);
 			dto.setMemberId(memberSession.getMemberSession().getId());
@@ -163,7 +164,7 @@ public class PlaceUserController extends BaseModuleController{
 			@ApiResponse(responseCode = "422", description = "수정 오류")
 	})
 	@PutMapping(API_URL+"/place/act/upd")
-	public ResponseEntity<?> updatePlace(final @Valid @RequestBody  PlaceActionRequest placeActionRequest) throws Exception {
+	public ResponseEntity<?> updatePlace(final @Valid @RequestBody PlaceUpdateRequest placeActionRequest) throws Exception {
 		try{
 			PlaceDto placeDto = PlaceDto.updateOf(placeActionRequest);
 			placeDto.setMemberId(memberSession.getMemberSession().getId());
