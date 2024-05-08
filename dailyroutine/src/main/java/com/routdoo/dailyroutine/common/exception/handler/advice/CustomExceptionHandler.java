@@ -1,5 +1,7 @@
 package com.routdoo.dailyroutine.common.exception.handler.advice;
 
+import com.routdoo.dailyroutine.cms.file.exception.ClassTypeMissMatchException;
+import com.routdoo.dailyroutine.cms.file.exception.DoNotMatchExtException;
 import com.routdoo.dailyroutine.common.exception.handler.NoMatchDataException;
 import com.routdoo.dailyroutine.common.exception.response.ExceptionResponse;
 import org.springframework.http.HttpStatus;
@@ -32,4 +34,27 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionResponse exceptionResponse= new ExceptionResponse(ex.getMessage());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    /**
+     * 파일 확장명 사용 불가능
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler(DoNotMatchExtException.class)
+    public final ResponseEntity<Object> handelDoNotMatchExtException(DoNotMatchExtException ex){
+        ExceptionResponse exceptionResponse= new ExceptionResponse(ex.getMessage());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * 클래스 타입 불일치
+     * @param ex
+     * @return
+     */
+    @ExceptionHandler(ClassTypeMissMatchException.class)
+    public final ResponseEntity<Object> handelClassTypeMissMatchException(ClassTypeMissMatchException ex){
+        ExceptionResponse exceptionResponse= new ExceptionResponse(ex.getMessage());
+        return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }
