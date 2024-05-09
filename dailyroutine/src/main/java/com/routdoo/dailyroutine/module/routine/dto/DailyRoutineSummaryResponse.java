@@ -5,6 +5,7 @@ import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * packageName    : com.routdoo.dailyroutine.module.routine.dto
@@ -24,6 +25,8 @@ public class DailyRoutineSummaryResponse {
 
     private long idx = 0L;
 
+    private long likeIdx = 0L;
+
     private String memberId = "";
 
     private String nickname = "";
@@ -42,13 +45,10 @@ public class DailyRoutineSummaryResponse {
 
     private String likeYn = "";
 
-    public String getDayTypeDisplay() {
-        return RoutineDayType.valueOf(this.dayType).getDisplay();
-    }
+    private String dayTypeDisplay = "";
 
-    public String getRangeTypeDisplay() {
-        return RoutineRangeConfigType.valueOf(this.rangeType).getDisplay();
-    }
+    private String rangeTypeDisplay = "";
+
 
     public DailyRoutineSummaryResponse(long idx, String memberId, String nickname,
                                        String tag, String title, String startDate, String endDate,
@@ -61,7 +61,10 @@ public class DailyRoutineSummaryResponse {
         this.startDate = startDate;
         this.endDate = endDate;
         this.dayType = dayType;
+        this.dayTypeDisplay = !StringUtils.isBlank(dayType) ? RoutineDayType.valueOf(this.dayType).getDisplay() : "";
         this.rangeType = rangType;
+        this.rangeTypeDisplay = !StringUtils.isBlank(rangType) ? RoutineRangeConfigType.valueOf(this.rangeType).getDisplay() : "";
+        this.likeIdx = likeIdx;
         this.likeYn = (likeIdx == 0 ? "N" : "Y");
     }
 

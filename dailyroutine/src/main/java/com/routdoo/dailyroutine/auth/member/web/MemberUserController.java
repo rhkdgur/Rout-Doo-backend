@@ -109,9 +109,10 @@ public class MemberUserController extends BaseModuleController{
 		//세션 정보 등록
 		String token = memberSession.createMemberSession((MemberDto)result.getElement());
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.add("Authorization", "Bearer " + token);
-
-		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("로그인에 성공하였습니다."),httpHeaders,HttpStatus.OK);
+		//api 요청하는 서버와 도메인이 다르기 떄문에 cross-origin 이슈가 발생하므로 허용 처리 
+		httpHeaders.add(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.AUTHORIZATION);
+		httpHeaders.set(HttpHeaders.AUTHORIZATION, token);
+		return ResponseEntity.ok().headers(httpHeaders).body(CommonResponse.resOnlyMessageOf("로그인에 성공하였습니다."));
 	}
 	
 	/**

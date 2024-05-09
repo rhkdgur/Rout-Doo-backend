@@ -152,9 +152,11 @@ public class DailyRoutineService {
 
 		//달력 생성
 		for(LocalDate dt : dtList){
-			Map<String,Object> map = list.stream().filter(x->x.get("startDate").equals(dt.toString())).findFirst().orElse(null);
+			Map<String,Object> map = list.stream().filter(x-> checkRangeDate(x.get("startDate").toString(),x.get("endDate").toString(),dt.toString())).findFirst().orElse(null);
 			if(map == null){
 				map = getCalendarDefaultMap(dt.toString());
+			}else {
+				map = getCalendarMap(dt.toString(),map.get("totCnt").toString());
 			}
 			resultList.add(map);
 		}
@@ -168,9 +170,20 @@ public class DailyRoutineService {
 	 * @return
 	 */
 	public Map<String,Object> getCalendarDefaultMap(String date) {
+		return getCalendarMap(date,"0");
+	}
+
+	public Map<String,Object> getCalendarMap(String date,String totCnt) {
 		Map<String,Object> map = new LinkedHashMap<>();
-		map.put(date,"0");
+		map.put(date,totCnt);
 		return map;
+	}
+
+	public boolean checkRangeDate(String startDate, String endDate , String checkDate) {
+		LocalDate sdate = LocalDate.parse(startDate);
+		LocalDate edate = LocalDate.parse(endDate);
+		LocalDate cdate = LocalDate.parse(checkDate);
+		return (sdate.equals(cdate) || sdate.isBefore(cdate) ) && (edate.equals(cdate) || edate.isAfter(cdate));
 	}
 
 	/**

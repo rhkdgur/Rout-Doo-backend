@@ -16,4 +16,8 @@ public class MemberDefaultDto extends BaseVo{
 
 	private String nickname = "";
 
+	private boolean isExclude = false;
+
+	private String excludeType = "";
+
 }

@@ -277,8 +277,8 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
                             qDailyRoutine.title,
                             qDailyRoutine.startDate,
                             qDailyRoutine.endDate,
-                            qDailyRoutine.dayType,
-                            qDailyRoutine.rangeType,
+                            qDailyRoutine.dayType.stringValue(),
+                            qDailyRoutine.rangeType.stringValue(),
                             qDailyRoutineLike.idx
                     )
                 )

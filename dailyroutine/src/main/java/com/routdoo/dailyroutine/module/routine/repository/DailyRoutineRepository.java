@@ -1,10 +1,7 @@
 package com.routdoo.dailyroutine.module.routine.repository;
 
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDefaultDto;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineDto;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutine;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -43,12 +40,12 @@ public interface DailyRoutineRepository extends JpaRepository<DailyRoutine, Long
      * @return
      * @throws Exception
      */
-    @Query(value="SELECT start_date as startDate ,totCnt as totCnt" +
+    @Query(value="SELECT start_date as startDate , end_date as endDate ,totCnt as totCnt" +
                     " FROM (" +
-                    "   SELECT start_date , count(*) totCnt" +
+                    "   SELECT start_date, end_date , count(*) totCnt" +
                     "     FROM daily_routine as dr " +
                     "    WHERE start_date like CONCAT(:date,'%') and member_id =:memberId " +
-                    "    GROUP BY start_date " +
+                    "    GROUP BY start_date, end_date " +
                     ") T ORDER BY start_date ASC ",nativeQuery = true)
     List<Map<String,Object>> selectDailyRoutineExistList(@Param("date") String date,@Param("memberId") String memberId) throws Exception;
 

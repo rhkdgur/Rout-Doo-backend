@@ -74,7 +74,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 	 */
 	@Operation(summary="사용자 스케줄 목록 조회")
 	@Parameters({
-			@Parameter(name = "date", description = "날짜 ex) yyyy-MM-dd, 만약 date에 빈값일 경우 오늘 날짜 기준으로 조회해옴", required = false),
+			@Parameter(name = "toDate", description = "날짜 ex) yyyy-MM-dd, 만약 date에 빈값일 경우 오늘 날짜 기준으로 조회해옴", required = false),
 			@Parameter(name = "page", description = "페이지 번호", required = false)
 	})
 	@GetMapping(API_URL+"/daily/routine/list")
@@ -378,6 +378,9 @@ public class DailyRoutineUserController extends BaseModuleController{
 		
 		//회원목록
 		searchDto.setStype("name");
+		searchDto.setExclude(true);
+		searchDto.setExcludeType("myself");
+		searchDto.setMemberId(memberSession.getMemberSession().getId());
 		Page<MemberSummaryResponse> memberList = memberService.selectMemberPageList(searchDto);
 		
 		//친구목록
@@ -388,6 +391,24 @@ public class DailyRoutineUserController extends BaseModuleController{
 		
 		return new MemberListAndFriendListResponse(memberList,friendList);
 	}
+
+	/**
+	 * 친구 목록
+	 * @param inviteDto
+	 * @return
+	 * @throws Exception
+	 */
+	@Operation(summary = "친구 초대 목록")
+	@Parameter(name = "dailyIdx" , description = "일정 일련번호")
+	@GetMapping(value=API_URL+"/daily/routine/invite/friend/list")
+	public List<DailyRoutineInviteResponse> selectDailyRoutineInviteList(@Parameter(hidden = true) DailyRoutineInviteDto inviteDto) throws Exception {
+		inviteDto.setMemberId(memberSession.getMemberSession().getId());
+		return dailyRoutineService.selectDailyRoutineInviteList(inviteDto);
+	}
+
+	/**
+	 * 친구 초대 목록
+	 */
 	
 	/**
 	 * 친구 초대

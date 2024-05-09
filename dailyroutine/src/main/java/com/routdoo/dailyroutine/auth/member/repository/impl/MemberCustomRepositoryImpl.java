@@ -17,7 +17,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
@@ -38,9 +37,17 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
                 sql.and(qMember.nickname.like("%" + searchDto.getSstring() + "%"));
             }
         }
-        if (searchDto.getMemberId() != null && !searchDto.getMemberId().isEmpty()) {
-            sql.and(qMember.id.eq(searchDto.getMemberId()));
+
+        if(searchDto.isExclude()){
+            if(searchDto.getExcludeType().equals("myself")){
+               sql.and(qMember.id.eq(searchDto.getMemberId()));
+            }
+        }else {
+            if (searchDto.getMemberId() != null && !searchDto.getMemberId().isEmpty()) {
+                sql.and(qMember.id.eq(searchDto.getMemberId()));
+            }
         }
+
         return sql;
     }
 

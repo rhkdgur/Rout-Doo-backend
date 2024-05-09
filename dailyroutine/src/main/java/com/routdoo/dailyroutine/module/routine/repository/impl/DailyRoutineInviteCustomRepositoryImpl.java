@@ -1,5 +1,6 @@
 package com.routdoo.dailyroutine.module.routine.repository.impl;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.routdoo.dailyroutine.auth.member.domain.QMember;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
@@ -10,7 +11,6 @@ import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineInviteCust
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,7 +53,7 @@ public class DailyRoutineInviteCustomRepositoryImpl extends BaseAbstractReposito
                 )
                 .from(qDailyRoutineInvite)
                 .join(qMember).on(qMember.id.eq(qDailyRoutineInvite.member.id)).fetchJoin()
-                .where(qDailyRoutineInvite.dailyRoutine.idx.eq(dto.getDailyIdx()))
+                .where(new BooleanBuilder().and(qDailyRoutineInvite.dailyRoutine.idx.eq(dto.getDailyIdx())).and(qDailyRoutineInvite.member.id.eq(dto.getMemberId())))
                 .fetch();
 
         return list;
