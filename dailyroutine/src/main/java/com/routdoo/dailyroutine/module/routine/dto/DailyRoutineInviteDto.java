@@ -3,12 +3,13 @@ package com.routdoo.dailyroutine.module.routine.dto;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineInvite;
 import com.routdoo.dailyroutine.module.routine.dto.action.invite.DailyRoutineInviteCreateRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 
@@ -34,12 +35,10 @@ public class DailyRoutineInviteDto {
 	
 	/**스케줄 일련번호*/
 	@Schema(description = "일정 일련번호")
-	@NotBlank
 	private Long dailyIdx = 0L;
 	
 	/**회원 일련번호*/
 	@Schema(description = "회원 아이디")
-	@NotBlank
 	private String memberId = "";
 
 	/**등록일자*/
@@ -49,6 +48,9 @@ public class DailyRoutineInviteDto {
 	/**수정일자*/
 	@Schema(description = "수정일자")
 	private LocalDateTime modifyDate;
+
+	/**친구 초대 목록*/
+	private List<String> memberIds = new ArrayList<>();
 	
 	public DailyRoutineInvite toEntity() {
 		return DailyRoutineInvite.builder().dto(this).build();
@@ -65,7 +67,14 @@ public class DailyRoutineInviteDto {
 	public static DailyRoutineInviteDto createOf(DailyRoutineInviteCreateRequest dailyRoutineInviteCreateRequest){
 		DailyRoutineInviteDto request = new DailyRoutineInviteDto();
 		request.setDailyIdx(dailyRoutineInviteCreateRequest.getDailyIdx());
-		request.setMemberId(dailyRoutineInviteCreateRequest.getMemberId());
+		int len = dailyRoutineInviteCreateRequest.getMemberId().split(",").length;
+		if( len > 1){
+			for(int i = 0; i<len; i++){
+				request.getMemberIds().add(dailyRoutineInviteCreateRequest.getMemberId().split(",")[i]);
+			}
+		}else {
+			request.setMemberId(dailyRoutineInviteCreateRequest.getMemberId());
+		}
 		return request;
 	}
 	

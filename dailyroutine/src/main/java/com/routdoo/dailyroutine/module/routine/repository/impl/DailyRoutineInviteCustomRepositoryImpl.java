@@ -11,6 +11,7 @@ import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineInviteCust
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,6 +40,21 @@ public class DailyRoutineInviteCustomRepositoryImpl extends BaseAbstractReposito
         QDailyRoutineInvite qDailyRoutineInvite = QDailyRoutineInvite.dailyRoutineInvite;
         QMember qMember = QMember.member;
 
+        BooleanBuilder sql = new BooleanBuilder();
+        if(dto.getDailyIdx() > 0) {
+            sql.and(qDailyRoutineInvite.dailyRoutine.idx.eq(dto.getDailyIdx()));
+        }
+        if(dto.getMemberIds().size() > 0) {
+            List<String> membersId = new ArrayList<>();
+            for(String memberId : dto.getMemberIds()){
+                membersId.add(memberId);
+            }
+            sql.and(qMember.id.in(membersId));
+        }
+        if(dto.getMemberId() != null && !dto.getMemberId().isEmpty()) {
+            sql.and(qMember.id.eq(dto.getMemberId()));
+        }
+
         List<DailyRoutineInviteResponse> list = jpaQueryFactory.select(
                         Projections.constructor(
                                 DailyRoutineInviteResponse.class,
@@ -53,7 +69,7 @@ public class DailyRoutineInviteCustomRepositoryImpl extends BaseAbstractReposito
                 )
                 .from(qDailyRoutineInvite)
                 .join(qMember).on(qMember.id.eq(qDailyRoutineInvite.member.id)).fetchJoin()
-                .where(new BooleanBuilder().and(qDailyRoutineInvite.dailyRoutine.idx.eq(dto.getDailyIdx())).and(qDailyRoutineInvite.member.id.eq(dto.getMemberId())))
+                .where(sql)
                 .fetch();
 
         return list;

@@ -155,7 +155,6 @@ public class MemberUserController extends BaseModuleController{
 				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("회원 가입이 진행되지 않았습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 		}catch (Exception e) {
-			e.printStackTrace();
 			logger.error("### member create error {}",e.getMessage());
 			return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("회원 가입시 오류가 발생했습니다."),HttpStatus.BAD_REQUEST);
 		}

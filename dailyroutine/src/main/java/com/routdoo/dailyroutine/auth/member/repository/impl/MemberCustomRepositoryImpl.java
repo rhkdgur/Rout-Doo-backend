@@ -40,7 +40,7 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 
         if(searchDto.isExclude()){
             if(searchDto.getExcludeType().equals("myself")){
-               sql.and(qMember.id.eq(searchDto.getMemberId()));
+               sql.and(qMember.id.ne(searchDto.getMemberId()));
             }
         }else {
             if (searchDto.getMemberId() != null && !searchDto.getMemberId().isEmpty()) {

@@ -402,7 +402,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 	@Parameter(name = "dailyIdx" , description = "일정 일련번호")
 	@GetMapping(value=API_URL+"/daily/routine/invite/friend/list")
 	public List<DailyRoutineInviteResponse> selectDailyRoutineInviteList(@Parameter(hidden = true) DailyRoutineInviteDto inviteDto) throws Exception {
-		inviteDto.setMemberId(memberSession.getMemberSession().getId());
+//		inviteDto.setMemberId(memberSession.getMemberSession().getId());
 		return dailyRoutineService.selectDailyRoutineInviteList(inviteDto);
 	}
 

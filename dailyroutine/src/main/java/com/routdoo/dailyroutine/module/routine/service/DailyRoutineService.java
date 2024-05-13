@@ -345,20 +345,42 @@ public class DailyRoutineService {
 	 */
 	@Transactional
 	public RoutineServiceResult<?> insertDailyRoutineInvite(DailyRoutineInviteDto dto) throws Exception {
-		
 		//촌재 유무 확인
 		DailyRoutine dailyRoutine = dailyRoutineRepository.findById(dto.getDailyIdx()).orElse(null);
-		Member member = memberRepository.findById(dto.getMemberId()).orElse(null);
-		
-		if(dailyRoutine == null || member == null) {
-			return new RoutineServiceResult<>(RoutineResultCodeType.FAIL,"잘못된 접근입니다.");
-		}
-		
-		DailyRoutineInvite invite = dto.toEntity();
-		invite.addDailyRoutineAndMember(dailyRoutine, member);
-		invite = dailyRoutineInviteRepository.save(invite);
-		if(invite == null) {
-			return new RoutineServiceResult<>(RoutineResultCodeType.FAIL,"등록 처리시 에러가 발생했습니다.");
+
+		List<DailyRoutineInviteResponse> checklist = dailyRoutineInviteRepository.selectDailyRoutineInviteDtoList(dto);
+		if(dto.getMemberIds().size() > 0){
+			for(DailyRoutineInviteResponse tmp : checklist){
+				for(String id : dto.getMemberIds()) {
+					if (tmp.getMemberSummaryResponse().getId().equals(id)){
+						return new RoutineServiceResult<>(RoutineResultCodeType.FAIL,"이미 초대된 정보가 있습니다.");
+					}
+				}
+			}
+
+			for(String id : dto.getMemberIds()){
+				DailyRoutineInvite invite = dto.toEntity();
+				Member member = memberRepository.findById(id).orElse(null);
+				invite.addDailyRoutineAndMember(dailyRoutine, member);
+				dailyRoutineInviteRepository.save(invite);
+				if(dailyRoutine == null || member == null) {
+					return new RoutineServiceResult<>(RoutineResultCodeType.FAIL,"잘못된 접근입니다.");
+				}
+			}
+		}else {
+			for (DailyRoutineInviteResponse tmp : checklist) {
+				if (tmp.getMemberSummaryResponse().getId().equals(dto.getMemberId())) {
+					return new RoutineServiceResult<>(RoutineResultCodeType.FAIL, "이미 초대된 정보입니다.");
+				}
+			}
+
+			Member member = memberRepository.findById(dto.getMemberId()).orElse(null);
+			if(dailyRoutine == null || member == null) {
+				return new RoutineServiceResult<>(RoutineResultCodeType.FAIL,"잘못된 접근입니다.");
+			}
+			DailyRoutineInvite invite = dto.toEntity();
+			invite.addDailyRoutineAndMember(dailyRoutine, member);
+			dailyRoutineInviteRepository.save(invite);
 		}
 		return new RoutineServiceResult<>(RoutineResultCodeType.OK,"초대 되었습니다.");
 	}
