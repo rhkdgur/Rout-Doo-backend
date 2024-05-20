@@ -132,7 +132,7 @@ public class DailyRoutineService {
 	 * @return
 	 * @throws Exception
 	 */
-	@Cacheable(value="daily_routine" , key = "#searchDto.startDate")
+	@Cacheable(value="daily_routine_calendar" , key = "#searchDto.toDate")
 	public List<Map<String,Object>> selectDailyRoutineCalendarDataExistList(DailyRoutineDefaultDto searchDto) throws Exception {
 		List<Map<String,Object>> resultList = new ArrayList<>();
 		String date = searchDto.getToDate();
@@ -140,8 +140,7 @@ public class DailyRoutineService {
 			date = date.substring(0,7);
 		}
 		List<Map<String,Object>> list = dailyRoutineRepository.selectDailyRoutineExistList(date,searchDto.getMemberId());
-		String month = LocalDate.now().toString().substring(0,7);
-		LocalDate startDt = LocalDate.parse(month+"-01");
+		LocalDate startDt = LocalDate.parse(date+"-01");
 		LocalDate endDt = startDt.withDayOfMonth(startDt.lengthOfMonth());
 
 		int dayCnt = (int) ChronoUnit.DAYS.between(startDt,endDt) + 1;
@@ -212,6 +211,7 @@ public class DailyRoutineService {
 	 * @return
 	 * @throws Exception
 	 */
+	@CacheEvict(value="daily_routine_calendar")
 	@Transactional
 	public RoutineServiceResult<?> insertDailyRoutine(DailyRoutineDto dto) throws Exception {
 
@@ -222,6 +222,23 @@ public class DailyRoutineService {
 			return new RoutineServiceResult<>(RoutineResultCodeType.FAIL,"일정 등록에 실패하였습니다.");
 		}
 
+		return new RoutineServiceResult<>(RoutineResultCodeType.OK);
+	}
+
+	/**
+	 * 수정
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	@CacheEvict(value="daily_routine_calendar")
+	@Transactional
+	public RoutineServiceResult<?> updateDailyRoutine(DailyRoutineDto dto) throws Exception {
+		DailyRoutine dailyRoutine = dailyRoutineRepository.findById(dto.getIdx()).orElse(null);
+		if(dailyRoutine == null) {
+			return new RoutineServiceResult<>(RoutineResultCodeType.FAIL,"잘못된 접근 입니다.");
+		}
+		dailyRoutine.addDailyRoutine(dto);
 		return new RoutineServiceResult<>(RoutineResultCodeType.OK);
 	}
 
@@ -279,7 +296,7 @@ public class DailyRoutineService {
 	 * @return
 	 * @throws Exception
 	 */
-	@CacheEvict(value="daily_routine" , key = "#dto.startDate")
+	@CacheEvict(value="daily_routine_calendar")
 	@Transactional
 	public RoutineServiceResult<?> deleteDailyRoutine(DailyRoutineDto dto) throws Exception {
 		

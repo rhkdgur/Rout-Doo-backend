@@ -81,6 +81,8 @@ public class DailyRoutineDto {
 	@Schema(description = "좋아요 여부")
 	private String likeYn = "";
 
+	private long likeIdx = 0;
+
 	@Schema(description = "타임라인 리스트")
 	private List<DailyRoutineTimeLineDto> timeList = new ArrayList<DailyRoutineTimeLineDto>();
 	

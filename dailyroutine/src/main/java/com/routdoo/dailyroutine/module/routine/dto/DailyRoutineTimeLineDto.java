@@ -53,6 +53,9 @@ public class DailyRoutineTimeLineDto {
 	/**주소*/
 	@Schema(description = "주소")
 	private String addr;
+
+	@Schema(description = "상세주소")
+	private String addrDetail;
 	
 	/**경도*/
 	@Schema(description = "경도")
@@ -134,6 +137,7 @@ public class DailyRoutineTimeLineDto {
 		request.setTitle(dailyRoutineTimeLineCreateRequest.getTitle());
 		request.setPlaceName(dailyRoutineTimeLineCreateRequest.getPlaceName());
 		request.setAddr(dailyRoutineTimeLineCreateRequest.getAddr());
+		request.setAddrDetail(dailyRoutineTimeLineCreateRequest.getAddrDetail());
 		request.setMapx(dailyRoutineTimeLineCreateRequest.getMapx());
 		request.setMapy(dailyRoutineTimeLineCreateRequest.getMapy());
 		request.setOrd(dailyRoutineTimeLineCreateRequest.getOrd());
@@ -159,6 +163,7 @@ public class DailyRoutineTimeLineDto {
 		request.setTitle(dailyRoutineTimeLineUpdateRequest.getTitle());
 		request.setPlaceName(dailyRoutineTimeLineUpdateRequest.getPlaceName());
 		request.setAddr(dailyRoutineTimeLineUpdateRequest.getAddr());
+		request.setAddrDetail(dailyRoutineTimeLineUpdateRequest.getAddrDetail());
 		request.setMapx(dailyRoutineTimeLineUpdateRequest.getMapx());
 		request.setMapy(dailyRoutineTimeLineUpdateRequest.getMapy());
 		request.setOrd(dailyRoutineTimeLineUpdateRequest.getOrd());
@@ -180,6 +185,7 @@ public class DailyRoutineTimeLineDto {
 		map.put("startTime", this.shour+":"+this.smin);
 		map.put("endTime", this.ehour+":"+this.emin);
 		map.put("addr",this.addr);
+		map.put("addrDetail",this.addrDetail);
 		map.put("mapx",this.mapx);
 		map.put("mapy",this.mapy);
 		map.put("ord", this.ord);

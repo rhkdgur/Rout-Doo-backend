@@ -9,7 +9,10 @@ import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.routine.RoutineResultCodeType;
 import com.routdoo.dailyroutine.module.routine.RoutineServiceResult;
 import com.routdoo.dailyroutine.module.routine.dto.*;
-import com.routdoo.dailyroutine.module.routine.dto.action.*;
+import com.routdoo.dailyroutine.module.routine.dto.action.DailyRoutineChangeRangeTypeRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.DailyRoutineCreateRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.DailyRoutineDeleteRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.DailyRoutineUpdateRequest;
 import com.routdoo.dailyroutine.module.routine.dto.action.invite.DailyRoutineInviteCreateRequest;
 import com.routdoo.dailyroutine.module.routine.dto.action.invite.DailyRoutineInviteDeleteRequest;
 import com.routdoo.dailyroutine.module.routine.dto.action.timeline.DailyRoutineTimeLineCreateRequest;
@@ -25,6 +28,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,6 +69,25 @@ public class DailyRoutineUserController extends BaseModuleController{
 	
 	/**회원 로그인 세션*/
 	private final MemberSession memberSession;
+
+	/**
+	 * 스케줄 달력 조회
+	 * @param searchDto
+	 * @return
+	 * @throws Exception
+	 */
+	@Operation(summary="사용자 스케줄 달력 목록 조회")
+	@Parameter(name = "toDate", description = "날짜 ex) yyyy-MM-dd, 만약 date에 빈값일 경우 오늘 날짜 기준으로 조회해옴", required = false)
+	@GetMapping(API_URL+"/daily/routine/calendar")
+	public List<Map<String,Object>> selectCalendarList(@Parameter(hidden = true) DailyRoutineDefaultDto searchDto) throws Exception {
+		searchDto.setMemberId(memberSession.getMemberSession().getId());
+		//초기값 세팅 date가 0일경우
+		if(StringUtils.isBlank(searchDto.getToDate())){
+			searchDto.setToDate(LocalDate.now().toString());
+		}
+		//캘린더에 일정 정보가 존재하는지 표시할 데이터
+		return dailyRoutineService.selectDailyRoutineCalendarDataExistList(searchDto);
+	}
 	
 	/**
 	 * 스케줄 목록 조회
@@ -78,19 +101,15 @@ public class DailyRoutineUserController extends BaseModuleController{
 			@Parameter(name = "page", description = "페이지 번호", required = false)
 	})
 	@GetMapping(API_URL+"/daily/routine/list")
-	public DailyRoutineListWithCalendarListResponse selectDailyRoutineList(@Parameter(hidden = true) DailyRoutineDefaultDto searchDto) throws Exception {
+	public Page<DailyRoutineSummaryResponse> selectDailyRoutineList(@Parameter(hidden = true) DailyRoutineDefaultDto searchDto) throws Exception {
 
 		searchDto.setMemberId(memberSession.getMemberSession().getId());
 		//초기값 세팅 date가 0일경우
 		if(searchDto.getToDate().isEmpty()){
 			searchDto.setToDate(LocalDate.now().toString());
 		}
-		
-		//캘린더에 일정 정보가 존재하는지 표시할 데이터
-		List<Map<String,Object>> calendarList = dailyRoutineService.selectDailyRoutineCalendarDataExistList(searchDto);
-		Page<DailyRoutineSummaryResponse> list = dailyRoutineService.selectDailyRoutinePageList(searchDto);
-		
-		return DailyRoutineListWithCalendarListResponse.of(list,calendarList);
+
+		return dailyRoutineService.selectDailyRoutinePageList(searchDto);
 	}
 	
 	/**
@@ -200,7 +219,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 		try {
 			DailyRoutineDto dailyRoutineDto = DailyRoutineDto.updateOf(dailyRoutineUpdateRequest);
 			dailyRoutineDto.setMemberId(memberSession.getMemberSession().getId());
-			result = dailyRoutineService.insertDailyRoutine(dailyRoutineDto);
+			result = dailyRoutineService.updateDailyRoutine(dailyRoutineDto);
 			if(!RoutineResultCodeType.OK.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf(result.getMessage()),HttpStatus.UNPROCESSABLE_ENTITY);
 			}
@@ -369,15 +388,14 @@ public class DailyRoutineUserController extends BaseModuleController{
 	 */
 	@Operation(summary="회원목록 및 친구목록")
 	@Parameters( value = {
-		@Parameter(name = "sstring", description="검색어", required = false),
-		@Parameter(name = "dailyIdx", description="부모 일련번호"),
-		@Parameter(name = "page", description="페이지", required = false)
+			@Parameter(name = "sstring", description = "검색어", required = false),
+			@Parameter(name = "page", description = "페이지", required = false)
 	})
 	@GetMapping(value=API_URL+"/daily/routine/invite/list")
 	public MemberListAndFriendListResponse selectInviteList(@Parameter(hidden = true) MemberDefaultDto searchDto) throws Exception {
 		
 		//회원목록
-		searchDto.setStype("name");
+		searchDto.setStype("nickname");
 		searchDto.setExclude(true);
 		searchDto.setExcludeType("myself");
 		searchDto.setMemberId(memberSession.getMemberSession().getId());

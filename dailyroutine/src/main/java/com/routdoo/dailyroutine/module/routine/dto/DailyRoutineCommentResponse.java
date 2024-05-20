@@ -4,6 +4,8 @@ import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 /**
  * packageName    : com.routdoo.dailyroutine.module.routine.dto
  * fileName       : DailyRoutineCommentResponse
@@ -32,11 +34,13 @@ public class DailyRoutineCommentResponse {
 
     private boolean isUser = false;
 
+    private LocalDateTime createDate;
+
     /**회원 dto*/
     private MemberSummaryResponse memberSummaryResponse = new MemberSummaryResponse();
 
     public DailyRoutineCommentResponse(long idx, String memberId, long dailyIdx, String nickname, String content, String mbti,
-                                  long replyCnt){
+                                  long replyCnt, LocalDateTime createDate){
         this.idx = idx;
         this.memberId = memberId;
         this.dailyIdx = dailyIdx;
@@ -44,6 +48,7 @@ public class DailyRoutineCommentResponse {
         this.content = content;
         this.memberSummaryResponse.setMbti(mbti);
         this.replyCnt = (int) replyCnt;
+        this.createDate = createDate;
     }
 
     public void addIsUser(String memberId){

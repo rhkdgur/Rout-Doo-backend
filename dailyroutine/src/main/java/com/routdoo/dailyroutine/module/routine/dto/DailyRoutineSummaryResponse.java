@@ -79,6 +79,7 @@ public class DailyRoutineSummaryResponse {
         response.setEndDate(dto.getEndDate());
         response.setRangeType(dto.getRangeType());
         response.setLikeYn(dto.getLikeYn());
+        response.setLikeIdx(dto.getLikeIdx());
         return response;
     }
 

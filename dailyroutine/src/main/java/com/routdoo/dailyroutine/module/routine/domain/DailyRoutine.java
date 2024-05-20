@@ -13,9 +13,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,6 +109,15 @@ public class DailyRoutine{
 	
 	public void addIdx(Long idx) {
 		this.idx = idx;
+	}
+
+	public void addDailyRoutine(DailyRoutineDto dto) {
+		this.title = title;
+		this.tag = tag;
+		this.startDate = dto.getStartDate();
+		this.endDate = dto.getEndDate();
+		this.dayType = RoutineDayType.valueOf(dto.getDayType());
+		this.rangeType = RoutineRangeConfigType.valueOf(dto.getRangeType());
 	}
 	
 	public void addMember(Member member) {

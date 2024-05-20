@@ -1,6 +1,5 @@
 package com.routdoo.dailyroutine.config;
 
-import org.apache.tomcat.util.collections.ConcurrentCache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
@@ -28,7 +27,7 @@ public class CacheConfig {
     public CacheManager cacheManager() {
         ConcurrentMapCacheManager cacheManager = new ConcurrentMapCacheManager();
         cacheManager.setAllowNullValues(false);
-        cacheManager.setCacheNames(List.of("public_codes","daily_routine","admin_login_info","member_login_info","jwt_token_info","MemberSession"));
+        cacheManager.setCacheNames(List.of("public_codes","daily_routine_calendar","admin_login_info","member_login_info","jwt_token_info","MemberSession"));
         return cacheManager;
     }
 

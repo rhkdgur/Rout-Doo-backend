@@ -115,11 +115,14 @@ public class DailyRoutineCummunityController extends BaseModuleController {
         likeDto.setDailyIdx(idx);
         likeDto.setMemberId(memberSession.getMemberSession().getId());
         Page<DailyRoutineSummaryResponse> likeList = dailyRoutineService.selectDailyRoutineLikePageList(likeDto);
+        long liktIdx=  0;
         String likeYn = "N";
         if(likeList.getTotalElements() > 0){
             likeYn = "Y";
+            liktIdx = likeList.getContent().get(0).getLikeIdx();
         }
         dailyRoutineDto.setLikeYn(likeYn);
+        dailyRoutineDto.setLikeIdx(liktIdx);
 
 
         return DailyRoutineWithMemberResponse.of(DailyRoutineSummaryResponse.responseOf(dailyRoutineDto),MemberSummaryResponse.dtoResponseOf(memberDto));

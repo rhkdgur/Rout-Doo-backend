@@ -53,6 +53,9 @@ public class DailyRoutineTimeLineUpdateRequest {
     @NotBlank
     private String addr;
 
+    @Schema(description = "상세주소")
+    private String addrDetail;
+
     /**경도*/
     @Schema(description = "경도")
     @NotBlank

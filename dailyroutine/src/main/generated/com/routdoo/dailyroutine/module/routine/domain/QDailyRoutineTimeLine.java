@@ -24,6 +24,8 @@ public class QDailyRoutineTimeLine extends EntityPathBase<DailyRoutineTimeLine> 
 
     public final StringPath addr = createString("addr");
 
+    public final StringPath addrDetail = createString("addrDetail");
+
     public final StringPath applyDate = createString("applyDate");
 
     public final StringPath context = createString("context");
