@@ -54,7 +54,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
                 " content," +
                 " mbti," +
                 " IFNULL(replyCnt,0) as replyCnt," +
-                " drc.create_date as createDate" +
+                " create_date as createDate" +
                 " FROM (");
         sql.append(" SELECT drc.*,m.*,replyCnt FROM daily_routine_comment drc ");
         sql.append(" JOIN ( SELECT id,nickname,mbti FROM member ) m on m.id = drc.member_id ");
