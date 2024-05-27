@@ -4,6 +4,7 @@ import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 /**
@@ -40,7 +41,7 @@ public class DailyRoutineCommentResponse {
     private MemberSummaryResponse memberSummaryResponse = new MemberSummaryResponse();
 
     public DailyRoutineCommentResponse(long idx, String memberId, long dailyIdx, String nickname, String content, String mbti,
-                                  long replyCnt, LocalDateTime createDate){
+                                  long replyCnt, Timestamp createDate){
         this.idx = idx;
         this.memberId = memberId;
         this.dailyIdx = dailyIdx;
@@ -48,7 +49,7 @@ public class DailyRoutineCommentResponse {
         this.content = content;
         this.memberSummaryResponse.setMbti(mbti);
         this.replyCnt = (int) replyCnt;
-        this.createDate = createDate;
+        this.createDate = createDate.toLocalDateTime();
     }
 
     public void addIsUser(String memberId){
