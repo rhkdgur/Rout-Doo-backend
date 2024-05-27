@@ -111,6 +111,7 @@ public class DailyRoutineTimeLineDto {
 		this.title = entity.getTitle();
 		this.placeName = entity.getPlaceName();
 		this.addr = entity.getAddr();
+		this.addrDetail = entity.getAddrDetail();
 		this.mapx = entity.getMapx();
 		this.mapy = entity.getMapy();
 		this.ord = entity.getOrd();

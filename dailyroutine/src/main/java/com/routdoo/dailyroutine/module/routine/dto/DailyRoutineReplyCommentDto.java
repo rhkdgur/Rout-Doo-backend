@@ -3,6 +3,9 @@ package com.routdoo.dailyroutine.module.routine.dto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.common.vo.BaseVo;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineReplyComment;
+import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentCreateRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentDeleteRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentUpdateRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -67,6 +70,42 @@ public class DailyRoutineReplyCommentDto extends BaseVo {
         this.createDate = entity.getCreateDate();
         this.modifyDate = entity.getModifyDate();
         this.memberDto = new MemberDto(entity.getMember());
+    }
+
+    /**
+     * 등록
+     * @param create
+     * @return
+     */
+    public static DailyRoutineReplyCommentDto createOf(DailyRoutineReplyCommentCreateRequest create) {
+        DailyRoutineReplyCommentDto request = new DailyRoutineReplyCommentDto();
+        request.setCommentIdx(create.getCommentIdx());
+        request.setContent(create.getContent());
+        return request;
+    }
+
+    /**
+     * 수정
+     * @param update
+     * @return
+     */
+    public static DailyRoutineReplyCommentDto updateOf(DailyRoutineReplyCommentUpdateRequest update) {
+        DailyRoutineReplyCommentDto request = new DailyRoutineReplyCommentDto();
+        request.setIdx(update.getIdx());
+        request.setCommentIdx(update.getCommentIdx());
+        request.setContent(update.getContent());
+        return request;
+    }
+
+    /**
+     * 삭제
+     * @param delete
+     * @return
+     */
+    public static DailyRoutineReplyCommentDto deleteOf(DailyRoutineReplyCommentDeleteRequest delete) {
+        DailyRoutineReplyCommentDto request = new DailyRoutineReplyCommentDto();
+        request.setIdx(delete.getIdx());
+        return request;
     }
 
     public boolean addCheckUser(String id){

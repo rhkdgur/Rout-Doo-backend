@@ -4,12 +4,6 @@ import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDefaultDto
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentResponse;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
-import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentCreateRequest;
-import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentDeleteRequest;
-import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentUpdateRequest;
-import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentCreateRequest;
-import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentDeleteRequest;
-import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentUpdateRequest;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -79,13 +73,13 @@ public class DailyRoutineCommentService {
 
     /**
      * 댓글 등록
-     * @param dailyRoutineCommentActionRequest
+     * @param dto
      * @return
      * @throws Exception
      */
     @Transactional
-    public boolean insertDailyRoutineComment(DailyRoutineCommentCreateRequest dailyRoutineCommentActionRequest) throws Exception {
-        return dailyRoutineCommentRepository.insertDailyRoutineComment(dailyRoutineCommentActionRequest);
+    public boolean insertDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception {
+        return dailyRoutineCommentRepository.insertDailyRoutineComment(dto);
     }
 
     /**
@@ -95,8 +89,8 @@ public class DailyRoutineCommentService {
      * @throws Exception
      */
     @Transactional
-    public boolean updateDailyRoutineComment(DailyRoutineCommentUpdateRequest dailyRoutineCommentActionRequest) throws Exception {
-        return dailyRoutineCommentRepository.updateDailyRoutineComment(dailyRoutineCommentActionRequest);
+    public boolean updateDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception {
+        return dailyRoutineCommentRepository.updateDailyRoutineComment(dto);
     }
 
     /**
@@ -106,7 +100,7 @@ public class DailyRoutineCommentService {
      * @throws Exception
      */
     @Transactional
-    public boolean deleteDailyRoutineComment(DailyRoutineCommentDeleteRequest dto) throws Exception {
+    public boolean deleteDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception {
         return dailyRoutineCommentRepository.deleteDailyRoutineComment(dto);
     }
 
@@ -157,7 +151,7 @@ public class DailyRoutineCommentService {
      * @throws Exception
      */
     @Transactional
-    public boolean insertDailyRoutineReplyComment(DailyRoutineReplyCommentCreateRequest dto) throws Exception {
+    public boolean insertDailyRoutineReplyComment(DailyRoutineReplyCommentDto dto) throws Exception {
         return dailyRoutineCommentRepository.insertDailyRoutineReplyComment(dto);
     }
 
@@ -168,7 +162,7 @@ public class DailyRoutineCommentService {
      * @throws Exception
      */
     @Transactional
-    public boolean updateDailyRoutineReplyComment(DailyRoutineReplyCommentUpdateRequest dto) throws Exception {
+    public boolean updateDailyRoutineReplyComment(DailyRoutineReplyCommentDto dto) throws Exception {
         return dailyRoutineCommentRepository.updateDailyRoutineReplyComment(dto);
     }
 
@@ -179,7 +173,7 @@ public class DailyRoutineCommentService {
      * @throws Exception
      */
     @Transactional
-    public boolean deleteDailyRoutineReplyComment(DailyRoutineReplyCommentDeleteRequest dto) throws Exception {
+    public boolean deleteDailyRoutineReplyComment(DailyRoutineReplyCommentDto dto) throws Exception {
         return dailyRoutineCommentRepository.deleteDailyRoutineReplyComment(dto);
     }
 

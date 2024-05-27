@@ -211,7 +211,7 @@ public class DailyRoutineService {
 	 * @return
 	 * @throws Exception
 	 */
-	@CacheEvict(value="daily_routine_calendar")
+	@CacheEvict(value="daily_routine_calendar",allEntries = true)
 	@Transactional
 	public RoutineServiceResult<?> insertDailyRoutine(DailyRoutineDto dto) throws Exception {
 
@@ -231,7 +231,7 @@ public class DailyRoutineService {
 	 * @return
 	 * @throws Exception
 	 */
-	@CacheEvict(value="daily_routine_calendar")
+	@CacheEvict(value="daily_routine_calendar",allEntries = true)
 	@Transactional
 	public RoutineServiceResult<?> updateDailyRoutine(DailyRoutineDto dto) throws Exception {
 		DailyRoutine dailyRoutine = dailyRoutineRepository.findById(dto.getIdx()).orElse(null);
@@ -296,7 +296,7 @@ public class DailyRoutineService {
 	 * @return
 	 * @throws Exception
 	 */
-	@CacheEvict(value="daily_routine_calendar")
+	@CacheEvict(value="daily_routine_calendar",allEntries = true)
 	@Transactional
 	public RoutineServiceResult<?> deleteDailyRoutine(DailyRoutineDto dto) throws Exception {
 		

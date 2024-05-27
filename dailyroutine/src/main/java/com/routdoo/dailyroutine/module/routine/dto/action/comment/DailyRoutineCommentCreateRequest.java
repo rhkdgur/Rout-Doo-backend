@@ -22,10 +22,6 @@ import lombok.Setter;
 @Setter
 public class DailyRoutineCommentCreateRequest {
 
-    /**회원아이디*/
-    @Schema(description = "유저 아이디", defaultValue = "")
-    private String memberId = "";
-
     /**일정 일련번호*/
     @Schema(description = "일정 일련번호", defaultValue = "0")
     @NotNull

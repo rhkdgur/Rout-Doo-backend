@@ -26,10 +26,6 @@ public class DailyRoutineReplyCommentUpdateRequest {
     @NotNull
     private Long idx = 0L;
 
-    /**회원 아이디*/
-    @Schema(description = "회원 아이디")
-    private String memberId = "";
-
     /**코멘트 일련번호*/
     @Schema(description = "댓글 일련번호")
     @NotBlank

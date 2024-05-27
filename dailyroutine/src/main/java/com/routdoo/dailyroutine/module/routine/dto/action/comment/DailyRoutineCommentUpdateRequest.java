@@ -1,7 +1,6 @@
 package com.routdoo.dailyroutine.module.routine.dto.action.comment;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -25,11 +24,6 @@ public class DailyRoutineCommentUpdateRequest {
     @Schema(description = "일련번호", defaultValue = "0")
     @NotNull
     private Long idx = 0L;
-
-    /**회원아이디*/
-    @Schema(description = "유저 아이디", defaultValue = "")
-    @NotBlank
-    private String memberId = "";
 
     /**일정 일련번호*/
     @Schema(description = "일정 일련번호", defaultValue = "0")

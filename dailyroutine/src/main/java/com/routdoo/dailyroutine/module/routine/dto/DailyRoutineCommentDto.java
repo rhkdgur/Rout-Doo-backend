@@ -2,6 +2,9 @@ package com.routdoo.dailyroutine.module.routine.dto;
 
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.module.routine.domain.DailyRoutineComment;
+import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentCreateRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentDeleteRequest;
+import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentUpdateRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -114,4 +117,39 @@ public class DailyRoutineCommentDto {
         return map;
     }
 
+    /**
+     * 등록
+     * @param create
+     * @return
+     */
+    public static DailyRoutineCommentDto createOf(DailyRoutineCommentCreateRequest create) {
+        DailyRoutineCommentDto request = new DailyRoutineCommentDto();
+        request.setDailyIdx(create.getDailyIdx());
+        request.setContent(create.getContent());
+        return request;
+    }
+
+    /**
+     * 수정
+     * @param update
+     * @return
+     */
+    public static DailyRoutineCommentDto updateOf(DailyRoutineCommentUpdateRequest update) {
+        DailyRoutineCommentDto request = new DailyRoutineCommentDto();
+        request.setIdx(update.getIdx());
+        request.setDailyIdx(update.getDailyIdx());
+        request.setContent(update.getContent());
+        return request;
+    }
+
+    /**
+     * 삭제
+     * @param delete
+     * @return
+     */
+    public static DailyRoutineCommentDto deleteOf(DailyRoutineCommentDeleteRequest delete) {
+        DailyRoutineCommentDto request = new DailyRoutineCommentDto();
+        request.setIdx(delete.getIdx());
+        return request;
+    }
 }

@@ -9,12 +9,6 @@ import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDefaultDto
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentResponse;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
-import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentCreateRequest;
-import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentDeleteRequest;
-import com.routdoo.dailyroutine.module.routine.dto.action.comment.DailyRoutineCommentUpdateRequest;
-import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentCreateRequest;
-import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentDeleteRequest;
-import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentUpdateRequest;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCommentRepository;
 import org.qlrm.mapper.JpaResultMapper;
 import org.springframework.data.domain.Page;
@@ -143,7 +137,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
     }
 
     @Override
-    public boolean insertDailyRoutineComment(DailyRoutineCommentCreateRequest dto) throws Exception {
+    public boolean insertDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception {
         return entityManager.createNativeQuery("insert into daily_routine_comment (member_id,daily_idx,content,create_date,modify_date) values (?,?,?,?,?)")
                 .setParameter(1,dto.getMemberId())
                 .setParameter(2,dto.getDailyIdx())
@@ -154,7 +148,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
     }
 
     @Override
-    public boolean updateDailyRoutineComment(DailyRoutineCommentUpdateRequest dto) throws Exception {
+    public boolean updateDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception {
 
         QDailyRoutineComment qDailyRoutineComment = QDailyRoutineComment.dailyRoutineComment;
 
@@ -164,7 +158,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
     }
 
     @Override
-    public boolean deleteDailyRoutineComment(DailyRoutineCommentDeleteRequest dto) throws Exception {
+    public boolean deleteDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception {
         QDailyRoutineComment qDailyRoutineComment = QDailyRoutineComment.dailyRoutineComment;
         return jpaQueryFactory.delete(qDailyRoutineComment)
                 .where(new BooleanBuilder().and(qDailyRoutineComment.idx.eq(dto.getIdx())))
@@ -295,7 +289,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
     }
 
     @Override
-    public boolean insertDailyRoutineReplyComment(DailyRoutineReplyCommentCreateRequest dto) throws Exception {
+    public boolean insertDailyRoutineReplyComment(DailyRoutineReplyCommentDto dto) throws Exception {
 
         return entityManager.createNativeQuery("insert into daily_routine_reply_comment(member_id,comment_idx,content,create_date,modify_date) values (?,?,?,?,?)")
                 .setParameter(1,dto.getMemberId())
@@ -308,7 +302,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
     }
 
     @Override
-    public boolean updateDailyRoutineReplyComment(DailyRoutineReplyCommentUpdateRequest dto) throws Exception {
+    public boolean updateDailyRoutineReplyComment(DailyRoutineReplyCommentDto dto) throws Exception {
         QDailyRoutineReplyComment qDailyRoutineReplyComment = QDailyRoutineReplyComment.dailyRoutineReplyComment;
 
         return jpaQueryFactory.update(qDailyRoutineReplyComment)
@@ -318,7 +312,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
     }
 
     @Override
-    public boolean deleteDailyRoutineReplyComment(DailyRoutineReplyCommentDeleteRequest dto) throws Exception {
+    public boolean deleteDailyRoutineReplyComment(DailyRoutineReplyCommentDto dto) throws Exception {
         QDailyRoutineReplyComment qDailyRoutineReplyComment = QDailyRoutineReplyComment.dailyRoutineReplyComment;
 
         return jpaQueryFactory.delete(qDailyRoutineReplyComment)

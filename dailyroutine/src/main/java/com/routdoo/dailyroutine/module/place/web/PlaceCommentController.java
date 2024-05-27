@@ -9,7 +9,6 @@ import com.routdoo.dailyroutine.module.place.dto.PlaceReplyCommentResponse;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
-import com.routdoo.dailyroutine.module.routine.dto.action.reply.DailyRoutineReplyCommentDeleteRequest;
 import com.routdoo.dailyroutine.module.routine.service.DailyRoutineCommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -115,7 +114,7 @@ public class PlaceCommentController extends BaseController {
 
         if(gubun.equals("일정")){
             try{
-                DailyRoutineReplyCommentDeleteRequest replyCommentDto = new DailyRoutineReplyCommentDeleteRequest();
+                DailyRoutineReplyCommentDto replyCommentDto = new DailyRoutineReplyCommentDto();
                 replyCommentDto.setIdx(idx);
                 boolean result = dailyRoutineCommentService.deleteDailyRoutineReplyComment(replyCommentDto);
                 if(!result){

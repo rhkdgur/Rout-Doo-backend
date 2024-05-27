@@ -215,8 +215,9 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     public ResponseEntity<?> insertDailyRoutineComment(final @Valid @RequestBody DailyRoutineCommentCreateRequest dailyRoutineCommentActionRequest) throws Exception {
 
         try{
-            dailyRoutineCommentActionRequest.setMemberId(memberSession.getMemberSession().getId());
-            boolean result = dailyRoutineCommentService.insertDailyRoutineComment(dailyRoutineCommentActionRequest);
+            DailyRoutineCommentDto dto = DailyRoutineCommentDto.createOf(dailyRoutineCommentActionRequest);
+            dto.setMemberId(memberSession.getMemberSession().getId());
+            boolean result = dailyRoutineCommentService.insertDailyRoutineComment(dto);
             if(!result){
                 return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("등록에 실패하였습니다."), HttpStatus.UNPROCESSABLE_ENTITY);
             }
@@ -248,7 +249,8 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     public ResponseEntity<?> updateDailyRoutineComment(final @Valid @RequestBody DailyRoutineCommentUpdateRequest dailyRoutineCommentActionRequest) throws Exception {
 
         try{
-            boolean result = dailyRoutineCommentService.updateDailyRoutineComment(dailyRoutineCommentActionRequest);
+            DailyRoutineCommentDto dto = DailyRoutineCommentDto.updateOf(dailyRoutineCommentActionRequest);
+            boolean result = dailyRoutineCommentService.updateDailyRoutineComment(dto);
             if(!result){
                 return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("수정에 실패하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
             }
@@ -277,7 +279,8 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     public ResponseEntity<?> deleteDailyRoutineComment(final @Valid @RequestBody DailyRoutineCommentDeleteRequest dailyRoutineCommentDeleteRequest) throws Exception {
 
         try{
-            boolean result = dailyRoutineCommentService.deleteDailyRoutineComment(dailyRoutineCommentDeleteRequest);
+            DailyRoutineCommentDto dto = DailyRoutineCommentDto.deleteOf(dailyRoutineCommentDeleteRequest);
+            boolean result = dailyRoutineCommentService.deleteDailyRoutineComment(dto);
             if(!result){
                 return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제에 실패하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
             }
@@ -309,8 +312,9 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     public ResponseEntity<?> insertDailyRoutineReplyComment(final @Valid @RequestBody DailyRoutineReplyCommentCreateRequest dailyRoutineReplyCommentActionRequest) throws Exception {
 
         try{
-            dailyRoutineReplyCommentActionRequest.setMemberId(memberSession.getMemberSession().getId());
-            boolean result = dailyRoutineCommentService.insertDailyRoutineReplyComment(dailyRoutineReplyCommentActionRequest);
+            DailyRoutineReplyCommentDto dto = DailyRoutineReplyCommentDto.createOf(dailyRoutineReplyCommentActionRequest);
+            dto.setMemberId(memberSession.getMemberSession().getId());
+            boolean result = dailyRoutineCommentService.insertDailyRoutineReplyComment(dto);
             if(!result){
                 return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("등록에 실패하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
             }
@@ -343,8 +347,8 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     public ResponseEntity<?> updateDailyRoutineReplyComment(final @Valid @RequestBody DailyRoutineReplyCommentUpdateRequest dailyRoutineReplyCommentActionRequest) throws Exception {
 
         try{
-            dailyRoutineReplyCommentActionRequest.setMemberId(memberSession.getMemberSession().getId());
-            boolean result = dailyRoutineCommentService.updateDailyRoutineReplyComment(dailyRoutineReplyCommentActionRequest);
+            DailyRoutineReplyCommentDto dto = DailyRoutineReplyCommentDto.updateOf(dailyRoutineReplyCommentActionRequest);
+            boolean result = dailyRoutineCommentService.updateDailyRoutineReplyComment(dto);
             if(!result){
                 return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("수정에 실패하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
             }
@@ -373,7 +377,8 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     public ResponseEntity<?> deleteDailyRoutineReplyComment(final @Valid @RequestBody DailyRoutineReplyCommentDeleteRequest dailyRoutineReplyCommentDeleteRequest) throws Exception {
 
         try{
-            boolean result = dailyRoutineCommentService.deleteDailyRoutineReplyComment(dailyRoutineReplyCommentDeleteRequest);
+            DailyRoutineReplyCommentDto dto = DailyRoutineReplyCommentDto.deleteOf(dailyRoutineReplyCommentDeleteRequest);
+            boolean result = dailyRoutineCommentService.deleteDailyRoutineReplyComment(dto);
             if(!result){
                 return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제에 실패하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
             }
