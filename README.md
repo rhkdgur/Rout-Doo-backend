@@ -20,3 +20,4 @@ Rout!Doo (스케줄 관리 앱) 사이드 프로젝트입니다.
 
 
 ## ![icons8-연대순-주간-50](https://github.com/rhkdgur/Rout-Doo-backend/assets/67618667/8b45a8f0-dfa5-4027-8be9-cf255538e236) DB ERD 구조
+<img width="952" alt="image" src="https://github.com/rhkdgur/Rout-Doo-backend/assets/67618667/38c99f8c-8543-47dc-a1e3-f498bb2bf2a4">
