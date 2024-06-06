@@ -19,8 +19,9 @@ Rout!Doo (스케줄 관리 앱) 사이드 프로젝트입니다.
 `2023-12-01` ~
 
 
-## ![icons8-연대순-주간-50](https://github.com/rhkdgur/Rout-Doo-backend/assets/67618667/8b45a8f0-dfa5-4027-8be9-cf255538e236) 작업이슈회고
+## ![icons8-연대순-주간-50](https://github.com/rhkdgur/Rout-Doo-backend/assets/67618667/8b45a8f0-dfa5-4027-8be9-cf255538e236) 작업회고
 * [CORS 에러 이슈에 대한 회고](https://github.com/rhkdgur/Rout-Doo-backend/wiki/CrossOrigin-%EC%9D%B4%EC%8A%88-%EC%9B%90%EC%9D%B8%EA%B3%BC-%ED%95%B4%EA%B2%B0)
+* 명시적 DTO 전달과 동적 Map을 이용한 데이터 전달에 대한 회고
 
 ## ![icons8-연대순-주간-50](https://github.com/rhkdgur/Rout-Doo-backend/assets/67618667/8b45a8f0-dfa5-4027-8be9-cf255538e236) DB ERD 구조
 <img width="952" alt="image" src="https://github.com/rhkdgur/Rout-Doo-backend/assets/67618667/38c99f8c-8543-47dc-a1e3-f498bb2bf2a4">
