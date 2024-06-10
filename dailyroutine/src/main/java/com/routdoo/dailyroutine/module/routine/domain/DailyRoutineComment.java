@@ -51,7 +51,7 @@ public class DailyRoutineComment {
 
     @Comment("활성화 여부")
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false,columnDefinition = "ENABLE")
     private EnableType enableType;
 
     @Comment("등록일자")

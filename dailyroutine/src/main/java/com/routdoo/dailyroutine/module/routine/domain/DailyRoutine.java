@@ -73,6 +73,7 @@ public class DailyRoutine{
 
 	@Comment("공개여부")
 	@Enumerated(EnumType.STRING)
+	@Column(columnDefinition = "PRIVATE")
 	private RoutineRangeConfigType rangeType;
 	
 	@Comment("등록일자")

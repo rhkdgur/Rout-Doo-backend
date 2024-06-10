@@ -24,7 +24,7 @@ public class MemberFriendsCreateRequest {
     /**회원아이디*/
     @Schema(description = "회원아이디")
     @NotBlank
-    private String memberId = "";
+    private String invitedId = "";
 
     /**차단여부 */
     @Schema(description = "차단여부", example = "Y(차단),N(차단안함))")

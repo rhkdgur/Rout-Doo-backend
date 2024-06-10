@@ -25,6 +25,8 @@ public class MemberFriendsDto implements Serializable{
 	/**회원아이디*/
 	@Schema(description = "회원아이디")
 	private String memberId = "";
+
+	private String invitedId = "";
 	
 	/**차단여부 */
 	@Schema(description = "차단여부", example = "Y(차단),N(차단안함))")
@@ -48,6 +50,7 @@ public class MemberFriendsDto implements Serializable{
 	public MemberFriendsDto(MemberFriends entity) {
 		this.idx = entity.getIdx();
 		this.memberId = entity.getMember().getId();
+		this.invitedId = entity.getInvitedId();
 		this.blockYn = entity.getBlockYn();
 		this.memberDto = new MemberDto(entity.getMember());
 		this.createDate = entity.getCreateDate();
@@ -61,7 +64,7 @@ public class MemberFriendsDto implements Serializable{
 	 */
 	public static MemberFriendsDto createOf(MemberFriendsCreateRequest memberFriendsCreateRequest){
 		MemberFriendsDto dto = new MemberFriendsDto();
-		dto.setMemberId(memberFriendsCreateRequest.getMemberId());
+		dto.setInvitedId(memberFriendsCreateRequest.getInvitedId());
 		dto.setBlockYn(memberFriendsCreateRequest.getBlockYn());
 		return dto;
 	}

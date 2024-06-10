@@ -78,6 +78,7 @@ public class MemberFriendsUserController extends BaseModuleController {
 
         try{
             MemberFriendsDto memberFriendsDto = MemberFriendsDto.createOf(memberFriendsCreateRequest);
+            memberFriendsDto.setMemberId(memberSession.getMemberSession().getId());
             friendListService.insertFriendList(memberFriendsDto);
         }catch (Exception e) {
             logger.error("### insert member friends error  : {}",e.getMessage());

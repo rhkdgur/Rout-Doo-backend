@@ -61,6 +61,8 @@ public class DailyRoutineReplyCommentDto extends BaseVo {
     @Schema(description = "회원 정보(조회에 사용)")
     private MemberDto memberDto = new MemberDto();
 
+    private boolean isUser = false;
+
     public DailyRoutineReplyComment toEntity(){
         return DailyRoutineReplyComment.builder().dto(this).build();
     }
@@ -112,8 +114,8 @@ public class DailyRoutineReplyCommentDto extends BaseVo {
         return request;
     }
 
-    public boolean addCheckUser(String id){
-        return id.equals(this.memberDto.getId());
+    public void addIsUser(String id){
+        this.isUser = id.equals(this.memberId);
     }
     
 }

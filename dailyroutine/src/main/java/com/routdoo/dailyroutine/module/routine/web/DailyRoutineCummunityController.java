@@ -202,7 +202,7 @@ public class DailyRoutineCummunityController extends BaseModuleController {
             if(tmp.getEnableType().equals(EnableType.DISABLE.name())){
                 tmp.setContent("삭제된 답글입니다.");
             }
-            tmp.addCheckUser(memberId);
+            tmp.addIsUser(memberId);
         }
         return replayList;
     }

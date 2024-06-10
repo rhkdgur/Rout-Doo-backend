@@ -28,6 +28,8 @@ public class QMemberFriends extends EntityPathBase<MemberFriends> {
 
     public final NumberPath<Long> idx = createNumber("idx", Long.class);
 
+    public final StringPath invitedId = createString("invitedId");
+
     public final QMember member;
 
     public final DateTimePath<java.time.LocalDateTime> modifyDate = createDateTime("modifyDate", java.time.LocalDateTime.class);
