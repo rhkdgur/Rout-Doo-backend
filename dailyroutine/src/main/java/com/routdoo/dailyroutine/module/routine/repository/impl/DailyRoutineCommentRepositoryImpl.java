@@ -4,6 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.routdoo.dailyroutine.auth.member.domain.QMember;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
+import com.routdoo.dailyroutine.common.EnableType;
 import com.routdoo.dailyroutine.module.routine.domain.*;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDefaultDto;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
@@ -48,7 +49,8 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
                 " content," +
                 " mbti," +
                 " IFNULL(replyCnt,0) as replyCnt," +
-                " create_date as createDate" +
+                " create_date as createDate," +
+                " enable_type as enableType" +
                 " FROM (");
         sql.append(" SELECT drc.*,m.*,replyCnt FROM daily_routine_comment drc ");
         sql.append(" JOIN ( SELECT id,nickname,mbti FROM member ) m on m.id = drc.member_id ");
@@ -166,6 +168,15 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
     }
 
     @Override
+    public boolean updateDailyRoutineCommentEnableType(DailyRoutineCommentDto dto) throws Exception {
+        QDailyRoutineComment qDailyRoutineComment = QDailyRoutineComment.dailyRoutineComment;
+        return jpaQueryFactory.update(qDailyRoutineComment)
+                .set(qDailyRoutineComment.enableType, EnableType.valueOf(dto.getEnableType()))
+                .where(new BooleanBuilder().and(qDailyRoutineComment.idx.eq(dto.getIdx())))
+                .execute() > 0;
+    }
+
+    @Override
     public Page<DailyRoutineReplyCommentDto> selectDailyRoutineReplyCommentPageList(DailyRoutineReplyCommentDto dto) throws Exception {
 
         QDailyRoutineComment qDailyRoutineComment = QDailyRoutineComment.dailyRoutineComment;
@@ -182,6 +193,8 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
         List<Tuple> list = jpaQueryFactory.select(
                         qDailyRoutineReplyComment.idx,
                         qDailyRoutineReplyComment.dailyRoutineComment.idx,
+                        qDailyRoutineReplyComment.content,
+                        qDailyRoutineReplyComment.enableType.stringValue(),
                         qMember.id,
                         qMember.nickname,
                         qMember.mbti,
@@ -202,6 +215,8 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
             DailyRoutineReplyCommentDto commentDto = new DailyRoutineReplyCommentDto();
             commentDto.setIdx(tp.get(qDailyRoutineReplyComment.idx));
             commentDto.setCommentIdx(tp.get(qDailyRoutineReplyComment.dailyRoutineComment.idx));
+            commentDto.setEnableType(tp.get(qDailyRoutineReplyComment.enableType.stringValue()));
+            commentDto.setContent(tp.get(qDailyRoutineReplyComment.content));
             commentDto.setMemberId(tp.get(qMember.id));
             commentDto.getMemberDto().setNickname(tp.get(qMember.nickname));
             commentDto.getMemberDto().setMbti(tp.get(qMember.mbti));
@@ -291,7 +306,7 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
     @Override
     public boolean insertDailyRoutineReplyComment(DailyRoutineReplyCommentDto dto) throws Exception {
 
-        return entityManager.createNativeQuery("insert into daily_routine_reply_comment(member_id,comment_idx,content,create_date,modify_date) values (?,?,?,?,?)")
+        return entityManager.createNativeQuery("insert into daily_routine_comment_reply(member_id,comment_idx,content,create_date,modify_date) values (?,?,?,?,?)")
                 .setParameter(1,dto.getMemberId())
                 .setParameter(2,dto.getCommentIdx())
                 .setParameter(3,dto.getContent())
@@ -316,6 +331,15 @@ public class DailyRoutineCommentRepositoryImpl extends BaseAbstractRepositoryImp
         QDailyRoutineReplyComment qDailyRoutineReplyComment = QDailyRoutineReplyComment.dailyRoutineReplyComment;
 
         return jpaQueryFactory.delete(qDailyRoutineReplyComment)
+                .where(new BooleanBuilder().and(qDailyRoutineReplyComment.idx.eq(dto.getIdx())))
+                .execute() > 0;
+    }
+
+    @Override
+    public boolean updateDailyRoutineReplyCommentEnable(DailyRoutineReplyCommentDto dto) throws Exception {
+        QDailyRoutineReplyComment qDailyRoutineReplyComment = QDailyRoutineReplyComment.dailyRoutineReplyComment;
+        return jpaQueryFactory.update(qDailyRoutineReplyComment)
+                .set(qDailyRoutineReplyComment.enableType,EnableType.valueOf(dto.getEnableType()))
                 .where(new BooleanBuilder().and(qDailyRoutineReplyComment.idx.eq(dto.getIdx())))
                 .execute() > 0;
     }

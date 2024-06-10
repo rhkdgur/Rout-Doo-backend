@@ -1,7 +1,7 @@
 package com.routdoo.dailyroutine.module.routine.domain;
 
 import com.routdoo.dailyroutine.auth.member.domain.Member;
-import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineCommentDto;
+import com.routdoo.dailyroutine.common.EnableType;
 import com.routdoo.dailyroutine.module.routine.dto.DailyRoutineReplyCommentDto;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -50,6 +50,11 @@ public class DailyRoutineReplyComment {
     @Lob
     private String content;
 
+    @Comment("활성화 여부")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EnableType enableType;
+
     @Comment("등록일자")
     @CreatedDate
     private LocalDateTime createDate;
@@ -66,6 +71,7 @@ public class DailyRoutineReplyComment {
         this.member = new Member();
         member.addId(dto.getMemberId());
         this.content = dto.getContent();
+        this.enableType = EnableType.valueOf(dto.getEnableType());
         this.createDate = dto.getCreateDate();
         this.modifyDate = dto.getModifyDate();
     }

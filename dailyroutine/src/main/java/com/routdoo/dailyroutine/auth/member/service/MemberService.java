@@ -146,6 +146,17 @@ public class MemberService {
 		}
 	}
 
+	/**
+	 * 회원 정보 수정2
+	 * @param dto
+	 * @return
+	 * @throws Exception
+	 */
+	@Transactional
+	public boolean updateMemberInfo(MemberDto dto) throws Exception {
+		return memberRepository.updateMemberInfo(dto);
+	}
+
 
 	/**
 	 * 회원 삭제

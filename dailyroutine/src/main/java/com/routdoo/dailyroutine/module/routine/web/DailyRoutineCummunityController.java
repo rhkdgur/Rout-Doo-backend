@@ -4,6 +4,7 @@ import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
+import com.routdoo.dailyroutine.common.EnableType;
 import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.routine.dto.*;
@@ -29,6 +30,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -79,14 +81,19 @@ public class DailyRoutineCummunityController extends BaseModuleController {
     @Operation(summary = "공개 일정 목록 조회")
     @Parameters({
             @Parameter(name="sstring", description = "검색어", required = false),
+            @Parameter(name="tag", description = "태그(여러개 선택시 콤마로 구분하여 전달(ex 음식점,카페)", required = false),
             @Parameter(name="page", description = "검색어", required = false)
     })
     @GetMapping(API_URL+"/daily/routine/plan/list")
     public Page<DailyRoutineSummaryResponse> selectDailyRoutinePlanList(@Parameter(hidden = true) DailyRoutineDefaultDto searchDto) throws Exception{
         searchDto.setRangeType(RoutineRangeConfigType.PUBLIC.name());
-        searchDto.setMemberId(memberSession.isAuthenticated() ? memberSession.getMemberSession().getId() : "");
+//        searchDto.setMemberId(memberSession.isAuthenticated() ? memberSession.getMemberSession().getId() : "");
         searchDto.setCummunity(true);
         searchDto.setFullTextSearch(true);
+        if(searchDto.getTag().split(",").length > 1) {
+            searchDto.setTags(Arrays.asList(searchDto.getTag().split(",")));
+            searchDto.setTag("");
+        }
         return dailyRoutineService.selectDailyRoutinePageList(searchDto);
     }
 
@@ -167,6 +174,9 @@ public class DailyRoutineCummunityController extends BaseModuleController {
         Page<DailyRoutineCommentResponse> commentList = dailyRoutineCommentService.selectDailyRoutineCommentPageList(commentDto);
         String memberId = memberSession.isAuthenticated() ? memberSession.getMemberSession().getId() : "";
         for(DailyRoutineCommentResponse dto : commentList){
+            if(dto.getEnableType().equals(EnableType.DISABLE.name())){
+                dto.setContent("삭제된 댓글입니다.");
+            }
             dto.addIsUser(memberId);
         }
         return commentList;
@@ -189,6 +199,9 @@ public class DailyRoutineCummunityController extends BaseModuleController {
         Page<DailyRoutineReplyCommentDto> replayList = dailyRoutineCommentService.selectDailyRoutineReplyCommentPageList(replyCommentDto);
         String memberId = memberSession.isAuthenticated() ? memberSession.getMemberSession().getId() : "";
         for(DailyRoutineReplyCommentDto tmp : replayList){
+            if(tmp.getEnableType().equals(EnableType.DISABLE.name())){
+                tmp.setContent("삭제된 답글입니다.");
+            }
             tmp.addCheckUser(memberId);
         }
         return replayList;
@@ -280,9 +293,10 @@ public class DailyRoutineCummunityController extends BaseModuleController {
 
         try{
             DailyRoutineCommentDto dto = DailyRoutineCommentDto.deleteOf(dailyRoutineCommentDeleteRequest);
-            boolean result = dailyRoutineCommentService.deleteDailyRoutineComment(dto);
+            dto.setEnableType(EnableType.DISABLE.name());
+            boolean result = dailyRoutineCommentService.updateDailyRoutineCommentEnableType(dto);
             if(!result){
-                return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제에 실패하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
+                return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("댓글 삭제에 실패하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
             }
         }catch (Exception e){
             logger.error("### delete daily routine comment error : {}",e.getMessage());
@@ -378,7 +392,8 @@ public class DailyRoutineCummunityController extends BaseModuleController {
 
         try{
             DailyRoutineReplyCommentDto dto = DailyRoutineReplyCommentDto.deleteOf(dailyRoutineReplyCommentDeleteRequest);
-            boolean result = dailyRoutineCommentService.deleteDailyRoutineReplyComment(dto);
+            dto.setEnableType(EnableType.DISABLE.name());
+            boolean result = dailyRoutineCommentService.updateDailyRoutineReplyCommentEnable(dto);
             if(!result){
                 return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제에 실패하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
             }

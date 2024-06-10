@@ -3,6 +3,7 @@ package com.routdoo.dailyroutine.auth.member.dto;
 import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.auth.member.dto.action.MemberCreateRequest;
 import com.routdoo.dailyroutine.auth.member.dto.action.MemberUpdateRequest;
+import com.routdoo.dailyroutine.auth.member.dto.action.MemberUpdateSummaryRequest;
 import com.routdoo.dailyroutine.common.exception.validate.annotation.date.Date;
 import com.routdoo.dailyroutine.common.exception.validate.annotation.phone.Phone;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -140,6 +141,14 @@ public class MemberDto {
 		dto.setMbti(request.getMbti());
 		dto.setIntroText(request.getIntroText());
 		dto.setUseStatus(request.getUseStatus());
+		return dto;
+	}
+
+	public static MemberDto update2Of(MemberUpdateSummaryRequest request) {
+		MemberDto dto = new MemberDto();
+		dto.setNickname(request.getNickname());
+		dto.setMbti(request.getMbti());
+		dto.setIntroText(request.getIntroText());
 		return dto;
 	}
 

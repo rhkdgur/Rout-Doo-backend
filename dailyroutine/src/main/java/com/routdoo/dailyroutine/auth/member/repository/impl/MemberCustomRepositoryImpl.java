@@ -90,6 +90,17 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
     }
 
     @Override
+    public boolean updateMemberInfo(MemberDto memberDto) throws Exception {
+        QMember qMember = QMember.member;
+        return jpaQueryFactory.update(qMember)
+                .set(qMember.nickname, memberDto.getNickname())
+                .set(qMember.mbti,memberDto.getMbti())
+                .set(qMember.introText, memberDto.getIntroText())
+                .where(new BooleanBuilder().and(qMember.id.eq(memberDto.getId())))
+                .execute() > 0;
+    }
+
+    @Override
     public boolean updateMemberUseStatus(MemberDto dto) throws Exception {
         QMember qMember = QMember.member;
         return jpaQueryFactory.update(qMember)

@@ -6,10 +6,7 @@ import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
-import com.routdoo.dailyroutine.auth.member.dto.action.MemberCheckIdRequest;
-import com.routdoo.dailyroutine.auth.member.dto.action.MemberCreateRequest;
-import com.routdoo.dailyroutine.auth.member.dto.action.MemberLoginRequest;
-import com.routdoo.dailyroutine.auth.member.dto.action.MemberUpdateRequest;
+import com.routdoo.dailyroutine.auth.member.dto.action.*;
 import com.routdoo.dailyroutine.auth.member.service.MemberService;
 import com.routdoo.dailyroutine.common.vo.CommonResponse;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
@@ -209,7 +206,9 @@ public class MemberUserController extends BaseModuleController{
 	@PutMapping(API_URL+"/member/act/upd")
 	public ResponseEntity<?> updateMember(final @Valid @RequestBody MemberUpdateRequest memberUpdateRequest) throws Exception {
 		try {
-			AuthServiceResult<MemberDto> result =  memberService.saveMember(MemberDto.updateOf(memberUpdateRequest));
+			MemberDto memberDto = MemberDto.updateOf(memberUpdateRequest);
+			memberDto.setId(memberSession.getMemberSession().getId());
+			AuthServiceResult<MemberDto> result =  memberService.saveMember(memberDto);
 			if(!AuthResultCodeType.INFO_OK.name().equals(result.getCodeType().name())) {
 				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf(result.getMessage()),HttpStatus.NOT_MODIFIED);
 			}
@@ -221,6 +220,28 @@ public class MemberUserController extends BaseModuleController{
 		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("수정 되었습니다."),HttpStatus.OK);
 	}
 
+	@Operation(summary="사용자 회원 정보 업데이트 요약정보(닉네임,MBTI,자기소개) ")
+	@ApiResponses(value={
+			@ApiResponse(responseCode = "200", description = "수정 완료"),
+			@ApiResponse(responseCode = "304", description = "회원정보 업데이트에 실패"),
+			@ApiResponse(responseCode = "422", description = "회원정보 업데이트시 오류")
+	})
+	@PutMapping(API_URL+"/member/info/upd")
+	public ResponseEntity<?> updateSummaryMember(final @Valid @RequestBody MemberUpdateSummaryRequest memberUpdateRequest) throws Exception {
+		try {
+			MemberDto memberDto = MemberDto.update2Of(memberUpdateRequest);
+			memberDto.setId(memberSession.getMemberSession().getId());
+			boolean result =  memberService.updateMemberInfo(memberDto);
+			if(!result) {
+				return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("회원 정보가 업데이트 되지 않았습니다."),HttpStatus.NOT_MODIFIED);
+			}
+		}catch (Exception e) {
+			logger.error("### update member info error ");
+			return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("회원 정보 업데이트시 이슈가 발생하였습니다."),HttpStatus.UNPROCESSABLE_ENTITY);
+		}
+
+		return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("수정 되었습니다."),HttpStatus.OK);
+	}
 
 	/**
 	 * 회원 조회

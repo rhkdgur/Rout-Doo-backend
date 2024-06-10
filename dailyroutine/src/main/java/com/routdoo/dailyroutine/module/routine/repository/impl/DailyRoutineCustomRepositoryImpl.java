@@ -14,6 +14,7 @@ import com.routdoo.dailyroutine.module.routine.domain.*;
 import com.routdoo.dailyroutine.module.routine.dto.*;
 import com.routdoo.dailyroutine.module.routine.repository.DailyRoutineCustomRepository;
 import com.routdoo.dailyroutine.module.routine.service.RoutineRangeConfigType;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Repository;
@@ -64,6 +65,13 @@ public class DailyRoutineCustomRepositoryImpl extends BaseAbstractRepositoryImpl
         }
         if (searchDto.getRangeType() != null && !searchDto.getRangeType().isEmpty()) {
             sql.and(qDailyRoutine.rangeType.eq(RoutineRangeConfigType.valueOf(searchDto.getRangeType())));
+        }
+        if(!StringUtils.isBlank(searchDto.getTag())){
+            sql.and(qDailyRoutine.tag.eq(searchDto.getTag()));
+        }else {
+            if(searchDto.getTags().size() > 0){
+                sql.and(qDailyRoutine.tag.in(searchDto.getTags()));
+            }
         }
         return sql;
     }

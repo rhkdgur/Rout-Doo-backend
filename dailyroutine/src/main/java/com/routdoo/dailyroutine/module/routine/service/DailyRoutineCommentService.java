@@ -105,6 +105,17 @@ public class DailyRoutineCommentService {
     }
 
     /**
+     * 댓글 활성화 업데이트 여부
+     * @param dto
+     * @return
+     * @throws Exception
+     */
+    @Transactional
+    public boolean updateDailyRoutineCommentEnableType(DailyRoutineCommentDto dto) throws Exception {
+        return dailyRoutineCommentRepository.updateDailyRoutineCommentEnableType(dto);
+    }
+
+    /**
      * 답글 목록 (페이징)
      * @param dto
      * @return
@@ -177,6 +188,16 @@ public class DailyRoutineCommentService {
         return dailyRoutineCommentRepository.deleteDailyRoutineReplyComment(dto);
     }
 
+    /**
+     * 답글 활성 업데이트 여부
+     * @param dto
+     * @return
+     * @throws Exception
+     */
+    @Transactional
+    public boolean updateDailyRoutineReplyCommentEnable(DailyRoutineReplyCommentDto dto) throws Exception {
+        return dailyRoutineCommentRepository.updateDailyRoutineReplyCommentEnable(dto);
+    }
     /**
      * 일정, 놀거리 댓글 목록 조회
      * @param paramUtil

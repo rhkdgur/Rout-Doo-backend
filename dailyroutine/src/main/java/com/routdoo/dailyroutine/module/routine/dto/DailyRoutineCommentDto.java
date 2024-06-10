@@ -46,6 +46,9 @@ public class DailyRoutineCommentDto {
     /**내용*/
     @Schema(description = "내용", defaultValue = "")
     private String content = "";
+
+    /**활성화 여부*/
+    private String enableType;
     
     /**등록일자*/
     @Schema(description = "등록일자")
@@ -73,6 +76,7 @@ public class DailyRoutineCommentDto {
         this.memberDto = new MemberDto(entity.getMember());
         this.dailyIdx = entity.getDailyRoutine().getIdx();
         this.content = entity.getContent();
+        this.enableType = entity.getEnableType().name();
         this.createDate = entity.getCreateDate();
         this.modifyDate = entity.getModifyDate();
     }

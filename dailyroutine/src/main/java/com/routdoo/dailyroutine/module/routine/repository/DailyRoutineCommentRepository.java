@@ -79,6 +79,14 @@ public interface DailyRoutineCommentRepository  {
      */
     boolean deleteDailyRoutineComment(DailyRoutineCommentDto dto) throws Exception;
 
+    /**
+     * 공개 일정 댓글 활성화 비활성화 여부
+     * @param dto
+     * @return
+     * @throws Exception
+     */
+    boolean updateDailyRoutineCommentEnableType(DailyRoutineCommentDto dto) throws Exception;
+
 
     /**
      * 공개 일정 댓글에 대한 답글 목록 페이징 o
@@ -135,6 +143,14 @@ public interface DailyRoutineCommentRepository  {
      * @throws Exception
      */
     boolean deleteDailyRoutineReplyComment(DailyRoutineReplyCommentDto dto) throws Exception;
+
+    /**
+     * 공개 일정 댓글에 대한 답글 활성화 여부
+     * @param dto
+     * @return
+     * @throws Exception
+     */
+    boolean updateDailyRoutineReplyCommentEnable(DailyRoutineReplyCommentDto dto) throws Exception;
 
     /**
      * 놀거리, 일정 댓글 정보 조회

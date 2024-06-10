@@ -1,10 +1,12 @@
 package com.routdoo.dailyroutine.module.routine.dto;
 
 import com.routdoo.dailyroutine.common.vo.BaseVo;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /***
  * 
@@ -47,6 +49,10 @@ public class DailyRoutineDefaultDto extends BaseVo {
 	/**스케줄 목록 날짜*/
 	@Schema(description = "스케줄 목록 날짜")
 	private String toDate = "";
+
+	private String tag = "";
+
+	private List<String> tags = new ArrayList<>();
 
 	/**
 	 * 커뮤니티 검색

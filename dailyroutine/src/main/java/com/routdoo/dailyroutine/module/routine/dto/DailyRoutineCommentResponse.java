@@ -33,6 +33,8 @@ public class DailyRoutineCommentResponse {
     /**답글 개수*/
     private int replyCnt = 0;
 
+    private String enableType = "";
+
     private boolean isUser = false;
 
     private LocalDateTime createDate;
@@ -41,7 +43,7 @@ public class DailyRoutineCommentResponse {
     private MemberSummaryResponse memberSummaryResponse = new MemberSummaryResponse();
 
     public DailyRoutineCommentResponse(long idx, String memberId, long dailyIdx, String nickname, String content, String mbti,
-                                  long replyCnt, Timestamp createDate){
+                                  long replyCnt, Timestamp createDate, String enableType){
         this.idx = idx;
         this.memberId = memberId;
         this.dailyIdx = dailyIdx;
@@ -50,6 +52,7 @@ public class DailyRoutineCommentResponse {
         this.memberSummaryResponse.setMbti(mbti);
         this.replyCnt = (int) replyCnt;
         this.createDate = createDate.toLocalDateTime();
+        this.enableType = enableType;
     }
 
     public void addIsUser(String memberId){

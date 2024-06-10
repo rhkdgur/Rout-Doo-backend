@@ -28,6 +28,8 @@ public class QDailyRoutineComment extends EntityPathBase<DailyRoutineComment> {
 
     public final QDailyRoutine dailyRoutine;
 
+    public final EnumPath<com.routdoo.dailyroutine.common.EnableType> enableType = createEnum("enableType", com.routdoo.dailyroutine.common.EnableType.class);
+
     public final NumberPath<Long> idx = createNumber("idx", Long.class);
 
     public final com.routdoo.dailyroutine.auth.member.domain.QMember member;

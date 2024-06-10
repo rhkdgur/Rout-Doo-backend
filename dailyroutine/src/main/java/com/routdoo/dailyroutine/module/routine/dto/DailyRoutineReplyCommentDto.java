@@ -46,6 +46,9 @@ public class DailyRoutineReplyCommentDto extends BaseVo {
     @Schema(description = "내용")
     private String content = "";
     
+    /**활성화 여부*/
+    private String enableType = "";
+    
     /**등록일자*/
     @Schema(description = "등록일자")
     private LocalDateTime createDate;
@@ -67,6 +70,7 @@ public class DailyRoutineReplyCommentDto extends BaseVo {
         this.memberId = entity.getMember().getId();
         this.commentIdx = entity.getDailyRoutineComment().getIdx();
         this.content = entity.getContent();
+        this.enableType = entity.getEnableType().name();
         this.createDate = entity.getCreateDate();
         this.modifyDate = entity.getModifyDate();
         this.memberDto = new MemberDto(entity.getMember());
