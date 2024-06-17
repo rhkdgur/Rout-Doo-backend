@@ -1,10 +1,7 @@
 package com.routdoo.dailyroutine.auth.member.web;
 
 import com.routdoo.dailyroutine.auth.member.MemberSession;
-import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberMypageSummaryResponse;
+import com.routdoo.dailyroutine.auth.member.dto.*;
 import com.routdoo.dailyroutine.auth.member.service.FriendListService;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.place.dto.PlaceLikeDefaultDto;
@@ -117,7 +114,8 @@ public class MemberMypageController extends BaseModuleController {
             @Parameter(name = "page" , description = "페이지 번호", required = false)
     })
     @GetMapping(API_URL+"/mypage/friends/block/list")
-    public Page<MemberDto> selectMypageFriendsBlockList(@Parameter(hidden = true) MemberDefaultDto searchDto) throws Exception {
+    public Page<MemberFriendResponse> selectMypageFriendsBlockList(@Parameter(hidden = true) MemberDefaultDto searchDto) throws Exception {
+        searchDto.setMemberId(memberSession.getMemberSession().getId());
         return friendListService.selectMypageFriendsBlockPageList(searchDto);
     }
 

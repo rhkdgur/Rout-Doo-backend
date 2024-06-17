@@ -1,9 +1,6 @@
 package com.routdoo.dailyroutine.auth.member.repository;
 
-import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
+import com.routdoo.dailyroutine.auth.member.dto.*;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -66,7 +63,7 @@ public interface MemberCustomRepository {
 	 * @return
 	 * @throws Exception
 	 */
-	Page<MemberDto> selectMemberFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception;
+	Page<MemberFriendResponse> selectMemberFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception;
 
 	/**
 	 * 차단 목록( no paging)
@@ -74,7 +71,7 @@ public interface MemberCustomRepository {
 	 * @return
 	 * @throws Exception
 	 */
-	List<MemberDto> selectMemberFriendsBlockList(MemberDefaultDto searchDto) throws Exception;
+	List<MemberFriendResponse> selectMemberFriendsBlockList(MemberDefaultDto searchDto) throws Exception;
 
 	/**
 	 *  친구목록 조회
@@ -82,7 +79,7 @@ public interface MemberCustomRepository {
 	 * @return
 	 * @throws Exception
 	 */
-	Page<MemberDto> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception;
+	Page<MemberFriendResponse> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception;
 
 	/**
 	 * 친구목록 paging x
@@ -90,6 +87,6 @@ public interface MemberCustomRepository {
 	 * @return
 	 * @throws Exception
 	 */
-	List<MemberDto> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception;
+	List<MemberFriendResponse> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception;
 
 }

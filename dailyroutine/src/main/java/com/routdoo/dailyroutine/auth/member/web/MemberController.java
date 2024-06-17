@@ -4,6 +4,7 @@ import com.routdoo.dailyroutine.auth.AuthResultCodeType;
 import com.routdoo.dailyroutine.auth.AuthServiceResult;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberFriendResponse;
 import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
 import com.routdoo.dailyroutine.auth.member.dto.action.MemberCreateRequest;
 import com.routdoo.dailyroutine.auth.member.dto.action.MemberUpdateRequest;
@@ -89,10 +90,10 @@ public class MemberController extends BaseController{
 		searchDto.setMemberId(dto.getId());
 
 		//친구 목록
-		List<MemberDto> friendsList = friendListService.selectMemberFriendsList(searchDto);
+		List<MemberFriendResponse> friendsList = friendListService.selectMemberFriendsList(searchDto);
 		
 		//차단 목록
-		List<MemberDto> blockList = friendListService.selectMypageFriendsBlockList(searchDto);
+		List<MemberFriendResponse> blockList = friendListService.selectMypageFriendsBlockList(searchDto);
 
 		//공개일정 개수
 		DailyRoutineDefaultDto dailyRoutineDefaultDto = new DailyRoutineDefaultDto();

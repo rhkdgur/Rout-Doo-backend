@@ -5,10 +5,7 @@ import com.querydsl.core.types.Projections;
 import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.auth.member.domain.QMember;
 import com.routdoo.dailyroutine.auth.member.domain.QMemberFriends;
-import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberSummaryResponse;
+import com.routdoo.dailyroutine.auth.member.dto.*;
 import com.routdoo.dailyroutine.auth.member.repository.MemberCustomRepository;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
 import lombok.NoArgsConstructor;
@@ -110,7 +107,7 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
     }
 
     @Override
-    public Page<MemberDto> selectMemberFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception {
+    public Page<MemberFriendResponse> selectMemberFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception {
         QMember qMember = QMember.member;
         QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
 
@@ -119,14 +116,15 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
                 .where(new BooleanBuilder().and(qMember.id.eq(searchDto.getMemberId())).and(qMemberFriends.blockYn.eq(searchDto.getBlockYn())))
                 .fetchFirst();
 
-        List<MemberDto> list = jpaQueryFactory.select(
+        List<MemberFriendResponse> list = jpaQueryFactory.select(
                         Projections.bean(
-                                MemberDto.class,
-                                qMember.id,
+                                MemberFriendResponse.class,
+                                qMemberFriends.invitedId,
                                 qMember.nickname,
                                 qMember.gender,
                                 qMember.age,
-                                qMember.mbti
+                                qMember.mbti,
+                                qMemberFriends.blockYn
                         )
                 )
                 .from(qMember)
@@ -140,19 +138,20 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
     }
 
     @Override
-    public List<MemberDto> selectMemberFriendsBlockList(MemberDefaultDto searchDto) throws Exception {
+    public List<MemberFriendResponse> selectMemberFriendsBlockList(MemberDefaultDto searchDto) throws Exception {
         QMember qMember = QMember.member;
         QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
 
 
-        List<MemberDto> list = jpaQueryFactory.select(
+        List<MemberFriendResponse> list = jpaQueryFactory.select(
                         Projections.bean(
-                                MemberDto.class,
-                                qMember.id,
+                                MemberFriendResponse.class,
+                                qMemberFriends.invitedId,
                                 qMember.nickname,
                                 qMember.gender,
                                 qMember.age,
-                                qMember.mbti
+                                qMember.mbti,
+                                qMemberFriends.blockYn
                         )
                 )
                 .from(qMember)
@@ -165,7 +164,7 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 
 
     @Override
-    public Page<MemberDto> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception {
+    public Page<MemberFriendResponse> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception {
         QMember qMember = QMember.member;
         QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
 
@@ -174,17 +173,18 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
                 .where(commonQuery(searchDto))
                 .fetchFirst();
 
-        List<MemberDto> list = jpaQueryFactory.select(
+        List<MemberFriendResponse> list = jpaQueryFactory.select(
                         Projections.bean(
-                                MemberDto.class,
-                                qMember.id,
+                                MemberFriendResponse.class,
+                                qMemberFriends.invitedId,
                                 qMember.nickname,
                                 qMember.gender,
                                 qMember.age,
-                                qMember.mbti
+                                qMember.mbti,
+                                qMemberFriends.blockYn
                         )
                 ).from(qMember)
-                .join(qMemberFriends).on(qMember.id.eq(qMemberFriends.member.id)).fetchJoin()
+                .join(qMemberFriends).on(qMember.id.eq(qMemberFriends.invitedId)).fetchJoin()
                 .where(commonQuery(searchDto))
                 .offset(searchDto.getPageable().getOffset())
                 .limit(searchDto.getPageable().getPageSize())
@@ -194,18 +194,19 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
     }
 
     @Override
-    public List<MemberDto> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception {
+    public List<MemberFriendResponse> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception {
         QMember qMember = QMember.member;
         QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
 
-        List<MemberDto> list = jpaQueryFactory.select(
+        List<MemberFriendResponse> list = jpaQueryFactory.select(
                         Projections.bean(
-                                MemberDto.class,
-                                qMember.id,
+                                MemberFriendResponse.class,
+                                qMemberFriends.invitedId,
                                 qMember.nickname,
                                 qMember.gender,
                                 qMember.age,
-                                qMember.mbti
+                                qMember.mbti,
+                                qMemberFriends.blockYn
                         )
                 )
                 .from(qMember)

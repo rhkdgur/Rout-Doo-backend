@@ -1,10 +1,7 @@
 package com.routdoo.dailyroutine.auth.member.service;
 
 import com.routdoo.dailyroutine.auth.member.domain.MemberFriends;
-import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsResponse;
+import com.routdoo.dailyroutine.auth.member.dto.*;
 import com.routdoo.dailyroutine.auth.member.repository.FriendListRepository;
 import com.routdoo.dailyroutine.auth.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -76,7 +73,7 @@ public class FriendListService {
      * @return
      * @throws Exception
      */
-    public Page<MemberDto> selectMypageFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception {
+    public Page<MemberFriendResponse> selectMypageFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception {
         return memberRepository.selectMemberFriendsBlockPageList(searchDto);
     }
 
@@ -87,7 +84,7 @@ public class FriendListService {
      * @return
      * @throws Exception
      */
-    public List<MemberDto> selectMypageFriendsBlockList(MemberDefaultDto searchDto) throws Exception {
+    public List<MemberFriendResponse> selectMypageFriendsBlockList(MemberDefaultDto searchDto) throws Exception {
         return memberRepository.selectMemberFriendsBlockList(searchDto);
     }
 
@@ -98,7 +95,7 @@ public class FriendListService {
      * @return
      * @throws Exception
      */
-    public Page<MemberDto> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception {
+    public Page<MemberFriendResponse> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception {
         return memberRepository.selectMemberFriendsPageList(searchDto);
     }
 
@@ -109,7 +106,7 @@ public class FriendListService {
      * @return
      * @throws Exception
      */
-    public List<MemberDto> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception {
+    public List<MemberFriendResponse> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception {
         return memberRepository.selectMemberFriendsList(searchDto);
     }
 }

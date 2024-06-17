@@ -2,7 +2,7 @@ package com.routdoo.dailyroutine.auth.member.web;
 
 import com.routdoo.dailyroutine.auth.member.MemberSession;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
-import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberFriendResponse;
 import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
 import com.routdoo.dailyroutine.auth.member.dto.action.friend.MemberFriendsBlockCreateRequest;
 import com.routdoo.dailyroutine.auth.member.dto.action.friend.MemberFriendsCreateRequest;
@@ -56,8 +56,9 @@ public class MemberFriendsUserController extends BaseModuleController {
             @Parameter(name = "stype", description = "검색타입 ex) title, nickname ", required = false)
     })
     @GetMapping(API_URL+"/member/nickname/friends/list")
-    public Page<MemberDto>  selectMemberFriendsList(@Parameter(hidden = true) MemberDefaultDto searchDto) throws Exception {
+    public Page<MemberFriendResponse>  selectMemberFriendsList(@Parameter(hidden = true) MemberDefaultDto searchDto) throws Exception {
         searchDto.setSize(20);
+        searchDto.setMemberId(memberSession.getMemberSession().getId());
         return friendListService.selectMemberFriendsPageList(searchDto);
     }
 

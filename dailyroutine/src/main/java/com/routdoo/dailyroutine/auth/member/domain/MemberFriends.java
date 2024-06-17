@@ -62,6 +62,7 @@ public class MemberFriends {
 		if(dto.getIdx() != 0) {
 			this.idx = dto.getIdx();
 		}
+		this.member = new Member();
 		this.member.addId(dto.getMemberId());
 		this.invitedId = dto.getInvitedId();
 		this.blockYn = dto.getBlockYn();
