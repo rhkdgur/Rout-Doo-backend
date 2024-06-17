@@ -20,4 +20,6 @@ public class MemberDefaultDto extends BaseVo{
 
 	private String excludeType = "";
 
+	private boolean isFriend = false;
+
 }

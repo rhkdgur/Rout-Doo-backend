@@ -114,7 +114,7 @@ public class MemberMypageController extends BaseModuleController {
             @Parameter(name = "page" , description = "페이지 번호", required = false)
     })
     @GetMapping(API_URL+"/mypage/friends/block/list")
-    public Page<MemberFriendResponse> selectMypageFriendsBlockList(@Parameter(hidden = true) MemberDefaultDto searchDto) throws Exception {
+    public Page<MemberFriendsResponse> selectMypageFriendsBlockList(@Parameter(hidden = true) MemberDefaultDto searchDto) throws Exception {
         searchDto.setMemberId(memberSession.getMemberSession().getId());
         return friendListService.selectMypageFriendsBlockPageList(searchDto);
     }

@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * packageName    : com.routdoo.dailyroutine.module.place.dto.action
@@ -70,5 +71,8 @@ public class PlaceCreateRequest {
     @NotBlank
     /**사용여부*/
     private String pstatus;
+
+    @Schema(description = "파일 업로드")
+    private MultipartFile multipartFile;
 
 }

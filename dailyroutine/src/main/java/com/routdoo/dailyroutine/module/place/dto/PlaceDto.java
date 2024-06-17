@@ -5,12 +5,10 @@ import com.routdoo.dailyroutine.module.place.domain.PlaceIntro;
 import com.routdoo.dailyroutine.module.place.dto.action.PlaceCreateRequest;
 import com.routdoo.dailyroutine.module.place.dto.action.PlaceUpdateRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,83 +34,59 @@ import java.util.Map;
 @NoArgsConstructor
 public class PlaceDto {
 
-	@Schema(description = "장소번호", example = "P20230202001")
 	/**일련번호*/
 	private String placeNum;
 
-	@Schema(description = "제목", example = "장충동왕족발보쌈")
-	@NotBlank
 	/**제목*/
 	private String title;
 
-	@Schema(description = "연락처", example = "051-000-0000")
-	@NotNull
 	/**연락처*/
 	private String tel;
 
-	@Schema(description = "카테고리 코드", example = "TEST")
-	@NotBlank
 	/**카테고리 코드*/
 	private String categCd;
 
-	@Schema(description = "카테고리 명칭", example = "테스트")
 	/***카테고리 명*/
 	private String categNm;
 
-	@Schema(description = "주소", example = "부산 해운대구 ...")
-	@NotEmpty
 	/**주소*/
 	private String addr;
 
-	@Schema(description = "경도", example = "31.2321231")
-	@NotEmpty
 	/**경도*/
 	private String mapx;
 
-	@Schema(description = "위도", example = "127.1241231")
-	@NotEmpty
 	/**위도*/
 	private String mapy;
 
-	@Schema(description = "이용안내", example = "이용안내")
-	@NotEmpty
 	/**이용안내*/
 	private String useInfo;
 
-	@Schema(description = "상세정보", example = "상세정보")
-	@NotEmpty
 	/**상세정보*/
 	private String detailText;
 
-	@Schema(description = "사용여부", example = "사용 : Y, 미사용 : N")
-	@NotBlank
 	/**사용여부*/
 	private String pstatus;
 
-	@Schema(description = "좋아요수", example = "1")
 	/**좋아요 수*/
 	private int likeCnt = 0;
 
-	@Schema(description = "댓글수", example = "1")
 	/**댓글수*/
 	private int commentCnt = 0;
 
-	@Schema(description = "등록일자", example = "2023-01-01 00:00:00 ")
 	/**등록일자*/
 	private LocalDateTime createDate;
 
-	@Schema(description = "수정일자", example = "2023-01-01 00:00:00 ")
 	/**수정일자*/
 	private LocalDateTime modifyDate;
 
-	@Schema(description = "별점", example = "4 ")
 	/**별점*/
 	private int placeScore = 0;
 	
 	/**회원 아이디*/
 	private String memberId = "";
 
-	@Schema(description = "회원별 리뷰 정보", example = "")
+	private MultipartFile multipartFile;
+
 	/**장소 회원별 인트로 글*/
 	private List<PlaceIntroDto> introList = new ArrayList<>();
 	

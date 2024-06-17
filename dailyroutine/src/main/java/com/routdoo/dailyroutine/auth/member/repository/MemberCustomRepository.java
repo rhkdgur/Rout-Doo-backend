@@ -63,7 +63,7 @@ public interface MemberCustomRepository {
 	 * @return
 	 * @throws Exception
 	 */
-	Page<MemberFriendResponse> selectMemberFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception;
+	Page<MemberFriendsResponse> selectMemberFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception;
 
 	/**
 	 * 차단 목록( no paging)
@@ -71,7 +71,7 @@ public interface MemberCustomRepository {
 	 * @return
 	 * @throws Exception
 	 */
-	List<MemberFriendResponse> selectMemberFriendsBlockList(MemberDefaultDto searchDto) throws Exception;
+	List<MemberFriendsResponse> selectMemberFriendsBlockList(MemberDefaultDto searchDto) throws Exception;
 
 	/**
 	 *  친구목록 조회
@@ -79,7 +79,7 @@ public interface MemberCustomRepository {
 	 * @return
 	 * @throws Exception
 	 */
-	Page<MemberFriendResponse> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception;
+	Page<MemberFriendsResponse> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception;
 
 	/**
 	 * 친구목록 paging x
@@ -87,6 +87,6 @@ public interface MemberCustomRepository {
 	 * @return
 	 * @throws Exception
 	 */
-	List<MemberFriendResponse> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception;
+	List<MemberFriendsResponse> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception;
 
 }

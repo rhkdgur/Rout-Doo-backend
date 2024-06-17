@@ -28,20 +28,28 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
      */
     private BooleanBuilder commonQuery(MemberDefaultDto searchDto) {
         QMember qMember = QMember.member;
+        QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
         BooleanBuilder sql = new BooleanBuilder();
-        if (searchDto.getSstring() != null && !searchDto.getSstring().isEmpty()) {
-            if (searchDto.getStype().equals("nickname")) {
-                sql.and(qMember.nickname.like("%" + searchDto.getSstring() + "%"));
-            }
-        }
 
-        if(searchDto.isExclude()){
-            if(searchDto.getExcludeType().equals("myself")){
-               sql.and(qMember.id.ne(searchDto.getMemberId()));
+        if(!searchDto.isFriend()) {
+            if (searchDto.getSstring() != null && !searchDto.getSstring().isEmpty()) {
+                if (searchDto.getStype().equals("nickname")) {
+                    sql.and(qMember.nickname.like("%" + searchDto.getSstring() + "%"));
+                }
+            }
+
+            if (searchDto.isExclude()) {
+                if (searchDto.getExcludeType().equals("myself")) {
+                    sql.and(qMember.id.ne(searchDto.getMemberId()));
+                }
+            } else {
+                if (searchDto.getMemberId() != null && !searchDto.getMemberId().isEmpty()) {
+                    sql.and(qMember.id.eq(searchDto.getMemberId()));
+                }
             }
         }else {
             if (searchDto.getMemberId() != null && !searchDto.getMemberId().isEmpty()) {
-                sql.and(qMember.id.eq(searchDto.getMemberId()));
+                sql.and(qMemberFriends.member.id.eq(searchDto.getMemberId()));
             }
         }
 
@@ -107,29 +115,30 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
     }
 
     @Override
-    public Page<MemberFriendResponse> selectMemberFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception {
+    public Page<MemberFriendsResponse> selectMemberFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception {
         QMember qMember = QMember.member;
         QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
 
-        long cnt = jpaQueryFactory.select(qMember.count()).from(qMember)
-                .join(qMemberFriends).on(qMember.id.eq(qMemberFriends.member.id)).fetchJoin()
-                .where(new BooleanBuilder().and(qMember.id.eq(searchDto.getMemberId())).and(qMemberFriends.blockYn.eq(searchDto.getBlockYn())))
+        long cnt = jpaQueryFactory.select(qMemberFriends.count()).from(qMemberFriends)
+                .join(qMember).on(qMemberFriends.invitedId.eq(qMember.id)).fetchJoin()
+                .where(new BooleanBuilder().and(qMemberFriends.member.id.eq(searchDto.getMemberId())).and(qMemberFriends.blockYn.eq(searchDto.getBlockYn())))
                 .fetchFirst();
 
-        List<MemberFriendResponse> list = jpaQueryFactory.select(
-                        Projections.bean(
-                                MemberFriendResponse.class,
+        List<MemberFriendsResponse> list = jpaQueryFactory.select(
+                        Projections.constructor(
+                                MemberFriendsResponse.class,
+                                qMemberFriends.idx,
                                 qMemberFriends.invitedId,
+                                qMemberFriends.blockYn,
                                 qMember.nickname,
                                 qMember.gender,
                                 qMember.age,
-                                qMember.mbti,
-                                qMemberFriends.blockYn
+                                qMember.mbti
                         )
                 )
-                .from(qMember)
-                .join(qMemberFriends).on(qMember.id.eq(qMemberFriends.member.id)).fetchJoin()
-                .where(new BooleanBuilder().and(qMember.id.eq(searchDto.getMemberId())).and(qMemberFriends.blockYn.eq(searchDto.getBlockYn())))
+                .from(qMemberFriends)
+                .join(qMember).on(qMemberFriends.invitedId.eq(qMember.id)).fetchJoin()
+                .where(new BooleanBuilder().and(qMemberFriends.member.id.eq(searchDto.getMemberId())).and(qMemberFriends.blockYn.eq(searchDto.getBlockYn())))
                 .offset(searchDto.getPageable().getOffset())
                 .limit(searchDto.getPageable().getPageSize())
                 .fetch();
@@ -138,53 +147,52 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
     }
 
     @Override
-    public List<MemberFriendResponse> selectMemberFriendsBlockList(MemberDefaultDto searchDto) throws Exception {
+    public List<MemberFriendsResponse> selectMemberFriendsBlockList(MemberDefaultDto searchDto) throws Exception {
         QMember qMember = QMember.member;
         QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
 
-
-        List<MemberFriendResponse> list = jpaQueryFactory.select(
-                        Projections.bean(
-                                MemberFriendResponse.class,
+        return jpaQueryFactory.select(
+                        Projections.constructor(
+                                MemberFriendsResponse.class,
+                                qMemberFriends.idx,
                                 qMemberFriends.invitedId,
+                                qMemberFriends.blockYn,
                                 qMember.nickname,
                                 qMember.gender,
                                 qMember.age,
-                                qMember.mbti,
-                                qMemberFriends.blockYn
+                                qMember.mbti
                         )
                 )
-                .from(qMember)
-                .join(qMemberFriends).on(qMember.id.eq(qMemberFriends.member.id)).fetchJoin()
-                .where(new BooleanBuilder().and(qMember.id.eq(searchDto.getMemberId())).and(qMemberFriends.blockYn.eq(searchDto.getBlockYn())))
+                .from(qMemberFriends)
+                .join(qMember).on(qMemberFriends.invitedId.eq(qMember.id)).fetchJoin()
+                .where(new BooleanBuilder().and(qMemberFriends.invitedId.eq(searchDto.getMemberId())).and(qMemberFriends.blockYn.eq(searchDto.getBlockYn())))
                 .fetch();
-
-        return list;
     }
 
 
     @Override
-    public Page<MemberFriendResponse> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception {
+    public Page<MemberFriendsResponse> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception {
         QMember qMember = QMember.member;
         QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
 
-        long cnt = jpaQueryFactory.select(qMember.count()).from(qMember)
-                .join(qMemberFriends).on(qMember.id.eq(qMemberFriends.member.id)).fetchJoin()
+        long cnt = jpaQueryFactory.select(qMemberFriends.count()).from(qMemberFriends)
+                .join(qMember).on(qMemberFriends.invitedId.eq(qMember.id)).fetchJoin()
                 .where(commonQuery(searchDto))
                 .fetchFirst();
 
-        List<MemberFriendResponse> list = jpaQueryFactory.select(
-                        Projections.bean(
-                                MemberFriendResponse.class,
+        List<MemberFriendsResponse> list = jpaQueryFactory.select(
+                        Projections.constructor(
+                                MemberFriendsResponse.class,
+                                qMemberFriends.idx,
                                 qMemberFriends.invitedId,
+                                qMemberFriends.blockYn,
                                 qMember.nickname,
                                 qMember.gender,
                                 qMember.age,
-                                qMember.mbti,
-                                qMemberFriends.blockYn
+                                qMember.mbti
                         )
-                ).from(qMember)
-                .join(qMemberFriends).on(qMember.id.eq(qMemberFriends.invitedId)).fetchJoin()
+                ).from(qMemberFriends)
+                .join(qMember).on(qMemberFriends.invitedId.eq(qMember.id)).fetchJoin()
                 .where(commonQuery(searchDto))
                 .offset(searchDto.getPageable().getOffset())
                 .limit(searchDto.getPageable().getPageSize())
@@ -194,26 +202,25 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
     }
 
     @Override
-    public List<MemberFriendResponse> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception {
+    public List<MemberFriendsResponse> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception {
         QMember qMember = QMember.member;
         QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
 
-        List<MemberFriendResponse> list = jpaQueryFactory.select(
-                        Projections.bean(
-                                MemberFriendResponse.class,
+        return jpaQueryFactory.select(
+                        Projections.constructor(
+                                MemberFriendsResponse.class,
+                                qMemberFriends.idx,
                                 qMemberFriends.invitedId,
+                                qMemberFriends.blockYn,
                                 qMember.nickname,
                                 qMember.gender,
                                 qMember.age,
-                                qMember.mbti,
-                                qMemberFriends.blockYn
+                                qMember.mbti
                         )
                 )
-                .from(qMember)
-                .join(qMemberFriends).on(qMember.id.eq(qMemberFriends.member.id)).fetchJoin()
+                .from(qMemberFriends)
+                .join(qMember).on(qMemberFriends.invitedId.eq(qMember.id)).fetchJoin()
                 .where(commonQuery(searchDto)).fetch();
-
-        return list;
     }
 
     /**

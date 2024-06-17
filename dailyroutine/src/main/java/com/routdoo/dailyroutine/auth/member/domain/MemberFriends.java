@@ -44,7 +44,7 @@ public class MemberFriends {
 	private String invitedId;
 	
 	@Comment("차단여부")
-	@Column(length=1,columnDefinition = "N")
+	@Column(length = 1 , columnDefinition = "char default 'N'")
 	private String blockYn = "";
 	
 	/**등록일자*/

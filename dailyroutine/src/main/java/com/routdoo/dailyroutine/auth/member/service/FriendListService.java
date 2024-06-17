@@ -27,8 +27,7 @@ public class FriendListService {
      * @throws Exception
      */
     public List<MemberFriendsResponse> selectFriendListResultList(MemberFriendsDto dto) throws Exception {
-        List<MemberFriendsResponse> list = friendListRepository.selectMemberBlockYnAndMemberList(dto.getBlockYn(), dto.getMemberId());
-        return list;
+        return friendListRepository.selectMemberBlockYnAndMemberList(dto.getBlockYn(), dto.getMemberId());
     }
 
     /***
@@ -73,7 +72,8 @@ public class FriendListService {
      * @return
      * @throws Exception
      */
-    public Page<MemberFriendResponse> selectMypageFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception {
+    public Page<MemberFriendsResponse> selectMypageFriendsBlockPageList(MemberDefaultDto searchDto) throws Exception {
+        searchDto.setFriend(true);
         return memberRepository.selectMemberFriendsBlockPageList(searchDto);
     }
 
@@ -84,7 +84,8 @@ public class FriendListService {
      * @return
      * @throws Exception
      */
-    public List<MemberFriendResponse> selectMypageFriendsBlockList(MemberDefaultDto searchDto) throws Exception {
+    public List<MemberFriendsResponse> selectMypageFriendsBlockList(MemberDefaultDto searchDto) throws Exception {
+        searchDto.setFriend(true);
         return memberRepository.selectMemberFriendsBlockList(searchDto);
     }
 
@@ -95,7 +96,8 @@ public class FriendListService {
      * @return
      * @throws Exception
      */
-    public Page<MemberFriendResponse> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception {
+    public Page<MemberFriendsResponse> selectMemberFriendsPageList(MemberDefaultDto searchDto) throws Exception {
+        searchDto.setFriend(true);
         return memberRepository.selectMemberFriendsPageList(searchDto);
     }
 
@@ -106,7 +108,8 @@ public class FriendListService {
      * @return
      * @throws Exception
      */
-    public List<MemberFriendResponse> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception {
+    public List<MemberFriendsResponse> selectMemberFriendsList(MemberDefaultDto searchDto) throws Exception {
+        searchDto.setFriend(true);
         return memberRepository.selectMemberFriendsList(searchDto);
     }
 }
