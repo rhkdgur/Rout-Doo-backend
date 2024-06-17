@@ -91,7 +91,7 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 								qPlace.mapy,
 								qPlace.useInfo,
 								qPlace.detailText,
-								qPlace.pstatus,
+								qPlace.pstatus.stringValue(),
 								qPlace.createDate,
 								qPlace.modifyDate
 						)
@@ -129,7 +129,7 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 						qPlace.mapy,
 						qPlace.useInfo,
 						qPlace.detailText,
-						qPlace.pstatus,
+						qPlace.pstatus.stringValue(),
 						qPlace.createDate,
 						qPlace.modifyDate
 				).from(qPlace)

@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  * packageName    : com.routdoo.dailyroutine.cms.file
@@ -26,6 +25,7 @@ public class CmsFileThreadLocalInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
+        System.out.println("------------------------ cms file support intercepter ----------------------------");
         CmsFileThreadLocalHolder.setRequest(request);
         return true;
     }

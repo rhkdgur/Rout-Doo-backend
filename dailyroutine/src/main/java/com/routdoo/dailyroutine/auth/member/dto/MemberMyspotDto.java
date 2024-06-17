@@ -1,13 +1,11 @@
 package com.routdoo.dailyroutine.auth.member.dto;
 
-import java.time.LocalDateTime;
-
 import com.routdoo.dailyroutine.auth.member.domain.MemberMyspot;
-import com.routdoo.dailyroutine.cms.file.dto.CmsFileDto;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
 
 /**
  * 
@@ -24,7 +22,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class MemberMyspotDto extends CmsFileDto{
+public class MemberMyspotDto{
 
 	private static final long serialVersionUID = 1L;
 

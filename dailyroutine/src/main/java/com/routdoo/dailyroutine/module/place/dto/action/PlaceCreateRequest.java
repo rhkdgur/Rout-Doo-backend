@@ -8,7 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.io.Serializable;
 
 /**
  * packageName    : com.routdoo.dailyroutine.module.place.dto.action
@@ -25,7 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlaceCreateRequest {
+public class PlaceCreateRequest implements Serializable {
 
     @Schema(description = "제목", example = "장충동왕족발보쌈")
     @NotBlank
@@ -71,8 +72,5 @@ public class PlaceCreateRequest {
     @NotBlank
     /**사용여부*/
     private String pstatus;
-
-    @Schema(description = "파일 업로드")
-    private MultipartFile multipartFile;
 
 }

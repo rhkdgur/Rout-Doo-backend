@@ -20,6 +20,12 @@ public interface CmsFileSupport <T>{
     String getParentIdx();
 
     /**
+     * 파일 업로드 코드 경로
+     * @return
+     */
+    String getUploadCodePath();
+    
+    /**
      * 파일 업로드 코드
      * @return
      */

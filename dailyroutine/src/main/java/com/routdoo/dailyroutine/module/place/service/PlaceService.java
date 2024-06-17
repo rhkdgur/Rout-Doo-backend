@@ -1,6 +1,7 @@
 package com.routdoo.dailyroutine.module.place.service;
 
 import com.routdoo.dailyroutine.auth.member.domain.Member;
+import com.routdoo.dailyroutine.cms.file.service.CmsFileService;
 import com.routdoo.dailyroutine.module.place.domain.Place;
 import com.routdoo.dailyroutine.module.place.domain.PlaceComment;
 import com.routdoo.dailyroutine.module.place.domain.PlaceIntro;
@@ -8,6 +9,7 @@ import com.routdoo.dailyroutine.module.place.dto.*;
 import com.routdoo.dailyroutine.module.place.repository.PlaceCommentRepository;
 import com.routdoo.dailyroutine.module.place.repository.PlaceLikeRepository;
 import com.routdoo.dailyroutine.module.place.repository.PlaceRepository;
+import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -38,7 +40,9 @@ public class PlaceService {
 	
 	private final PlaceLikeRepository placeLikeRepository;
 	
-	private final PlaceCommentRepository placeCommentRepository; 
+	private final PlaceCommentRepository placeCommentRepository;
+
+	private final CmsFileService cmsFileService;
 	
 	/**
 	 * 장소 목록(페이징 o)
@@ -78,31 +82,35 @@ public class PlaceService {
 	@Transactional
 	public void savePlace(PlaceDto dto) throws Exception {
 
-		 //장소 대표 정보 존재 여부 확인
-		 Place place = placeRepository.findById(dto.getPlaceNum()).orElse(null);
-		 if(place == null){
-			 //장소번호 생성
-			 String placeNum = placeRepository.selectPlaceNumMax();
-			 dto.setPlaceNum(placeNum);
-			 place = new Place(dto);
-		 }else{
-			 place.chagnePlace(dto);
-		 }
+		Place place = new Place();
+		//장소 대표 정보 존재 여부 확인
+		if (!StringUtils.isBlank(dto.getPlaceNum())) {
+			place = placeRepository.findById(dto.getPlaceNum()).orElse(null);
+			if(place != null) {
+				place.chagnePlace(dto);
+			}
+		}else {
+			//장소번호 생성
+			String placeNum = placeRepository.selectPlaceNumMax();
+			dto.setPlaceNum(placeNum);
+			place = new Place(dto);
+		}
 
-		 //회원 정보 확인
-		 Member member = new Member();
-		 member.addId(dto.getMemberId());
-		 
-		 //장소 소개글 정보
-		 if(!dto.getIntroList().isEmpty()) {
-			 for(PlaceIntroDto introDto : dto.getIntroList()) {
-				 PlaceIntro intro = new PlaceIntro(introDto);
-				 intro.addMember(member);
-				 place.addPlaceIntro(intro);
-			 }
-		 }
-		 
-		 placeRepository.save(place);
+		//회원 정보 확인
+		Member member = new Member();
+		member.addId(dto.getMemberId());
+
+		//장소 소개글 정보
+		if (!dto.getIntroList().isEmpty()) {
+			for (PlaceIntroDto introDto : dto.getIntroList()) {
+				PlaceIntro intro = new PlaceIntro(introDto);
+				intro.addMember(member);
+				place.addPlaceIntro(intro);
+			}
+		}
+
+		placeRepository.save(place);
+		cmsFileService.processFileCreate(dto);
 	}
 
 

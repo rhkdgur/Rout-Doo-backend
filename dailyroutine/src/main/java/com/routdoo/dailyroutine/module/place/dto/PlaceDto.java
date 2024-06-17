@@ -1,5 +1,7 @@
 package com.routdoo.dailyroutine.module.place.dto;
 
+import com.routdoo.dailyroutine.cms.file.dto.CmsFileDto;
+import com.routdoo.dailyroutine.cms.file.dto.CmsFileSupport;
 import com.routdoo.dailyroutine.module.place.domain.Place;
 import com.routdoo.dailyroutine.module.place.domain.PlaceIntro;
 import com.routdoo.dailyroutine.module.place.dto.action.PlaceCreateRequest;
@@ -32,7 +34,7 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PlaceDto {
+public class PlaceDto implements CmsFileSupport<CmsFileDto> {
 
 	/**일련번호*/
 	private String placeNum;
@@ -195,5 +197,31 @@ public class PlaceDto {
 		update.setPstatus(placeActionRequest.getPstatus());
 		return update;
 	}
-	
+
+	@Override
+	public String getParentIdx() {
+		return this.placeNum;
+	}
+
+	@Override
+	public String getUploadCodePath() {
+		return "place/place";
+	}
+
+	@Override
+	public String getUploadCode() {
+		return "upload.place.public";
+	}
+
+	private List<CmsFileDto> cmsFileList = new ArrayList<>();
+
+	@Override
+	public CmsFileDto[] getCmsFileList() {
+		return this.cmsFileList.toArray(new CmsFileDto[this.cmsFileList.size()]);
+	}
+
+	@Override
+	public void addCmsFileList(CmsFileDto cmsFileDto) {
+		this.cmsFileList.add(cmsFileDto);
+	}
 }

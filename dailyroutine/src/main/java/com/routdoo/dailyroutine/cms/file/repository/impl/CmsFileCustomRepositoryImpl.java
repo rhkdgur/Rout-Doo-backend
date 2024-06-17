@@ -80,28 +80,19 @@ public class CmsFileCustomRepositoryImpl extends BaseAbstractRepositoryImpl impl
     @Override
     public boolean insertCmsFile(CmsFileDto dto) throws Exception {
         QCmsFile qCmsFile = QCmsFile.cmsFile;
-        return jpaQueryFactory.insert(qCmsFile)
-                .columns(
-                        qCmsFile.parentIdx,
-                        qCmsFile.uploadCode,
-                        qCmsFile.originalFileName,
-                        qCmsFile.saveFileName,
-                        qCmsFile.fileSize,
-                        qCmsFile.extension,
-                        qCmsFile.tagName,
-                        qCmsFile.createDate,
-                        qCmsFile.modifyDate
-                ).values(
-                        dto.getParentIdx(),
-                        dto.getUploadCode(),
-                        dto.getOriginalFileName(),
-                        dto.getSaveFileName(),
-                        dto.getFileSize(),
-                        dto.getExtension(),
-                        dto.getTagName(),
-                        LocalDateTime.now(),
-                        LocalDateTime.now()
-                ).execute() > 0;
+        return entityManager.createNativeQuery("insert into cms_file (parent_idx, upload_code, original_file_name,save_file_name,file_size, extension,tag_name,save_file_path,create_date,modify_date" +
+                ") values (?,?,?,?,?,?,?,?,?,?)")
+                .setParameter(1,dto.getParentIdx())
+                .setParameter(2,dto.getUploadCode())
+                .setParameter(3,dto.getOriginalFileName())
+                .setParameter(4,dto.getSaveFileName())
+                .setParameter(5,dto.getFileSize())
+                .setParameter(6,dto.getExtension())
+                .setParameter(7,dto.getTagName())
+                .setParameter(8,dto.getSaveFilePath())
+                .setParameter(9,LocalDateTime.now())
+                .setParameter(10,LocalDateTime.now())
+                .executeUpdate() > 0;
     }
 
     @Override

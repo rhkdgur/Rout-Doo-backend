@@ -1,26 +1,16 @@
 package com.routdoo.dailyroutine.cms.file.domain;
 
-import java.time.LocalDateTime;
-
+import com.routdoo.dailyroutine.cms.file.dto.CmsFileDto;
+import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.routdoo.dailyroutine.cms.file.dto.CmsFileDto;
-
-import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Table;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 /**
  * 
@@ -68,6 +58,9 @@ public class CmsFile {
 	@Comment("파일태그명칭")
 	private String tagName;
 	
+	@Comment("파일경로")
+	private String saveFilePath;
+	
 	@Comment("등록일자")
 	@CreatedDate
 	private LocalDateTime createDate;
@@ -77,14 +70,15 @@ public class CmsFile {
 	private LocalDateTime modifyDate;
 
 	@Builder
-	public CmsFile(CmsFileDto dto, String parentIdx) {
+	public CmsFile(CmsFileDto dto) {
         if(dto.getIdx() > 0) {
 			this.idx = dto.getIdx();
 		}
-		this.parentIdx = parentIdx;
+		this.parentIdx = dto.getParentIdx();
 		this.uploadCode = dto.getUploadCode();
 		this.originalFileName = dto.getOriginalFileName();
 		this.saveFileName = dto.getSaveFileName();
+		this.saveFilePath = dto.getSaveFilePath();
 		this.fileSize = dto.getFileSize();
 		this.extension = dto.getExtension();
 		this.tagName = dto.getTagName();

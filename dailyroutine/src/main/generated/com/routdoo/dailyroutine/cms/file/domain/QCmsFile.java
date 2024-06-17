@@ -35,6 +35,8 @@ public class QCmsFile extends EntityPathBase<CmsFile> {
 
     public final StringPath saveFileName = createString("saveFileName");
 
+    public final StringPath saveFilePath = createString("saveFilePath");
+
     public final StringPath tagName = createString("tagName");
 
     public final StringPath uploadCode = createString("uploadCode");

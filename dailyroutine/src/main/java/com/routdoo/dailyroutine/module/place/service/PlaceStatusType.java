@@ -1,5 +1,8 @@
 package com.routdoo.dailyroutine.module.place.service;
 
+import lombok.Getter;
+
+@Getter
 public enum PlaceStatusType {
 
 	Y("사용함"),
@@ -10,8 +13,5 @@ public enum PlaceStatusType {
 	PlaceStatusType(String display) {
 		this.display = display;
 	}
-	
-	public String getDisplay() {
-		return this.display;
-	}
+
 }

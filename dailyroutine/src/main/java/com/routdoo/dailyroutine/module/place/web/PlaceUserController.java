@@ -20,9 +20,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -146,14 +146,14 @@ public class PlaceUserController extends BaseModuleController {
             @ApiResponse(responseCode = "200", description = "등록 완료"),
             @ApiResponse(responseCode = "422", description = "등록 오류")
     })
-    @PostMapping(API_URL + "/place/act/ins")
-    public ResponseEntity<?> insertPlace(@Valid PlaceCreateRequest placeActionRequest,
-                                         MultipartHttpServletRequest multirequest) throws Exception {
+    @PostMapping(value = API_URL + "/place/act/ins" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> insertPlace(final @Valid @RequestPart PlaceCreateRequest placeCreateRequest) throws Exception {
         try {
-            PlaceDto dto = PlaceDto.createOf(placeActionRequest);
+            PlaceDto dto = PlaceDto.createOf(placeCreateRequest);
             dto.setMemberId(memberSession.getMemberSession().getId());
             placeService.savePlace(dto);
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error("### insert place error : {}", e.getMessage());
             return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("장소 등록시 오류가 발생하였습니다."), HttpStatus.UNPROCESSABLE_ENTITY);
         }

@@ -1,15 +1,16 @@
 package com.routdoo.dailyroutine.cms.file.service;
 
 import com.routdoo.dailyroutine.cms.file.CmsFileThreadLocalHolder;
-import com.routdoo.dailyroutine.cms.file.domain.CmsFile;
 import com.routdoo.dailyroutine.cms.file.dto.CmsFileDefaultDto;
 import com.routdoo.dailyroutine.cms.file.dto.CmsFileDto;
 import com.routdoo.dailyroutine.cms.file.dto.CmsFileSupport;
 import com.routdoo.dailyroutine.cms.file.exception.DoNotMatchExtException;
 import com.routdoo.dailyroutine.cms.file.repository.CmsFileRepository;
+import com.routdoo.dailyroutine.cms.util.UploadPropertyService;
 import com.routdoo.dailyroutine.common.util.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,6 +43,8 @@ public class CmsFileService implements CmsFileDetailService{
 	private final CmsFileRepository cmsFileRepository;
 
 	private final FileUploadUtil fileUploadUtil;
+
+	private final UploadPropertyService uploadPropertyService;
 
 
 	/**
@@ -78,7 +81,7 @@ public class CmsFileService implements CmsFileDetailService{
 	}
 
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public <T extends CmsFileSupport<?>> boolean processFileCreate(T obj) throws Exception {
 
@@ -93,6 +96,8 @@ public class CmsFileService implements CmsFileDetailService{
 		//이전 존재하던 파일 삭제여부에 따른 파일 리스트
 		List<File> existFileDeleteList = new ArrayList<>();
 		try{
+
+			String uploadPath = uploadPropertyService.getString(obj.getUploadCodePath(),obj.getUploadCode());
 
 			MultiValueMap<String, MultipartFile> files = multirequest.getMultiFileMap();
 
@@ -129,11 +134,12 @@ public class CmsFileService implements CmsFileDetailService{
 					cmsFileDto.setParentIdx(obj.getParentIdx());
 					cmsFileDto.setUploadCode(obj.getUploadCode());
 					cmsFileDto.setOriginalFileName(multipartFile.getOriginalFilename());
-					String saveFileName = fileUploadUtil.saveUploadFile("", multipartFile,null,false);
-					exceptionFileDeleteList.add(new File("",saveFileName));
+					String saveFileName = fileUploadUtil.saveUploadFile(uploadPath, multipartFile,null,false);
+					exceptionFileDeleteList.add(new File(uploadPath,saveFileName));
 					cmsFileDto.setSaveFileName(saveFileName);
 					cmsFileDto.setFileSize(multipartFile.getSize()+"");
 					cmsFileDto.setTagName(formName);
+					cmsFileDto.setSaveFilePath(uploadPath);
 					cmsFileDto.setExtension(saveFileName.substring(0,saveFileName.lastIndexOf(".")+1));
 
 					//이미 파일이 존재했던 데이터일 경우
@@ -142,7 +148,7 @@ public class CmsFileService implements CmsFileDetailService{
 						cmsFileRepository.updateCmsFile(cmsFileDto);
 						CmsFileDto tempFileDto = existMap.get(modifyIdx);
 						if(tempFileDto != null){
-							existFileDeleteList.add(new File("",tempFileDto.getSaveFileName()));
+							existFileDeleteList.add(new File(uploadPath,tempFileDto.getSaveFileName()));
 						}
 					}else {
 						cmsFileRepository.insertCmsFile(cmsFileDto);
@@ -153,7 +159,7 @@ public class CmsFileService implements CmsFileDetailService{
 						if(deleteIdx != null && existMap.containsKey(deleteIdx)){
 							CmsFileDto deleteMap = existMap.get(deleteIdx);
 							if(deleteMap != null){
-								existFileDeleteList.add(new File("",deleteMap.getSaveFileName()));
+								existFileDeleteList.add(new File(uploadPath,deleteMap.getSaveFileName()));
 								cmsFileRepository.deleteCmsFile(deleteMap);
 							}
 						}
@@ -162,6 +168,7 @@ public class CmsFileService implements CmsFileDetailService{
 			}
 			fileUploadUtil.deleteFile(existFileDeleteList);
 		}catch (Exception e){
+			e.printStackTrace();
 			fileUploadUtil.deleteFile(exceptionFileDeleteList);
 			System.out.println("### cms file insert error  : "+e.getMessage());
 		}
@@ -169,13 +176,13 @@ public class CmsFileService implements CmsFileDetailService{
 		return true;
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public <T extends CmsFileSupport<?>> boolean processFileUpdate(T obj) throws Exception {
 		return this.processFileCreate(obj);
 	}
 
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	@Override
 	public <T extends CmsFileSupport<?>> boolean proccessFileDelete(T obj) throws Exception {
 
@@ -201,8 +208,8 @@ public class CmsFileService implements CmsFileDetailService{
 	 * @param classDto
 	 * @return
 	 */
-	private boolean support(Class<?> classDto)  {
-		if(CmsFileSupport.class.isAssignableFrom(classDto)){
+	private boolean support(Class<?> classDto) {
+		if (CmsFileSupport.class.isAssignableFrom(classDto)) {
 			return true;
 		}
 		return false;
