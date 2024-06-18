@@ -75,42 +75,76 @@ public class PlaceService {
 	}
 	
 	/**
-	 * 등록,수정
+	 * 등록
 	 * @param dto
 	 * @throws Exception
 	 */
 	@Transactional
-	public void savePlace(PlaceDto dto) throws Exception {
+	public void insertPlace(PlaceDto dto) throws Exception {
 
-		Place place = new Place();
-		//장소 대표 정보 존재 여부 확인
-		if (!StringUtils.isBlank(dto.getPlaceNum())) {
-			place = placeRepository.findById(dto.getPlaceNum()).orElse(null);
-			if(place != null) {
-				place.chagnePlace(dto);
-			}
-		}else {
+		try {
 			//장소번호 생성
 			String placeNum = placeRepository.selectPlaceNumMax();
 			dto.setPlaceNum(placeNum);
-			place = new Place(dto);
-		}
+			Place place = new Place(dto);
 
-		//회원 정보 확인
-		Member member = new Member();
-		member.addId(dto.getMemberId());
+			//회원 정보 확인
+			Member member = new Member();
+			member.addId(dto.getMemberId());
 
-		//장소 소개글 정보
-		if (!dto.getIntroList().isEmpty()) {
-			for (PlaceIntroDto introDto : dto.getIntroList()) {
-				PlaceIntro intro = new PlaceIntro(introDto);
-				intro.addMember(member);
-				place.addPlaceIntro(intro);
+			//장소 소개글 정보
+			if (!dto.getIntroList().isEmpty()) {
+				for (PlaceIntroDto introDto : dto.getIntroList()) {
+					PlaceIntro intro = new PlaceIntro(introDto);
+					intro.addMember(member);
+					place.addPlaceIntro(intro);
+				}
 			}
-		}
 
-		placeRepository.save(place);
-		cmsFileService.processFileCreate(dto);
+			placeRepository.save(place);
+			cmsFileService.processFileCreate(dto);
+		}catch (Exception e){
+			throw new Exception(e.getMessage());
+		}
+	}
+
+	/**
+	 * 장소 수정
+	 * @param dto
+	 * @throws Exception
+	 */
+	@Transactional
+	public void updatePlace(PlaceDto dto) throws  Exception {
+		try {
+			//장소 대표 정보 존재 여부 확인
+			if (!StringUtils.isBlank(dto.getPlaceNum())) {
+				throw new NullPointerException("잘못된 접근입니다.");
+			}
+
+			Place place = placeRepository.findById(dto.getPlaceNum()).orElse(null);
+			if (place == null) {
+				throw new NullPointerException("장소 정보가 존재하지 않습니다.");
+			}
+			
+			//장소 업데이트
+			place.chagnePlace(dto);
+
+			//회원 정보 확인
+			Member member = new Member();
+			member.addId(dto.getMemberId());
+
+			//장소 소개글 정보
+			if (!dto.getIntroList().isEmpty()) {
+				for (PlaceIntroDto introDto : dto.getIntroList()) {
+					PlaceIntro intro = new PlaceIntro(introDto);
+					intro.addMember(member);
+					place.addPlaceIntro(intro);
+				}
+			}
+			cmsFileService.processFileUpdate(dto);
+		}catch (Exception e){
+			throw new Exception(e.getMessage());
+		}
 	}
 
 
@@ -131,6 +165,7 @@ public class PlaceService {
 			placeRepository.deletePlaceIntro(intro);
 		}
 		placeRepository.deleteById(dto.getPlaceNum());
+		cmsFileService.proccessFileDelete(dto);
 
 	}
 

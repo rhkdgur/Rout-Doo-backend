@@ -111,7 +111,7 @@ public class PlaceController extends BaseController{
 	public ResponseEntity<String> insertPlace(PlaceDto dto) throws Exception {
 		
 		try {
-			placeService.savePlace(dto);
+			placeService.insertPlace(dto);
 		}catch (Exception e) {
 			return new ResponseEntity<String>("장소 등록시 오류가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 		}
@@ -131,7 +131,7 @@ public class PlaceController extends BaseController{
 	public ResponseEntity<String> updatePlace(PlaceDto dto) throws Exception {
 		
 		try {
-			placeService.savePlace(dto);
+			placeService.updatePlace(dto);
 		}catch (Exception e) {
 			return new ResponseEntity<String>("장소 수정시 오류가 발생하였습니다.",HttpStatus.UNPROCESSABLE_ENTITY);
 		}

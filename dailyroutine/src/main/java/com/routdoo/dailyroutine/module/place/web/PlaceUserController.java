@@ -137,7 +137,7 @@ public class PlaceUserController extends BaseModuleController {
     /**
      * 장소 등록
      *
-     * @param placeActionRequest
+     * @param placeCreateRequest
      * @return
      * @throws Exception
      */
@@ -151,7 +151,7 @@ public class PlaceUserController extends BaseModuleController {
         try {
             PlaceDto dto = PlaceDto.createOf(placeCreateRequest);
             dto.setMemberId(memberSession.getMemberSession().getId());
-            placeService.savePlace(dto);
+            placeService.insertPlace(dto);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("### insert place error : {}", e.getMessage());
@@ -163,7 +163,7 @@ public class PlaceUserController extends BaseModuleController {
     /**
      * 장소 수정
      *
-     * @param placeActionRequest
+     * @param placeUpdateRequest
      * @return
      * @throws Exception
      */
@@ -172,12 +172,12 @@ public class PlaceUserController extends BaseModuleController {
             @ApiResponse(responseCode = "200", description = "수정 완료"),
             @ApiResponse(responseCode = "422", description = "수정 오류")
     })
-    @PutMapping(API_URL + "/place/act/upd")
-    public ResponseEntity<?> updatePlace(final @Valid @RequestBody PlaceUpdateRequest placeActionRequest) throws Exception {
+    @PutMapping(value = API_URL + "/place/act/upd" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updatePlace(final @Valid @RequestPart PlaceUpdateRequest placeUpdateRequest) throws Exception {
         try {
-            PlaceDto placeDto = PlaceDto.updateOf(placeActionRequest);
+            PlaceDto placeDto = PlaceDto.updateOf(placeUpdateRequest);
             placeDto.setMemberId(memberSession.getMemberSession().getId());
-            placeService.savePlace(placeDto);
+            placeService.updatePlace(placeDto);
         } catch (Exception e) {
             logger.error("### update place error : {}", e.getMessage());
             return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("장소 수정시 오류가 발생하였습니다."), HttpStatus.UNPROCESSABLE_ENTITY);

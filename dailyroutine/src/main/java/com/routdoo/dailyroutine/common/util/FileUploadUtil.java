@@ -1,6 +1,9 @@
 package com.routdoo.dailyroutine.common.util;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -82,6 +85,9 @@ public class FileUploadUtil {
 
 
     public String saveFile(String path, MultipartFile file) throws Exception{
+
+        HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes()).getRequest();
+
         String name = "";
         try {
             if(file != null && !"".equals(file.getOriginalFilename())) {
@@ -115,7 +121,7 @@ public class FileUploadUtil {
             }
         }catch (Exception e) {
             e.printStackTrace();
-            throw new Exception("파일 저장시 오류가 발생했습니다.");
+            throw new Exception("파일 저장시 오류가 발생했습니다. :"+request.getSession().getServletContext().getRealPath("/"));
         }
         return name;
     }
