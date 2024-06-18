@@ -9,6 +9,7 @@ import com.routdoo.dailyroutine.cms.file.repository.CmsFileRepository;
 import com.routdoo.dailyroutine.cms.util.UploadPropertyService;
 import com.routdoo.dailyroutine.common.util.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -126,6 +127,7 @@ public class CmsFileService implements CmsFileDetailService{
 				String formName = entry.getKey();
 				String modifyIdx = multirequest.getParameter("_modify"+formName);
 				String deleteIdx = multirequest.getParameter("_delete"+formName);
+				String altValue = multirequest.getParameter("_alt"+formName);
 
 				MultipartFile multipartFile = entry.getValue().get(0);
 
@@ -140,7 +142,8 @@ public class CmsFileService implements CmsFileDetailService{
 					cmsFileDto.setFileSize(multipartFile.getSize()+"");
 					cmsFileDto.setTagName(formName);
 					cmsFileDto.setSaveFilePath(uploadPath);
-					cmsFileDto.setExtension(saveFileName.substring(0,saveFileName.lastIndexOf(".")+1));
+					cmsFileDto.setExtension(FilenameUtils.getExtension(saveFileName));
+					cmsFileDto.setAlt(altValue);
 
 					//이미 파일이 존재했던 데이터일 경우
 					if(modifyIdx != null){

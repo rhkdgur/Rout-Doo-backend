@@ -19,6 +19,8 @@ public class QCmsFile extends EntityPathBase<CmsFile> {
 
     public static final QCmsFile cmsFile = new QCmsFile("cmsFile");
 
+    public final StringPath alt = createString("alt");
+
     public final DateTimePath<java.time.LocalDateTime> createDate = createDateTime("createDate", java.time.LocalDateTime.class);
 
     public final StringPath extension = createString("extension");

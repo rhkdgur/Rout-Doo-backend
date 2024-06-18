@@ -60,6 +60,9 @@ public class CmsFile {
 	
 	@Comment("파일경로")
 	private String saveFilePath;
+
+	@Comment("파일 alt")
+	private String alt;
 	
 	@Comment("등록일자")
 	@CreatedDate
@@ -82,6 +85,7 @@ public class CmsFile {
 		this.fileSize = dto.getFileSize();
 		this.extension = dto.getExtension();
 		this.tagName = dto.getTagName();
+		this.alt = dto.getAlt();
 	}
 	
 }

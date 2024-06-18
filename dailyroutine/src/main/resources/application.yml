@@ -22,6 +22,10 @@ spring:
       min-idle : 8
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+globals:
+  upload:
+    path: C:/temp/upload/dailyRoutine
+
 
 --- #profile dev 설정
 #해당 내용은 dockerfile 실행시에만 주석 제거하자 로컬에서 dev로 기본 설정되는데 해당 datasource가 docker에서 사용하는 거라 에러가 뜰거임
@@ -41,6 +45,11 @@ spring:
       max-idle: 15
       min-idle: 8
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+globals:
+   upload:
+      path: /routidoo/tomcat/webapps/ROOT/upload
 
 # 공통 환경 설정
 ---

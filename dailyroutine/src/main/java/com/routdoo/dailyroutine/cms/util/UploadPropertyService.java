@@ -3,6 +3,7 @@ package com.routdoo.dailyroutine.cms.util;
 import com.routdoo.dailyroutine.cms.upload.dto.FileUploadDto;
 import com.routdoo.dailyroutine.cms.upload.service.FileUploadService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,23 +21,28 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UploadPropertyService {
 
+    @Value("${globals.upload.path}")
+    private String globalPath;
+
     private final PropertiesConfig propertiesConfig;
 
     private final FileUploadService fileUploadService;
 
     public String getString(String fileName,String code) throws Exception {
 
-        if( code != null && code.startsWith("upload.")) {
+        if (code != null && code.startsWith("upload.")) {
 
             FileUploadDto dto = new FileUploadDto();
             dto.setCode(code);
             dto.setUseYn("Y");
             dto = fileUploadService.selectFileUpload(dto);
-            if(dto == null) {
-                return propertiesConfig.getGlobalsProperty()+propertiesConfig.getProperty(fileName,code);
-            }else if(dto.getPath().isEmpty()) {
-                return propertiesConfig.getGlobalsProperty()+propertiesConfig.getProperty(fileName,code);
-            }else {
+            if (dto == null) {
+                return globalPath + propertiesConfig.getProperty(fileName, code);
+//                return propertiesConfig.getGlobalsProperty()+propertiesConfig.getProperty(fileName,code);
+            } else if (dto.getPath().isEmpty()) {
+                return globalPath + propertiesConfig.getProperty(fileName, code);
+//                return propertiesConfig.getGlobalsProperty()+propertiesConfig.getProperty(fileName,code);
+            } else {
                 return dto.getPath();
             }
         }

@@ -80,8 +80,8 @@ public class CmsFileCustomRepositoryImpl extends BaseAbstractRepositoryImpl impl
     @Override
     public boolean insertCmsFile(CmsFileDto dto) throws Exception {
         QCmsFile qCmsFile = QCmsFile.cmsFile;
-        return entityManager.createNativeQuery("insert into cms_file (parent_idx, upload_code, original_file_name,save_file_name,file_size, extension,tag_name,save_file_path,create_date,modify_date" +
-                ") values (?,?,?,?,?,?,?,?,?,?)")
+        return entityManager.createNativeQuery("insert into cms_file (parent_idx, upload_code, original_file_name,save_file_name,file_size, extension,tag_name,save_file_path,alt,create_date,modify_date" +
+                ") values (?,?,?,?,?,?,?,?,?,?,?)")
                 .setParameter(1,dto.getParentIdx())
                 .setParameter(2,dto.getUploadCode())
                 .setParameter(3,dto.getOriginalFileName())
@@ -90,8 +90,9 @@ public class CmsFileCustomRepositoryImpl extends BaseAbstractRepositoryImpl impl
                 .setParameter(6,dto.getExtension())
                 .setParameter(7,dto.getTagName())
                 .setParameter(8,dto.getSaveFilePath())
-                .setParameter(9,LocalDateTime.now())
+                .setParameter(9,dto.getAlt())
                 .setParameter(10,LocalDateTime.now())
+                .setParameter(11,LocalDateTime.now())
                 .executeUpdate() > 0;
     }
 
@@ -105,6 +106,7 @@ public class CmsFileCustomRepositoryImpl extends BaseAbstractRepositoryImpl impl
                 .set(qCmsFile.fileSize,dto.getFileSize())
                 .set(qCmsFile.extension,dto.getExtension())
                 .set(qCmsFile.tagName,dto.getTagName())
+                .set(qCmsFile.alt,dto.getAlt())
                 .where(qCmsFile.idx.eq(dto.getIdx())).execute() > 0;
     }
 

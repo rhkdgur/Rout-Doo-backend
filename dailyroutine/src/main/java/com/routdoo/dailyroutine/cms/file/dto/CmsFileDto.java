@@ -52,6 +52,9 @@ public class CmsFileDto implements Serializable{
 	private String tagName;
 
 	private String saveFilePath;
+
+	/** 파일 alt */
+	private String alt;
 	
 	/**등록일자*/
 	private LocalDateTime createDate;
@@ -73,6 +76,7 @@ public class CmsFileDto implements Serializable{
 		this.extension = entity.getExtension();
 		this.tagName = entity.getTagName();
 		this.saveFilePath = entity.getSaveFilePath();
+		this.alt = entity.getAlt();
 		this.createDate = entity.getCreateDate();
 		this.modifyDate = entity.getModifyDate();
 	}
