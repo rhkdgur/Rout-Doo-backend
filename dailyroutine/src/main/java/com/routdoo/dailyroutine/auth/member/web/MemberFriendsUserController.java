@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.*;
  * 2023-12-07        rhkdg       최초 생성
  */
 @Tag(name = "친구 초대 및 차단 컨트롤러")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class MemberFriendsUserController extends BaseModuleController {

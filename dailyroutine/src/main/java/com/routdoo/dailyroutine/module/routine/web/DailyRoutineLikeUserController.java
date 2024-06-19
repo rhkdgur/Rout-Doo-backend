@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.*;
  * 2023-11-26        rhkdg       최초 생성
  */
 @Tag(name="좋아요 처리 컨트롤러")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class DailyRoutineLikeUserController extends BaseModuleController {

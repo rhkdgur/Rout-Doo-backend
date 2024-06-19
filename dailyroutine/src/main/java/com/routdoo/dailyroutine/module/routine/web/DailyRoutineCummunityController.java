@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
  * 2023-12-04        rhkdg       최초 생성
  */
 @Tag(name="공개된 일정 커뮤니티 컨트롤러")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class DailyRoutineCummunityController extends BaseModuleController {

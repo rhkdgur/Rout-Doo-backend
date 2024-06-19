@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
  * 2023-12-15        rhkdg       최초 생성
  */
 @Tag(name = "놀거리 정보 수정 제안 컨트롤러")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class PlaceRecordUserController extends BaseModuleController {

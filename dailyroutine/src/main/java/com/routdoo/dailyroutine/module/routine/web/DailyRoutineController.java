@@ -30,7 +30,7 @@ import java.util.Map;
  * -----------------------------------------------------------
  * 2024-01-14        rhkdg       최초 생성
  */
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class DailyRoutineController extends BaseController {

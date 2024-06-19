@@ -53,7 +53,7 @@ import java.util.stream.Collectors;
 * 2023.09.24        ghgo       최초 생성
  */
 @Tag(name="사용자 스케줄 관리 컨트롤러")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class DailyRoutineUserController extends BaseModuleController{

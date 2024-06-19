@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
  * 2023-11-27        rhkdg       최초 생성
  */
 @Tag(name = "장소 좋아요 컨트롤러")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class PlaceLikeUserController extends BaseModuleController {

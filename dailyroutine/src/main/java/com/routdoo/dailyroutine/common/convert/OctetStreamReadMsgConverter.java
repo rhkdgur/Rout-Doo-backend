@@ -3,7 +3,6 @@ package com.routdoo.dailyroutine.common.convert;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
-import org.springframework.stereotype.Component;
 
 /**
  * packageName    : com.routdoo.dailyroutine.common.convert
@@ -16,7 +15,7 @@ import org.springframework.stereotype.Component;
  * -----------------------------------------------------------
  * 2024-06-18        rhkdg       최초 생성
  */
-@Component
+//@Component
 public class OctetStreamReadMsgConverter extends AbstractJackson2HttpMessageConverter {
     protected OctetStreamReadMsgConverter(ObjectMapper objectMapper) {
         super(objectMapper, MediaType.APPLICATION_OCTET_STREAM);

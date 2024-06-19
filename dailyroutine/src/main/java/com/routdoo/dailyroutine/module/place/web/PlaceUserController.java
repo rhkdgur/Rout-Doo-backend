@@ -41,7 +41,7 @@ import java.util.Map;
  * 2023.08.03        ghgo       최초 생성
  */
 @Tag(name = "장소 사용자 컨트롤러", description = "장소에 대한 데이터 처리를 합니다.")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class PlaceUserController extends BaseModuleController {
@@ -142,6 +142,10 @@ public class PlaceUserController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "장소 등록")
+    @Parameters({
+            @Parameter(name = "_file", description = "formData 에서 파일 형식, 파일 이름에 해당 , 파일명은 아무거나 선언가능 _file은 예시"),
+            @Parameter(name = "_alt_file", description = " formData에서 String으로 전달,  파일의 비고명 아무거나 선언가능 대신 파일명의 name을 뒤에 그대로 붙여줘야함 _alt{파일name}")
+    })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "등록 완료"),
             @ApiResponse(responseCode = "422", description = "등록 오류")
@@ -153,7 +157,6 @@ public class PlaceUserController extends BaseModuleController {
             dto.setMemberId(memberSession.getMemberSession().getId());
             placeService.insertPlace(dto);
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error("### insert place error : {}", e.getMessage());
             return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("장소 등록시 오류가 발생하였습니다."), HttpStatus.UNPROCESSABLE_ENTITY);
         }
@@ -168,6 +171,12 @@ public class PlaceUserController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "장소 수정")
+    @Parameters({
+            @Parameter(name = "_file", description = "formData 에서 파일 형식 ,파일 이름에 해당 , 파일명은 아무거나 선언가능 _file은 예시"),
+            @Parameter(name = "_alt_file", description = "formData 에서 string, 파일의 비고명 아무거나 선언가능 대신 파일명의 name을 뒤에 그대로 붙여줘야함 _alt{파일name}"),
+            @Parameter(name = "_modify_file", description = "수정하는 파일에 대한 parent_idx 값, 파일의 비고명 아무거나 선언가능 대신 파일명의 name을 뒤에 그대로 붙여줘야함 _modify{파일name}"),
+            @Parameter(name = "_delete_file", description = "삭제하는 파일에 대한 parent_idx 값, 파일의 비고명 아무거나 선언가능 대신 파일명의 name을 뒤에 그대로 붙여줘야함 _delete{파일name}")
+    })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "수정 완료"),
             @ApiResponse(responseCode = "422", description = "수정 오류")

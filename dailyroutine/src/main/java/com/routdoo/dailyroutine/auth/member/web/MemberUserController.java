@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.*;
 * 2023.07.14        ghgo       최초 생성
  */
 @Tag(name="회원 사용자 컨트롤")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class MemberUserController extends BaseModuleController{

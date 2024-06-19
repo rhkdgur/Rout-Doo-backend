@@ -1,7 +1,10 @@
 package com.routdoo.dailyroutine.auth.member.web;
 
 import com.routdoo.dailyroutine.auth.member.MemberSession;
-import com.routdoo.dailyroutine.auth.member.dto.*;
+import com.routdoo.dailyroutine.auth.member.dto.MemberDefaultDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsDto;
+import com.routdoo.dailyroutine.auth.member.dto.MemberFriendsResponse;
+import com.routdoo.dailyroutine.auth.member.dto.MemberMypageSummaryResponse;
 import com.routdoo.dailyroutine.auth.member.service.FriendListService;
 import com.routdoo.dailyroutine.common.web.BaseModuleController;
 import com.routdoo.dailyroutine.module.place.dto.PlaceLikeDefaultDto;
@@ -18,7 +21,6 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,7 +39,7 @@ import java.util.Map;
  * 2023-11-26        rhkdg       최초 생성
  */
 @Tag(name = "마이페이지 컨트롤러")
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RestController
 @RequiredArgsConstructor
 public class MemberMypageController extends BaseModuleController {
