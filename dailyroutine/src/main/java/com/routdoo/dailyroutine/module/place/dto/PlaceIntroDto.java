@@ -1,21 +1,19 @@
 package com.routdoo.dailyroutine.module.place.dto;
 
-import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.auth.member.dto.MemberDto;
-import com.routdoo.dailyroutine.common.exception.validate.annotation.date.Date;
-import com.routdoo.dailyroutine.module.place.domain.Place;
+import com.routdoo.dailyroutine.cms.file.dto.CmsFileDto;
+import com.routdoo.dailyroutine.cms.file.dto.CmsFileSupport;
 import com.routdoo.dailyroutine.module.place.domain.PlaceIntro;
+import com.routdoo.dailyroutine.module.place.dto.action.intro.PlaceIntroCreateRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.intro.PlaceIntroUpdateRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Comment;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * packageName    : com.routdoo.dailyroutine.module.place.dto
@@ -32,51 +30,36 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class PlaceIntroDto {
+public class PlaceIntroDto implements CmsFileSupport<CmsFileDto> {
 
     /**일련번호*/
-    @Schema(description = "놀거리 소개글 일련번호", example = "1", defaultValue = "0")
     private Long idx = 0L;
 
     /**회원 아이디*/
-    @Schema(description = "회원 아이디", defaultValue = "", example = "test")
-    @NotBlank
     private String memberId;
     
     /**장소번호*/
-    @Schema(description = "장소 일련번호", defaultValue = "", example = "P202000001")
-    @NotBlank
     private String placeNum;
 
     /**소개글*/
-    @Schema(description = "소개글", defaultValue = "", example = "안녕하세요...")
-    @NotBlank
     private String introText;
 
     /**방문일자*/
-    @Schema(description = "방문일자", defaultValue = "", example = "2020-00-00")
-    @Date
-    @NotBlank
     private String visitDate;
 
     /**별점*/
-    @Schema(description = "별점", defaultValue = "0", example = "4")
     private int score = 0;
 
     /**등록일자*/
-    @Schema(description = "등록일자", defaultValue = "null",example = "2020-00-00 00:00:00")
     private LocalDateTime createDate;
 
     /**수정일자*/
-    @Schema(description = "수정일자", defaultValue = "null", example = "2020-00-00 00:00:00 ")
     private LocalDateTime modifyDate;
 
     /**장소*/
-    @Schema(description = "장소 정보(조회에 사용)")
     private PlaceDto place = new PlaceDto();
 
     /**회원*/
-    @Schema(description = "회원 정보(조회에 사용)")
     private MemberDto member = new MemberDto();
 
     public PlaceIntro toEntity(){
@@ -94,5 +77,51 @@ public class PlaceIntroDto {
         this.score = entity.getScore();
         this.createDate = entity.getCreateDate();
         this.modifyDate = entity.getModifyDate();
+    }
+
+    public static PlaceIntroDto createOf(PlaceIntroCreateRequest request){
+        PlaceIntroDto placeIntroDto = new PlaceIntroDto();
+        placeIntroDto.setPlaceNum(request.getPlaceNum());
+        placeIntroDto.setIntroText(request.getIntroText());
+        placeIntroDto.setVisitDate(request.getVisitDate());
+        placeIntroDto.setScore(request.getScore());
+        return placeIntroDto;
+    }
+
+    public static PlaceIntroDto updateOf(PlaceIntroUpdateRequest request){
+        PlaceIntroDto placeIntroDto = new PlaceIntroDto();
+        placeIntroDto.setIdx(request.getIdx());
+        placeIntroDto.setPlaceNum(request.getPlaceNum());
+        placeIntroDto.setIntroText(request.getIntroText());
+        placeIntroDto.setVisitDate(request.getVisitDate());
+        placeIntroDto.setScore(request.getScore());
+        return placeIntroDto;
+    }
+
+    @Override
+    public String getParentIdx() {
+        return this.placeNum;
+    }
+
+    @Override
+    public String getUploadCodePath() {
+        return "place/place";
+    }
+
+    @Override
+    public String getUploadCode() {
+        return "upload.place.public";
+    }
+
+    private List<CmsFileDto> cmsFileList = new ArrayList<>();
+
+    @Override
+    public CmsFileDto[] getCmsFileList() {
+        return this.cmsFileList.toArray(new CmsFileDto[this.cmsFileList.size()]);
+    }
+
+    @Override
+    public void addCmsFileList(CmsFileDto cmsFileDto) {
+        this.cmsFileList.add(cmsFileDto);
     }
 }
