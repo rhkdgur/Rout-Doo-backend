@@ -17,9 +17,17 @@ public interface FriendListRepository extends JpaRepository<MemberFriends, Long>
 
 	/**친구 목록 차단 여부 및 회원 정보로 조회*/
 	@Query("SELECT new com.routdoo.dailyroutine.auth.member.dto.MemberFriendsResponse(" +
-			"	mf.idx, m.id, mf.blockYn, m.nickname, m.gender, m.age, m.mbti" +
+			"	mf.idx, mf.invitedId, mf.blockYn, m.nickname, m.gender, m.age, m.mbti" +
 			")  FROM MemberFriends mf " +
 			" JOIN mf.member m " +
 			" WHERE mf.blockYn =:blockYn and mf.member.id =:memberId ")
 	List<MemberFriendsResponse> selectMemberBlockYnAndMemberList(@Param("blockYn") String blockYn, @Param("memberId") String memberId);
+
+	/**
+	 * 초대되는 아이디 존재 여부 확인
+	 * @param invitedId
+	 * @return
+	 */
+	@Query("SELECT f FROM MemberFriends f where f.invitedId=:invitedId")
+	MemberFriends selectMemberFriendsInvitedIdView(@Param("invitedId") String invitedId);
 }

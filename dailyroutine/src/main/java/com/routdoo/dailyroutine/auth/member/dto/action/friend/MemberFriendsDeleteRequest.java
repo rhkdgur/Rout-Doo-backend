@@ -1,7 +1,7 @@
 package com.routdoo.dailyroutine.auth.member.dto.action.friend;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,6 +22,6 @@ import lombok.Setter;
 public class MemberFriendsDeleteRequest {
     
     @Schema(description = "회원 친구 일련번호")
-    @NotBlank(message = "일련번호는 필수값입니다.")
+    @NotNull(message = "일련번호는 필수값입니다.")
     private long idx = 0L;
 }

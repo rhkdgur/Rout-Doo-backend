@@ -89,8 +89,6 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 								qPlace.addr,
 								qPlace.mapx,
 								qPlace.mapy,
-								qPlace.useInfo,
-								qPlace.detailText,
 								qPlace.pstatus.stringValue(),
 								qPlace.createDate,
 								qPlace.modifyDate
@@ -127,8 +125,6 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 						qPlace.addr,
 						qPlace.mapx,
 						qPlace.mapy,
-						qPlace.useInfo,
-						qPlace.detailText,
 						qPlace.pstatus.stringValue(),
 						qPlace.createDate,
 						qPlace.modifyDate
@@ -149,8 +145,6 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 			placeDto.setAddr(tp.get(qPlace.addr));
 			placeDto.setMapx(tp.get(qPlace.mapx));
 			placeDto.setMapy(tp.get(qPlace.mapy));
-			placeDto.setUseInfo(tp.get(qPlace.useInfo));
-			placeDto.setDetailText(tp.get(qPlace.detailText));
 			placeDto.setPstatus(tp.get(qPlace.pstatus.stringValue()));
 			placeDto.setCreateDate(tp.get(qPlace.createDate));
 			placeDto.setModifyDate(tp.get(qPlace.modifyDate));
@@ -240,7 +234,8 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 	public boolean deletePlaceIntro(PlaceIntroDto dto) throws Exception {
 		QPlaceIntro qPlaceIntro = QPlaceIntro.placeIntro;
 		return jpaQueryFactory.delete(qPlaceIntro)
-				.where(qPlaceIntro.idx.eq(dto.getIdx())).execute() > 0;
+				.where(new BooleanBuilder().and(qPlaceIntro.member.id.eq(dto.getMemberId())
+						.and(qPlaceIntro.idx.eq(dto.getIdx())))).execute() > 0;
 	}
 
 	@Override

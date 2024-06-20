@@ -48,12 +48,6 @@ public class PlaceSummaryResponse {
     /**위도*/
     private String mapy;
 
-    /**이용안내*/
-    private String useInfo;
-
-    /**상세정보*/
-    private String detailText;
-
     /**사용여부*/
     private String pstatus;
 

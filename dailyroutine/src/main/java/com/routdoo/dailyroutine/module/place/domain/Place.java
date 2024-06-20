@@ -1,5 +1,6 @@
 package com.routdoo.dailyroutine.module.place.domain;
 
+import com.routdoo.dailyroutine.auth.member.domain.Member;
 import com.routdoo.dailyroutine.module.place.dto.PlaceDto;
 import com.routdoo.dailyroutine.module.place.service.PlaceStatusType;
 import jakarta.persistence.*;
@@ -41,6 +42,10 @@ public class Place implements Persistable<String> {
 	@Comment("장소번호")
 	private String placeNum;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id")
+	private Member member;
+
 	@Comment("제목")
 	private String title;
 
@@ -59,14 +64,6 @@ public class Place implements Persistable<String> {
 	
 	@Comment("위도")
 	private String mapy;
-
-	@Comment("이용안내")
-	@Lob
-	private String useInfo;
-	
-	@Comment("상세내용")
-	@Lob
-	private String detailText;
 	
 	@Comment("사용여부")
 	@Enumerated(EnumType.STRING)
@@ -93,31 +90,16 @@ public class Place implements Persistable<String> {
 	public Place(PlaceDto dto) {
 		this.placeNum = dto.getPlaceNum();
 		this.title = dto.getTitle();
+		this.member = new Member();
+		member.addId(dto.getMemberId());
 		this.tel = dto.getTel();
 		this.categCd = dto.getCategCd();
 		this.addr = dto.getAddr();
 		this.mapx = dto.getMapx();
 		this.mapy = dto.getMapy();
-		this.useInfo = dto.getUseInfo();
 		this.pstatus = PlaceStatusType.valueOf(dto.getPstatus());
-		this.detailText = dto.getDetailText();
 		this.createDate = dto.getCreateDate();
 		this.modifyDate = dto.getModifyDate();
-	}
-	
-	/**
-	 * 변경 처리 
-	 * @param dto
-	 */
-	public void chagnePlace(PlaceDto dto) {
-		this.title = dto.getTitle();
-		this.categCd = dto.getCategCd();
-		this.addr = dto.getAddr();
-		this.mapx = dto.getMapx();
-		this.mapy = dto.getMapy();
-		this.useInfo = dto.getUseInfo();
-		this.pstatus = PlaceStatusType.valueOf(dto.getPstatus());
-		this.detailText = dto.getDetailText();
 	}
 
 	public Map<String,Object> toSummaryMap(){
@@ -130,6 +112,19 @@ public class Place implements Persistable<String> {
 		map.put("mapy",this.mapy);
 		map.put("categCd",this.categCd);
 		return map;
+	}
+	
+	/**
+	 * 변경 처리 
+	 * @param dto
+	 */
+	public void chagnePlace(PlaceDto dto) {
+		this.title = dto.getTitle();
+		this.categCd = dto.getCategCd();
+		this.addr = dto.getAddr();
+		this.mapx = dto.getMapx();
+		this.mapy = dto.getMapy();
+		this.pstatus = PlaceStatusType.valueOf(dto.getPstatus());
 	}
 	
 	public void addPlaceNum(String placeNum) {

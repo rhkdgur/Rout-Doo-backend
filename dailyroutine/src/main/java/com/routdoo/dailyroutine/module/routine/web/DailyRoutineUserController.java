@@ -403,7 +403,7 @@ public class DailyRoutineUserController extends BaseModuleController{
 		
 		//친구목록
 		MemberFriendsDto friendsDto = new MemberFriendsDto();
-		friendsDto.setMemberId("");
+		friendsDto.setMemberId(memberSession.getMemberSession().getId());
 		friendsDto.setBlockYn("N");
 		List<MemberFriendsResponse> friendList = friendListService.selectFriendListResultList(friendsDto);
 		

@@ -64,8 +64,10 @@ public class PlaceIntro {
     @Builder
     public PlaceIntro(PlaceIntroDto dto) {
         this.idx = dto.getIdx();
-        this.place = new Place(dto.getPlace());
-        this.member = new Member(dto.getMember());
+        this.place = new Place();
+        this.place.addPlaceNum(dto.getPlaceNum());
+        this.member = new Member();
+        member.addId(dto.getMemberId());
         this.introText = dto.getIntroText();
         this.visitDate = dto.getVisitDate();
         this.score = dto.getScore();
@@ -83,5 +85,11 @@ public class PlaceIntro {
 
     public void addMember(Member member){
         this.member = member;
+    }
+
+    public void addChangePlaceIntro(PlaceIntro placeIntro) {
+        this.introText = placeIntro.getIntroText();
+        this.visitDate = placeIntro.getVisitDate();
+        this.score = placeIntro.getScore();
     }
 }

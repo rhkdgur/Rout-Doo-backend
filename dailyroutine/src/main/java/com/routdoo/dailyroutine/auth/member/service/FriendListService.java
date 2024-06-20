@@ -30,6 +30,20 @@ public class FriendListService {
         return friendListRepository.selectMemberBlockYnAndMemberList(dto.getBlockYn(), dto.getMemberId());
     }
 
+    /**
+     * 친구 단일 조회
+     * @param dto
+     * @return
+     * @throws Exception
+     */
+    public MemberFriendsDto selectFriendListExistView(MemberFriendsDto dto) throws Exception {
+        MemberFriends memberFriends = friendListRepository.selectMemberFriendsInvitedIdView(dto.getInvitedId());
+        if(memberFriends == null){
+            return null;
+        }
+        return new MemberFriendsDto(memberFriends);
+    }
+
     /***
      * 친구 목록 등록
      * @param dto

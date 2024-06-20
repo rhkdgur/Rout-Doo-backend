@@ -53,11 +53,12 @@ public class MemberFriendsUserController extends BaseModuleController {
     @Operation(summary = "친구 리스트 (친구 목록)")
     @Parameters({
             @Parameter(name = "sstring", description = "검색어", required = false),
-            @Parameter(name = "stype", description = "검색타입 ex) title, nickname ", required = false)
+//            @Parameter(name = "stype", description = "검색타입 ex) title, nickname ", required = false)
     })
     @GetMapping(API_URL+"/member/nickname/friends/list")
     public Page<MemberFriendsResponse>  selectMemberFriendsList(@Parameter(hidden = true) MemberDefaultDto searchDto) throws Exception {
         searchDto.setSize(20);
+        searchDto.setStype("nickname");
         searchDto.setMemberId(memberSession.getMemberSession().getId());
         return friendListService.selectMemberFriendsPageList(searchDto);
     }
@@ -72,6 +73,7 @@ public class MemberFriendsUserController extends BaseModuleController {
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "422", description = "에러발생"),
+                    @ApiResponse(responseCode = "208", description = "이미 존재하는 친구회원 알림"),
             }
     )
     @PostMapping(API_URL+"/member/friends/ins")
@@ -79,6 +81,12 @@ public class MemberFriendsUserController extends BaseModuleController {
 
         try{
             MemberFriendsDto memberFriendsDto = MemberFriendsDto.createOf(memberFriendsCreateRequest);
+
+            MemberFriendsDto prevDto = friendListService.selectFriendListExistView(memberFriendsDto);
+            if(prevDto != null){
+                return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("친구목록에 존재하는 회원입니다."),HttpStatus.ALREADY_REPORTED);
+            }
+
             memberFriendsDto.setMemberId(memberSession.getMemberSession().getId());
             friendListService.insertFriendList(memberFriendsDto);
         }catch (Exception e) {

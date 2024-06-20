@@ -254,7 +254,10 @@ public class MemberUserController extends BaseModuleController{
 	@GetMapping(API_URL+"/member/nickname/list")
 	public Page<MemberSummaryResponse> selectMemberList(@Parameter(hidden = true) MemberDefaultDto searchDto) throws Exception {
 		searchDto.setStype("nickname");
+		searchDto.setExclude(true);
+		searchDto.setExcludeType("myself");
 		searchDto.setSize(20);
+		searchDto.setMemberId(memberSession.getMemberSession().getId());
 		return  memberService.selectMemberPageList(searchDto);
 	}
 

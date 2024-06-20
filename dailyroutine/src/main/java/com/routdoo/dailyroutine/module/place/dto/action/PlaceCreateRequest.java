@@ -58,16 +58,6 @@ public class PlaceCreateRequest implements Serializable {
     /**위도*/
     private String mapy;
 
-    @Schema(description = "이용안내", example = "이용안내")
-    @NotEmpty
-    /**이용안내*/
-    private String useInfo;
-
-    @Schema(description = "상세정보", example = "상세정보")
-    @NotEmpty
-    /**상세정보*/
-    private String detailText;
-
     @Schema(description = "사용여부", example = "사용 : Y, 미사용 : N")
     @NotBlank
     /**사용여부*/

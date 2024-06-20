@@ -31,13 +31,13 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
         QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
         BooleanBuilder sql = new BooleanBuilder();
 
-        if(!searchDto.isFriend()) {
-            if (searchDto.getSstring() != null && !searchDto.getSstring().isEmpty()) {
-                if (searchDto.getStype().equals("nickname")) {
-                    sql.and(qMember.nickname.like("%" + searchDto.getSstring() + "%"));
-                }
+        if (searchDto.getSstring() != null && !searchDto.getSstring().isEmpty()) {
+            if (searchDto.getStype().equals("nickname")) {
+                sql.and(qMember.nickname.like("%" + searchDto.getSstring() + "%"));
             }
+        }
 
+        if(!searchDto.isFriend()) {
             if (searchDto.isExclude()) {
                 if (searchDto.getExcludeType().equals("myself")) {
                     sql.and(qMember.id.ne(searchDto.getMemberId()));
@@ -86,11 +86,10 @@ public class MemberCustomRepositoryImpl extends BaseAbstractRepositoryImpl imple
 
     @Override
     public boolean updateMemberFriendsBlockYn(MemberFriendsDto dto) throws Exception {
-        QMember qMember = QMember.member;
         QMemberFriends qMemberFriends = QMemberFriends.memberFriends;
         return jpaQueryFactory.update(qMemberFriends)
                 .set(qMemberFriends.blockYn, dto.getBlockYn())
-                .where(new BooleanBuilder().and(qMember.id.eq(dto.getMemberId())).and(qMemberFriends.idx.eq(dto.getIdx())))
+                .where(new BooleanBuilder().and(qMemberFriends.member.id.eq(dto.getMemberId())).and(qMemberFriends.idx.eq(dto.getIdx())))
                 .execute() > 0;
     }
 

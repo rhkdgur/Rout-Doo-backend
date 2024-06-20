@@ -8,6 +8,9 @@ import com.routdoo.dailyroutine.module.place.dto.*;
 import com.routdoo.dailyroutine.module.place.dto.action.PlaceCreateRequest;
 import com.routdoo.dailyroutine.module.place.dto.action.PlaceDeleteRequest;
 import com.routdoo.dailyroutine.module.place.dto.action.PlaceUpdateRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.intro.PlaceIntroCreateRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.intro.PlaceIntroDeleteRequest;
+import com.routdoo.dailyroutine.module.place.dto.action.intro.PlaceIntroUpdateRequest;
 import com.routdoo.dailyroutine.module.place.dto.with.PlaceViewWIthCommentListResponse;
 import com.routdoo.dailyroutine.module.place.service.PlaceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -142,25 +145,22 @@ public class PlaceUserController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "장소 등록")
-    @Parameters({
-            @Parameter(name = "_file", description = "formData 에서 파일 형식, 파일 이름에 해당 , 파일명은 아무거나 선언가능 _file은 예시"),
-            @Parameter(name = "_alt_file", description = " formData에서 String으로 전달,  파일의 비고명 아무거나 선언가능 대신 파일명의 name을 뒤에 그대로 붙여줘야함 _alt{파일name}")
-    })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "등록 완료"),
             @ApiResponse(responseCode = "422", description = "등록 오류")
     })
-    @PostMapping(value = API_URL + "/place/act/ins" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> insertPlace(final @Valid @RequestPart PlaceCreateRequest placeCreateRequest) throws Exception {
+    @PostMapping(value = API_URL + "/place/ins")
+    public ResponseEntity<?> insertPlace(final @Valid @RequestBody PlaceCreateRequest placeCreateRequest) throws Exception {
+        String placeNum = "";
         try {
             PlaceDto dto = PlaceDto.createOf(placeCreateRequest);
             dto.setMemberId(memberSession.getMemberSession().getId());
-            placeService.insertPlace(dto);
+            placeNum = placeService.insertPlace(dto);
         } catch (Exception e) {
             logger.error("### insert place error : {}", e.getMessage());
             return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("장소 등록시 오류가 발생하였습니다."), HttpStatus.UNPROCESSABLE_ENTITY);
         }
-        return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("등록 되었습니다."), HttpStatus.OK);
+        return new ResponseEntity<>(CommonResponse.resAllOf("등록 되었습니다.",placeNum), HttpStatus.OK);
     }
 
     /**
@@ -171,17 +171,11 @@ public class PlaceUserController extends BaseModuleController {
      * @throws Exception
      */
     @Operation(summary = "장소 수정")
-    @Parameters({
-            @Parameter(name = "_file", description = "formData 에서 파일 형식 ,파일 이름에 해당 , 파일명은 아무거나 선언가능 _file은 예시"),
-            @Parameter(name = "_alt_file", description = "formData 에서 string, 파일의 비고명 아무거나 선언가능 대신 파일명의 name을 뒤에 그대로 붙여줘야함 _alt{파일name}"),
-            @Parameter(name = "_modify_file", description = "수정하는 파일에 대한 parent_idx 값, 파일의 비고명 아무거나 선언가능 대신 파일명의 name을 뒤에 그대로 붙여줘야함 _modify{파일name}"),
-            @Parameter(name = "_delete_file", description = "삭제하는 파일에 대한 parent_idx 값, 파일의 비고명 아무거나 선언가능 대신 파일명의 name을 뒤에 그대로 붙여줘야함 _delete{파일name}")
-    })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "수정 완료"),
             @ApiResponse(responseCode = "422", description = "수정 오류")
     })
-    @PutMapping(value = API_URL + "/place/act/upd" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = API_URL + "/place/upd" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updatePlace(final @Valid @RequestPart PlaceUpdateRequest placeUpdateRequest) throws Exception {
         try {
             PlaceDto placeDto = PlaceDto.updateOf(placeUpdateRequest);
@@ -206,7 +200,7 @@ public class PlaceUserController extends BaseModuleController {
             @ApiResponse(responseCode = "200", description = "삭제 완료"),
             @ApiResponse(responseCode = "422", description = "삭제 오류")
     })
-    @DeleteMapping(API_URL + "/place/act/del")
+    @DeleteMapping(API_URL + "/place/del")
     public ResponseEntity<?> deletePlace(final @Valid @RequestBody PlaceDeleteRequest placeDeleteRequest) throws Exception {
 
         try {
@@ -219,5 +213,89 @@ public class PlaceUserController extends BaseModuleController {
         }
 
         return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("삭제 되었습니다."), HttpStatus.OK);
+    }
+
+
+    /**
+     * 장소 소개글 등록
+     * @param placeIntroCreateRequest
+     * @return
+     * @throws Exception
+     */
+    @Operation(summary = "장소 소개글 등록")
+    @Parameters({
+            @Parameter(name = "_file", description = "formData 에서 파일 형식, 파일 이름에 해당 , 파일명은 아무거나 선언가능 _file은 예시"),
+            @Parameter(name = "_alt_file", description = " formData에서 String으로 전달,  파일의 비고명 아무거나 선언가능 대신 파일명의 name을 뒤에 그대로 붙여줘야함 _alt{파일name}")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "등록 완료"),
+            @ApiResponse(responseCode = "422", description = "등록 오류")
+    })
+    @PostMapping(value=API_URL+"/place/intro/ins", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> insertPlaceIntro(final @Valid @RequestPart PlaceIntroCreateRequest placeIntroCreateRequest) throws Exception {
+        try{
+            PlaceIntroDto dto = PlaceIntroDto.createOf(placeIntroCreateRequest);
+            dto.setMemberId(memberSession.getMemberSession().getId());
+            placeService.insertPlaceIntro(dto);
+        }catch (Exception e){
+            logger.error("### insert place intro error : {}", e.getMessage());
+            return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("장소 소개글 등록시 오류가 발생했습니다."), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        return ResponseEntity.ok(CommonResponse.resOnlyMessageOf("등록 되었습니다."));
+    }
+
+    /**
+     * 장소 소개글 수정
+     * @param placeIntroUpdateRequest
+     * @return
+     * @throws Exception
+     */
+    @Operation(summary = "장소 소개글 수정")
+    @Parameters({
+            @Parameter(name = "_file", description = "formData 에서 파일 형식 ,파일 이름에 해당 , 파일명은 아무거나 선언가능 _file은 예시"),
+            @Parameter(name = "_alt_file", description = "formData 에서 string, 파일의 비고명 아무거나 선언가능 대신 파일명의 name을 뒤에 그대로 붙여줘야함 _alt{파일name}"),
+            @Parameter(name = "_modify_file", description = "수정하는 파일에 대한 parent_idx 값, 파일의 비고명 아무거나 선언가능 대신 파일명의 name을 뒤에 그대로 붙여줘야함 _modify{파일name}"),
+            @Parameter(name = "_delete_file", description = "삭제하는 파일에 대한 parent_idx 값, 파일의 비고명 아무거나 선언가능 대신 파일명의 name을 뒤에 그대로 붙여줘야함 _delete{파일name}")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "등록 완료"),
+            @ApiResponse(responseCode = "422", description = "등록 오류")
+    })
+    @PutMapping(value=API_URL+"/place/intro/upd", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> updatePlaceIntro(final @Valid @RequestPart PlaceIntroUpdateRequest placeIntroUpdateRequest) throws Exception {
+        try{
+            PlaceIntroDto dto = PlaceIntroDto.updateOf(placeIntroUpdateRequest);
+            dto.setMemberId(memberSession.getMemberSession().getId());
+            placeService.updatePlaceIntro(dto);
+        }catch (Exception e){
+            logger.error("### update place intro error : {}", e.getMessage());
+            return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("장소 소개글 수정시 오류가 발생했습니다."), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        return ResponseEntity.ok(CommonResponse.resOnlyMessageOf("수정 되었습니다."));
+    }
+
+    /**
+     * 장소 소개글 삭제
+     * @param placeIntroDeleteRequest
+     * @return
+     * @throws Exception
+     */
+    @Operation(summary = "장소 소개글 삭제")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "등록 완료"),
+            @ApiResponse(responseCode = "422", description = "등록 오류")
+    })
+    @DeleteMapping(value=API_URL+"/place/intro/del")
+    public ResponseEntity<?> deletePlaceIntro(final @Valid @RequestBody PlaceIntroDeleteRequest placeIntroDeleteRequest) throws Exception {
+        try{
+            PlaceIntroDto dto = new PlaceIntroDto();
+            dto.setIdx(placeIntroDeleteRequest.getIdx());
+            dto.setMemberId(memberSession.getMemberSession().getId());
+            placeService.deletePlaceIntro(dto);
+        }catch (Exception e){
+            logger.error("### delete place intro error : {}", e.getMessage());
+            return new ResponseEntity<>(CommonResponse.resOnlyMessageOf("장소 소개글 삭제시 오류가 발생했습니다."), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+        return ResponseEntity.ok(CommonResponse.resOnlyMessageOf("삭제 되었습니다."));
     }
 }

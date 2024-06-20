@@ -53,7 +53,7 @@ public class QPlaceComment extends EntityPathBase<PlaceComment> {
     public QPlaceComment(Class<? extends PlaceComment> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new com.routdoo.dailyroutine.auth.member.domain.QMember(forProperty("member")) : null;
-        this.place = inits.isInitialized("place") ? new QPlace(forProperty("place")) : null;
+        this.place = inits.isInitialized("place") ? new QPlace(forProperty("place"), inits.get("place")) : null;
     }
 
 }
