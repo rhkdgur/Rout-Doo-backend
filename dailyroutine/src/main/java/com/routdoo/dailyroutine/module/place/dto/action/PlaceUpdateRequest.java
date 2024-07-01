@@ -3,7 +3,6 @@ package com.routdoo.dailyroutine.module.place.dto.action;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,11 +31,6 @@ public class PlaceUpdateRequest {
     /**제목*/
     private String title;
 
-    @Schema(description = "연락처", example = "051-000-0000")
-    @NotNull
-    /**연락처*/
-    private String tel;
-
     @Schema(description = "카테고리 코드", example = "TEST")
     @NotBlank
     /**카테고리 코드*/
@@ -47,6 +41,11 @@ public class PlaceUpdateRequest {
     /**주소*/
     private String addr;
 
+    @Schema(description = "상세 주소", example = "부산 해운대구 ...")
+    @NotEmpty
+    /**주소*/
+    private String addrDetail;
+
     @Schema(description = "경도", example = "31.2321231")
     @NotEmpty
     /**경도*/
@@ -56,16 +55,6 @@ public class PlaceUpdateRequest {
     @NotEmpty
     /**위도*/
     private String mapy;
-
-    @Schema(description = "이용안내", example = "이용안내")
-    @NotEmpty
-    /**이용안내*/
-    private String useInfo;
-
-    @Schema(description = "상세정보", example = "상세정보")
-    @NotEmpty
-    /**상세정보*/
-    private String detailText;
 
     @Schema(description = "사용여부", example = "사용 : Y, 미사용 : N")
     @NotBlank

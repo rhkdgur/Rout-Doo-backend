@@ -103,6 +103,23 @@ public class PlaceUserController extends BaseModuleController {
         return placeService.selectPlacePageList(searchDto);
     }
 
+    /**
+     * 장소 추가시 사용하는 검색 창
+     * @param searchDto
+     * @return
+     * @throws Exception
+     */
+    @Operation(summary = "장소 추가시 사용하는 검색")
+    @Parameters(value = {
+            @Parameter(name="sstring", description = "검색어",required = false),
+            @Parameter(name = "page", description = "페이지 번호", required = false)
+    })
+    @GetMapping(API_URL+"/place/search")
+    public Page<PlaceSummaryResponse> selectPlaceSearchList(@Parameter(hidden = true) PlaceDefaultDto searchDto) throws Exception {
+        searchDto.setStype("search");
+        return placeService.selectPlaceSearchList(searchDto);
+    }
+
 
     /**
      * 장소 상세 조회
@@ -155,6 +172,7 @@ public class PlaceUserController extends BaseModuleController {
         try {
             PlaceDto dto = PlaceDto.createOf(placeCreateRequest);
             dto.setMemberId(memberSession.getMemberSession().getId());
+            dto.setPstatus("N");
             placeNum = placeService.insertPlace(dto);
         } catch (Exception e) {
             logger.error("### insert place error : {}", e.getMessage());

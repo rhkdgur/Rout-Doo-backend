@@ -40,9 +40,6 @@ public class PlaceDto {
 	/**제목*/
 	private String title;
 
-	/**연락처*/
-	private String tel;
-
 	/**카테고리 코드*/
 	private String categCd;
 
@@ -51,18 +48,15 @@ public class PlaceDto {
 
 	/**주소*/
 	private String addr;
+	
+	/**상세주소*/
+	private String addrDetail;
 
 	/**경도*/
 	private String mapx;
 
 	/**위도*/
 	private String mapy;
-
-	/**이용안내*/
-	private String useInfo;
-
-	/**상세정보*/
-	private String detailText;
 
 	/**사용여부*/
 	private String pstatus;
@@ -99,8 +93,8 @@ public class PlaceDto {
 		this.placeNum = entity.getPlaceNum();
 		this.title = entity.getTitle();
 		this.categCd = entity.getCategCd();
-		this.tel = entity.getTel();
 		this.addr = entity.getAddr();
+		this.addrDetail = entity.getAddrDetail();
 		this.mapx = entity.getMapx();
 		this.mapy = entity.getMapy();
 		this.pstatus = entity.getPstatus().name();
@@ -120,8 +114,8 @@ public class PlaceDto {
 		this.placeNum = entity.getPlaceNum();
 		this.title = entity.getTitle();
 		this.categCd = entity.getCategCd();
-		this.tel = entity.getTel();
 		this.addr = entity.getAddr();
+		this.addrDetail = entity.getAddrDetail();
 		this.mapx = entity.getMapx();
 		this.mapy = entity.getMapy();
 		this.pstatus = entity.getPstatus().name();
@@ -144,7 +138,7 @@ public class PlaceDto {
 		map.put("placeNum",this.placeNum);
 		map.put("title",this.title);
 		map.put("addr",this.addr);
-		map.put("tel",this.tel);
+		map.put("addrDetail",this.addrDetail);
 		map.put("mapx",this.mapx);
 		map.put("mapy",this.mapy);
 		map.put("categCd",this.categCd);
@@ -161,12 +155,11 @@ public class PlaceDto {
 	public static PlaceDto createOf(PlaceCreateRequest placeActionRequest){
 		PlaceDto create = new PlaceDto();
 		create.setTitle(placeActionRequest.getTitle());
-		create.setTel(placeActionRequest.getTel());
 		create.setCategCd(placeActionRequest.getCategCd());
 		create.setAddr(placeActionRequest.getAddr());
+		create.setAddrDetail(placeActionRequest.getAddrDetail());
 		create.setMapx(placeActionRequest.getMapx());
 		create.setMapy(placeActionRequest.getMapy());
-		create.setPstatus(placeActionRequest.getPstatus());
 		return create;
 	}
 
@@ -179,13 +172,11 @@ public class PlaceDto {
 		PlaceDto update = new PlaceDto();
 		update.setPlaceNum(placeActionRequest.getPlaceNum());
 		update.setTitle(placeActionRequest.getTitle());
-		update.setTel(placeActionRequest.getTel());
 		update.setCategCd(placeActionRequest.getCategCd());
 		update.setAddr(placeActionRequest.getAddr());
+		update.setAddrDetail(placeActionRequest.getAddrDetail());
 		update.setMapx(placeActionRequest.getMapx());
 		update.setMapy(placeActionRequest.getMapy());
-		update.setUseInfo(placeActionRequest.getUseInfo());
-		update.setDetailText(placeActionRequest.getDetailText());
 		update.setPstatus(placeActionRequest.getPstatus());
 		return update;
 	}

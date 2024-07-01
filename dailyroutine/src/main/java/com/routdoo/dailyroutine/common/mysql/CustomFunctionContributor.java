@@ -2,10 +2,7 @@ package com.routdoo.dailyroutine.common.mysql;
 
 import org.hibernate.boot.model.FunctionContributions;
 import org.hibernate.boot.model.FunctionContributor;
-import org.hibernate.dialect.MySQLDialect;
-import org.hibernate.type.StandardBasicTypes;
 
-import static org.apache.poi.ss.formula.eval.FunctionEval.registerFunction;
 import static org.hibernate.type.StandardBasicTypes.DOUBLE;
 
 /**
@@ -32,6 +29,10 @@ public class CustomFunctionContributor implements FunctionContributor {
 
         functionContributions.getFunctionRegistry()
                 .registerPattern("match_daily_routine_community","match (?1,?2) against (?3 in boolean mode)",
+                        functionContributions.getTypeConfiguration().getBasicTypeRegistry().resolve(DOUBLE));
+
+        functionContributions.getFunctionRegistry()
+                .registerPattern("match_place_insert_search","match (?1,?2) against (?3 in boolean mode)",
                         functionContributions.getTypeConfiguration().getBasicTypeRegistry().resolve(DOUBLE));
 
     }

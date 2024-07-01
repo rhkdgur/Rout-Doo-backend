@@ -3,6 +3,9 @@ package com.routdoo.dailyroutine.module.place.repository.impl;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringPath;
 import com.routdoo.dailyroutine.auth.member.domain.QMember;
 import com.routdoo.dailyroutine.cms.publiccode.domain.QPublicCode;
 import com.routdoo.dailyroutine.common.BaseAbstractRepositoryImpl;
@@ -10,6 +13,7 @@ import com.routdoo.dailyroutine.module.place.domain.*;
 import com.routdoo.dailyroutine.module.place.dto.*;
 import com.routdoo.dailyroutine.module.place.repository.PlaceCustomRepository;
 import com.routdoo.dailyroutine.module.place.service.PlaceStatusType;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Repository;
@@ -48,7 +52,15 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 		QPlaceComment qPlaceComment = QPlaceComment.placeComment;
 		
 		if(searchDto.getSstring() != null && !searchDto.getSstring().isEmpty()) {
-			
+			if(searchDto.getStype().equals("search")){
+				sql.and(qPlace.title.like("%"+searchDto.getSstring()+"%").or(qPlace.addr.like("%"+searchDto.getSstring()+"%")));
+			}
+			if(searchDto.getStype().equals("title")){
+				sql.and(qPlace.title.like("%"+searchDto.getSstring()+"%"));
+			}
+			if(searchDto.getStype().equals("addr")){
+				sql.and(qPlace.addr.like("%"+searchDto.getSstring()+"%"));
+			}
 		}
 		/**사용상태 조회*/
 		if(searchDto.getPstatus() != null && !searchDto.getPstatus().isEmpty()) {
@@ -63,6 +75,15 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 		}
 		
 		return sql;
+	}
+
+	public BooleanExpression placeFullSearch(StringPath target, StringPath target2, String sstring) {
+		if(!StringUtils.isBlank(sstring)){
+			final String formattedSearchWord = "\"" + sstring + "\"";
+			return Expressions.numberTemplate(Double.class, "function('match_place_insert_search', {0},{1},{2})",
+					target, target2, formattedSearchWord).gt(0);
+		}
+		return null;
 	}
 
 	@Override
@@ -83,10 +104,10 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 								PlaceSummaryResponse.class,
 								qPlace.placeNum,
 								qPlace.title,
-								qPlace.tel,
 								qPlace.categCd,
 								qPublicCode.title,
 								qPlace.addr,
+								qPlace.addrDetail,
 								qPlace.mapx,
 								qPlace.mapy,
 								qPlace.pstatus.stringValue(),
@@ -95,9 +116,9 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 						)
 				)
 					.from(qPlace)
-					.leftJoin(qPlaceComment).on(qPlace.placeNum.eq(qPlaceComment.place.placeNum)).fetchJoin()
-					.leftJoin(qPlaceLike).on(qPlace.placeNum.eq(qPlaceLike.place.placeNum)).fetchJoin()
-				  .leftJoin(qPublicCode).on(qPublicCode.pubCd.eq(qPlace.categCd)).fetchJoin()
+					.leftJoin(qPlaceComment).on(qPlace.placeNum.eq(qPlaceComment.place.placeNum))
+					.leftJoin(qPlaceLike).on(qPlace.placeNum.eq(qPlaceLike.place.placeNum))
+				  	.leftJoin(qPublicCode).on(qPublicCode.pubCd.eq(qPlace.categCd))
 					.where(commonQuery(searchDto))
 					.offset(searchDto.getPageable().getOffset())
 					.limit(searchDto.getPageable().getPageSize())
@@ -114,44 +135,72 @@ public class PlaceCustomRepositoryImpl extends BaseAbstractRepositoryImpl implem
 		QPlaceComment qPlaceComment = QPlaceComment.placeComment;
 		QPlaceLike qPlaceLike = QPlaceLike.placeLike;
 		QPublicCode qPublicCode = QPublicCode.publicCode;
-		List<PlaceDto> placesList = new ArrayList<PlaceDto>();
-		
-		List<Tuple> places = jpaQueryFactory.select(
-						qPlace.placeNum,
-						qPlace.title,
-						qPlace.tel,
-						qPlace.categCd,
-						qPublicCode.title,
-						qPlace.addr,
-						qPlace.mapx,
-						qPlace.mapy,
-						qPlace.pstatus.stringValue(),
-						qPlace.createDate,
-						qPlace.modifyDate
+
+
+		return jpaQueryFactory.select(
+					Projections.bean(
+							PlaceDto.class,
+							qPlace.placeNum,
+							qPlace.title,
+							qPlace.categCd,
+							qPublicCode.title,
+							qPlace.addr,
+							qPlace.addrDetail,
+							qPlace.mapx,
+							qPlace.mapy,
+							qPlace.pstatus.stringValue(),
+							qPlace.createDate,
+							qPlace.modifyDate
+					)
 				).from(qPlace)
 				.leftJoin(qPlaceComment).on(qPlace.placeNum.eq(qPlaceComment.place.placeNum)).fetchJoin()
 				.leftJoin(qPlaceLike).on(qPlace.placeNum.eq(qPlaceLike.place.placeNum)).fetchJoin()
 				.leftJoin(qPublicCode).on(qPublicCode.pubCd.eq(qPlace.categCd)).fetchJoin()
 				.where(commonQuery(searchDto))
 				.fetch();
+	}
 
-		for(Tuple tp : places){
-			PlaceDto placeDto = new PlaceDto();
-			placeDto.setPlaceNum(tp.get(qPlace.placeNum));
-			placeDto.setTitle(tp.get(qPlace.title));
-			placeDto.setTel(tp.get(qPlace.tel));
-			placeDto.setCategCd(tp.get(qPlace.categCd));
-			placeDto.setCategNm(tp.get(qPublicCode.title));
-			placeDto.setAddr(tp.get(qPlace.addr));
-			placeDto.setMapx(tp.get(qPlace.mapx));
-			placeDto.setMapy(tp.get(qPlace.mapy));
-			placeDto.setPstatus(tp.get(qPlace.pstatus.stringValue()));
-			placeDto.setCreateDate(tp.get(qPlace.createDate));
-			placeDto.setModifyDate(tp.get(qPlace.modifyDate));
-			placesList.add(placeDto);
-		}
-		
-		return placesList;
+	@Override
+	public Page<PlaceSummaryResponse> selectPlaceSearch(PlaceDefaultDto searchDto) throws Exception {
+
+		QPlace qPlace = QPlace.place;
+		QPlaceComment qPlaceComment = QPlaceComment.placeComment;
+		QPlaceLike qPlaceLike = QPlaceLike.placeLike;
+		QPublicCode qPublicCode = QPublicCode.publicCode;
+
+		Long cnt = jpaQueryFactory.select(qPlace.count()).from(qPlace)
+				.leftJoin(qPlaceComment).on(qPlace.placeNum.eq(qPlaceComment.place.placeNum)).fetchJoin()
+				.leftJoin(qPlaceLike).on(qPlace.placeNum.eq(qPlaceLike.place.placeNum)).fetchJoin()
+				.where(searchDto.getSstring().length() > 2 ? placeFullSearch(qPlace.title,qPlace.addr,searchDto.getSstring()) : commonQuery(searchDto))
+				.fetchOne();
+
+		List<PlaceSummaryResponse> places = jpaQueryFactory.select(
+						Projections.constructor(
+								PlaceSummaryResponse.class,
+								qPlace.placeNum,
+								qPlace.title,
+								qPlace.categCd,
+								qPublicCode.title,
+								qPlace.addr,
+								qPlace.addrDetail,
+								qPlace.mapx,
+								qPlace.mapy,
+								qPlace.pstatus.stringValue(),
+								qPlace.createDate,
+								qPlace.modifyDate
+						)
+				)
+				.from(qPlace)
+				.leftJoin(qPlaceComment).on(qPlace.placeNum.eq(qPlaceComment.place.placeNum))
+				.leftJoin(qPlaceLike).on(qPlace.placeNum.eq(qPlaceLike.place.placeNum))
+				.leftJoin(qPublicCode).on(qPublicCode.pubCd.eq(qPlace.categCd))
+				.where(searchDto.getSstring().length() > 2 ? placeFullSearch(qPlace.title,qPlace.addr,searchDto.getSstring()) : commonQuery(searchDto))
+				.offset(searchDto.getPageable().getOffset())
+				.limit(searchDto.getPageable().getPageSize())
+				.fetch();
+
+
+		return new PageImpl<>(places,searchDto.getPageable(),cnt);
 	}
 
 	@Override

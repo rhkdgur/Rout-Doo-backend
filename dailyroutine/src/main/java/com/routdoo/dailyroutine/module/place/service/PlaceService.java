@@ -56,6 +56,16 @@ public class PlaceService {
 	public Page<PlaceSummaryResponse> selectPlacePageList(PlaceDefaultDto searchDto) throws Exception {
 		return placeRepository.selectPlacePageList(searchDto);
 	}
+
+	/**
+	 * 장소 검색
+	 * @param searchDto
+	 * @return
+	 * @throws Exception
+	 */
+	public Page<PlaceSummaryResponse> selectPlaceSearchList(PlaceDefaultDto searchDto) throws Exception {
+		return placeRepository.selectPlaceSearch(searchDto);
+	}
 	
 	/**
 	 * 장소 목록(페이징 x)

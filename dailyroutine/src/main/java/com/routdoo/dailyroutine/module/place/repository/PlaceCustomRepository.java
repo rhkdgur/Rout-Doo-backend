@@ -35,6 +35,14 @@ public interface PlaceCustomRepository {
 	 * @throws Exception
 	 */
 	List<PlaceDto> selectPlaceList(PlaceDefaultDto searchDto) throws Exception;
+
+	/**
+	 * 장소 검색
+	 * @param searchDto
+	 * @return
+	 * @throws Exception
+	 */
+	Page<PlaceSummaryResponse> selectPlaceSearch(PlaceDefaultDto searchDto) throws Exception;
 	
 	/**
 	 * 장소 상세정보

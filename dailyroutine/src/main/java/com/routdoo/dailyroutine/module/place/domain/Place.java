@@ -51,13 +51,12 @@ public class Place implements Persistable<String> {
 
 	@Comment("카테고리 코드")
 	private String categCd;
-
-	@Comment("연락처")
-	@Column(length= 50)
-	private String tel;
 	
 	@Comment("주소")
 	private String addr;
+	
+	@Comment("상세 주소")
+	private String addrDetail;
 	
 	@Comment("경도")
 	private String mapx;
@@ -92,9 +91,9 @@ public class Place implements Persistable<String> {
 		this.title = dto.getTitle();
 		this.member = new Member();
 		member.addId(dto.getMemberId());
-		this.tel = dto.getTel();
 		this.categCd = dto.getCategCd();
 		this.addr = dto.getAddr();
+		this.addrDetail = dto.getAddrDetail();
 		this.mapx = dto.getMapx();
 		this.mapy = dto.getMapy();
 		this.pstatus = PlaceStatusType.valueOf(dto.getPstatus());
@@ -107,7 +106,7 @@ public class Place implements Persistable<String> {
 		map.put("placeNum",this.placeNum);
 		map.put("title",this.title);
 		map.put("addr",this.addr);
-		map.put("tel",this.tel);
+		map.put("addrDetail",this.addrDetail);
 		map.put("mapx",this.mapx);
 		map.put("mapy",this.mapy);
 		map.put("categCd",this.categCd);
@@ -122,6 +121,7 @@ public class Place implements Persistable<String> {
 		this.title = dto.getTitle();
 		this.categCd = dto.getCategCd();
 		this.addr = dto.getAddr();
+		this.addrDetail = dto.getAddrDetail();
 		this.mapx = dto.getMapx();
 		this.mapy = dto.getMapy();
 		this.pstatus = PlaceStatusType.valueOf(dto.getPstatus());

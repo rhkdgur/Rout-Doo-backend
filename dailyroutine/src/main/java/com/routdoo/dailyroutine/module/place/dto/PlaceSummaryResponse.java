@@ -30,9 +30,6 @@ public class PlaceSummaryResponse {
     /**제목*/
     private String title;
 
-    /**연락처*/
-    private String tel;
-
     /**카테고리 코드*/
     private String categCd;
 
@@ -41,6 +38,9 @@ public class PlaceSummaryResponse {
 
     /**주소*/
     private String addr;
+    
+    /**상세 주소*/
+    private String addrDetail;
 
     /**경도*/
     private String mapx;

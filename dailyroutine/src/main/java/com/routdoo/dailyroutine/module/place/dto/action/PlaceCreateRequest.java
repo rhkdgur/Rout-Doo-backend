@@ -3,7 +3,6 @@ package com.routdoo.dailyroutine.module.place.dto.action;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,11 +32,6 @@ public class PlaceCreateRequest implements Serializable {
     /**제목*/
     private String title;
 
-    @Schema(description = "연락처", example = "051-000-0000")
-    @NotNull
-    /**연락처*/
-    private String tel;
-
     @Schema(description = "카테고리 코드", example = "TEST")
     @NotBlank
     /**카테고리 코드*/
@@ -48,6 +42,11 @@ public class PlaceCreateRequest implements Serializable {
     /**주소*/
     private String addr;
 
+    @Schema(description = "상세 주소", example = "100동 301호..")
+    @NotEmpty
+    /**주소*/
+    private String addrDetail;
+
     @Schema(description = "경도", example = "31.2321231")
     @NotEmpty
     /**경도*/
@@ -57,10 +56,5 @@ public class PlaceCreateRequest implements Serializable {
     @NotEmpty
     /**위도*/
     private String mapy;
-
-    @Schema(description = "사용여부", example = "사용 : Y, 미사용 : N")
-    @NotBlank
-    /**사용여부*/
-    private String pstatus;
 
 }
