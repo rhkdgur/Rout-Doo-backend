@@ -21,9 +21,9 @@ Rout!Doo (스케줄 관리 앱) 사이드 프로젝트입니다.
 
 
 ## ![icons8-연대순-주간-50](https://github.com/rhkdgur/Rout-Doo-backend/assets/67618667/8b45a8f0-dfa5-4027-8be9-cf255538e236) 프로젝트 요점
-* [API 기능 로직](https://github.com/rhkdgur/Rout-Doo-backend/wiki/API-%EA%B8%B0%EB%8A%A5-%EB%B0%8F-%EB%B9%84%EC%A6%88%EB%8B%88%EC%8A%A4-%EB%A1%9C%EC%A7%81-%EC%A0%95%EB%A6%AC)
+* [API 비즈니스 기능 정리](https://github.com/rhkdgur/Rout-Doo-backend/wiki/API-%EA%B8%B0%EB%8A%A5-%EB%B0%8F-%EB%B9%84%EC%A6%88%EB%8B%88%EC%8A%A4-%EB%A1%9C%EC%A7%81-%EC%A0%95%EB%A6%AC)
 * [세션 관리](https://github.com/rhkdgur/Rout-Doo-backend/wiki/%EC%84%B8%EC%85%98%EA%B3%BC-%EC%BA%90%EC%8B%B1-%EA%B4%80%EB%A6%AC-%EB%B0%A9%EB%B2%95)
-* 
+
 
 ## ![icons8-연대순-주간-50](https://github.com/rhkdgur/Rout-Doo-backend/assets/67618667/8b45a8f0-dfa5-4027-8be9-cf255538e236) 작업회고
 * [CORS 에러 이슈에 대한 회고](https://github.com/rhkdgur/Rout-Doo-backend/wiki/CrossOrigin-%EC%9D%B4%EC%8A%88-%EC%9B%90%EC%9D%B8%EA%B3%BC-%ED%95%B4%EA%B2%B0)
