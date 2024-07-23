@@ -25,12 +25,15 @@ Rout!Doo (스케줄 관리 앱) 사이드 프로젝트입니다.
 * [명시적 DTO 전달과 동적 Map을 이용한 데이터 전달에 대한 회고](https://github.com/rhkdgur/Rout-Doo-backend/wiki/%EB%AA%85%EC%8B%9C%EC%A0%81-DTO%EC%99%80-%EB%8F%99%EC%A0%81-Map-%EC%B2%98%EB%A6%AC-%EB%B0%A9%EC%8B%9D%EC%97%90-%EB%8C%80%ED%95%9C-%ED%9A%8C%EA%B3%A0)
 * [Full Text Search 사용하기](https://github.com/rhkdgur/Rout-Doo-backend/wiki/%EA%B2%80%EC%83%89-%EC%8B%9C%EC%8A%A4%ED%85%9C-Full-Text-Search-%EC%A0%81%EC%9A%A9%EA%B8%B0)
 
+
 ## ![icons8-연대순-주간-50](https://github.com/rhkdgur/Rout-Doo-backend/assets/67618667/8b45a8f0-dfa5-4027-8be9-cf255538e236) Application UI
 
 ![image](https://github.com/user-attachments/assets/d6a1c5fe-8d64-4129-8754-4a3e5df01c2a)
 
+
 ## ![icons8-연대순-주간-50](https://github.com/rhkdgur/Rout-Doo-backend/assets/67618667/8b45a8f0-dfa5-4027-8be9-cf255538e236) 아키텍처 구조
 
+![image](https://github.com/user-attachments/assets/bb032ce9-3a32-45b4-b0a8-4a7de921a3e5)
 
 
 ## ![icons8-연대순-주간-50](https://github.com/rhkdgur/Rout-Doo-backend/assets/67618667/8b45a8f0-dfa5-4027-8be9-cf255538e236) DB ERD 구조
