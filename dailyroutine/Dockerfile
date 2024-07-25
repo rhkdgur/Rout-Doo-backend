@@ -10,8 +10,10 @@ RUN ./gradlew clean bootJar
 FROM openjdk:17.0.2-slim-buster
 
 WORKDIR /app
-COPY  --from=builder /app/build/libs/dailyroutine.jar app.jar
+COPY  --from=builder /app/build/libs/dailyroutine.jar dailyroutine.jar
+
+EXPOSE 8080
 
 #ENV PROFILE="dev"
 
-ENTRYPOINT ["java", "-jar" ,"app.jar" , "-Dspring.profiles.active=dev"]
+ENTRYPOINT ["java", "-jar" ,"dailyroutine.jar" , "-Dspring.profiles.active=dev"]
