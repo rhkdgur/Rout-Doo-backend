@@ -45,8 +45,8 @@ jobs:
           context: .
           file: ./Dockerfile
           push: false
-          tags: dailyRoutine:latest
-    - run: /usr/bin/docker save -o dailyRoutine.tar dailyRoutine:latest
+          tags: dailyroutine:latest
+    - run: /usr/bin/docker save -o dailyroutine.tar dailyroutine:latest
 
     - name: Send docker image file to test server
       uses: appleboy/scp-action@master
@@ -55,8 +55,8 @@ jobs:
         username: ${{ secrets.POSTOFFICE_NAME }}
         password : ${{ secrets.POSTOFFICE_PASS }}
         port: 7022
-        source: "dailyRoutine.tar"
-        target: "/home/cashnamu/versions"
+        source: "dailyroutine.tar"
+        target: "/home/dailyroutine/versions"
 
 
     - name: Bootup server
@@ -68,8 +68,8 @@ jobs:
         port: 7022
         connect_timeout: 10s
         first_ssh: |
-          docker stop dailyRoutine || true
-          docker rm dailyRoutine || true
-          docker image rm dailyRoutine:latest || true
-          docker load -i /home/postoffice/dailyRoutine/dailyRoutine.tar
-          docker run -d -p 32468:8080 --name dailyRoutine dailyRoutine:latest
+          docker stop dailyroutine || true
+          docker rm dailyroutine || true
+          docker image rm dailyroutine:latest || true
+          docker load -i /home/postoffice/dailyroutine/dailyroutine.tar
+          docker run -d -p 32468:8080 --name dailyroutine dailyroutine:latest
