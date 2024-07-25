@@ -3,7 +3,8 @@ spring:
     group:
       local : local,common
       dev : dev,common
-    active: dev
+      nCloud : nCloud, common
+#    active: dev
 
 ---
 # profiles local
@@ -50,6 +51,27 @@ spring:
 globals:
    upload:
       path: /routidoo/tomcat/webapps/ROOT/upload
+
+
+---
+spring:
+  config:
+    activate:
+      on-profile: nCloud
+
+  datasource:
+    url: jdbc:mysql://host.docker.internal:3306/routidoo?serverTimezone=UTC&characterEncoding=UTF-8
+    username: routidoo
+    password: routidoo
+    tomcat:
+      initial-size: 20
+      max-idle: 15
+      min-idle: 8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+globals:
+  upload:
+    path: C:/temp/upload/dailyRoutine
 
 # 공통 환경 설정
 ---
