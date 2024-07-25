@@ -62,7 +62,7 @@ jobs:
       uses: appleboy/scp-action@master
       with:
         host: "115.85.182.23"
-        username: ${{ secrets.POSTOFFICE_NAME }}
+        username:  ${{ secrets.POSTOFFICE_NAME }}
         password : ${{ secrets.POSTOFFICE_PASS }}
         port: 22
         source: "dailyRoutine.tar"
