@@ -16,4 +16,4 @@ EXPOSE 8080
 
 #ENV PROFILE="dev"
 
-ENTRYPOINT ["java", "-jar" ,"dailyroutine.jar" , "-Dspring.profiles.active=dev"]
+ENTRYPOINT ["java", "-jar" ,"dailyroutine.jar" , "-Dspring.profiles.active=nCloud"]
