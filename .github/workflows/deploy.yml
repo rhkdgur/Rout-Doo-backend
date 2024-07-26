@@ -75,10 +75,10 @@ jobs:
           if [ "$(docker ps -aq -f name=dailyroutine-test)" ]; then
               docker stop dailyroutine-test || true
               docker rm dailyroutine-test || true
-          fi
+          fi;
           if [ "$(docker images -q dailyroutine:latest)" ]; then
             docker image rm dailyroutine:latest || true
-          fi
+          fi;
         last_ssh: |
           docker load -i /home/dailyroutine/versions/dailyroutine.tar
           docker run -d -p 32468:8080 --name dailyroutine-test -e SPRING_PROFILES_ACTIVE=nCloud --network dailyroutine-net dailyroutine:latest
