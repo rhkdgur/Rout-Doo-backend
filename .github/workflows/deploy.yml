@@ -49,7 +49,7 @@ jobs:
     - run: /usr/bin/docker save -o dailyroutine.tar dailyroutine:latest
 
     - name: Change ownership of tar file
-      run: sudo chown dailyroutine:dailyroutine dailyRoutine.tar
+      run: chown dailyroutine:dailyroutine dailyRoutine.tar
 
       # tar 파일 권한 수정
     - name: Set permission for tar file
