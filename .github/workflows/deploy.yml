@@ -72,8 +72,15 @@ jobs:
         port: 7022
         connect_timeout: 30s
         first_ssh: |
-          docker stop dailyroutine-test || true
-          docker rm dailyroutine-test || true
-          docker image rm dailyroutine:latest || true
+          # Check if container exists before stopping/removing
+          if [ "$(docker ps -aq -f name=dailyroutine-test)" ]; then
+            docker stop dailyroutine-test || true
+            docker rm dailyroutine-test || true
+          fi
+          # Check if image exists before removing
+          if [ "$(docker images -q dailyroutine:latest)" ]; then
+            docker image rm dailyroutine:latest || true
+          fi
+          # Load and run new image
           docker load -i /home/dailyroutine/versions/dailyroutine.tar
           docker run -d -p 32468:8080 --name dailyroutine-test -e SPRING_PROFILES_ACTIVE=nCloud --network dailyroutine-net dailyroutine:latest
