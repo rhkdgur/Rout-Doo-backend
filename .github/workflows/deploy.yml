@@ -75,5 +75,5 @@ jobs:
           docker stop dailyroutine || true
           docker rm dailyroutine || true
           docker image rm dailyroutine:latest || true
-          docker load -i /home/postoffice/dailyroutine/dailyroutine.tar
+          docker load -i /home/dailyroutine/versions/dailyroutine.tar
           docker run -d -p 32468:8080 --name dailyroutine dailyroutine:latest
