@@ -76,4 +76,4 @@ jobs:
           docker rm dailyroutine || true
           docker image rm dailyroutine:latest || true
           docker load -i /home/dailyroutine/versions/dailyroutine.tar
-          docker run -d -p 32468:8080 --name dailyroutine --network dailyroutine-net dailyroutine:latest
+          docker run -d -p 32468:8080 --name dailyroutine -e SPRING_PROFILES_ACTIVE=nCloud --network dailyroutine-net dailyroutine:latest
