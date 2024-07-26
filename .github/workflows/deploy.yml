@@ -50,7 +50,7 @@ jobs:
 
       # tar 파일 권한 수정
     - name: Set permission for tar file
-      run: chmod 775 dailyroutine.tar
+      run: chmod 664 dailyroutine.tar
 
     - name: Send docker image file to test server
       uses: appleboy/scp-action@master
