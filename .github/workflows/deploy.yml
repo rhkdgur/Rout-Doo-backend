@@ -72,9 +72,13 @@ jobs:
         port: 7022
         connect_timeout: 30s
         first_ssh: |
-              docker stop dailyroutine || :
-              docker rm dailyroutine || :
-              docker image rm dailyroutine:latest || :
+          if [ "$(docker ps -aq -f name=dailyroutine)" ]; then 
+            docker stop dailyroutine || :; 
+            docker rm dailyroutine || :; 
+          fi; 
+          if [ "$(docker images -q dailyroutine:latest)" ]; then 
+            docker image rm dailyroutine:latest || :;
+            docker load -i /home/dailyroutine/versions/dailyroutine.tar
+          fi
         last_ssh: |
-              docker load -i /home/dailyroutine/versions/dailyroutine.tar
-              docker run -d -p 32468:8080 --name dailyroutine -e SPRING_PROFILES_ACTIVE=nCloud --network dailyroutine-net dailyroutine:latest
+          docker run -d -p 32468:8080 --name dailyroutine -e SPRING_PROFILES_ACTIVE=nCloud --network dailyroutine-net dailyroutine:latest
