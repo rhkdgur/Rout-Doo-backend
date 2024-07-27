@@ -94,7 +94,7 @@ jobs:
           port: 7022
           connect_timeout: 300s
           first_ssh: |
-            ssh -o ServerAliveInterval=30 -o ServerAliveCountMax=20 -p 7022 ${{ secrets.POSTOFFICE_NAME }}@210.89.190.40 "docker load -i /home/dailyroutine/versions/dailyroutine.tar";
+            ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=20 -p 7022 ${{ secrets.POSTOFFICE_NAME }}@210.89.190.40 "docker load -i /home/dailyroutine/versions/dailyroutine.tar";
 
     - name: Run Docker container on server
       uses: cross-the-world/ssh-scp-ssh-pipelines@latest
