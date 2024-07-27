@@ -81,7 +81,6 @@ jobs:
         port: 7022
         connect_timeout: 300s
         first_ssh: |
-          sshpass -p "${{ secrets.POSTOFFICE_PASS }}" ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=20 -T -p 7022 ${{ secrets.POSTOFFICE_NAME }}@210.89.190.40 
           "docker stop dailyroutine || true;
           docker rm dailyroutine || true;
           docker image rm dailyroutine:latest || true;
