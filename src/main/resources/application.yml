@@ -60,7 +60,7 @@ spring:
       on-profile: nCloud
 
   datasource:
-    url: jdbc:mysql://172.18.0.2:33306/routidoo?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://172.20.0.2:33306/routidoo?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false
     username: routidoo
     password: routidoo
     tomcat:
