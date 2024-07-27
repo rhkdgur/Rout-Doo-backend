@@ -50,7 +50,10 @@ jobs:
 
       # tar 파일 권한 수정
     - name: Set permission for tar file
-      run: chmod 664 dailyroutine.tar
+      run: chmod 775 dailyroutine.tar
+
+    - name: Compress Docker image file
+      run: tar -czf dailyroutine.tar.gz dailyroutine.tar
 
     - name: Send docker image file to test server
       uses: appleboy/scp-action@master
@@ -59,33 +62,37 @@ jobs:
         username: ${{ secrets.POSTOFFICE_NAME }} # dailyroutine
         password : ${{ secrets.POSTOFFICE_PASS }} # daily!23
         port: 7022
-        source: "dailyroutine.tar"
+        source: "dailyroutine.tar.gz"
         target: "/home/dailyroutine/versions"
 
-    - name: Set permission for tar file on server
+
+    - name: Uncompress Docker image file on server
       uses: cross-the-world/ssh-scp-ssh-pipelines@latest
       with:
-         host: "210.89.190.40"
-         user: ${{ secrets.POSTOFFICE_NAME }}
-         pass: ${{ secrets.POSTOFFICE_PASS }}
-         port: 7022
-         first_ssh: |
-           chmod 644 /home/dailyroutine/versions/dailyroutine.tar
+          host: "210.89.190.40"
+          user: ${{ secrets.POSTOFFICE_NAME }}
+          pass: ${{ secrets.POSTOFFICE_PASS }}
+          port: 7022
+          connect_timeout: 120s
+          ssh_option: "-o ServerAliveInterval=30 -o ServerAliveCountMax=10"
+          first_ssh: |
+            tar -xzf /home/dailyroutine/versions/dailyroutine.tar.gz -C /home/dailyroutine/versions
+            
 
-
-
-    - name: Bootup server
+    - name: Stop and remove existing container
       uses: cross-the-world/ssh-scp-ssh-pipelines@latest
       with:
         host: "210.89.190.40"
         user: ${{ secrets.POSTOFFICE_NAME }}  # dailyroutine
         pass: ${{ secrets.POSTOFFICE_PASS }} # daily!23
         port: 7022
-        connect_timeout: 120s
+        connect_timeout: 60s
+        ssh_option: "-o ServerAliveInterval=30 -o ServerAliveCountMax=10"
         first_ssh: |
           docker stop dailyroutine || true;
           docker rm dailyroutine || true;
           docker image rm dailyroutine:latest || true;
+          
 
     - name: Load Docker image on server
       uses: cross-the-world/ssh-scp-ssh-pipelines@latest
@@ -94,7 +101,8 @@ jobs:
           user: ${{ secrets.POSTOFFICE_NAME }}
           pass: ${{ secrets.POSTOFFICE_PASS }}
           port: 7022
-          connect_timeout: 300s
+          connect_timeout: 180s
+          ssh_option: "-o ServerAliveInterval=30 -o ServerAliveCountMax=20"
           first_ssh: |
             docker load -i /home/dailyroutine/versions/dailyroutine.tar
 
@@ -106,5 +114,6 @@ jobs:
           pass: ${{ secrets.POSTOFFICE_PASS }}
           port: 7022
           connect_timeout: 60s
+          ssh_option: "-o ServerAliveInterval=30 -o ServerAliveCountMax=10"
           first_ssh: |
             docker run -d -p 32468:8080 --name dailyroutine -e SPRING_PROFILES_ACTIVE=nCloud --network dailyroutine-net dailyroutine:latest
