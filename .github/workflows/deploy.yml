@@ -94,8 +94,7 @@ jobs:
           user: ${{ secrets.POSTOFFICE_NAME }}
           pass: ${{ secrets.POSTOFFICE_PASS }}
           port: 7022
-          connect_timeout: 180s
-          ssh_option: "-o ServerAliveInterval=30 -o ServerAliveCountMax=5"
+          connect_timeout: 300s
           first_ssh: |
             docker load -i /home/dailyroutine/versions/dailyroutine.tar
 
