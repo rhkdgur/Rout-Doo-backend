@@ -60,9 +60,9 @@ spring:
       on-profile: nCloud
 
   datasource:
-    url: jdbc:mysql://172.20.0.2:3306/routidoo?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false
-    username: routidoo
-    password: routidoo
+    url: jdbc:mysql://172.20.0.2:3306/routdoo?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false
+    username: routdoo
+    password: routdoo
     tomcat:
       initial-size: 20
       max-idle: 15
