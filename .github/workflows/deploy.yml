@@ -62,16 +62,6 @@ jobs:
         source: "dailyroutine.tar"
         target: "/home/dailyroutine/versions"
 
-    - name: Set permission for tar file on server
-      uses: cross-the-world/ssh-scp-ssh-pipelines@latest
-      with:
-         host: ${{ secrets.DEVELOP_HOST}}
-         user: ${{ secrets.POSTOFFICE_NAME }}
-         pass: ${{ secrets.POSTOFFICE_PASS }}
-         port: ${{ secrets.DEVELOP_PORT}}
-         first_ssh: |
-           chmod 644 /home/dailyroutine/versions/dailyroutine.tar
-
     - name: Bootup server
       uses: cross-the-world/ssh-scp-ssh-pipelines@latest
       with:
