@@ -13,7 +13,7 @@ Rout!Doo (스케줄 관리 앱) 사이드 프로젝트입니다.
 * 프론트와의 커뮤니케이션을 통해 경험을 쌓고자 함
 
 ## ![icons8-연대순-주간-50](https://github.com/rhkdgur/Rout-Doo-backend/assets/67618667/8b45a8f0-dfa5-4027-8be9-cf255538e236) 프로젝트 사용기술
-`Spring Boot` `Java 17` `JPA` `MYSQL` `Docker` `Intellij IDEA` `K6` `Grafana` `Influxdb`
+`Spring Boot` `Java 17` `JPA` `MYSQL` `Docker` `Intellij IDEA` `K6` `Grafana` `Influxdb` `github action (CI/CD)`
 
 
 ## ![icons8-연대순-주간-50](https://github.com/rhkdgur/Rout-Doo-backend/assets/67618667/8b45a8f0-dfa5-4027-8be9-cf255538e236) 작업기간
