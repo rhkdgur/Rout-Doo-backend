@@ -14,5 +14,5 @@ COPY  --from=builder /app/build/libs/dailyroutine.jar dailyroutine.jar
 
 EXPOSE 8080
 
-#ENTRYPOINT ["java", "-jar" ,"dailyroutine.jar"]
-ENTRYPOINT ["java", "-jar" ,"dailyroutine.jar" , "-Dspring.profiles.active=nCloud"]
+ENTRYPOINT ["java", "-jar" ,"dailyroutine.jar"]
+#ENTRYPOINT ["java", "-jar" ,"dailyroutine.jar" , "-Dspring.profiles.active=nCloud"]
