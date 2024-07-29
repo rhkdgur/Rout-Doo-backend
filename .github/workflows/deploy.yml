@@ -12,8 +12,7 @@ on:
     branches: [ "develop" ]
 
 jobs:
-  Deploy:
-
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -47,7 +46,6 @@ jobs:
           push: false
           tags: dailyroutine:latest
     - run: /usr/bin/docker save -o dailyroutine.tar dailyroutine:latest
-
       # tar 파일 권한 수정
     - name: Set permission for tar file
       run: chmod 664 dailyroutine.tar
@@ -62,6 +60,11 @@ jobs:
         source: "dailyroutine.tar"
         target: "/home/dailyroutine/versions"
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
     - name: Bootup server
       uses: cross-the-world/ssh-scp-ssh-pipelines@latest
       with:
