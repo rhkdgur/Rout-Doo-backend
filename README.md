@@ -23,6 +23,7 @@ Rout!Doo (스케줄 관리 앱) 사이드 프로젝트입니다.
 ## ![icons8-연대순-주간-50](https://github.com/rhkdgur/Rout-Doo-backend/assets/67618667/8b45a8f0-dfa5-4027-8be9-cf255538e236) 프로젝트 요점
 * [API 비즈니스 기능 정리](https://github.com/rhkdgur/Rout-Doo-backend/wiki/API-%EA%B8%B0%EB%8A%A5-%EB%B0%8F-%EB%B9%84%EC%A6%88%EB%8B%88%EC%8A%A4-%EB%A1%9C%EC%A7%81-%EC%A0%95%EB%A6%AC)
 * [세션 관리](https://github.com/rhkdgur/Rout-Doo-backend/wiki/%EC%84%B8%EC%85%98%EA%B3%BC-%EC%BA%90%EC%8B%B1-%EA%B4%80%EB%A6%AC-%EB%B0%A9%EB%B2%95)
+* [CI/CD 자동 배포](https://ghgo195.tistory.com/68)
 
 
 ## ![icons8-연대순-주간-50](https://github.com/rhkdgur/Rout-Doo-backend/assets/67618667/8b45a8f0-dfa5-4027-8be9-cf255538e236) 작업회고
