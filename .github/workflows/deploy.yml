@@ -26,16 +26,16 @@ jobs:
         distribution: 'temurin'
 
     # Gradle 권한 부여
-    - name: Grant permission for gradlew
-      run: chmod +x ./gradlew
-
-    # 테스트 및 빌드
-    - name: Build with Gradle
-      run: ./gradlew clean bootJar
-      
-    - run: ls
-    - run: ls build
-    - run: ls build/libs
+#    - name: Grant permission for gradlew
+#      run: chmod +x ./gradlew
+#
+#    # 테스트 및 빌드
+#    - name: Build with Gradle
+#      run: ./gradlew clean bootJar
+#
+#    - run: ls
+#    - run: ls build
+#    - run: ls build/libs
 
 
     - name: Docker build
@@ -46,6 +46,9 @@ jobs:
           push: false
           tags: dailyroutine:latest
     - run: /usr/bin/docker save -o dailyroutine.tar dailyroutine:latest
+
+    - run: ls
+
       # tar 파일 권한 수정
     - name: Set permission for tar file
       run: chmod 664 dailyroutine.tar
