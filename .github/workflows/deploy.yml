@@ -56,8 +56,8 @@ jobs:
       uses: appleboy/scp-action@master
       with:
         host: "210.89.190.40"
-        username: ${{ secrets.POSTOFFICE_NAME }} # dailyroutine
-        password : ${{ secrets.POSTOFFICE_PASS }} # daily!23
+        username: ${{ secrets.POSTOFFICE_NAME }}
+        password : ${{ secrets.POSTOFFICE_PASS }}
         port: 7022
         source: "dailyroutine.tar"
         target: "/home/dailyroutine/versions"
@@ -76,8 +76,8 @@ jobs:
       uses: cross-the-world/ssh-scp-ssh-pipelines@latest
       with:
         host: "210.89.190.40"
-        user: ${{ secrets.POSTOFFICE_NAME }}  # dailyroutine
-        pass: ${{ secrets.POSTOFFICE_PASS }} # daily!23
+        user: ${{ secrets.POSTOFFICE_NAME }}
+        pass: ${{ secrets.POSTOFFICE_PASS }}
         port: 7022
         connect_timeout: 120s
         first_ssh: |
